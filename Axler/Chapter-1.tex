@@ -60,25 +60,27 @@ called $i$, such that $i^2 = -1$.
 Elements of $\mathbb{F}$ are sometimes called scalars.
 We call it $\mathbb{F}$ because those are both fields.
 
-\begin{definition} Simple Lists
-    \begin{itemize}
-        \item The set $\R^2$, which you can think of as a plane, is the set of all ordered
-        pairs of real numbers:
-        \[ \R^2 = \{(x, y) : x, y \in \R\} \]
-        \item The set $\R^3$, which you can think of as ordinary space, is the set of all
-        ordered triples of real numbers:
-        \[ \R^3 = \{(x, y, z) : x, y, z \in \R\} \]
-    \end{itemize}
-\end{definition}
+Now we discuss the idea of a "list." To understand the idea, here some examples of
+simple sets we have already seen in other mathematics:
+\begin{itemize}
+    \item The set $\R^2$, which you can think of as a plane, is the set of all ordered
+    pairs of real numbers:
+    \[ \R^2 = \{(x, y) : x, y \in \R\} \]
+    \item The set $\R^3$, which you can think of as ordinary space, is the set of all
+    ordered triples of real numbers:
+    \[ \R^3 = \{(x, y, z) : x, y, z \in \R\} \]
+\end{itemize}
 
 \begin{definition}
     A \textit{list} of \textit{length $n$} is an ordered collection of $n$ numbers
-    separated by commas and surrounded by parenthesis. I.e. $(x_1, \ldots, x_n)$
-    \\
+    separated by commas and surrounded by parenthesis.
+    
+    \[ \text{i.e. }(x_1, \ldots, x_n) \]
+    
     Two lists are equal if an only if they have the same length and the same elements. 
 \end{definition}
 
-
+Here are some examples of lists from sets we are familiar with:
 \begin{enumerate}
     \item $(7, 3)$ is a list of length 2. Thus $(7, 3) \in \R^2$.
     \item $(5, 9, -2)$ is a list of length 3. Thus $(5, 9, -2) \in \R^3$
@@ -91,8 +93,8 @@ We call it $\mathbb{F}$ because those are both fields.
 
 Elements of $\F^n$ are often called \textit{points} or \textit{vectors}. 
 
-Does not matter if these sets have geometric sense. We can manipulate them algebraically.
-This is where the name linear algebra comes from.
+It does not matter if these sets have geometric sense. We can manipulate them algebraically.
+This is where the name linear \underline{algebra} comes from.
 
 \begin{definition}
     Addition in $\F^n$ is defined by adding the corresponding coordinates:
@@ -115,9 +117,9 @@ Single letters can denote elements of $\F^n$ efficiently. You can say $x + y = z
 
 It should always be clear from context which 0 you're talking about. For example:
 we have the following:
-\begin{theorem}
+\begin{theorem*}
     If $x \in \F^n$, then $0x = 0$.
-\end{theorem}
+\end{theorem*}
 
 The 0 on the LHS is a scalar in $\F$. The 0 on the RHS is a vector in $\F^n$.
 
@@ -212,16 +214,10 @@ Advantages of the abstract approach to vector spaces:
 \end{itemize}
 
 If $V$ is a vector space, it would be incorrect to prove that $0u = 0$ for $u \in V$
-by writing: Let $u = (x_1, \ldots, x_n)$, thus
-
-\begin{align*}
-    0u &= (0x_1, \ldots, 0x_n)
-    &= (0, \ldots, 0)
-    &= 0
-\end{align*}
+by writing: Let $u = (x_1, \ldots, x_n)$, thus...
 
 \begin{note}
-    An element of $V$ is not necessarily of the form $(x_1, \ldots, x_n)$
+    An element of $V$ is not necessarily of the form $(x_1, \ldots, x_n)$.
 \end{note}
 
 \endinput
