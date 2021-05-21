@@ -1,0 +1,210 @@
+% !TEX root = ./main.tex
+
+\section{Vector Spaces}
+
+\subsection{$\R^n$ and $\C^n$}
+
+\begin{definition}
+    $\R$ denotes the field of real numbers.
+\end{definition}
+    
+Some nonconstant polynomials with real coefficients have no real zeroes.
+Example: the equation:
+\[ x^2 + 1 = 0\]
+has no real solutions. Thus, we invent a solution
+called $i$, such that $i^2 = -1$.
+
+\begin{definition} Complex Numbers
+    \begin{itemize}
+        \item A complex number is an ordered pair $(a, b)$, where $a, b \in \R$, but we will write this as $a+bi$.
+        \item The set of all complex numbers is denoted by $\C$:
+            \[ \C = \{a+bi : a, b \in \R\} \]
+        \item Addition and multiplication on $\C$ are defined as follows
+        \[ (a+bi) + (c+di) = (a+c)+(b+d)i \]
+        \[ (a+bi)(c+di) = (ac-bd) + (ad+bc)i \]
+    \end{itemize}
+\end{definition}
+
+\begin{note}
+    If $a \in \R$, we identify $a+0i$ with the real number $a$.
+    Thus we think of $\R$ as a subset of $\C$. We also usually write
+    $0+bi$ as just $bi$, and we usually write $0+1i$ as just $i$. From
+    the definition of multiplication above, we have that $i^2 = -1$.
+\end{note}
+
+\begin{note} 
+    Properties of Complex Arithmetic: $\forall \alpha, \beta \in \C$
+    \begin{itemize}
+        \item Commutativity
+        \[ \alpha + \beta = \beta + \alpha \text{ and } \alpha \beta = \beta \alpha\]
+        \item Associativity
+        \[ (\alpha + \beta) + \lambda = \alpha + (\beta + \lambda) \text{ and } (\alpha\beta)\lambda = \alpha(\beta \lambda) \]
+        \item Identities
+        \[ \lambda + 0 = \lambda \text{ and } \lambda 1 = \lambda \]
+        \item Additive Inverse
+        \begin{center}
+           For every $\alpha \in \C$ there exists a unique $\beta \in \C$ such that $\alpha + \beta = 0$ 
+        \end{center}
+        \item Multiplicative Inverse
+        \begin{center}
+            For every  $\alpha \in \C \setminus \{0\}$, there exists a unique $\beta \in \C$ such that $\alpha \beta = 1$ 
+        \end{center}
+        \item Distributivity
+        \[ \lambda(\alpha + \beta) = \lambda \alpha + \lambda \beta \]
+    \end{itemize}
+\end{note}
+
+\begin{definition}
+    $\mathbb{F}$ denotes either $\R$ or $\C$
+\end{definition}
+Elements of $\mathbb{F}$ are sometimes called scalars.
+We call it $\mathbb{F}$ because those are both fields.
+
+\begin{definition} Simple Lists
+    \begin{itemize}
+        \item The set $\R^2$, which you can think of as a plane, is the set of all ordered
+        pairs of real numbers:
+        \[ \R^2 = \{(x, y) : x, y \in \R\} \]
+        \item The set $\R^3$, which you can think of as ordinary space, is the set of all
+        ordered triples of real numbers:
+        \[ \R^3 = \{(x, y, z) : x, y, z \in \R\} \]
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    A \textit{list} of \textit{length $n$} is an ordered collection of $n$ numbers
+    separated by commas and surrounded by parenthesis. I.e. $(x_1, \ldots, x_n)$
+    \\
+    Two lists are equal if an only if they have the same length and the same elements. 
+\end{definition}
+
+
+\begin{enumerate}
+    \item $(7, 3)$ is a list of length 2. Thus $(7, 3) \in \R^2$.
+    \item $(5, 9, -2)$ is a list of length 3. Thus $(5, 9, -2) \in \R^3$
+\end{enumerate}
+
+\begin{definition}
+    $\F^n$ is the set of all lists of length $n$ of elements of $\F$:
+    \[ \F^n = \{(x_1, \ldots, x_n) : x_j \in \F \text{ for } j = 1, \ldots, n\} \]
+\end{definition}
+
+Elements of $\F^n$ are often called \textit{points} or \textit{vectors}. 
+
+Does not matter if these sets have geometric sense. We can manipulate them algebraically.
+This is where the name linear algebra comes from.
+
+\begin{definition}
+    Addition in $\F^n$ is defined by adding the corresponding coordinates:
+    \[ (x_1, \ldots, x_n) + (y_1, \ldots, y_n) = (x_1+y_1, \ldots, x_n+y_n) \]
+\end{definition}
+
+\begin{definition}
+    The product of a number $\lambda \in \F$ and a vector $\F^n$ is defined by
+    multiplying each coordinate of the vector by $\lambda$:
+    \[\lambda (x_1, \ldots, x_n) = (\lambda x_1, \ldots, \lambda x_n) \] 
+\end{definition}
+
+Single letters can denote elements of $\F^n$ efficiently. You can say $x + y = z$ instead of saying e.g.
+\[ (x_1, \ldots, x_n) + (y_1, \ldots, y_n) = (z_1, \ldots, z_n) \]
+
+\begin{definition}
+    Let 0 denote the list of length $n$ whose coordinates are all 0:
+    \[ 0 = (0, \ldots, 0) \]
+\end{definition}
+
+It should always be clear from context which 0 you're talking about. For example:
+we have the following:
+\begin{theorem}
+    If $x \in \F^n$, then $0x = 0$.
+\end{theorem}
+
+The 0 on the LHS is a scalar in $\F$. The 0 on the RHS is a vector in $\F^n$.
+
+\subsection{Definition of a Vector Space}
+
+The motivation for the definition of a vectors space comes from the
+properties of addition and scalar multiplication in $\F^n$:
+\begin{itemize}
+    \item Addition is commutative, associative, and has an identity.
+    \item Every element has an additive inverse.
+    \item Scalar multiplication is associative.
+    \item Scalar multiplication by 1 acts as expected.
+    \item Addition and scalar multiplication are connected by distributive properties.
+\end{itemize}
+
+First, let us define what addition/scalar multiplication is.
+\begin{definition}
+    \begin{itemize}
+        \item An \textit{addition} on a set $V$ is a function that assigns an element $u + w \in V$ to each pair of elements $u, w \in V$
+        \item A \textit{scalar multiplication} on a set $V$ is a function that assigns an element $\lambda u \in V$ to each $\lambda \in \F$ and each $u \in V$
+    \end{itemize}
+\end{definition}
+
+\begin{example}
+    Suppose $V$ is the set of real valued functions on the interval $[0, 1]$.
+    For $f, g \in V$ and $\lambda \in \R$, define $f + g$ and $\lambda f$ by:
+    \[ (f+g)(x) = f(x) + g(x) \]
+    and
+    \[ (\lambda f)(x) = \lambda f(x) \]
+    Thus $f + g \in V$ and $\lambda f \in V$.
+\end{example}
+
+Now, we can define a vector space $V$. These are based off the
+properties of $\F^n$:
+
+\begin{definition}
+    A \textit{vector space} is a set $V$ along with an addition on $V$ and a
+    scalar multiplication on $V$ such that the following properties hold:
+
+    \begin{itemize}
+        \item $u + w = w + u$ for all $u, w \in V$
+        \item $(u + v) + w = u + (v + w)$ and $(ab)u = a(bu)$ for all $u, v, w \in V$ and all $a, b \in \F$
+        \item There exists $0 \in V$ such that $u + 0 = u$ for all $u \in V$
+        \item For every $u \in V$, there exists $w \in V$ such that $u + w = 0$
+        \item 1$u = u$ for all $u \in V$
+        \item $a (u + w) = au + aw$ and $(a+b)u = au + bu$ for all $a, b \in \F$ and all $u, w \in V$
+    \end{itemize}
+\end{definition}
+
+\begin{example} Vector Spaces:
+    \begin{itemize}
+        \item $\F^n$ with the usual operations of addition and scalar multiplications is a vector space.
+        \item $\F^\infty$ is defined to be the set of all sequences of elements of $\F$:
+        \[ \{(x_1, x_2, \ldots) : x_j \in \F \text{for } j = 1, 2, \ldots \} \]
+        Addition and scalar multiplication are also defined coordinate-wise. This is also a vector space.
+        \item More generally, if $S$ is a set, let $F^S$ denote the set of functions from $S$ to $\F$.
+        For $f, g \in \F^S$, the sum $f + g \in \F^S$ is the function defined by:
+        \[ (f + g)(x)  = f(x) + g(x)\]
+        for all $x \in S$.
+        For $\lambda \in \F$ and $f \in \F^S$, the product $\lambda f \in \F^S$ is the function defined by
+        \[ (\lambda f)(x) = \lambda f(x) \]
+        for all $x \in S$.
+        With these definitions, $\F^S$ becomes a vector space.
+    \end{itemize}
+\end{example}
+
+Our first theorem then follows:
+
+\begin{theorem}
+    If $V$ is a vector space, $\forall u \in V$, $0u = 0$.
+    \begin{proof*}
+    For arbitrary $u \in V$, we have:
+    \begin{align*}
+        0u &= (0 + 0)u \\
+        &= 0u + 0u
+    \end{align*}
+    Adding the additive inverse of $0u$, denoted $-0u$, to both sides of the equation
+    above gives:
+    \begin{align*}
+        0u + (-0u) &= 0u + 0u + (-0u) \\
+        0 = 0u
+    \end{align*}
+    as desired. \qed
+    \end{proof*}
+
+\end{theorem}
+
+
+
+\endinput
