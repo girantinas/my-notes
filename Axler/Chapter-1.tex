@@ -220,4 +220,92 @@ by writing: Let $u = (x_1, \ldots, x_n)$, thus...
     An element of $V$ is not necessarily of the form $(x_1, \ldots, x_n)$.
 \end{note}
 
+\subsection{Subspaces}
+
+Let's add a new convention. From now on, $V$ denotes a vector space over $\F$
+for brevity.
+
+\begin{definition}
+    A subset $U$ of $V$ is called a subspace of $V$ if $U$ is also a vector space
+    (using the same addition and scalar multiplication as on $V$).
+\end{definition}
+
+\begin{example}
+    $\{(x_1, x_2, 0) : x_1, x_2, \in \F \}$ is a subspace of $\F^3$
+\end{example}
+
+\begin{definition}
+    A subset $U$ of $V$ is a subspace of $V$ if and only if $U$ satisfies the following
+    three conditions:
+    \begin{itemize}
+        \item $0 \in U$
+        \item $u, w \in U \implies u + w \in U$
+        \item $\lambda \in \F, u \in U \implies \lambda u \in U$
+    \end{itemize}
+\end{definition}
+
+Note that we do not need to check any of the other properties of a vector
+space because we know that they will hold. Most of these properties are related
+to the addition and multiplication properties, which we know hold since we're using
+the same ones.
+
+\begin{example} Examples of subspaces:
+    \begin{itemize}
+        \item If $b \in \F$, then
+        \[ \{ (x_1, x_2, x_3, x_4) \in \F^4 : x_3 = 5x_4 + b \} \]
+        is a subspace of $\F^4$ if and only if $b = 0$, in order to have
+        the additive identity in the set.
+
+        \item The set of continuous real-valued functions on the interval $[0,1]$
+        is a subspace of $\R^{[0,1]}$. (The zero function is the identity in this case)
+
+        \item The set of differentiable real-valued functions on $\R$ is a subspace 
+        of $\R^{\R}$ (a sum of two differentiable functions is differentiable)
+
+        \item The set of all sequences of complex numbers with limit 0 is a subspace
+        of $\C^{\infty}$
+
+        \item The subspaces of $\R^2$ are precisely $\{0\}, \R^2$ and all lines in $\R^2$
+        through the origin.
+    \end{itemize}
+    
+\end{example}
+
+\begin{definition}
+    Suppose $U_1, \ldots, U_m$ are subsets of $V$. The sum of $U_1, \ldots, U_m$, denoted
+    $U_1 + \ldots + U_m$, is the set of all possible sums of elements of $U_1, \ldots, U_m$.
+    \[ U_1 + \ldots + U_m = \{u_1 + \dots + u_m : u_1 \in U_1, \ldots, u_m \in U_m \} \]
+\end{definition}
+
+\begin{theorem}
+    Suppose $U_1, \ldots, U_m$ are subspaces of $V$. Then $U_1 + \ldots U_m$ is the smallest
+    subspace of $V$ containing $U_1, \ldots, U_m$.
+\end{theorem}
+
+\begin{definition}
+    Suppose $U_1, \ldots, U_m$ are subspaces of $V$.
+
+    The sum $U_1 + \ldots + U_m$ is called a direct sum if each element of $U_1 + \ldots + U_m$
+    can be written in only one way as a sum $u_1 + \ldots + u_m$ where each $u_j$ is in $U_j$
+
+    If the sum is indeed a direct sum, we use $\oplus$ between the symbols to denote that it is a direct sum.
+\end{definition}
+
+\begin{example}
+    Suppose
+    \[ U = \{(x, y, 0)\in \F^3 : x, y \in \F \}, W = \{(0, 0, z) \in \F^3 : z \in \F \} \]\
+    Thus, $\F^3 = U \oplus W$.
+\end{example}
+
+These two theorems make it easy to see whether something is a direct sum.
+\begin{theorem}
+    Suppose $U_1, \ldots, U_m$ are subspaces of $V$. Then $U_1 + \ldots + U_m$ is a 
+    direct sum if and only if the only way to write 0 as a sum $u_1 + \ldots + u_m$, where
+    each $u_j$ is in $U_j$, is by taking each $u_j$ equal to 0.
+\end{theorem}
+
+\begin{theorem}
+   Suppose $U$ and $W$ are subspaces of $V$. Then $U + W$ is a direct sum
+   if and only if $U \cap W = \{0\}$.
+\end{theorem}
 \endinput
