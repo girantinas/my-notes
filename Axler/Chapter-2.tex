@@ -1,0 +1,184 @@
+% !TEX root = ./main.tex
+
+\section{Finite-Dimensional Vector Spaces}
+
+\subsection{Span and Linear Independence}
+
+\begin{definition}
+    A list of length $n$ is an ordered collection of $n$ elements (which might be
+    numbers, other lists, or more abstract entities) separated by commas (and perhaps surrounded
+    by parentheses).
+    \end{definition}
+
+\begin{definition}
+    A linear combination of a list $v_1, \ldots, v_m$ of vectors in $V$ is a vector
+    of the form
+
+    \[ a_1 v_1 + \ldots + a_m v_m \]
+
+    where $a_1, \ldots, a_m \in \F$
+\end{definition}
+
+\begin{itemize}
+    \item $(13, -1, 7)$ is a linear combination of $(2, 1, -1), (1, -2, 4)$ because:
+    \[ 5(2, 1, -1) + 3(1, -2, 4) = (13, -1, 7) \]
+
+    \item $(13, -1, 6)$ is a linear combination of $(2, 1, -1), (1, -2, 4)$ because:
+    there do not exist numbers $a_1, a_2 \in \F$ such that:
+    
+    \[ a_1(2, 1, -1) + a_2(1, -2, 4) = (13, -1, 7) \]
+\end{itemize}
+
+\begin{definition}
+    The set of all linear combinations of a list of vectors $v_1, \ldots, v_m$ in $V$
+    is called the span of $v_1, \ldots, v_m$, denoted span($v_1, \ldots, v_m$). In other words
+
+    \[ span(v_1, \ldots, v_m) = \{ a_1 v_1, + \ldots + a_m v_m : a_1, \ldots, a_m \in \F \} \]
+\end{definition}
+
+The previous example shows that in $\F^3$:
+
+\begin{itemize}
+    \item $(13, -1, 7) \in \spanof((2, 1, -1), (1, -2, 4))$
+    \item $(13, -1, 6) \not \in \spanof((2, 1, -1), (1, -2, 4))$
+\end{itemize}
+\begin{definition}
+    The span of a list of vectors in $V$ is the smallest subspace of $V$
+    containing all the vectors in the list.
+\end{definition}
+
+\begin{definition}
+    A vector space is called \textbf{finite-dimensional} if the span of some
+    list of vectors in it is the entire vector space.
+\end{definition}
+
+\begin{example}
+    $\F^3$ is finite-dimensional because:
+    \[ \F^3 = \text{span} ((1, 0, 0), (0, 1, 0), (0, 0, 1))\]
+\end{example}
+Note that we have defined all lists to be finite.
+
+\begin{definition}
+    A vector space is called \textbf{infinite-dimensional} if it is not finite-dimensional.
+\end{definition}
+
+\begin{example}
+    $\F^{\infty}$ is infinite-dimensional.
+\end{example}
+
+Linear algebra is the study of linear maps on finite-dimensional vector spaces.
+
+\begin{definition}
+    A list $v_1, \ldots, v_m$ of vectors in $V$ is called \textbf{linearly independent}
+    if the only choice of $a_1, \ldots, a_m \in \F$ that makes $a_1 v_1 + \dots + a_m v_m$ equal 0 is
+    $a_1 = \dots = a_m = 0$.
+\end{definition}
+
+\begin{example}
+    Examples of linearly independent lists:
+    \begin{itemize}
+        \item A list $v$ of one vector $v \in V$ is linearly independent iff $v \neq 0$
+        \item A list of two vectors in $V$ is linearly independent iff neither
+        vector is scalar multiple of the other.
+        \item The list $1, x, \dots, x^m$ is linearly independent in $\R^{\R}$ for
+        each nonnegative integer $m$. The reason is that the subspace spanned by these vectors
+        represent all the polynomials of degree up to $m$. The only way that a polynomial can be 
+        identically 0 (the identity) is if all the coefficients are 0.
+    \end{itemize}
+\end{example}
+
+\begin{definition}
+    A list of vectors in $V$ is called $\textbf{linearly dependent}$ if it is not linearly independent.
+
+    Alternatively, a list $\listofvectors$ of vectors in $V$ is linearly dependent if there exist
+    $\listofscalars \in \F$, not all 0, such that $\linearcombination = 0$.
+\end{definition}
+
+Examples of linearly dependent lists:
+\begin{itemize}
+    \item $(2, 3, 1), (1, -1, 2), (7, 3, 8)$ is linearly dependent in $\F^3$ because
+    \[ 2(2, 3, 1) + 3 (1, -1, 2) + (-1)(7, 3, 8) = (0, 0, 0)\]
+    \item Every list of vectors in $V$ containing the 0 vector is linearly dependent.
+    \item If some vector in a list of vectors in $V$ is a linear combination of the other vectors, then
+    the list in linearly dependent.
+\end{itemize}
+
+\begin{theorem}
+    Suppose $\listofvectors$ is a linearly dependent list in $V$. Then there exists
+    $j \in \{ 1, 2, \dots, m \}$ such that the following hold:
+    \begin{itemize}
+        \item $v_j \in \spanof(v_1, \dots, v_{j - 1})$
+        \item If the $j$th term is removed from $\listofvectors$, the span of
+        the remaining list equals $\spanof(\listofvectors)$.
+    \end{itemize}
+\end{theorem}
+
+This captures the idea of redundancy. Let's look at an example:
+
+$(2, 3, 1), (1, -1, 2), (7, 3, 8)$ is linearly dependent in $\F^3$.
+
+So, $(7, 3, 8) \in \spanof{(2, 3, 1), (1, -1, 2)}$ and we also see that without it,
+the span remains the same.
+
+\begin{theorem}
+    In a finite-dimensional vector space, the length of every linearly independent list 
+    of vectors is less than or equal to the length of every spanning list of vectors.
+
+    \begin{proof*}
+        Suppose $\listofnames{u}{m}$ is linearly independent in $V$.
+        Suppose also that $\listofnames{w}{n}$ spans $V$. We need to prove that
+        $m \leq n$. We do so through the multi-step process described below.
+
+        \textbf{Step 1}
+
+        Let $B$ be the list $\listofnames{w}{n}$, which spans $V$. Thus adjoining any
+        vector in $V$ to this list produces a linearly dependent list (because the newly
+        adjoined vector can be written as a linear combination of the other vectors). In particular
+        
+        \[ u_1, \listofnames{w}{n} \]
+
+        is linearly dependent. Thus by the Linear Dependence Lemma,
+        we can remove one of the $w$'s so that the new list $B$ (of length $n$)
+        consisting of $u_1$ and the reamining $w$'s spans $V$.
+
+        \textbf{Step j}
+
+        The list $B$ (of length $n$) from step $j -1$ spans $V$. Thus adjoining any
+        vector to this list produces a linearly dependent list. In particular, the
+        list of length $n + 1$ is obtained by adjoining $u_j$ to $B$, placing it just after
+        $u_1, \dots, u_{j-1}$, is linearly dependent. By the Linear Dependence Lemma, 
+        one of the vectors in this list is in the span of the previous ones, and because
+        $\listofnames{u}{j}$ is linearly independent, this vector is one of the $w$'s, note one of
+        the $u$'s. We can remove that $w$ from $B$ so that the new list $B$ (of length $n$)
+        consisting of $u_1, \ldots, u_j$ and the remaining $w$'s spans $V$.
+    
+    After step $m$, we have added all the $u$'s and the process stops. At each step as
+    we add a $u$ to $B$, the Linear Dependence Lemma implies that there is some $w$ to remove.
+    Thus there are at least as many $w$'s as $u$'s. \qed
+    \end{proof*}
+\end{theorem}
+
+Let's apply the theorem to claim the following:
+
+\begin{example}
+    \begin{itemize}
+        \item 
+        The list $(1, 2, 3), (4, 5, 8), (9, 6, 7), (-3, 2, 8)$ is not linearly 
+        independent because the list 
+        $(1, 0, 0), (0, 1, 0), (0, 0, 1)$ spans $\R^3$. 
+        The theorem is applied here because something bigger
+        than a spanning list cannot possibly be a linearly independent list.
+        
+        \item
+        The list $(1, 2, 3, -5), (4, 5, 8, 3), (9, 6, 7, -1)$ does not span $\R^4$ because
+        the list $(1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1)$ is linearly independent
+        in $\R^4$. The theorem applied here because the contrapositive is that no spanning list 
+        can be smaller than a linearly independent one, which shows that the smaller list spanning
+        is impossible.
+    \end{itemize}
+\end{example}
+
+\begin{theorem}
+    Every subspace of a finite-dimensional vector space is finite-dimensional.
+\end{theorem}
+\endinput
