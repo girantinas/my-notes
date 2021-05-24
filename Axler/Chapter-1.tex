@@ -4,7 +4,7 @@
 
 \subsection{$\R^n$ and $\C^n$}
 
-\begin{definition}
+\begin{definition}[$R$]
     $\R$ denotes the field of real numbers.
 \end{definition}
     
@@ -14,7 +14,7 @@ Example: the equation:
 has no real solutions. Thus, we invent a solution
 called $i$, such that $i^2 = -1$.
 
-\begin{definition} Complex Numbers
+\begin{definition}[Complex Numbers] $\empty$
     \begin{itemize}
         \item A complex number is an ordered pair $(a, b)$, where $a, b \in \R$, but we will write this as $a+bi$.
         \item The set of all complex numbers is denoted by $\C$:
@@ -32,8 +32,8 @@ called $i$, such that $i^2 = -1$.
     the definition of multiplication above, we have that $i^2 = -1$.
 \end{note}
 
-\begin{note} 
-    Properties of Complex Arithmetic: $\forall \alpha, \beta \in \C$
+\begin{note}[Properties of Complex Arithmetic]
+    $\forall \alpha, \beta \in \C$
     \begin{itemize}
         \item Commutativity
         \[ \alpha + \beta = \beta + \alpha \text{ and } \alpha \beta = \beta \alpha\]
@@ -54,7 +54,7 @@ called $i$, such that $i^2 = -1$.
     \end{itemize}
 \end{note}
 
-\begin{definition}
+\begin{definition}[$\F$]
     $\mathbb{F}$ denotes either $\R$ or $\C$
 \end{definition}
 Elements of $\mathbb{F}$ are sometimes called scalars.
@@ -71,7 +71,7 @@ simple sets we have already seen in other mathematics:
     \[ \R^3 = \{(x, y, z) : x, y, z \in \R\} \]
 \end{itemize}
 
-\begin{definition}
+\begin{definition}[List]
     A \textit{list} of \textit{length $n$} is an ordered collection of $n$ numbers
     separated by commas and surrounded by parenthesis.
     
@@ -86,7 +86,7 @@ Here are some examples of lists from sets we are familiar with:
     \item $(5, 9, -2)$ is a list of length 3. Thus $(5, 9, -2) \in \R^3$
 \end{enumerate}
 
-\begin{definition}
+\begin{definition}[$\F^n$]
     $\F^n$ is the set of all lists of length $n$ of elements of $\F$:
     \[ \F^n = \{(x_1, \ldots, x_n) : x_j \in \F \text{ for } j = 1, \ldots, n\} \]
 \end{definition}
@@ -96,12 +96,12 @@ Elements of $\F^n$ are often called \textit{points} or \textit{vectors}.
 It does not matter if these sets have geometric sense. We can manipulate them algebraically.
 This is where the name linear \underline{algebra} comes from.
 
-\begin{definition}
+\begin{definition}[Addition in $\F^n$]
     Addition in $\F^n$ is defined by adding the corresponding coordinates:
     \[ (x_1, \ldots, x_n) + (y_1, \ldots, y_n) = (x_1+y_1, \ldots, x_n+y_n) \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[Scalar Multiplication in $\F^n$]
     The product of a number $\lambda \in \F$ and a vector $\F^n$ is defined by
     multiplying each coordinate of the vector by $\lambda$:
     \[\lambda (x_1, \ldots, x_n) = (\lambda x_1, \ldots, \lambda x_n) \] 
@@ -110,7 +110,7 @@ This is where the name linear \underline{algebra} comes from.
 Single letters can denote elements of $\F^n$ efficiently. You can say $x + y = z$ instead of saying e.g.
 \[ (x_1, \ldots, x_n) + (y_1, \ldots, y_n) = (z_1, \ldots, z_n) \]
 
-\begin{definition}
+\begin{definition}[0 list]
     Let 0 denote the list of length $n$ whose coordinates are all 0:
     \[ 0 = (0, \ldots, 0) \]
 \end{definition}
@@ -136,7 +136,7 @@ properties of addition and scalar multiplication in $\F^n$:
 \end{itemize}
 
 First, let us define what addition/scalar multiplication is.
-\begin{definition}
+\begin{definition}[Addition, Scalar Multiplication]
     \begin{itemize}
         \item An \textit{addition} on a set $V$ is a function that assigns an element $u + w \in V$ to each pair of elements $u, w \in V$
         \item A \textit{scalar multiplication} on a set $V$ is a function that assigns an element $\lambda u \in V$ to each $\lambda \in \F$ and each $u \in V$
@@ -155,7 +155,7 @@ First, let us define what addition/scalar multiplication is.
 Now, we can define a vector space $V$. These are based off the
 properties of $\F^n$:
 
-\begin{definition}
+\begin{definition}[Vector Space]
     A \textit{vector space} is a set $V$ along with an addition on $V$ and a
     scalar multiplication on $V$ such that the following properties hold:
 
@@ -188,7 +188,7 @@ properties of $\F^n$:
 
 Our first theorem then follows:
 
-\begin{theorem}
+\begin{theorem}[A Number 0 Times a Vector]
     If $V$ is a vector space, $\forall u \in V$, $0u = 0$.
     \begin{proof*}
     For arbitrary $u \in V$, we have:
@@ -225,7 +225,7 @@ by writing: Let $u = (x_1, \ldots, x_n)$, thus...
 Let's add a new convention. From now on, $V$ denotes a vector space over $\F$
 for brevity.
 
-\begin{definition}
+\begin{definition}[Subspace]
     A subset $U$ of $V$ is called a subspace of $V$ if $U$ is also a vector space
     (using the same addition and scalar multiplication as on $V$).
 \end{definition}
@@ -234,7 +234,7 @@ for brevity.
     $\{(x_1, x_2, 0) : x_1, x_2, \in \F \}$ is a subspace of $\F^3$
 \end{example}
 
-\begin{definition}
+\begin{definition}[Conditions for a Subspace]
     A subset $U$ of $V$ is a subspace of $V$ if and only if $U$ satisfies the following
     three conditions:
     \begin{itemize}
@@ -271,18 +271,18 @@ the same ones.
     
 \end{example}
 
-\begin{definition}
+\begin{definition}[Sum of Subsets]
     Suppose $U_1, \ldots, U_m$ are subsets of $V$. The sum of $U_1, \ldots, U_m$, denoted
     $U_1 + \ldots + U_m$, is the set of all possible sums of elements of $U_1, \ldots, U_m$.
     \[ U_1 + \ldots + U_m = \{u_1 + \dots + u_m : u_1 \in U_1, \ldots, u_m \in U_m \} \]
 \end{definition}
 
-\begin{theorem}
+\begin{theorem}[Sum of Subspaces is the Smallest Containing Subspace]
     Suppose $U_1, \ldots, U_m$ are subspaces of $V$. Then $U_1 + \ldots U_m$ is the smallest
     subspace of $V$ containing $U_1, \ldots, U_m$.
 \end{theorem}
 
-\begin{definition}
+\begin{definition}[Direct Sum]
     Suppose $U_1, \ldots, U_m$ are subspaces of $V$.
 
     The sum $U_1 + \ldots + U_m$ is called a direct sum if each element of $U_1 + \ldots + U_m$
@@ -298,13 +298,13 @@ the same ones.
 \end{example}
 
 These two theorems make it easy to see whether something is a direct sum.
-\begin{theorem}
+\begin{theorem}[Condition for a Direct Sum]
     Suppose $U_1, \ldots, U_m$ are subspaces of $V$. Then $U_1 + \ldots + U_m$ is a 
     direct sum if and only if the only way to write 0 as a sum $u_1 + \ldots + u_m$, where
     each $u_j$ is in $U_j$, is by taking each $u_j$ equal to 0.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}[Direct Sum of Two Subspaces]
    Suppose $U$ and $W$ are subspaces of $V$. Then $U + W$ is a direct sum
    if and only if $U \cap W = \{0\}$.
 \end{theorem}
