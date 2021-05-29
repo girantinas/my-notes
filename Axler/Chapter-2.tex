@@ -164,13 +164,13 @@ Let's apply the theorem to claim the following:
 
 \begin{example} Applications of Theorem 2.2
     \begin{itemize}
-        \item The list $(1, 2, 3), (4, 5, 8), (9, 6, 7), (-3, 2, 8)$ is not linearly 
+        \item The list $(1, 2, 3)$, $(4, 5, 8)$, $(9, 6, 7)$, $(-3, 2, 8)$ is not linearly 
         independent because the list 
         $(1, 0, 0), (0, 1, 0), (0, 0, 1)$ spans $\R^3$. 
         The theorem is applied here because something bigger
         than a spanning list cannot possibly be a linearly independent list.
         \item The list
-        $(1, 2, 3, -5), (4, 5, 8, 3), (9, 6, 7, -1)$ 
+        $(1, 2, 3, -5)$, $(4, 5, 8, 3)$, $(9, 6, 7, -1)$ 
         does not span $\R^4$ because
         the list $(1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1)$ is linearly independent
         in $\R^4$. The theorem applied here because the contrapositive is that no spanning list 
@@ -178,5 +178,145 @@ Let's apply the theorem to claim the following:
         is impossible.
     \end{itemize}
 \end{example}
+
+\subsection{Bases}
+
+\begin{definition} [$\Polys{\F}{m}$]
+    For $m$ a nonnegative integer, $\Polys{\F}{m}$ denotes
+    the set of polynomials with coefficients $\F$ and degree
+    at most $m$.
+\end{definition}
+
+Example:
+$(3 + 2i)z^2 + 4iz + 9 \in \Polys{\C}{20}$
+
+\begin{definition} [basis]
+    A \textbf{basis} of $V$ is a list of vectors in $V$
+    that is linearly independent and spans $V$.
+\end{definition}
+
+\begin{example} [Examples of bases]
+   \begin{itemize}
+       \item The list $(1, 0, \dots, 0)$, $(0,1,0,\dots,0)$, $\dots$,
+       $(0, \dots, 0, 1)$ is a basis of $\F^n$, called the \textbf{standard basis}
+       of $\F^n$.
+       \item The list $(1,1,0),(0,0,1)$ is a basis of $\{(x,x,y) \in \F^3 : x, y \in \F \}$
+       \item The list $(1, -1, 0), (1, 0, -1)$ is a basis of 
+       \[ \{(x, y, z) \in \F^3 : x + y + z = 0\}. \]
+       \item The list $1, z, \dots, z^m$ is a basis of $\Polys{\F}{m}$.
+   \end{itemize}
+\end{example}
+
+Sometimes it's useful to see some non-examples of bases.
+
+\begin{example} [Non-example of Basis]
+    \begin{itemize}
+        \item The list $(1, 2, -4)$, $(7, -5, 6)$ is linearly independent
+        in $\F^3$ but is not a basis of $\F^3$ because it does not span $\F^3$
+    \end{itemize}
+\end{example}
+
+\begin{theorem} [Basis Gives Unique Representation as Linear Combination]
+    A list $\listofvectors$ of vectors in $V$ is a basis of $V$ if and only if every
+    $v \in V$ can be written uniquely in the form:
+    \[ v = \linearcombination \]
+    where $a_1, \dots, a_n \in \F$.
+\end{theorem}
+
+\begin{example}
+    The list $(1, -1, 0), (1, 0, -1)$ is a basis of 
+       \[ \{(x, y, z) \in \F^3 : x + y + z = 0\}. \]
+    If $(x, y, z) \in V$, then
+    \[ (x, y, z) = -y(1, -1, 0) + (-z)(1, 0, -1) \]
+\end{example}
+
+\begin{theorem} [Every Spanning List Contains a Basis]
+    Every spanning list in a vector can be reduced to a basis of the vector space.
+\end{theorem}
+
+\begin{theorem} [Basis of Finite-Dimensional Vector Space]
+    Every finite-dimensional vector space has a basis.
+\end{theorem}
+
+\begin{theorem} [Every Linearly Independent List Can be Extended to a Basis]
+    Every linearly independent list of vectors in a finite-dimensional
+    vector space can be extended to a basis of the vector space.
+\end{theorem}
+
+\subsection{Dimension}
+
+Intuitively, we want the dimension of $\F^n$ to be $n$. Perhaps
+we should define it by the size of the basis of a vector space.
+However, we need to make sure there aren't multiple bases with the
+same length.
+
+\begin{theorem} [Basis Length does not depend on Basis]
+    Any two bases of a vector space have the same length.
+
+    \begin{proof*}
+        Suppose $B_1$ and $B_2$ are two bases of $V$.
+
+        Since these are bases, $B_1$ is linearly independent in $V$ and $B_2$
+        spans $V$, so $\text{length}(B_1) \leq \text{length}(B_2)$.
+
+        Swapping the roles, we also know $\text{length}(B_1) \geq \text{length}(B_2)$.
+
+        Thus, $\text{length}(B_1) = \text{length}(B_2)$.
+    \end{proof*}
+\end{theorem}
+
+\begin{definition} [Dimension] $\empty$
+   \begin{itemize}
+       \item The \textbf{dimension} of a finite-dimensional vector space
+       is the length of any basis of the vector space.
+       \item The dimension of $V$ (if $V$ is finite-dimensional) is denoted by
+       $\dim{V}$.
+   \end{itemize} 
+
+\end{definition}
+
+\begin{example}
+    $\dim{\F^n} = n$ because the standard basis of $\F^n$ has length $n$.
+    
+    $\dim{\Polys{\F}{m}} = m + 1$ beacause the basis $1, z, \dots, z^m$ has $m+1$ vectors.
+\end{example}
+
+\begin{theorem} [Linearly Independent List of the Right Length is a Basis]
+   Suppose $V$ is finite-dimensional. Then every linearly independent list of vectors
+   in $V$ with length $\dim{V}$ is a basis of $V$.
+   
+   \begin{proof*}
+       Suppose $\dim{V} = n$ and $\listofvectors$ is linearly independent in $V$.
+
+       We know $\listofvectors$ can be extended to a basis of $V$.
+       However, every basis of $V$ has length $n$, so in this case
+       the extension is the trivial one, meaning that no elements are adjoined to
+       $\listofvectors$.
+
+       In other words, $\listofvectors$ is a basis of $V$.
+   \end{proof*}
+\end{theorem}
+
+\begin{theorem} [Spanning List of the Right Length is a Basis]
+   Suppose $V$ is finite-dimensional. Then every spanning list of
+   vectors in $V$ with length $\dim{V}$ is a basis of $V$.
+   
+   \begin{proof*}
+       Suppose $\dim{V} = n$ and $\listofvectors$ spans $V$.
+
+       The list $\listofvectors$ can be reduced to a basis of $V$. However,
+       every basis of $V$ has length $n$, so in this case the reduction
+       is the trivial one, meaning that no elements are removed from
+       $\listofvectors$
+
+       In other words, $\listofvectors$ is a basis of $V$.
+   \end{proof*}
+\end{theorem}
+
+\begin{theorem} [Dimension of a Sum]
+    If $U_1$ and $U_2$ are subspaces of a finite-dimensional vector space,
+    then
+    \[ \dim(U_1+ U_2) = \dim{U_1} + \dim{U_2} - \dim(U_1 \cap U_2)\]
+\end{theorem}
 
 \endinput
