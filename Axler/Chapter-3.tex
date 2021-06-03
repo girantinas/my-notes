@@ -1,0 +1,104 @@
+% !TEX root = ./main.tex
+
+\section{Linear Maps}
+
+\subsection{Vector Space of Linear Maps}
+
+Now, we may need more vector spaces, so let $V$ AND $W$ denoting vector spaces
+over $\F$.
+
+\begin{definition} [$\Polys{\F}{\empty}$]
+    $\Polys{\F}{\empty}$ is the vector space of all polynomials with coefficients in $\F$.
+\end{definition}
+
+\begin{definition} [Linear Map]
+   A \textbf{linear map} from $V$ to $W$ is a function
+   $T : V \to W$ with the following properties:
+   \begin{itemize}
+       \item additivity: $T(u_1 + u_2) = Tu_1 + Tu_2$ for all $u_1, u_2 \in V$
+       \item homogeneity: $T(\lambda u) = \lambda(Tu)$ for all $\lambda \in \F$ and all $u \in V$
+   \end{itemize}
+\end{definition}
+
+For linear maps, we often use the
+notation $Tu$ as well as the more standard functional notation
+$T(u)$.
+
+\begin{definition} [$\Lin{V, W}$]
+   The set of all linear maps from $V$ to $W$ is denoted
+   $\Lin{V, W}$. 
+\end{definition}
+
+\begin{example} [Linear Maps]
+   \begin{itemize}
+       \item Zero: Define $0 \in \Lin{V,W}$ by $0u = 0$ for all $u \in V$.
+       \item Identity map: Define $I \in \Lin{V,V}$ by $Iu = u$ for all $u \in V$.
+       \item Differentiation: Define $D \in \Lin(\Polys{\R}{\empty}, \Polys{\R}{\empty})$ by $Dp = p'$.
+       \item Integration: Define $T \in \Lin{\Polys{\R}{\empty}, \R}$ by $Tp = \int_0^1 p(x) \dd{x}$.
+       \item Multiplication by $x^2$: Define $T \in \Lin{\Polys{\R}{\empty}, \Polys{\R}{\empty}}$ by
+       \[ (Tp)(x) = x^2 p(x) \]
+       for $x \in \R$.
+       \item Backward shift: Define $T \in \Lin{\F^{\infty}, \F^{\infty}}$ by
+       \[ T(x_1, x_2, x_3, \dots) = (x_2, x_3, \dots). \]
+       \item From $\R^3$ to $\R^2$: Define $T \in \Lin{\R^3, \R^2}$ by
+       \[ T(x, y, z) = (2x - y + 3z, 7x + 5y - 6z). \]
+   \end{itemize} 
+\end{example}
+
+\begin{theorem}
+    Suppose $\listofvectors$ is a basis of $V$ and $\listofnames{w}{n} \in W$. Then there
+    exists a unique linear map $T : V \to W$ such that
+    \[ Tv_j = w_j \]
+    for each $j = 1, \dots, n$.
+
+    \begin{proof}
+        Define $T: V \to W$ by
+        \[ T(\linearcombination) = a_1w_1 + \dots + a_nw_n, \]
+        where $\listofscalars$ are arbitrary elements of $\F$.
+
+        It is straightforward to check the above map is additive, just take all the
+        coefficients except $a_i$ to be 0. The distributive property handles homogeneity.
+
+        There cannot be another such map because if you add all the constraints
+        together, you get precisely this relation. \qed
+    \end{proof}
+\end{theorem}
+
+\begin{definition} [Addition and Scalar Multiplication on $\Lin{V, W}$]
+   Suppose $S, T \in \Lin{V, W}$ and $\lambda \in \F$. The sum $S+T$ is defined as:
+   \[ (S+T)(u) = Su + Tu \]
+    and the product $\lambda T$ is defined as:
+    \[ (\lambda T)(u) = \lambda (Tu) \]
+    for all $u \in V$.
+
+    Clearly, these maps are also linear maps, thus stay in the set.
+\end{definition}
+
+\begin{note} [$\Lin{V, W}$ is a Vector Space]
+   With the operations of addition and scalar multiplication as defined above, $\Lin{V, W}$
+   is a vector space. 
+\end{note}
+
+\begin{definition} [Product of Linear Maps]
+   If $T \in \Lin{U, V}$ and $S \in \Lin{V, W}$, then the product $ST \in \Lin{U, W}$ is defined by
+   \[ (ST)(u) = S(Tu) \]
+   for $u \in U$.
+\end{definition}
+
+\begin{note} [Algebraic Properties of Products of Linear Maps]
+   \begin{itemize}
+       \item Associativity: $(T_1 T_2)T_3 = T_1(T_2 T_3)$
+       \item Identity: $TI = IT = T$ (note this may be two different $I$'s)
+       \item Distributive Properties: $(S_1 + S_2)T = S_1 T + S_2 T$ and $S(T_1 + T_2) = ST_1 + ST_2$
+   \end{itemize} 
+\end{note}
+
+\begin{theorem} [Linear Maps take 0 to 0]
+   Suppose $T$ is a linear map from $V$ to $W$. Then $T(0) = 0$. 
+\end{theorem}
+
+There's a tricky bit about the word "linear". In calculus, we say any
+$f(x) = mx + b$, this is termed linear. However, in the sense of vector spaces,
+this function is only linear if and only if $b = 0$.
+
+\endinput
