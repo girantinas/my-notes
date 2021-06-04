@@ -29,7 +29,7 @@ $T(u)$.
    $\Lin{V, W}$. 
 \end{definition}
 
-\begin{example} [Linear Maps]
+\begin{example} Examples of Linear Maps:
    \begin{itemize}
        \item Zero: Define $0 \in \Lin{V,W}$ by $0u = 0$ for all $u \in V$.
        \item Identity map: Define $I \in \Lin{V,V}$ by $Iu = u$ for all $u \in V$.
@@ -101,4 +101,52 @@ There's a tricky bit about the word "linear". In calculus, we say any
 $f(x) = mx + b$, this is termed linear. However, in the sense of vector spaces,
 this function is only linear if and only if $b = 0$.
 
+\subsection{Null Spaces and Ranges}
+
+\begin{definition} [Null Space]
+   For $T \in \Lin{V, W}$, the \textbf{null space} of $T$, denoted $\null T$, is the subset of $V$
+   containing those vectors that $T$ maps to 0:
+   \[ \Null T = \{ u \in V : Tu = 0 \} \]
+\end{definition}
+
+\begin{example} Examples of Null Spaces:
+   \begin{itemize}
+      \item Suppose $T$ is the zero map form $V$ to $W$; in other words, $Tu = 0$ for
+      every $u \in V$. Then $\Null T = V$.
+      \item Suppose $\phi \in \Lin{\C^3, \C}$ is defined by $\phi(z_1, z_2, z_3) = z_1 + 2z_2 + 3z_3$.
+      Then $\Null \phi = \{ (z_1, z_2, z_3) \in \C^3 : z_1 + 2z_2 + 3z_3 = 0 \}$.
+      \item Consider $D$, the differentiation map. The only functions whose derivative equals zero
+      is the constant functions. Thus, the null space is the set of all constant functions.
+   \end{itemize}
+\end{example}
+
+\begin{theorem} [The Null Space is a Subspace]
+   Suppose $T \in \Lin{V, W}$. Then $\Null T$ is a subspace of $V$.
+\end{theorem}
+
+\begin{definition} [Injective]
+   A function $T : V \to W$ is called \textbf{injective} or \textbf{one-to-one} if
+   $Tu = Tv$ implies $u = v$.
+\end{definition}
+
+\begin{theorem}
+   Let $T \in \Lin{V, W}$. Then $T$ is injective if and only if $\Null T = 0$.
+\end{theorem}
+
+\begin{definition} [Range]
+   For $T \in \Lin{V, W}$, the \textbf{range} of $T$ is the subset
+   of $W$ consisting of those vectors that are of the form $Tu$ for some $u \in V$:
+   \[ \range T = \{ Tu : u \in V \} \]
+\end{definition}
+
+\begin{example} Ranges:
+   \begin{itemize}
+      \item Suppose $T$ is the zero map from $V$ to $W$; in other words,
+      $Tu = 0$ for every $u \in V$. Then $\range T = \{ 0 \}$.
+      \item Suppose $T \in \Lin{\R^2, \R^3}$ is defined by $T(x,y) = (2x, 5y, x+y)$,
+      then $\range T = \{ (2x, 5y, x+y) : x, y \in \R \}$. A basis of $\range{T}$ is $(2, 0, 1)$, $(0, 5, 1)$.
+      \item Consider the differentiation map $D \in \Lin{\Polys{\R}{\empty},\Polys{\R}{\empty}}$. Since every polynomial $q \in \Polys{\R}{\empty}$
+      has a polynomial $p \in \Polys{\R}{\empty}$ such that $p' = q$, the range of $D$ is $\Polys{\R}{\empty}$.
+   \end{itemize}
+\end{example}
 \endinput
