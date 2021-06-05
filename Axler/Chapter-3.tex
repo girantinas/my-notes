@@ -33,7 +33,7 @@ $T(u)$.
    \begin{itemize}
        \item Zero: Define $0 \in \Lin{V,W}$ by $0u = 0$ for all $u \in V$.
        \item Identity map: Define $I \in \Lin{V,V}$ by $Iu = u$ for all $u \in V$.
-       \item Differentiation: Define $D \in \Lin(\Polys{\R}{\empty}, \Polys{\R}{\empty})$ by $Dp = p'$.
+       \item Differentiation: Define $D \in \Lin{\Polys{\R}{\empty}, \Polys{\R}{\empty}}$ by $Dp = p'$.
        \item Integration: Define $T \in \Lin{\Polys{\R}{\empty}, \R}$ by $Tp = \int_0^1 p(x) \dd{x}$.
        \item Multiplication by $x^2$: Define $T \in \Lin{\Polys{\R}{\empty}, \Polys{\R}{\empty}}$ by
        \[ (Tp)(x) = x^2 p(x) \]
@@ -51,7 +51,7 @@ $T(u)$.
     \[ Tv_j = w_j \]
     for each $j = 1, \dots, n$.
 
-    \begin{proof}
+    \begin{proof*}
         Define $T: V \to W$ by
         \[ T(\linearcombination) = a_1w_1 + \dots + a_nw_n, \]
         where $\listofscalars$ are arbitrary elements of $\F$.
@@ -61,7 +61,7 @@ $T(u)$.
 
         There cannot be another such map because if you add all the constraints
         together, you get precisely this relation. \qed
-    \end{proof}
+    \end{proof*}
 \end{theorem}
 
 \begin{definition} [Addition and Scalar Multiplication on $\Lin{V, W}$]
@@ -149,4 +149,141 @@ this function is only linear if and only if $b = 0$.
       has a polynomial $p \in \Polys{\R}{\empty}$ such that $p' = q$, the range of $D$ is $\Polys{\R}{\empty}$.
    \end{itemize}
 \end{example}
+
+\begin{theorem} [The Range is a Subspace]
+   If $T \in \Lin{V, W}$, then $\range T$ is a subspace of $W$.
+\end{theorem}
+
+\begin{definition} [Surjective]
+   A function $T : V \to W$ is called \textbf{surjective} or \textbf{onto}
+   if its range equals $W$.
+\end{definition}
+
+\begin{theorem} [Fundamental Theorem of Linear Maps]
+   Suppose $V$ is finite-dimensional and $T \in \Lin{V, W}$. Then
+   \[ \dim V = \dim \Null T + \dim \range T. \]
+   \begin{proof*}
+      (Proof Sketch)
+
+      Let $u_1, \dots, u_m$ be a basis of $\Null T$; thus $\dim \Null T = m$.
+
+      The linear independent list $u_1, \dots u_m$ can be extended to a basis
+      \[ \listofnames{u}{m}, \listofvectors \]
+
+      Thus $\dim V = m + n$.
+      To complete the proof, we need to show that $\dim \range T = n$. We do this by proving that $Tv_1, \dots, TV_n$
+      is a basis of $\range T$. \qed
+   \end{proof*}
+\end{theorem}
+
+\begin{theorem} [A Map to a Smaller Dimensional Space is Not Injective]
+   Suppose $V$ and $W$ are finite-dimensional vector spaces such that
+   $\dim V > \dim W$. Then no linear map from $V$ to $W$ is injective.
+   \begin{proof*}
+      Suppose $T \in \Lin{V, W}$. Because
+      \[ \dim V = \dim \Null T + \dim \range T \]
+      and
+      \[ \dim V > \dim W \geq \dim \range T \]
+      we have $\dim \Null T > 0$. Thus $T$ is not injective. \qed
+   \end{proof*}
+\end{theorem}
+
+\begin{theorem} [A Map to a Larger Dimensional Space is Not Surjective]
+   Suppose $V$ and $W$ are finite-dimensional vector spaces such that
+   $\dim V < \dim W$. Then no linear map from $V$ to $W$ is surjective.
+
+   \begin{proof*}
+      Suppose $T \in \Lin{V, W}$. Because
+      \[ \dim V = \dim \null T + \dim \range T \]
+      we have
+      \[ \dim \range T \leq \dim V < \dim W \]
+
+      Thus, $T$ is not surjective. \qed
+   \end{proof*}
+\end{theorem}
+
+Now we can use these results to prove some facts about a related
+subject, the theory of systems of linear equations.
+
+\begin{definition} [Homogenous Linear Equations]
+   Fix positive integers $m$ and $n$ and let $A_{j, k} \in \F$ for
+   $j = 1, \dots, m$ and $k = 1, \dots, n$. Consider
+   the homogeneous system of linear equations
+   \begin{align*}
+      \sum_{k=1}^n A_{1,k}x_k &= 0 \\
+      &\vdots
+      \sum_{k=1}^n A_{m,k}x_k &= 0
+   \end{align*}
+
+   These are called homogenous because the constant terms are
+   all 0.
+\end{definition}
+
+We wish to ask the following: do there exist solutions other than the
+trivial solution, i.e. $x_1 = \dots = x_n = 0$?
+
+Define $T: \F^n \to \F^m$ by
+\[ T(x_1, \dots, x_n) = \qty(\sum_{k=1}^n A_{1,k}x_k, \dots, \sum_{k=1}^n A_{m,k}x_k) \]
+
+The equation $T(x_1, \dots, x_n) = 0$ is the same as the homogeneous
+system of linear equations above. This is asking if $\null T = 0$,
+which is the same asking: is $T$ injecive?
+
+Well, we know $T$ is not injective if $\dim \F^n > \dim \F^m$, in other words
+if $n > m$, so we have the following result:
+
+\begin{theorem} [Homogenous System of Linear Equations]
+   A homogeneous system of linear equations with more
+   variables than equations has nonzero solutions.
+\end{theorem}
+
+Now, let us talk about other types of systems of linear equations.
+
+\begin{definition} [Inhomogenous Linear Equations]
+   Fix positive integers $m$ and $n$ and let $A_{j, k} \in \F$ for
+   $j = 1, \dots, m$ and $k = 1, \dots, n$. Consider
+   the inhomogeneous system of linear equations
+   \begin{align*}
+      \sum_{k=1}^n A_{1,k}x_k &= c_1 \\
+      &\vdots
+      \sum_{k=1}^n A_{m,k}x_k &= c_m
+   \end{align*}
+
+   These are called inhomogenous because the constant terms are
+   not all 0.
+\end{definition}
+
+Now we wonder the following:
+is there some choice of $\listofnames{c}{m} \in \F$ such that
+no solution exists?
+
+Define $T: \F^n \to \F^m$ by
+
+\[ T(x_1, \dots, x_n) = \qty(\sum{k=1}^n A_{1,k}x_k, \dots, \sum{k=1}^n A_{m, k}x_k) \]
+
+The equation $T(x_1, \dots, x_n) = (\listofnames{c}{m})$ is the same
+as the inhomogeneous system of linear equations above. This is the same
+as asking: is $T$ surjective?
+
+We know $T$ is not surjective if $m > n$ (similar to previous logic),
+so we have the following result:
+
+\begin{theorem} [Inhomogenous System of Linear Equations]
+   An inhomogeneous system of linear equations with more equations
+   than variables has no solution for some choice of
+   constant terms.
+\end{theorem}
+
+\subsection{Matrices}
+
+\begin{definition} [Matrix]
+   Let $m$ and $n$ denote positive integers. An $m$-by-$n$ \textbf{matrix}
+   $A$ is a rectangular array of elements of $\F$ with $m$ rows and $n$ columns:
+
+   $A = \begin{pmatrix}
+     A_{1,1} && \dots && A_{1,n} \\
+     \vdots && \empty && \vdots \\
+     A_{m,1} && \dots && A_{m,n} 
+   \end{pmatrix}$
+\end{definition}
 \endinput
