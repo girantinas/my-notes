@@ -285,5 +285,228 @@ so we have the following result:
      \vdots && \empty && \vdots \\
      A_{m,1} && \dots && A_{m,n} 
    \end{pmatrix}$
+
+   The notation $A_{j,k}$ denotes the entry in row $j$, column $k$ of $A$.
 \end{definition}
+
+The first index refers to the row numbers and the second index
+refers to column numbers.
+
+Thus $A_{2,3}$ refers to the entry in the second row, third column of $A$.
+
+\begin{definition} [Matrix of a Linear Map, $\Matof{T}$]
+   Suppose $T \in \L{V,W}$ and $\listofvectors$ is a basis of $V$ and
+   $\listofnames{w}{m}$ is a basis of $W$. The \textbf{matrix} of $T$ with respect
+   to these bases is the $m$-by-$n$ matrix $\Matof{T}$ whose entries
+   $A_{j, k}$ are defined by
+   \[ Tv_k = A_{1, k}w_1 + \dots + A_{m,k}w_m \]
+
+   If the bases are not clear from the context, then the notation
+   \[ \mathcal{M}(T, (\listofvectors), (\listofnames{w}{m})) \]
+   is used.
+\end{definition}
+
+\includegraphics{matrix intuition.png}
+
+To understand what the matrix really means, fix a column $k$
+the $k$th column of $\Matof{T}$ consists of the scalars needed to write
+\[ Tv_k = \sum_{j=1}^m A_{j,k}w_j.\]
+
+The picture above should remind you that $Tv_k$ can be computed from
+$\Matof{T}$ by multiplying each entry in the $k$th column by the corresponding
+$w_j$ from the left column, and then adding up the resulting vectors.
+
+\begin{example} [Matrices]
+   Suppose $T \in \Lin{\F^2, \F^3}$ is defined by:
+   \[ T(x,y) = (x+3y, 2x+5y, 7x+9y) \]
+   Because $T(1, 0) = (1, 2, 7)$ and $T(0, 1) = (3, 5, 9)$, the matrix of
+   $T$ with respect to the standard bases is the 3-by-2 matrix
+   \[ \Matof{T} = \begin{pmatrix}
+      1 & 3 \\
+      2 & 5 \\
+      7 & 9
+   \end{pmatrix} \]
+
+   Suppose $D \in \Lin{\Polys{\R}{3}, \Polys{\R}{2}}$ is the differentiation
+   map. Beacuse $(x^n)' = nx^{n-1}$, the matrix of $D$ with respect
+   to the standard bases of $\Polys{\R}{3}$ and $\Polys{\R}{2}$ is the
+   3-by-4 matrix
+   \[ \Matof{D} = \begin{pmatrix}
+      0 & 1 & 0 & 0 \\
+      0 & 0 & 2 & 0 \\
+      0 & 0 & 0 & 3 \\
+   \end{pmatrix}\]
+\end{example}
+
+Note that $\Matof{T}$ contains all the information about $T$.
+The matrix contains all the information about how the
+basis vectors transform under $T$, however, under linearity,
+we can write every vector in $V$ as a linear combination of the basis
+and since $T$ is linear we can see how any vector transforms.
+
+\begin{definition} [Matrix Addition]
+   The sum of two matrices of the same size is the matrix obtained
+   by adding corresponding entries in the matrices:
+
+   \[ \begin{pmatrix}
+      A_{1,1} && \ldots && A_{1,n} \\
+      \vdots && \empty && \vdots \\
+      A_{m,1} && \dots && A_{m,n}
+   \end{pmatrix}
+   +
+   \begin{pmatrix}
+      C_{1,1} && \ldots && C_{1,n} \\
+      \vdots && \empty && \vdots \\
+      C_{m,1} && \dots && C_{m,n}
+   \end{pmatrix} \]
+
+   \[ = \begin{pmatrix}
+      A_{1,1} + C_{1,1} && \ldots && A_{1,n} + C_{1,n}  \\
+      \vdots && \empty && \vdots \\
+      A_{m,1} + C_{m,1}  && \dots && A_{m,n} + C_{m,n}
+   \end{pmatrix} \]
+   
+   In other words, $(A + C)_{j,k} = A_{j,k} + C_{j,k}$.
+\end{definition}
+
+In the following result, we assume that the same bases are used
+for $\Matof{S+T}$, $\Matof{S}$, and $\Matof{T}$.
+
+\begin{theorem} [Addition of Matrices]
+   Suppose $S,T \in \Lin{V, W}$. Then $\Matof{S+T} = \Matof{S} + \Matof{T}$.
+\end{theorem}
+
+\begin{definition} [Scalar Multiplication of a Matrix]
+   The produce of a scalar and a matrix is the matrix
+   obtained by multiplying each entry in the matrix by the scalar:
+   \[ \lambda \begin{pmatrix}
+      A_{1,1} && \ldots && A_{1,n} \\
+      \vdots && \empty && \vdots \\
+      A_{m,1} && \dots && A_{m,n}
+   \end{pmatrix}
+   =
+   \begin{pmatrix}
+      \lambda A_{1,1} && \ldots && \lambda A_{1,n} \\
+      \vdots && \empty && \vdots \\
+      \lambda A_{m,1} && \dots && \lambda A_{m,n}
+   \end{pmatrix}
+   \]
+
+   In other words, $(\lambda A)_{j,k} = \lambda A_{j,k}$.
+\end{definition}
+
+In the following result, we assume that the same bases are used
+for $\Matof{\lambda T}$ and $\Matof{T}$.
+
+\begin{theorem} [The Matrix of a Scalar Times a Linear Map]
+   Suppose $\lambda \in \F$ and $T \in \Lin{V, W}$. Then
+   $\Matof{\lambda T} = \lambda \Matof{T}$.
+\end{theorem}
+
+\begin{note} [$\F^{m,n}$]
+   For $m$ and $n$ positive integers, the set of all $m$-by-$n$ matrices
+   with entries in $\F$ is denoted by $\F^{m,n}$.
+\end{note}
+
+\begin{theorem} [$\dim \F^{m,n} = mn$]
+   Suppose $m$ and $n$ are positive integers. With addition and scalar
+   multiplication defined as above, $\F^{m, n}$ is a vector space with dimension
+   $mn$.
+\end{theorem}
+
+Now we want to define matrix multiplication.
+
+Consider the following vector spaces:
+\begin{itemize}
+   \item $V$ with basis $\listofvectors$.
+   \item $W$ with basis $\listofnames{w}{m}$.
+   \item $U$ with basis $\listofnames{u}{p}$.
+\end{itemize}
+
+Consider linear maps $T: U \to V$ and $S: V \to W$. We
+want to define matrix multiplication such that
+\[ \Matof{ST} = \Matof{S}\Matof{T} \]
+
+We can try $(AB)_{j,k} = A_{j_k} \times B_{j,k}$, however
+this will not line up with our definition for linear maps.
+
+Instead consider the following, suppose $\Matof{S} = A$ and
+$\Matof{T} = C$.
+
+For $1 \leq k \leq p$, we have
+
+\begin{align*}
+   (ST)u_k &= S \qty(\sum{r=1}^n C_{r,k}v_r) \\
+   &= \sum{r=1}^n C_{r,k}Sv_r \\
+   &= \sum{r=1}^n C_{r,k} \sum{j=1}^m A_{j,r}w_j \\
+   &= \sum{r=1}^n \qty(\sum{j=1}^m A_{j,r} C_{r,k}) w_j. 
+\end{align*}
+
+Thus, $\Matof{ST}$ is the $m$-by-$p$ matrix whose entry in row
+$j$, column $k$, is
+
+\[ (AC)_{j,k} = \sum_{r=1}^n A_{j,r} C_{r,k} \]
+
+We can collect this in the following result:
+
+\begin{definition}
+   Suppose $A$ is an $m$-by-$n$ matrix and $C$ is an $n$-by-$p$ matrix.
+   Then, $AC$ is the $m$-by-$p$ matrix whose entry in row $j$, column
+   $k$, is
+
+   \[ (AC)_{j,k} = \sum_{r=1}^n A_{j,r} C_{r,k} \]
+\end{definition}
+
+The entry in row $j$, column $k$, of $AC$ is computed
+by taking row $j$ of $A$ and column $k$ of $C$, multiplying
+together corresponding entries, and then summing.
+
+In addition, matrix multiplication is only defined if
+the amount of columns of $A$ is the same as the amount
+of columns of $C$.
+
+In the following result, the same bases are used in considering
+linear maps with shared vector spaces.
+
+\begin{definition}
+   Suppose $A$ is an $m$-by-$n$ matrix.
+   \begin{itemize}
+      \item If $1 \leq j \leq m$, then $A_{j, \cdot}$ denotes
+      the $1$-by-$n$ matrix consisting of row $j$ of $A$.
+      \item If $1 \leq k \leq n$, then $A_{\cdot, k}$ denotes
+      the $m$-by-$1$ matrix consisting of column $k$ of $A$.
+   \end{itemize}
+\end{definition}
+
+Here are some alternate ways to think about matrix multiplication.
+
+\begin{theorem} 
+   Suppose $A$ is an $m$-by-$n$ matrix and $C$ is an $n$-by-$p$ matrix. Then
+
+   \[ (AC)_{j,k} = A_{j, \cdot} C_{\cdot, k} \]
+   \[ (AC)_{\cdot, k} = AC_{\cdot, k} \]
+   \[ (AC)_{j, \cdot} = A_{j, \cdot} C \]
+\end{theorem}
+
+\begin{theorem} [Linear Combination of Columns]
+   Suppose $A$ is an $m$-by-$n$ matrix and $c = \begin{pmatrix*} c_1 \\ \dots \\ c_n \end{pmatrix*}$
+   is an $n$-by-1 matrix. Then $Ac = c_1 A_{\cdot, 1} + \dots + c_n A_{\cdot, n}$.
+\end{theorem}
+
+In other words, $Ac$ is a linear combination of the columns of $A$,
+with the scalars that multiply the columns coming from $c$.
+
+\begin{theorem}
+   Suppose $a = \begin{pmatrix*} a_1 && \dots && a_n \end{pmatrix*}$ is
+   a 1-by-$n$ matrix and $C$ is an $n$-by-$p$ matrix. Then
+
+   \[ aC = a_1 C_{1, \cdot} + \dots + a_n C_{n, \cdot} \]
+\end{theorem}
+
+In other words, $aC$ is a linear combination of the rows of $C$,
+with the scalars that multiply the rows coming from $a$.
+
+\subsection{Invertibility and Isomorphic Vector Spaces}
+
+
 \endinput
