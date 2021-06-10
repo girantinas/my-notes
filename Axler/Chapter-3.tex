@@ -508,5 +508,228 @@ with the scalars that multiply the rows coming from $a$.
 
 \subsection{Invertibility and Isomorphic Vector Spaces}
 
+\begin{definition} [Invertible, Inverse]
+   A linear map $T \in \Lin{V, W}$ is called \textbf{invertible} if
+   there exists a linear map $S \in \Lin{W, V}$ such that $ST$ equals
+   the identity map on $V$ and $TS$ equals the identity map on $W$.
 
+   Such an $S$ is called the \textbf{inverse} of $T$. We can denote
+   it using $S = T^{-1}$.
+\end{definition}
+
+\begin{theorem} [The Inverse is Unique]
+   An invertible linear map has a unique inverse.
+\end{theorem}
+
+\begin{theorem}
+   A linear map is invertible if and only if it is injective and surjective.
+\end{theorem}
+
+\begin{definition} [Isomorphism, Isomorphic]
+   An invertible linear map is called a \textbf{isomorphism}. Two
+   vector spaces are called \textbf{isomorphic} if there is
+   an isomorphism from one vector space onto the other.
+\end{definition}
+
+Think of an isomorphism as a way to relabel vectors in a space.
+
+\begin{theorem} [Dimension shows Isomorphic]
+   Two finite-dimensional vector spaces over $\F$ are isomorphic
+   if and only if they have the same dimension.
+\end{theorem}
+
+\begin{theorem}[$\Lin{V, W}$ and $\F^{m, n}$ are Isomorphic]
+   Suppose $\listofvectors$ is a basis of $V$ and $\listofnames{w}{m}$
+   is a basis of $W$. Then $\mathcal{M}$ is an isomorphism
+   between $\Lin{V, W}$ and $\F^{m, n}$.
+
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ and $W$ are finite-dimensional. Then $\Lin{V, W}$ is
+   finite-dimensional and 
+   \[ \dim \Lin{V, W} = (\dim V)(\dim W) \]
+\end{theorem}
+
+\begin{definition} [Matrix of a Vector]
+   Suppose $u \in V$ and a basis of $V$ as $\listofvectors$. The
+   \textbf{matrix} of $u$ with respect to this basis is the $n$-by-1 matrix
+   \[ \Matof{u} = 
+   \begin{pmatrix}
+      c_1 \\ \vdots \\ c_n
+   \end{pmatrix} \]
+   where $c_1, \dots, c_n$ are the scalars such that
+   \[ u = c_1v_1 + \dots + c_nv_n \]
+\end{definition}
+
+\begin{example}
+   The matrix of $3 - 7x + 5x^2$ with respect to the 
+   standard basis of $\Polys{\R}{2}$ is
+   \[\begin{pmatrix}
+      3 \\ -7 \\ 5
+   \end{pmatrix} \]
+\end{example}
+
+\begin{theorem} [Linear Maps act as Matrix Multiplication]
+   Suppose $T \in \Lin{V, W}$ and $u \in V$. Suppose $\listofvectors$
+   is a basis of $V$ and $\listofnames{w}{m}$ is a basis of $W$. Then
+   \[ \Matof{Tu} = \Matof{T}\Matof{u} \]
+\end{theorem}
+
+\begin{definition} [Operator, $\Lin{V}$]
+   We use operators to describe a specific type of map. 
+   \begin{itemize}
+      \item A linear map from a vector space to itself is called an \textbf{operator}.
+      \item The notation $\Lin{V}$ denotes the set of all operators on $V$. In other words,
+      $\Lin{V} = \Lin{V, V}$
+   \end{itemize}
+\end{definition}
+
+\begin{theorem}
+   Suppose $V$ is finite-dimensional and $T \in \Lin{V}$. Then the following
+   are equivalent:
+   \begin{itemize}
+      \item $T$ is invertible;
+      \item $T$ is injective;
+      \item $T$ is surjective;
+   \end{itemize}
+\end{theorem}
+
+\subsection{Products and Quotients of Vector Spaces}
+
+\begin{definition} [Product of Vector Spaces]
+   Suppose $V_1, \dots, V_m$ are vector spaces over $\F$.
+   \begin{itemize}
+      \item The \textbf{product} $V_1 \cross \dots \cross V_m$ is defined
+      by \[ V_1 \cross \dots \cross V_m = \{(u_1, \dots, u_m) : u_1 \in V_1, \dots, u_m \in V_m \} \]
+      \item Addition on $V_1 \cross \dots \cross V_m$ is defined by
+      \[ (u_1, \dots, u_m) + (w_1, \dots, w_m) = (u_1 + w_1, \dots, u_m + w_m) \]
+      \item Scalar multiplication on $V_1 \cross \dots \cross V_m$ is defined by
+      \[ \lambda(u_1, \dots, u_m) = (\lambda u_1, \dots, \lambda u_m) \]
+   \end{itemize}
+\end{definition}
+
+\begin{theorem} [Product of Vector Spaces is a Vector Space]
+   Suppose $V_1, \dots V_m$ are vector spaces over $\F$. Then $V_1 \cross \dots \cross V_m$
+   is a vector space over $\F$.
+\end{theorem}
+
+\begin{example} Example of Product of Vector Spaces
+   \begin{align*}
+      \R^2 \cross &\R^3 = \{ ((x_1, x_2), (x_3, x_4, x_5)) : x_1, x_2, x_3, x_4, x_5 \in \R \} \\
+      &\R^5 = \{ (x_1, x_2, x_3, x_4, x_5) : x_1, x_2, x_3, x_4, x_5 \in \R \}
+   \end{align*}
+   Note that $\R^2 \cross \R^3 \neq \R^5$.
+   However, they are very similar.
+
+   The linear map $T: \R^2 \cross \R^3 \to \R^5$ defined by
+   \[ T((x_1, x_2), (x_3, x_4, x_5)) = (x_1, x_2, x_3, x_4, x_5) \]
+   is clearly an isomorphism of $\R^2 \cross \R^3$ onto $\R^5$. Thus
+   these two vector spaces are clearly isomorphic.
+\end{example}
+
+\begin{theorem} [Dimensional of a Product is the Sum of Dimensions]
+   Suppose $V_1, \dots, V_m$ are finite-dimensional vector spaces.
+   Then $V_1 \cross \dots \cross V_m$ is finite-dimensional, and
+   \[ \dim(V_1, \cross \dots \cross V_m) = \dim V_1 + \dots + \dim V_m \]
+\end{theorem}
+
+\begin{theorem}
+   Suppose $U_1, \dots, U_m$ are subspaces of $V$.
+   Define a linear map $\Gamma: U_1 \cross \dots \cross U_m \to U_1 + \dots U_m$ by
+   \[ \Gamma(u_1, \dots, u_m) = u_1 + \dots + u_m. \]
+   Then $U_1 + \dots + U_m$ is a direct sum if and only if $\Gamma$ is injective.
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ is finite-dimensional and $U_1, \dots, U_m$ are subspaces of $V$.
+   Then $U_1 + \dots + U_m$ is a direct sum if and only if
+   \[ \dim(U_1 + \dots + U_m) = \dim U_1 + \dots + \dim U_m \]
+\end{theorem}
+
+\begin{definition}
+   Suppose $v \in V$ and $U$ is a subspace of $V$. Then $v + U$ is
+   the subset of $V$ defined by
+   \[ v+U = \{v+u : u \in U \} \]
+\end{definition}
+
+\begin{definition} [Affine Subset, Parallel]
+   An \textbf{affine subset} of $V$ is a subset of $V$ of the form
+   $v + U$ for some $v \in V$ and some subspace $U$ of $V$.
+
+   This affine subset is said to be \textbf{parallel} to $U$.
+\end{definition}
+
+\begin{definition}
+   Suppose $U$ is a subspace of $V$. Then the \textbf{quotient space}
+   $V / U$ is the set of all affine subsets of $V$ parallel to $U$. In other words,
+   \[ V/U = \{ v+U : v \in V \} \]
+\end{definition}
+
+\begin{example} Examples of Quotient Spaces
+   \begin{itemize}
+      \item If $U = \{(x, 2x) \in \R^2 : x \in \R \}$, then $\R^2 / U$ is the set of all lines
+      in $\R^2$ that have slope 2.
+      \item If $U$ is a plane in $\R^3$ containing the origin, then $R^3/U$ is the set of all planes
+      in $\R^3$ parallel to $U$
+   \end{itemize}
+\end{example}
+
+\begin{theorem}
+   Suppose $U$ is a subspace of $V$ and $v, w \in V$. The following are equivalent:
+   \begin{enumerate}
+      \item $v - w \in U$
+      \item $v + U = w + U$
+      \item $(v + U) \cap (w + U) \neq \emptyset$
+   \end{enumerate}
+\end{theorem}
+
+\begin{definition} [Addition and Scalar Multiplication on $V/U$]
+   Suppose $U$ is a subspace of $V$. Then \textbf{addition} and
+   \textbf{scalar multiplication} are defined on $V / U$ by
+   \[ (v + U) + (w + U) = (v + w) + U \]
+   \[ \lambda(v + U) = (\lambda v) + U \]
+   for $v, w \in V$ and $\lambda \in \F$.
+\end{definition}
+
+\begin{theorem} [Quotient Space is a Vector Space]
+   Suppose $U$ is a subspace in $V$. Then $V/U$, with the operations
+   of addition and scalar multiplication as defined above,
+   is a vector space.
+\end{theorem}
+
+\begin{definition} [Quotient Map]
+   Suppose $U$ is a subspace of $V$. The \textbf{quotient map} $\pi$
+   is the linear map $\pi : V \to V/U$ defined by
+   \[ \pi(v) = v + U \]
+   for $v \in V$.
+\end{definition}
+
+\begin{theorem} [Dimension of a Quotient Space]
+   Suppose $V$ is a finite-dimensional and $U$ is a subspace of $V$. Then
+   \[ \dim V/U = \dim V - \dim U \]
+
+   \begin{proof}
+      \begin{align*}
+         \dim V &= \dim \Null \pi + \dim \range \pi \\
+         &= \dim U + \dim V/U
+      \end{align*}
+      which immediately shows the result. \qed
+   \end{proof}
+\end{theorem}
+
+\begin{definition} [The Induced Map over a Quotient Space]
+   Suppose $T \in \Lin{V, W}$. Define the \textbf{induced map} $\tilde{T} : V / (\null T) \to W$ by
+   \[ \tilde{T}(v + \Null T) = Tv \]
+\end{definition}
+
+\begin{theorem}
+   Suppose $T \in \Lin{V, W}$. Then
+   \begin{enumerate}
+      \item $\tilde{T}$ is a linear map from $V / (\Null T)$ to $W$
+      \item $\tilde{T}$ is injective
+      \item $\range \tilde{T} = \range T$
+      \item $V / (\Null T)$ is isomorphic to $\range T$
+   \end{enumerate}
+\end{theorem}
 \endinput
