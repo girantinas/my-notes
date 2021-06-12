@@ -709,13 +709,13 @@ Think of an isomorphism as a way to relabel vectors in a space.
    Suppose $V$ is a finite-dimensional and $U$ is a subspace of $V$. Then
    \[ \dim V/U = \dim V - \dim U \]
 
-   \begin{proof}
+   \begin{proof*}
       \begin{align*}
          \dim V &= \dim \Null \pi + \dim \range \pi \\
          &= \dim U + \dim V/U
       \end{align*}
       which immediately shows the result. \qed
-   \end{proof}
+   \end{proof*}
 \end{theorem}
 
 \begin{definition} [The Induced Map over a Quotient Space]
@@ -723,13 +723,117 @@ Think of an isomorphism as a way to relabel vectors in a space.
    \[ \tilde{T}(v + \Null T) = Tv \]
 \end{definition}
 
+To show that the definition of $\tilde{T}$ makes sense, suppose $u,v \in V$
+are such that $u + \Null T = v + \Null T$. By a previous theorem, we have
+that $u - v \in \Null T$ meaning $T (u-v) = 0$ and so $Tu = Tv$, which makes sense.
+
+Providing this in the other way shows injectivity. In fact, we have
+the following properties of $\tilde{T}$:
+
 \begin{theorem}
    Suppose $T \in \Lin{V, W}$. Then
    \begin{enumerate}
-      \item $\tilde{T}$ is a linear map from $V / (\Null T)$ to $W$
-      \item $\tilde{T}$ is injective
-      \item $\range \tilde{T} = \range T$
-      \item $V / (\Null T)$ is isomorphic to $\range T$
+      \item $\tilde{T}$ is a linear map from $V / (\Null T)$ to $W$.
+      \item $\tilde{T}$ is injective.
+      \item $\range \tilde{T} = \range T$.
+      \item $V / (\Null T)$ is isomorphic to $\range T$.
    \end{enumerate}
+\end{theorem}
+
+\subsection{Duality}
+
+\begin{definition} [Linear Functional]
+   A \textbf{Linear Functional} on $V$ is a linear map
+   from $V$ to $\F$. In other words, a linear functional is
+   an element of $\Lin{V, \F}$.
+\end{definition}
+
+\begin{example} Examples of linear functionals:
+   \begin{itemize}
+      \item Define $\phi: \R^3 \to \R$ by $\phi(x, y, z) = 4x-5y+2z$. Then
+      $\phi$ is a linear functional on $\R^3$.
+      \item Define $\phi: \PolysAll{\R} \to \R$ by $\phi(p) = \int_{0}^1 p(x) \dd{x}$. Then
+      $\phi$ is a linear functional on $\PolysAll{R}$.
+   \end{itemize}
+\end{example}
+
+\begin{definition} [Dual Space]
+   The \textbf{dual space} of $V$, denoted $V'$, is the vector space
+   of all linear functionals on $V$. In other words, $V' = \Lin{V, \F}$.
+\end{definition}
+
+\begin{theorem} [$\dim V' = \dim V$]
+   Suppose $V$ is finite-dimensional. Then $V'$ is also finite-dimensional
+   and $\dim V' = \dim V$.
+
+   \begin{proof*}
+      \begin{align*}
+         \dim V' &= \dim \Lin{V, \F}
+         &= (\dim V)(\dim \F)
+         &= \dim V
+      \end{align*}
+   \end{proof*}
+\end{theorem}
+
+\begin{definition}
+   If $v_1, \dots, v_n$ is a basis of $V$, then the \textbf{dual basis}
+   of $v_1, \dots, v_n$ is the list $\phi_1, \dots, \phi_n$ of elements
+   of $V'$, where each $\phi_j$ is the linear functional on $V$ such that
+
+   \[ \phi_j(v_k) = 
+   \begin{cases}
+      1 & \text{if } k = j \\
+      0 & \text{if } k \neq j 
+   \end{cases}
+   \]
+\end{definition}
+
+\begin{example}
+   Consider the standard basis $e_1, \dots, e_n$ of $\F^n$.
+   For $1 \leq j \leq n$, define $\phi_j$ by
+   \[ \phi_j(x_1, \dots, x_n) = x_j \]
+   for $(x_1, \dots, x_n) \in \F^n$. Clearly
+   \[ \phi_j(e_k) = \begin{cases}
+      1 & \text{if } k = j \\
+      0 & \text{if } k \neq j 
+   \end{cases} \]
+   Thus, $\phi_1, \dots, \phi_n$ is the dual basis of the
+   standard basis $e_1, \dots, e_n$ of $\F^n$.
+\end{example}
+
+\begin{theorem}
+   Suppose $\dim V < \infty$. Then the dual basis
+   of a basis of $V$ is a basis of $V'$.
+\end{theorem}
+
+\begin{definition} [Dual Map]
+   If $T \in \Lin{V, W}$, then the $\textbf{dual map}$ of $T$ is
+   the linear map $T' \in \Lin{W', V'}$ defined by $T'(\phi) = \phi \circ T$
+   for $\phi \in W'$.
+\end{definition}
+
+Let's make sure this makes sense with respect to the objects we're talking about.
+
+$T$ maps from $V$ to $W$, and $\phi$ maps from $W$ to $\F$.
+Thus, their composition maps from $V$ to $\F$, thus $\phi \circ T \in V'$.
+
+\begin{example}
+   Define $D : \Polys{\R}{\empty} \to \PolysAll{\R}$ by $Dp = p'$.
+   
+   Suppose $\phi$ is the linear functional on $\PolysAll{\R}$ defined
+   by $\phi(p) = p(3)$.
+   Then $D'(\phi)$ is the linear functional on $\PolysAll{R}$ given by
+   \[ (D'(\phi))(p) = (\phi \circ D)(p) = \phi(Dp) = \phi(p') = p'(3) \]
+
+   Thus $D'(\phi)$ is the linear functional on $\PolysAll{\R}$ that takes
+   $p$ to $p'(3)$.
+\end{example}
+
+\begin{theorem} [Algebraic Properties of Dual Maps]
+   \begin{itemize}
+      \item $(S + T)' = S' + T'$ for all $S, T \in \Lin{V, W}$
+      \item $(\lambda T)' = \lambda T'$ for all $\lambda \in \F$ and all $T \in \Lin{V, W}$
+      \item $(ST)' = T'S'$ for all $T \in \Lin{U, V}$ and all $S \in \Lin{V, W}$
+   \end{itemize}
 \end{theorem}
 \endinput
