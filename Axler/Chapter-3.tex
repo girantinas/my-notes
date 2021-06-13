@@ -836,4 +836,113 @@ Thus, their composition maps from $V$ to $\F$, thus $\phi \circ T \in V'$.
       \item $(ST)' = T'S'$ for all $T \in \Lin{U, V}$ and all $S \in \Lin{V, W}$
    \end{itemize}
 \end{theorem}
+
+\begin{definition} [Annihilator]
+   For $U \subseteq V$, the $\textbf{annihilator}$ of $U$, denoted
+   $U^0$, is defined by
+   \[ U^0 = \{ \phi \in V' : \phi(u) = 0 \text{for all } u \in U \} \]
+\end{definition}
+
+\begin{example} Examples of Annihilators 
+   \begin{itemize}
+      \item $\{0\}^0 = V'$ and $V^0 = \{0\}$
+      \item Suppose $U = x^2 \PolysAll{\R} \subseteq \PolysAll{\R}$. Let
+      $\phi$ be the linear functional on $\PolysAll{\R}$ defined by $\phi(p) = p'(0)$.
+      Then $\phi \in U^0$.
+   \end{itemize}
+\end{example}
+
+\begin{theorem}
+   Suppose $U \subseteq V$. Then $U^0$ is a subspace of $V'$.
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ is finite-dimensional and $U$ is a subspace of $V$.
+   Then $\dim U + \dim U^0 = \dim V$.
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ and $W$ are finite-dimensional and $T \in \Lin{V, W}$. Then
+   \begin{itemize}
+      \item $\Null T' = (\range T)^0$
+      \item $\range T' = (\Null T)^0$
+   \end{itemize}
+\end{theorem}
+
+\begin{theorem} [$T$ surjective is equivalent to $T'$ injective]
+   Suppose $V$ and $W$ are finite-dimensional and $T \in \Lin{V, W}$. Then
+   \begin{itemize}
+      \item $T$ is surjective if and only if $T'$ is injective
+      \item $T$ is injective if and only if $T'$ is surjective
+   \end{itemize}
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ and $W$ are finite=dimensional and $T \in \Lin{V, W}$. Then
+   \[ \dim \range T' = \dim \range T \]
+
+   \begin{proof*}
+      \begin{align*}
+         \dim \range T' &= \dim W' - \dim \Null T' \\
+         &= \dim W - \dim(\range T)^0 \\
+         &= \dim \range T
+      \end{align*}
+   \end{proof*}
+\end{theorem}
+
+\begin{definition} [Transpose]
+   The \textbf{transpose} of matrix $A$, denoted $A^t$, is the matrix
+   obtained from $A$ by interchanging the rows and columns. More specificially,
+   if $A$ is an $m$-by-$n$ matrix, then $A^t$ is the $n$-by-$m$ matrix whose entries are
+   given by the equation:
+   \[ (A^t)_{k,j} = A_{j,k} \]
+\end{definition}
+
+\begin{theorem}
+   If $A$ is an $m$-by-$n$ matrix and $C$ is an $n$-by-$p$ matrix, then
+   \[ (AC)^t = C^t A^t \]
+\end{theorem}
+
+\begin{theorem}
+   Suppose $V$ and $W$ are finite-dimensional and $T \in \Lin{V, W}$. Then
+   \[ \Matof{T'} = (\Matof{T})^t \]
+   (provided we use a basis of $V$ and $W$ on the right and the exact
+   dual bases of those bases on the left).
+\end{theorem}
+
+\begin{definition} [Row Rank, Column Rank]
+   Suppose $A$ is an $m$-by-$n$ matrix with entries in $\F$.
+   \begin{itemize}
+      \item The \textbf{row rank} of $A$ is the dimension of the span of the rows of $A$ in $\F^{1, n}$
+      \item The \textbf{column rank} of $A$ is the dimension of the span of the columns of $A$ in $\F^{m, 1}$.
+   \end{itemize}
+\end{definition}
+
+\begin{theorem} [Dimension of $\range T$ equals column rank of $\Matof{T}$]
+   Suppose $V$ and $W$ are finite-dimensional vector spaces and $T \in \Lin{V, W}$.
+   Then $\dim \range T$ equals the column rank of $\Matof{T}$.
+\end{theorem}
+
+\begin{theorem}
+   Suppose $A \in \F^{m, n}$. Then the row rank of $A$ equals the column rank
+   of $A$.
+
+   \begin{proof*}
+      Define $T: \F^{n, 1} \to \F^{m, 1}$ by $Tx = Ax$. Thus $\Matof{T} = A$ (with
+      respect to the standard bases). Now
+      \begin{align*}
+         \text{column rank of $A$} &= \text{column rank of $\Matof{T}$} \\
+         &= \dim \range T \\
+         &= \dim \range T' \\
+         &= \text{column rank of $\Matof{T'}$} \\
+         &= \text{column rank of $A^t$}
+         &= \text{row rank of $A$}
+      \end{align*}
+   \end{proof*}
+\end{theorem}
+
+Thus, we can collapse everything into one term: rank.
+\begin{definition} [Rank]
+   The \textbf{rank} of $A$ is just the column rank of $A$.
+\end{definition}
 \endinput
