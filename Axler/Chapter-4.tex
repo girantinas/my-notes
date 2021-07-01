@@ -1,0 +1,108 @@
+% !TEX root = ./main.tex
+
+\section{Polynomials}
+
+\begin{definition}[$\Re{z}, \Im{z}$]
+	Suppose $z = a + bi$, where $a, b \in \R$
+	\begin{itemize} 
+		\item The \textbf{real part} of $z$, denoted $\Re{z}$, is defined by $\Re{z} = a$.
+		\item The \textbf{imaginary part} of $z$, denoted $\Im{z}$, is defined by $\Im{z} = b$.
+	\end{itemize}
+\end{definition}
+
+\begin{definition}
+    Suppose $z \in \C$.
+    \begin{itemize}
+        \item The \textbf{complex conjugate} of $z \in \C$, denoted $\overline{z}$, is defined by
+        \[ \overline{z} = \Re{z} - \Im{z}i \]
+        \item The \textbf{absolute value} of a complex number $z$, denoted $\abs{z}$, is
+        defined by:
+        \[ \abs{z} = \sqrt{\qty(\Re{z}) + \qty(\Re{z})} \]
+    \end{itemize}
+\end{definition}
+
+\begin{theorem}
+    Suppose $w, z \in \C$. Then
+    \begin{itemize}
+        \item $z + \overline{z} = 2 \Re{z}$
+        \item $z - \overline{z} = 2 (\Im z)i$
+        \item $z \overline{z} = \abs{z}^2$
+        \item $\overline{w + z} = \overline{w} + \overline{z}$ and $\overline{wz} = \overline{w} \overline{z}$
+        \item $\overline{\overline{z}} = z$
+        \item $\abs{\Re{z}} \leq \abs{z}$ and $\abs{\Im{z}} \leq \abs{z}$
+        \item $\abs{\overline{z}} = \abs{z}$
+        \item $\abs{wz} = \abs{w} \abs{z}$
+        \item $\abs{w+z} \leq \abs{w} + \abs{z}$
+    \end{itemize}
+\end{theorem}
+
+\begin{definition} [Polynomial]
+    A function $p: \F \to \F$ is called a \textbf{polynomial} with
+    coefficients in $\F$ if there exist $a_0, \dots, a_m \in \F$ such that
+    \[ p(z) = a_0 + a_1 z + a_2 z^2 + \dots + a_m z^m \]
+    for all $z \in \F$.
+
+    $\PolysAll{\F}$ is the set of all polynomials with coefficients in $\F$.
+\end{definition}
+
+\begin{theorem} [Identically Zero Polynomial]
+    Suppose $a_0, \dots, a_m \in \F$. If
+    \[ a_0 + a_1 z + \dots + a_m z^m = 0 \]
+    for every $z \in \F$, then $a_0 = \dots = a_m = 0$.
+\end{theorem}
+
+\begin{theorem} [Division Algorithm for Polynomials]
+    Suppose $p, s \in \PolysAll{\F}$, with $s \neq 0$. Then there exist unique
+    polynomials $q, r \in \PolysAll{\F}$ such that
+    \[ p = sq + r \]
+
+    and $\deg{r} < \deg{s}$.
+\end{theorem}
+
+\begin{definition} [Zero of a Polynomial]
+    A number $\lambda \in \F$ is called a $\textbf{zero}$ of a polynomial
+    $p \in \PolysAll{\F}$ if
+    \[ p(\lambda) = 0 \]
+\end{definition}
+
+\begin{theorem} [Each Zero of a Polynomial corresponds to a Degree-1 Factor]
+    Suppose $p \in \PolysAll{\F}$ and $\lambda \in \F$. Then
+    $p(\lambda) = 0$ if and only if there is a polynomial $q \in \PolysAll{\F}$ such that
+    \[ p(z) = (z - \lambda)q(z) \]
+    for every $z \in \F$.
+\end{theorem}
+
+\begin{theorem} [A Polynomial has at most as many Zeros as its Degree]
+    Suppose $p \in \PolysAll{\F}$ is a polynomial with degree $m \geq 0$. Then $p$ has at most
+    $m$ distinct zeroes in $\F$.
+\end{theorem}
+
+\begin{theorem} [Fundamental Theorem of Algebra]
+    Every nonconstant polynomial with complex coefficients has a zero.
+\end{theorem}
+
+\begin{theorem} [Factorization of a Polynomial over $\C$]
+    If $p \in \PolysAll{\C}$ is a nonconstant polynomial, then $p$ has a unique
+    factorization (except for the order of the factors) of the form
+    \[ p(z) = c(z - \lambda_1)(z - \lambda_2) \dots (z - \lambda_m) \]
+    where $c, \lambda_1, \dots, \lambda_m \in \C$.
+\end{theorem}
+
+\begin{theorem} [Polynomials with real coefficients have zeros in pairs]
+    Suppose $p \in \PolysAll{\C}$ is a polynomial with real coefficients. If $\lambda \in \C$
+    is a zero of $p$, then so is $\overline{\lambda}$.
+\end{theorem}
+
+\begin{theorem} [Factorization of a Quadratic Polynomial]
+    Suppose $b, c \in \R$. Then there is a polynomial factorization of the form
+    \[ x^2 + bx + c = (x - \lambda_1)(x - \lambda_2) \]a
+    with $\lambda_1, \lambda_2 \in \R$ if and only if $b^2 \geq 4c$.
+\end{theorem}
+
+\begin{theorem} [Factorization of a Polynomial over $\R$]
+    Suppose $p \in \PolysAll{\R}$ is a nonconstant polynomial. Then $p$
+    has a unique factorization (except for the order of the factors) of the form
+    \[ p(x) = c(x - \lambda_1)\dots(x - \lambda_m)(x^2 + b_1 x + c_1)\dots(x^2 + b_M x + c_M) \]
+    where $c, \lambda_1, \dots, \lambda_m, b_1, \dots, b_M, c_1, \dots, c_M \in \R$, with $b_j^2 < 4c_j$ for each $j$.
+\end{theorem}
+\endinput
