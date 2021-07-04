@@ -1,0 +1,126 @@
+% !TEX root = ./main.tex
+
+\section{Eigenvalues, Eigenvectors, and Invariant Subspaces}
+
+\subsection{Invariant Subspaces}
+Suppose $T \in \Lin{V}$. We will try to investigate $T$ by decomposing $V$
+as
+\[ V = U_1 \oplus \dots \oplus U_m \]
+
+and then looking at each $T \Bigr|_{U_j}$ ($T$ restricted to the domain
+of only the subspace $U_j$). However, to use results about operators,
+we need for $T \Bigr|_{U_j}$ maps $U_j$ into itself.
+
+\begin{definition} [Invariant Subspace]
+    Suppose $T \in \Lin{V}$. A subspace $U$ of $V$ is called \textbf{invariant} under
+    $T$ if $u \in U$ implies $Tu \in U$.
+\end{definition}
+
+\begin{example}
+    Each of these subspaces of $V$ is invariant under $T \in \Lin{V}$:
+    \begin{itemize}
+        \item $\{ 0 \}$
+        \item $V$
+        \item $\Null T$
+        \item $\range T$
+    \end{itemize}
+
+    Suppose that $T \in \Lin{\PolysAll{R}}$ is defined by $Tp = p'$. Then
+    $\Polys{4}{\R}$ is invariant under $T$ because if $p \in \PolysAll{\R}$ has degree
+    at most 4, then $p'$ also has degree at most 4.
+\end{example}
+
+The simplest invariant subspace is $\{ 0 \}$ which is dimension zero. What
+is the next simplest one?
+
+Suppose $v \in V$ and $v \neq 0$. Let
+\[ U = \{ \lambda v : \lambda \in \F \} = \Span{v} \]
+
+Then $U$ is a one-dimensional subspace of $V$. $U$ is invariant under some $T \in \Lin{V}$
+if and only if
+\[ Tv = \lambda v \]
+for some $\lambda \in \F$.
+
+\begin{definition}
+    Suppose $T \in Lin{V}$. A number $\lambda \in \F$ is called an \textbf{eigenvalue}
+    of $T$ if there exists $v \in V$ such that $v \neq 0$ and $Tv = \lambda v$.
+\end{definition}
+
+\begin{theorem}
+    Suppose $V$ is finite-dimensional, $T \in \Lin{V}$ and $\lambda \in \F$. Then the following
+    are equivalent:
+    \begin{itemize}
+        \item $\lambda$ is an eigenvalue of $T$
+        \item $T - \lambda I$ is not injective
+        \item $T - \lambda I$ is not surjective
+        \item $T - \lambda I$ is not invertible
+    \end{itemize}
+\end{theorem}
+
+\begin{example}
+    Suppose $T \in \Lin{\R^2}$ is defined by
+    \[ T(x, y) = (-y, x) \]
+    $T$ is a counterclockwise rotation by 90 degrees about the origin in $\R^2$.
+
+    The rotation of a nonzero vector in $\R^2$ obviously never equals a scalar multiple of itself.
+    Thus, $T$ must have \textbf{no} eigenvalues.
+
+    Suppose $T \in \Lin{\C^2}$ is defined by
+    \[ T(w, z) = (-z, w) \]
+    Then
+    \begin{align*}
+        T(1, -i) &= (i, 1) \\
+        &= i(1, -i)
+    \end{align*}
+    Thus $i$ is an eigenvalue of $T$. One can similarly check that $-i$ is an eigenvalue of $T$.
+\end{example}
+
+\begin{definition} [Eigenvector]
+    Suppose $T \in \Lin{V}$ and $\lambda \in \F$ is an eigenvalue of $T$. A vector $v \in V$
+    is called an \textbf{eigenvector} of $T$ corresponding to $\lambda$ if $v \neq 0$ and $Tv = \lambda v$.
+\end{definition}
+
+Note that any nonzero scalar multiple of an eigenvector is itself an eigenvector corresponding to the same eigenvalue.
+
+\begin{theorem} [Eigenvectors are Linearly Independent]
+    Let $T \in \Lin{V}$. Suppose $\lambda_1, \dots, \lambda_m$ are distinct eigenvalues of $T$ and $v_1, \dots, v_m$
+    are corresponding eigenvectors. Then $v_1, \dots, v_m$ is linearly independent.
+
+    \begin{proof*}
+        Suppose $\listofnames{v}{m}$ is linearly dependent. Let $k$ be the smallest positive integer
+        such that
+        \[ v_k \in \spanof{(v_1, \dots, v_{k-1})} \]
+        Thus there exist $a_1, \dots, a_{k-1} \in \F$ such that
+        \[ v_k = \sum_{i=1}^{k-1} a_i v_i \]
+        Applying $T$ to both sides, we have
+        \[ \lambda_k v_k = \sum_{i=1}^{k-1} a_i \lambda_i v_i \]
+        Multiply both sides of the initial linear combination by $\lambda_k$ and subtract both equations.
+        This yields:
+        \[ 0 = \sum_{i=1}^{k-1} a_i (\lambda_k - \lambda_i) v_i \]
+        We have written 0 as a linear combination of $v_1, \dots, v_{k-1}$, which must be linearly independent.
+        Thus, at least one of the coefficients in front is 0. Since we know not all the $a_i$'s are zero since $v_k \neq 0$,
+        this must mean that there is some positive integer $j$ such that:
+        \[ \lambda_k = \lambda_j \]
+        which contradicts the assumption that the eigenvalues were distinct. Thus, the eigenvectors must be
+        independent. \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem} [Number of Eigenvalues]
+    Suppose $V$ is finite-dimensional. Then each operator on $V$ has at most $\dim V$ distinct eigenvaluies.
+
+    \begin{proof*}
+        Let $T \in \Lin{V}$. Suppose $\lambda_1, \dots, \lambda_m$ are distinct eigenvalues of $T$ and let
+        $v_1, \dots, v_m$ be corresponding eigenvectors. Then the list $v_1, \dots, v_m$ is linearly independent.
+        Thus $m \leq \dim V$, as required. \qed
+    \end{proof*}
+\end{theorem}
+
+\subsection{Eigenvalues and Upper-Triangular Matrices}
+
+\begin{definition} [Power of an Operator]
+    Suppose $T \in \Lin{V}$ and $m$ is a positive integer. Then
+    \[ T^m = \underbrace{T \dots T}_{m \text{ times}} \]
+\end{definition}
+
+\endinput
