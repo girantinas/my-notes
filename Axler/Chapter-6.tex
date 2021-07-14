@@ -1,0 +1,146 @@
+% !TEX root = ./main.tex
+
+\section{Inner Product Spaces}
+
+\subsection{Inner Products and Norms}
+
+To motivate the definition of the inner product, consider $\R^n$.
+
+Some vector $x = (x_1, x_2)$ has length $\sqrt{x_1^2 + x_2^2}$.
+
+For $x = (x_1, \dots, x_n) \in \R^n$, define the norm of $x$ by
+$\norm{x} = \sqrt{x_1^2 + \dots + x_n^2}$.
+
+\begin{definition} [Dot Product]
+    For $x, y \in \R^n$, the \textbf{dot product} of $x$ and $y$,
+    denoted $x \cdot y$, is defined by:
+    \[ x \cdot y = x_1 y_1 + \dots + x_n y_n \]
+    where $x = (x_1, \dots, x_n)$ and $y = (y_1, \dots, y_n)$.
+\end{definition}
+
+The dot product has the following properties:
+\begin{itemize}
+    \item $x \cdot x = \abs{x}^2$ for all $x \in \R^n$.
+    \item $x \cdot x \geq 0$ for all $x \in \R^n$, with equality iff $x = 0$
+    \item for $y \in \R^n$ fixed, the map from $\R^n$ to $\R$ that sends $x \in \R^n$ to $x \cdot y$ is linear
+    \item $x \cdot y = y \cdot x$ for all $x, y \in \R^n$
+\end{itemize}
+
+It gets a little bit more complicated for complex numbers.
+
+Recall that if $\lambda = a + bi$ where $a, b \in \R$, then
+\begin{itemize}
+    \item $\abs{\lambda} = \sqrt{a^2 + b^2}$
+    \item $\abs{\lambda}^2 = \lambda \overline{\lambda}$
+\end{itemize}
+
+For $z = (z_1, \dots, z_n) \in \C^n$, define the norm of $z$ by
+\[ \norm{z} = sqrt{\abs{z_1}^2 + \dots + \abs{z_n}^2} \]
+
+This suggests that the inner product of $w = (w_1, \dots, w_n) \in \C^n$ with $z$
+should equal
+\[ w_1 \overline{z_1} + \dots + w_n \overline{z_n} \]
+
+\begin{definition} [Inner Product]
+    An \textbf{inner product} on $V$ is a function that takes each ordered pair
+    $(u, v)$ of elements in $V$ to a number $\inner{u, v} \in \F$ that has the folowing properties
+    \begin{itemize}
+        \item $\inner{v, v} \geq 0$ for all $v \in V$
+        \item $\inner{v, v} = 0$ iff $v = 0$
+        \item $\inner{u + v, w} = \inner{u, w} + \inner{v, w}$ for all $u, v, w \in V$
+        \item $\inner{\lambda u, v} = \lambda \inner{u, v}$ for all $\lambda \in \F$ and all $u, v \in V$
+        \item $\inner{u, v} = \overline{\inner{v, u}}$ for all $u, v \in V$
+    \end{itemize}
+\end{definition}
+
+\begin{example} Examples of inner products:
+    \begin{itemize}
+        \item The \textbf{Euclidean inner product} on $\F^n$ is defined by
+        \[ \inner{(w_1, \dots, w_n)(z_1, \dots, z_n)} = w_1 \overline{z_1} + \dots + w_n \overline{z_n} \]
+        \item If $c_1, \dots, c_n$ are positive numbers, then an inner product can be defined on $\F^n$ by
+        \[ \inner{(w_1, \dots, w_n), (z_1, \dots, z_n)} = c_1 w_1 \overline{z_1} + \dots + c_n w_n \overline{z_n} \]
+        \item An inner product can be defined on the vector space of continuous real-valued functions on the interval $[-1, 1]$ by
+        \[ \inner{f, g} = \int_{-1}^1 f(x) g(x) \dd{x} \]
+    \end{itemize}
+\end{example}
+
+\begin{definition} [Inner Product Space]
+    An \textbf{inner product space} is a vector space $V$ along with an inner product on $V$.
+\end{definition}
+
+\begin{theorem}
+    Properties of an inner product:
+    \begin{itemize}
+        \item For each fixed $u \in V$, the function that takes $v$ to $\inner{u, v}$ is a linear map from $V$ to $\F$
+        \item $\inner{0, u} = 0$ for every $u \in V$.
+        \item $\inner{u, 0} = 0$ for every $u \in V$.
+        \item $\inner{u, v + w} = \inner{u, v} + \inner{u, w}$ for all $u, v, w \in V$
+        \item $\inner{u, \lambda v} = \overline{\lambda} \inner{u, v}$ for all $\lambda \in \F$ and $u, v \in V$
+    \end{itemize}
+\end{theorem}
+
+\begin{definition}
+    For $v \in V$, the \textbf{norm} of $v$, denoted $\norm{v}$, is defined by
+    \[ \norm{v} = \sqrt{\inner{v, v}} \]
+\end{definition}
+
+In $\F^n$, always assume the standard Euclidean inner product, to make the norm the standard
+Euclidean norm.
+
+Some properties of the norm:
+\begin{itemize}
+    \item Norm is positive-definite.
+    \item $\norm{\lambda v} =  \abs{\lambda} \norm{v}$ for all $\lambda \in \F$
+\end{itemize}
+
+\begin{definition} [Orthogonal]
+    Two vectors $u, v \in V$ are called \textbf{orthogonal} if $\inner{u, v} = 0$.
+\end{definition}
+
+\begin{theorem}
+    0 is orthogonal to every vector in $V$.
+
+    0 is the only vector in $V$ that is orthogonal to itself.
+\end{theorem}
+
+\begin{theorem} [Pythagorean Theorem]
+    Suppose $u$ and $v$ are orthogonal vectors in $V$. Then
+    \[ \norm{u + v}^2 = \norm{u}^2 + \norm{v}^2 \]
+
+    \begin{proof*}
+        \begin{align*}
+            \norm{u + v}^2 &= \inner{u + v, u + v} \\
+            &= \inner{u, u} + \inner{u, v} + \inner{v, u} + \inner{v, v} \\
+            &= \norm{u}^2 + \norm{v}^2
+        \end{align*} \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem} [Cauchy-Schwarz Inequality]
+    Suppose $u, v \in V$. Then
+    \[ \abs{\inner{u, v}} \leq \norm{u} \norm{v} \]
+    Equality holds if and only if $u$ and $v$ and linearly dependent.
+\end{theorem}
+
+\begin{example}
+    Examples of Cauchy-Schwarz:
+    \begin{itemize}
+        \item If $x_1, \dots, x_n, y_1, \dots, y_n \in \R$, then
+        \[ \abs{x_1 y_1 + \dots + x_n y_n}^2 \leq (x_1^2 + \dots + x_n^2)(y_1^2 + \dots + y_n^2) \]
+    \end{itemize}
+\end{example}
+
+\begin{theorem} [Triangle Inequality]
+    Suppose $u, v \in V$. Then
+    \[ \norm{u + v} \leq \norm{u} + \norm{v} \]
+    Equality holds if and only if the $u, v$ are linearly dependent.
+\end{theorem}
+
+\begin{theorem} [Parallelogram Equality]
+    Suppose $u, v \in V$. Then
+    \[ \norm{u + v}^2 + \norm{u - v}^2 = 2(\norm{u}) \]
+\end{theorem}
+
+A generally good way to do proofs of these identities is to write $\norm{x}^2 = \inner{x , x}$ and then
+use the algebraic properties of the inner product.
+\endinput
