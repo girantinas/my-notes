@@ -1,0 +1,105 @@
+% !TEX root = ./main.tex
+
+\section{Operators on Inner Product Spaces}
+
+\subsection{Self-Adjoint and Normal Operators}
+
+\begin{definition} [Adjoint, $T^*$]
+	Suppose $T \in \Lin{V, W}$. The $\textbf{adjoint}$ of $T$ is the function $T^*: W \to V$ such that
+	\[ \inner{Tv, w} = \inner{v, T^*w} \]
+	for every $v \in V$ and every $w \in W$.
+\end{definition}
+
+\begin{example}
+    Define $T : \R^3 \to \R^2$ by
+    \[ T(x_1, x_2, x_3) = (x_2 + 3x_3, 2x_1) \]
+    To compute $T^*$, fix a point $(y_1, y_2)$ in $\R^2$.
+    Then for every $(x_1, x_2, x_3) \in \R^3$, we have
+    \begin{align*}
+        \inner{(x_1, x_2, x_3), T^*(y_1, y_2)} &= \inner{(x_2 + 3x_3, 2x_1), (y_1, y_2)} \\
+        &= x_2 y_1 + 3x_3 y_2 + 2x_1 y_2 \\
+        &= \inner{(x_1, x_2, x_3), (2y_2, y_1, 3y_1)}
+    \end{align*}
+    Thus, we have that $T^*(y_1, y_2) = (2y_2, y_1, 3y_1)$.
+\end{example}
+
+\begin{theorem} [Properties of the Adjoint]
+    \begin{itemize}
+        \item If $T \in \Lin{V, W}$, then $T^* \in \Lin{W, V}$.
+        \item $(S+T)^* = S^* + T^*$.
+        \item $(\lambda T)^* = \overline{\lambda} T^*$.
+        \item $(T^*)^* = T$.
+        \item $I^* = I$, where $I$ is the identity operator.
+        \item $(ST)^* = T^* S^*$ for all $T \in \Lin{V, W}$ and $S \in \Lin{W, U}$.
+    \end{itemize}
+
+    Let's prove that last one.
+
+    \begin{proof*}
+        Suppose $T \in \Lin{V, W}$ and $S \in \Lin{W, U}$. If $v \in V$ and $u \in U$, then
+        \begin{align*}
+            \inner{v, (ST)^* u} &= \inner{STv, u} \\
+            &= \inner{Tv, S^* u} \\
+            &= \inner{v, T^* S^* u} \\
+        \end{align*}
+        Thus, $T^* S^* = (ST)^*$, as desired. \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem}
+    Suppose $T \in \Lin{V, W}$. Then
+    \begin{enumerate}
+        \item $\Null T^* = (\range T)^\perp$
+        \item $\range T^* = (\Null T)^\perp$
+        \item $\Null T = (\range T^*)^\perp$
+        \item $\range T = (\Null T^*)^\perp$
+    \end{enumerate}
+
+    \begin{proof*}
+        Note that 1 and 4 are equivalent. As are 2 and 3. Let us show 1.
+
+        Let $w \in W$. Then
+        \begin{align*}
+            w \in \Null T^* &\iff T^*w = 0 \\
+            &\iff \inner{v, T^*w} = 0 \text{ for all $v \in V$} \\
+            &\iff \inner{Tv, w} = 0 \text{ for all $v \in V$} \\
+            &\iff w \in (\range T)^\perp
+        \end{align*}
+
+        Now let us show 3.
+        Let $v \in V$. Then
+        \begin{align*}
+            v \in \Null T &\iff Tv = 0 \\
+            &\iff \inner{w, Tv} = 0 \text{ for all $w \in W$} \\
+            &\iff \inner{T^*w, v} = 0 \text{ for all $w \in W$} \\
+            &\iff v \in (\range T^*)^\perp
+        \end{align*}
+
+        \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem}
+    Suppose $T \in \Lin{V, W}$. Then $T$ is surjective if and only if $T^*$ is injective.
+\end{theorem}
+
+\begin{definition} [Conjugate Transpose]
+    The \textbf{conjugate transpose} of an $m$-by-$n$ matrix is the $n$-by-$m$ matrix obtained
+    by interchanging the rows and columns and then taking the complex conjugate of each entry.
+\end{definition}
+
+\begin{theorem} [The Matrix of $T^*$]
+    Let $T \in \Lin{V, W}$. Suppose $e_1, \dots, e_n$ is an orthonormal basis of $V$ and
+    $f_1, \dots, f_m$ is an orthonormal basis of $W$. Then
+    \[ \Matof{T^*, (f_1, \dots, f_m), (e_1, \dots, e_n)} \]
+    is the conjugate transpose of
+    \[ \Matof{T, (e_1, \dots, e_n), (f_1, \dots, f_m)} \]
+\end{theorem}
+
+\begin{definition}
+    An operator $T \in \Lin{V}$ is called \textbf{self-adjoint} if $T = T^*$. In other words, $T \in \Lin{V}$ is
+    self-adjoint if and only if
+    \[ \inner{Tv, w} = \inner{v, Tw} \]
+    for all $v, w \in V$.
+\end{definition}
+\endinput
