@@ -153,7 +153,7 @@ Another section lost to the winds of time. (This is what Github Copilot recommen
 \begin{definition} [Orthogonal Complement, $U^\perp$]
     If $U$ is a subset of $V$, then the \textbf{orthogonal complement} of $U$, denoted $U^\perp$, is the set of all
     vectors in $V$ that are orthogonal to every vector in $U$.
-    \[ U^\perp = \{v \in V : \innerproduct{v}{u} = 0 \text{ for every } u \in U\} \]
+    \[ U^\perp = \{v \in V : \inner{v, u} = 0 \text{ for every } u \in U\} \]
 \end{definition}
 
 \begin{theorem}
@@ -173,8 +173,8 @@ Another section lost to the winds of time. (This is what Github Copilot recommen
 
     \begin{proof*}
         Suppose $v \in V$. Let $e_1, \dots, e_m$ be an orthonormal basis of $U$. Let
-        \[ u = \innerproduct{v}{e_1}e_1 + \dots + \innerproduct{v}{e_m}e_m \]
-        Then $\innerproduct{v - u}{e_j} = \innerproduct{v}{e_j} - \innerproduct{u}{e_j} = 0$ for all $j$. Thus $v - u \in U^\perp$.
+        \[ u = \inner{v, e_1}e_1 + \dots + \inner{v,e_m}e_m \]
+        Then $\inner{(v - u), e_j} = \inner{v,e_j} - \inner{u,e_j} = 0$ for all $j$. Thus $v - u \in U^\perp$.
         Now
         \[ v = u + (v - u) \]
         showing that $v \in U + U^\perp$. Thus $V = U \oplus U^\perp$. \qed
@@ -198,7 +198,7 @@ Another section lost to the winds of time. (This is what Github Copilot recommen
     For $v \in V$, write $v = u + w$, where $u \in U$ and $w \in U^\perp$. Then $P_U(v) = u$.
 
     If $e_1, \dots, e_m$ are orthonormal basis of $U$, then
-    \[ P_U(v) = \innerproduct{v}{e_1}e_1 + \dots + \innerproduct{v}{e_m}e_m \]
+    \[ P_U(v) = \inner{v,e_1}e_1 + \dots + \inner{v,e_m}e_m \]
 \end{definition}
 
 \begin{theorem}
@@ -231,13 +231,13 @@ $|| u - v ||$.
     is minimized.
 
     Here $V = C_{\R} [-\pi, \pi]$ with inner product
-    $\innerproduct{f}{g} = \int_{-\pi}^{\pi} f(x) g(x) \, \dd{x}$.
+    $\inner{f, g} = \int_{-\pi}^{\pi} f(x) g(x) \dd{x}$.
     Also $v \in V$ is given by $v(x) = \sin x$ and $U = \Polys{5}{\R}$.
 
     Thus:
     \begin{align*}
         u &= P_Uv \\
-        &= \sum_{j=1}^6 \innerproduct{v, e_j}e_j \\
+        &= \sum_{j=1}^6 \inner{v, e_j}e_j \\
     \end{align*}
     where $e_1, \dots, e_6$ is an orthonormal basis of $U$.
     Find $e_1, \dots, e_6$ by applying Gram-Schmidt procedure to the basis
