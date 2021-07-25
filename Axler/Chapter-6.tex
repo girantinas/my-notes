@@ -143,4 +143,109 @@ Some properties of the norm:
 
 A generally good way to do proofs of these identities is to write $\norm{x}^2 = \inner{x , x}$ and then
 use the algebraic properties of the inner product.
+
+\subsection{Orthonormal Bases}
+
+Another section lost to the winds of time. (This is what Github Copilot recommends.)
+
+\subsection{Orthogonal Complements and Minimization Problems}
+
+\begin{definition} [Orthogonal Complement, $U^\perp$]
+    If $U$ is a subset of $V$, then the \textbf{orthogonal complement} of $U$, denoted $U^\perp$, is the set of all
+    vectors in $V$ that are orthogonal to every vector in $U$.
+    \[ U^\perp = \{v \in V : \innerproduct{v}{u} = 0 \text{ for every } u \in U\} \]
+\end{definition}
+
+\begin{theorem}
+    Some properties of $U^\perp$:
+    \begin{itemize}
+        \item If $U$ is a subset of $V$, then $U^\perp$ is a subspace of $V$.
+        \item $\{0\}^\perp = \{0\}$.
+        \item $V^\perp = \{0\}$.
+        \item If $U$ is a subset of $V$, then $U \cap U^\perp \subseteq \{0\}$. ($U$ might not contain $0$.)
+        \item If $U$ and $W$ are subsets of $V$ and $U \subseteq W$, then $W^\perp \in U^\perp$.
+    \end{itemize}
+\end{theorem}
+
+\begin{theorem} [Direct Sum of a Subspace and its Orthogonal Complement]
+    Suppose $U$ is a finite-dimensional subspace of $V$. Then
+    \[ V = U \oplus U^\perp \]
+
+    \begin{proof*}
+        Suppose $v \in V$. Let $e_1, \dots, e_m$ be an orthonormal basis of $U$. Let
+        \[ u = \innerproduct{v}{e_1}e_1 + \dots + \innerproduct{v}{e_m}e_m \]
+        Then $\innerproduct{v - u}{e_j} = \innerproduct{v}{e_j} - \innerproduct{u}{e_j} = 0$ for all $j$. Thus $v - u \in U^\perp$.
+        Now
+        \[ v = u + (v - u) \]
+        showing that $v \in U + U^\perp$. Thus $V = U \oplus U^\perp$. \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem} [Dimension of $U^\perp$]
+    Suppose $V$ is finite-dimensional and $U$ is a subspace of $V$. Then
+    \[ \dim U^\perp = \dim V - \dim U \]
+\end{theorem}
+
+\begin{theorem}
+    Suppose $U$ is a finite-dimensional subspace of $V$. Then
+    \[ U = (U^\perp)^\perp \]
+\end{theorem}
+
+\begin{definition}
+    Suppose $U$ is a finite-dimensional subspace of $V$. The \textbf{orthogonal projection} of $V$ onto $U$
+    is the operator $P_U \in \Lin{V}$ defined as follows:
+
+    For $v \in V$, write $v = u + w$, where $u \in U$ and $w \in U^\perp$. Then $P_U(v) = u$.
+
+    If $e_1, \dots, e_m$ are orthonormal basis of $U$, then
+    \[ P_U(v) = \innerproduct{v}{e_1}e_1 + \dots + \innerproduct{v}{e_m}e_m \]
+\end{definition}
+
+\begin{theorem}
+    Suppose $U$ is a finite-dimensional subspace of $V$. Then
+    \begin{itemize}
+        \item $P_U \in \Lin{V}$.
+        \item $P_U u = u$ for every $u \in U$.
+        \item $P_U w = 0$ for every $w \in U^\perp$.
+        \item $\range P_U = U$
+        \item $\Null P_U = U^\perp$
+        \item $v - P_Uv \in U^\perp$ for every $v \in V$
+        \item $P_U^2 = P_U$
+    \end{itemize}
+\end{theorem}
+
+Here is a common minimization problem.
+Given a subspace $U$ of $V$ and a point $v \in V$, find the point $u \in U$ that minimizes the distance
+$|| u - v ||$.
+
+\begin{theorem}
+    Suppose $U$ is a finite-dimensional subspace of $V$ and $v \in V$. Then
+    \[ \norm{v - P_Uv} \leq \norm{v - u} \]
+    for all $u \in U$.
+\end{theorem}
+
+\begin{example}
+    Here is a minimization problem we can now solve. Find $u \in \Polys{5}{\R}$ that approximates
+    $\sin x$ as well as possible on the interval $[-\pi, \pi]$, in the sense that
+    \[ \int_{-\pi}^{\pi} \abs{\sin x - u(x)}^2 \dd{x} \]
+    is minimized.
+
+    Here $V = C_{\R} [-\pi, \pi]$ with inner product
+    $\innerproduct{f}{g} = \int_{-\pi}^{\pi} f(x) g(x) \, \dd{x}$.
+    Also $v \in V$ is given by $v(x) = \sin x$ and $U = \Polys{5}{\R}$.
+
+    Thus:
+    \begin{align*}
+        u &= P_Uv \\
+        &= \sum_{j=1}^6 \innerproduct{v, e_j}e_j \\
+    \end{align*}
+    where $e_1, \dots, e_6$ is an orthonormal basis of $U$.
+    Find $e_1, \dots, e_6$ by applying Gram-Schmidt procedure to the basis
+    $1, x, x^2, x^3, x^4, x^5$ of $U$.
+
+    Then use the last equation to get
+    \[ u = \alpha x - \beta x^3 + \gamma x^5 \]
+    where the coefficients are way too complicated to write down. Note that this is NOT
+    the Taylor series. However, the coefficients are fairly close.
+\end{example}
 \endinput
