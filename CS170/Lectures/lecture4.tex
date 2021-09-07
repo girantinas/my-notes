@@ -1,0 +1,213 @@
+\subsection{Lecture 4}
+
+\subsubsection{Polynomial Multiplication}
+Suppose we have two polynomials as inputs:
+\[ A(x) = a_0 + a_1x + a_2x^2 + \dots + a_{d-1}x^{d-1} \]
+\[ B(x) = b_0 + b_1x + b_2x^2 + \dots + b_{d-1}x^{d-1} \]
+Then we want the output polynomial $C$ in the following form:
+\[ C(x) = c_0 + c_1x + \dots + c_{2d - 2}x^{2d - 2} \]
+Define $N = 2d - 1$ for simplicity, and notice that these can all be considered $N - 1$ degree polynomials
+if we pad $A$ and $B$ with 0 coefficients on higher order coefficients.
+
+There is a relationship between polynomial and integer multiplication.
+Given integers $\alpha, \beta$, if we want $\gamma = \alpha \times \beta$, we first write them digit-wise as
+\[ \alpha = \alpha_{N - 1} \alpha_{N-2} \dots \alpha_0 \]
+\[ \beta = \beta_{N - 1} \beta_{N-2} \dots \beta_0\]
+\[ A(x) = \alpha_0 + \alpha_1 x + \dots + \alpha_{N-1}x^{N-1} \]
+\[ B(x) = \beta_0+ \beta_1x + \dots + \beta_{N-1}x^{N-1} \]
+Note that $\alpha = A(10)$ and $\beta = B(10)$, and $\gamma = (A \cdot B)(10)$
+plugging in integers for the polynomials is fairly fast (just some additions and multiplication).
+This shows that integer multiplication and polynomial multiplication are fairly connected.
+
+\begin{algothm} ["Straightforward" Algorithm for Polynomial Multiplication]
+    \[ C(x) = c_0 + c_1x + \dots + c_{2d - 2}x^{2d - 2} \]
+    What are these coefficients in terms of $a_i$ and $b_i$?
+    \begin{align*} 
+        c_0 &= a_0 b_0 \\
+        c_1 &= a_0 b_1 + a_1 b_0 \\
+        &\vdots \\
+        c_k &= \sum_{j = 0}^k a_j b_{k - j}
+    \end{align*}
+
+    Then the algorithm looks something like this:
+    \begin{itemize}
+        \item Loop over $k = 0$ to $N - 1$
+        \begin{itemize}
+            \item Compute $c_k$ with a loop from $j = 0$ to $k$
+        \end{itemize}
+    \end{itemize}
+
+    Note that this algorithm runs $\Theta(N^2)$.
+\end{algothm}
+
+However, we can do better, since integer multiplication is close to polynomial multiplication.
+
+\begin{algothm} [Karatsuba for Polynomials]
+    Call:
+    \begin{align*}
+        A_l(x) &= a_0 + a_1 x + a_2 x^2 + \dots + a_{N/2 - 1}x^{N/2 - 1} \\
+        A_h(x) &= a_{N/2} x^{N/2} + \dots + a_{N-1}x^{N - 1} \\
+        B_l(x) &= b_0 + b_1 x + b_2 x^2 + \dots + b_{N/2 - 1}x^{N/2 - 1} \\
+        A_h(x) &= b_{N/2} x^{N/2} + \dots + b_{N-1}x^{N - 1} 
+    \end{align*}
+
+    Note that $A(x) = A_l(x) + x^{N/2} A_h(x)$ and $B(x) = B_l(x) +  x^{N/2} B_h(x)$. Using the Karatsuba trick,
+    you see that you need 3 multiplications, giving the recurrence:
+    \[ T(N) \leq 3 T\qty(\frac{3}{2}) + \Theta(N) \]
+    which solves to: $T(N) = \Theta(N^{\log_2{3}})$
+
+\end{algothm}
+
+Here is a fact from elementary algebra:
+\begin{note} [Polynomial Interpolation]
+    A degree $< N$ polynomial is fully determined by its evaluation on $N$ distinct points.
+
+    \begin{proof*}
+    Here is an argument for why interpolation works. Represent $C$ as the vector
+    \[ \begin{bmatrix} c = 
+        c_0 \\ c_1 \\ \vdots \\ c_{N - 1}
+    \end{bmatrix} \]
+    Then consider the following matrix-vector multiplication:
+    
+    \[ \begin{bmatrix}
+        1 & x_0 & x_0^2 & \dots & x_0^{N-1} \\
+        1 & x_1 & x_1^2 & \dots & x_1^{N-1} \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        1 & x_{N - 1} & x_{N-1}^2 & \dots & x_{N-1}^{N-1}
+    \end{bmatrix} \begin{bmatrix}
+        c_0 \\ c_1 \\ \vdots \\ c_{N - 1}
+    \end{bmatrix} = \begin{bmatrix}
+        y_0 \\ y_1 \\ \vdots \\ y_{N - 1}
+    \end{bmatrix}
+    \]
+
+    I.e. we can call this $Vc = y$, solving this equation is only possible if
+    $V$ is full rank.
+
+    Fact for "Vandermonde" matrix $V$:
+    \[ \det{V} = \prod_{i < j} (x_i - x_j) \neq 0 \]
+    so we can solve $c = V^{-1} y$, so there is a unique polynomial that interpolates.
+    \end{proof*}
+\end{note}
+
+This gives rise to the following idea: rather than multiplying directly,
+we instead evaluate $C(x_0), C(x_1), \dots, C(x_{N - 1})$ for distinct $x_i$.
+
+To do this evaluation, just evaluate $A(x_i)$ and $B(x_i)$, then finally combine to get
+$C(x_i)$. Finally, interpolate to set back coefficients from $C$ in terms of these points.
+
+However, interpolation is way too slow. You have to use inversion
+which takes $\mathcal{O}(n^3)$ flops. Instead, what if we choose $V$ carefully
+such that it's faster to invert?
+
+Let us establish some types:
+\begin{enumerate}
+    \item The Discrete Fourier Transform (DFT) is a \textbf{matrix}.
+    \item The Fast Fourier Transform (FFT) is a \textbf{algorithm}.
+\end{enumerate}
+
+\begin{definition} [Discrete Fourier Transform (DFT)]
+    Define $\omega = e^{2\pi \sqrt{-1}/N}$ (primitive root of unity). Now define the DFT matrix $F$
+    such that $F_{ij} = (\omega^i)^j = \omega^{ij}$.
+    Imagine evaluating a polynomial at points $1, \omega, \omega^2, \dots, \omega^{N - 1}$
+
+    This gives the Vandermonde matrix:
+    \[ V = \begin{bmatrix}
+        1 & 1 & 1 & \dots & 1 \\
+        1 & \omega & \omega^2 & \dots & \omega^{N-1} \\
+        1 & \omega^2 & \omega^4 & \dots & \omega^{2(N-1)} \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        1 & \omega^{N - 1} & \omega^{2(N - 1)} & \vdots & \omega^{(N-1)(N - 1)}
+    \end{bmatrix} \]
+    i.e. the DFT matrix.
+\end{definition}
+
+Here is the most important property of the DFT matrix:
+\begin{note} [Inverse of the DFT matrix]
+    \[ F^{-1} = \frac{1}{N} \overline{F} \]
+\end{note}
+
+Note that we can view the following algorithm in two lenses: either a fast way
+to multiply by $F^{-1}$, or a fast way to calculate $P(\omega), P(\omega^2), \dots$.
+We take the latter interpretation.
+
+\begin{algothm} [Fast Fourier Transform (FFT)]
+    The goal of this algorithm is to multiply by the DFT quickly. We will take a polynomial interpretation.
+    Consider our polynomial, assuming $N$ is a power of 2:
+    \begin{align*}
+        P(z) &= p_0 + p_1z + p_2z^2 + \dots + p_{N - 1}z^{N - 1} \\
+        &= \qty(p_0 + p_2z^2 + p_4\qty(z^2)^2 + \dots + p_{N - 2}\qty(z^2)^{N/2 - 1}) + z \qty(p_1 + p_3z^2 + p_5\qty(z^2)^2 + \dots) \\
+        &= P_{\text{even}}(z^2) + zP_{\text{odd}}(z^2)
+    \end{align*}
+
+    For all $N$ roots of unity, squaring any of them will just give you another $N$th root of unity.
+    In fact, it'll give you a $N/2$ root of unity. This means that we only have to evaluate $P_{\text{odd}}$ and
+    $P_{\text{even}}$ on $N/2$ roots of unity, which means our recurrence becomes:
+
+    \[ T(N) = 2 T\qty(\frac{N}{2}) + \Theta(N) \]
+    which solves to:
+    \[ T(N) = N \log N \]
+\end{algothm}
+
+Finally, we give an algorithm for our initial problem of multiplying polynomials.
+\begin{algothm} [Polynomial Multiplication Via FFT]
+    First, we use the Fast Fourier Transpose to compute $\hat{a} = Fa$ and $\hat{b} = Fb$.
+    
+    Then, for $i = 0$ to $N - 1$, we compute,
+    $\hat{c_i}  = \hat{a_i} \times \hat{b_i}$.
+    
+    Finally, we have to bring $c$ back into the original basis, i.e. compute
+    $c = F^{-1} \hat{c}$. To do this, notice
+    \begin{align*}
+        c &= \frac{1}{N} \overline{F} \hat{c} \\
+        &= \frac{1}{N} \overline{F \overline{\hat{c}}} \\
+    \end{align*}
+    which requires just one more use of FFT to multiply $F \overline{\hat{c}}$.
+
+    The runtime is thus dominated by the 3 FFTs, giving us:
+    $\mathcal{O}(N \log N)$ runtime, assuming we can multiply/add/conjugate complex numbers
+    in constant time.
+\end{algothm}
+
+It may seem paradoxical that since it takes $N^2$ entries to write down $F$, how come we are faster?
+The heart of this is that we \textbf{never write down $F$}. Instead, we just use FFT to multiply $F$ by a vector (quickly).
+
+\subsubsection{Cross Correlation}
+Suppose you have two vectors: $x$ and $y$:
+\[ x = \begin{bmatrix}
+    x_0 \\ x_1 \\ \vdots \\ x_{m - 1}
+\end{bmatrix} \]
+
+\[ y = \begin{bmatrix}
+    y_0 \\ y_1 \\ \vdots \\ y_{n - 1}
+\end{bmatrix} \]
+where $n \geq m$. Suppose we want all shifted dot products of $x$ with $y$, i.e.
+\begin{align*}
+    &x_0 y_0 + x_1 y_1 + \dots + x_{m - 1}y_{m - 1} \\
+    &x_0 y_1 + x_2 y_2 + \dots + x_{m - 1}y_{m} \\
+    &\vdots
+\end{align*}
+
+However, we can reduce cross correlation to a problem we have already solved, polynomial multiplication!
+
+\begin{algothm} [Cross Correlation Via Polynomial Multiplication]
+    Define the following:
+    \begin{align*}
+        X(z) &= x_{m - 1} + x_{m - 2}z + \dots + x_0 z^{m - 1} \\
+        Y(z) &= y_0 + y_1 z + y_2 z^2 + \dots + y_{n - 1}z^{n - 1}\\
+        Q(z) &= (X \cdot Y)(z) = q_0 + q_1z + \dots
+    \end{align*}
+    Then let us investigate the coefficients of $Q$:
+    \begin{align*}
+        q_0 &= x_{m - 1}y_0 \\
+        q_1 &= x_{m - 1}y_1 + x_{m - 2}y_0 \\
+        &\vdots \\
+        q_{m - 1} &= x_{m - 1}y_{m - 1} + \dots + x_1 y_1 + x_0 y_0 \\
+        q_{(m - 1) + 1} &= x_{m - 1}y_{m} + \dots + x_1 y_2 + x_0 y_1 \\
+        &\vdots
+    \end{align*}
+
+    Thus, we can multiply the polynomials $X$ and $Y$, then take the coefficients
+    $m - 1$ and bigger to get all of our cross correlation terms.
+\end{algothm}
+\endinput

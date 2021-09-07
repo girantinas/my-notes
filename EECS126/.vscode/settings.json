@@ -1,0 +1,11 @@
+{
+    "files.watcherExclude": {
+        "**/*.log": true,
+        "**/*.out": true,
+        "**/*.aux": true,
+        "**/*.fls": true,
+        "**/*.synctex": true,
+        "**/*.fdb_latexmk": true,
+        "**/*.thm": true,
+    }
+}

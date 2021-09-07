@@ -1,0 +1,94 @@
+\subsection{Lecture 2}
+
+We begin probability by defining a set $\Omega$ called the sample space.
+Elements of the sample space are termed outcomes. Subsets of $\Omega$ are termed as events.
+
+For some event $A$, we can define the probability of $A$ as follows:
+\[ \Pr{A} = \sum_{\omega \in A} \Pr{\omega} \]
+
+Probability maps events to $[0, 1]$ in a consistent manner, satisfying the following axioms:
+\begin{itemize}
+    \item $\Pr{\Omega} = 1$
+    \item $\Pr{\emptyset} = 0$
+    \item For two disjoint events $A_1, A_2$, we have $\Pr{A_1 \cup A_2} = \Pr{A_1} + \Pr{A_2}$
+\end{itemize}
+This is what we term a probability space. Often it is more helpful to work with events than
+with individual sample points (especially in the case of an uncountably infinite amount of sample points).
+
+\begin{definition} [Random Variable]
+    A random variable $X: \omega \to B$ maps each outcome to elements of some other set (often $\R$).
+    $X = x$ for some $x$ is an event, with a well-defined probability.
+\end{definition}
+
+% (Fig A.2)
+
+\begin{definition} [Independence]
+    Two random variables $X$ and $Y$ are independent if
+    \[\Pr{X = x | Y = x} = \Pr{X = x} \]
+    i.e.
+    \[\Pr{X = x, Y = y} = \Pr{X = x} \Pr{Y = y} \]
+\end{definition}
+
+\begin{example}
+    Suppose you flip a coin 10 times.
+    We will show that $X$, the amount of heads in the first 4 flips, and $Y$, the amount
+    of heads in the last 6 flips, are independent.
+
+    Let $a(x)$ be the amount of ways to get $x$ heads in 4 flips and $b(y)$ be the amount
+    of ways to get $y$ heads in 6 flips.
+
+    Then,
+    \begin{align*}
+        \Pr{X=x} &= \frac{a(x) \cdot 2^6}{2^{10}} = \frac{a(x)}{2^4} \\
+        \Pr{Y=y} &= \frac{b(y) \cdot 2^4}{2^{10}} = \frac{b(y)}{2^6} \\
+        \Pr{X=x, Y=y} &= \frac{a(x) \cdot b(y)}{2^{10}} = \Pr{X=x} \cdot \Pr{Y=y} 
+    \end{align*}
+
+    Thus, the random variables are independent.
+\end{example}
+% (Fig A.1)
+\begin{definition} [Expectation]
+    The expectation of a (discrete) random variable is:
+    \[ \E{X} = \sum_{x} x \Pr{X = x} \]
+\end{definition}
+
+This is often called the mean or the average value.
+
+\begin{theorem}
+    Properties of expectation:
+    \begin{itemize}
+        \item $\E{a} = a$ for $a \in \R$
+        \item If the space is uniform, then $\E{X} = \frac{1}{N} \sum_{x} x$
+        \item $\E{\alpha X + \beta Y} = \alpha \E{X} + \beta \E{Y}$ for $\alpha, \beta \in \R$
+        \item $X \leq Y \Rightarrow \E{X} \leq \E{Y}$
+        \item If $X$ and $Y$ are independent, then $\E{XY} = \E{X} \E{Y}$
+        \item $\E{XY} = \E{X} \E{Y} \nRightarrow X, Y$ independent
+    \end{itemize}
+\end{theorem}
+
+There are two ways of thus computing expectation. You can either sum over sample points, or take
+a lot of measurements of your random variable, then divide by the amount of measurements. The reason this works is
+because of property 2 above.
+
+\begin{definition} [Variance and Standard Deviation]
+    The variance of a random variable $X$ is defined as:
+    \[ \Var{X} = \E{(X - \E{X}}^2 \]
+    The standard deviation of this random variable is:
+    \[ \sigma_X = \sqrt{\Var{X}} \]
+\end{definition}
+
+The variance measures the spread away from the mean that a random variable may exhibit.
+
+\begin{theorem}
+    Properties of variance:
+    \begin{itemize}
+        \item $\Var{X} \geq 0$, with equality only if $X$ is constant
+        \item $\Var{X} = \E{X^2} - \qty(\E{X})^2$
+        \item $\Var{aX} = a^2 \Var{X}$ for constant $a$
+        \item If $X$ and $Y$ are independent, $\Var{X + Y} = \Var{X} + \Var{Y}$
+        \item In general, $\Var{X + Y} = \Var{X} + \Var{Y} - 2 \Cov{X, Y}$
+    \end{itemize}
+\end{theorem}
+
+Often we term $\E{X^k}$ as the $k$th moment of $X$, so the variance contains information
+about the second moment of $X$.

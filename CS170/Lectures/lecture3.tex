@@ -1,0 +1,282 @@
+\subsection{Lecture 3}
+
+\subsubsection{Recurrences and Master Theorem}
+The idea of divide-and-conquer algorithms are to
+divide the input inot smaller parts, recurse on parts,
+and combine the parts to build an answer.
+
+To analyze the runtime of divide-and-conquer algorithms, it is
+useful to derive the following result.
+
+\begin{theorem} [Master Theorem]
+    Suppose we have a recurrence
+    \[ T(n) = a T(\frac{n}{b}) + cn^d \]
+    then, we have
+    \[ T(n) = \begin{cases}
+        \Theta(n^d) & a < b^d \\
+        \Theta(n^d \log n) & a = b^d \\
+        \Theta(n^{\log_b a}) & a > b^d
+    \end{cases} \]
+\end{theorem}
+
+Master's theorem can be shown by drawing a recursion tree,
+and then summing up the work done in each level (proof omitted for brevity).
+We can also think of the cases as symbolizing the following:
+
+\begin{center}
+\begin{tabular}{ c|c }
+    Case & Interpretation \\ \hline
+    $a < b^d$ & The root does most of the work \\ \hline
+    $a = b^d$ & The root and the leaves do an equal amount of work \\ \hline
+    $a > b^d$ & The leaves do most of the work \\ \hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Matrix Multiplication}
+Our first example of a divide and conquer algorithm is matrix multiplication.
+
+Consider multiplying two $n$-by-$n$ matrices $A$ and $B$.
+
+\[ A = \begin{bmatrix}
+    A_{11}& A_{12}& \ldots& A_{1n} \\
+    A_{21}& A_{22} & \ldots & A_{2n} \\
+    \vdots& \vdots & \ddots & \vdots \\
+    A_{n1} & A_{n2} & \ldots & A_{nn}
+\end{bmatrix} \]
+
+Then the resultant $C$ has entries given by:
+
+\[ C_{ij} = \sum_{k = 1}^n A_{ik} B_{kj} \]
+
+The natural implementation is then to to loop this summation over $i$
+and $j$. This means this will be three nested loop (a loop is needed for the summation).
+In flops, this runs in $\Theta(n^3)$ operations.
+
+We can try to break our input instead into $n / 2$-by-$n / 2$ blocks, as shown:
+
+\[ \begin{bmatrix}
+    A & B \\
+    C & D
+\end{bmatrix} \begin{bmatrix}
+    E & F \\
+    G & H
+\end{bmatrix} = \begin{bmatrix}
+    AE + BG & AF + BH \\
+    CE + DG & CF + DH
+\end{bmatrix} \]
+
+To find the runtime of this algorithm, let us realize there are
+8 multiplications (recursively) and then finally a $\Theta{n^2}$ addition at the end.
+This means our recurrence is:
+
+\[ T(n) = 8 T\qty(\frac{n}{2}) + \Theta(n^2) \]
+
+Note that for our Master theorem setup, $8 > 2^2$, so we have
+\[ T(n) = n^{\log_2{8}} = n^3 \]
+so this is no better than our naive approach.
+
+Using a similar realization to Karatsuba, Strassen in 1969 found the following:
+
+\begin{algothm} [Strassen's Algorithm]
+    Consider two matrices $X$ and $Y$ which are both $n$-by-$n$.
+    Break them up into block matrix form of $n/2$-by-$n/2$ matrices as follows:
+    \[ X = 
+    \begin{bmatrix}
+    A & B \\
+    C & D
+    \end{bmatrix}, Y = \begin{bmatrix}
+    E & F \\
+    G & H 
+    \end{bmatrix} \]
+    Define the following:
+    \begin{align*}
+        P_1 &= A(F - H) \\
+        P_2 &= (A + B)H \\
+        &\vdots \\
+        P_7 &= (A - C)(E + F)
+    \end{align*}
+
+    Then,
+    \[ Z = \begin{bmatrix}
+       P_5 + P_4 - P_2 + P_6 & P_1 + P_2 \\
+       P_3 + P_4 & P_1 + P_5 - P_3 - P_7
+    \end{bmatrix} \]
+
+    Analyzing the runtime, we see that there are 7 $n/2$-by-$n/2$ multiplications, and some $n^2$ additions,
+    meaning the total runtime is
+    \[ T(n) = 7 T(n/2) + \mathcal{O}\qty(n^2) \]
+    which Master theorem brings to
+    \[ T(n) = \mathcal{O}\qty(n^{\log_2{7}}) \approx \mathcal{O}\qty(n^{2.81}) \]
+\end{algothm}
+
+However, Strassen has such a big constant factor that the normal $n^3$ algorithm
+is still the most widely used.
+
+\subsubsection{Sorting}
+    Consider the problem of sorting a length $n$ array $A$. 
+
+\begin{algothm}[MergeSort]
+
+    First, we define a procedure \textsc{merge} that takes two sorted lists and merges them in linear time. To do this, we first keep a pointer on both lists that starts at the beginning of each list.
+    We then compare the pointed-to elements of each list. The lesser element is then added to the output, and the pointer of the list with that element is incremented
+    by one place. This keeps going until all the elements are used. We then use merge to divide-and-conquer the list as follows:
+    \begin{algorithmic}
+    \Function{merge-sort}{$A[1 \dots n]$} 
+        \State $B \gets \Call{merge-sort}{A[1 \dots \frac{n}{2}]}$
+        \State $C \gets \Call{merge-sort}{A[\frac{n}{2} + 1 \dots n]}$
+        \State \Return \Call{merge}{$B, C$}
+    \EndFunction
+    \end{algorithmic}
+
+    We get the following recurrence for \textsc{merge-sort}:
+
+    \[ T(n) = 2 T\qty(\frac{n}{2}) + \Theta(n) \], which through master theorem gives us a running time of
+    \[T(n) = \Theta(n \log n) \]
+\end{algothm}
+
+Another way of implementing this is a bottom up approach:
+
+\begin{algothm} [Iterative Merge Sort]
+    \begin{algorithmic}
+        \Function{merge-sort-iter}{$A[1 \dots n]$}
+            \State $Q \gets $ Divide $A$ into $n$ lists of size one
+            \While{$Q$.size() $> 1$}
+                \State $X, Y \gets Q$.pop(), $Q$.pop()
+                \State $Q$.push(\textsc{merge}($X, Y$))
+            \EndWhile
+            \State \Return $Q$.pop()
+        \EndFunction
+    \end{algorithmic}
+    Now we can think about the runtime of this algorithm. Think of the algorithm as running in phases. Phase 0 is when lists popped have size 1.
+    Phase 1 is when lists popped have size 2. Phase $i$ is when lists popped have size $2^i$. Note that in each phase, each element is looked at exactly once. Thus,
+    the total runtime must be proportional to $n \cdot \text{ number of phases}$. How many phases are there? There are $\log n$ phases, giving us
+    the same $\Theta(n \log n)$ runtime!
+\end{algothm}
+
+
+The best way to see this is with an example:
+
+\begin{example}
+    Suppose our initial list is:
+    \[ A = \begin{bmatrix}
+        8 & 7 & 6 & 5 & 4 & 3 & 2 & 1
+    \end{bmatrix} \]
+
+    We then split this into sublists of size one in our $Q$ and start iterating:
+    \begin{align*}
+        Q &= [
+            [8], [7], [6], [5], [4], [3], [2], [1]
+        ] \\
+        Q &= [
+            [6], [5], [4], [3], [2], [1], [7, 8]
+        ] \\
+        &\vdots \\
+        Q &= [
+            [7, 8] , [5, 6] , [3, 4] , [1, 2]
+        ] \\
+        Q &= [[3, 4] , [1, 2] , [5, 6, 7, 8]] \\
+        Q &= [[1, 2, 3, 4] , [5, 6, 7, 8]] \\
+        Q &= [[1, 2, 3, 4, 5, 6, 7, 8]] 
+    \end{align*}
+
+    Our list has been sorted!
+\end{example}
+
+Can we sort faster than $n \log n$? It turns out we cannot do any better with an algorithm that uses comparisons to
+sort (the problem is $\Omega(n \log n)$).
+
+\begin{theorem} [Fastest Shorting in Comparison Model, Lower Bound]
+    We will show that $\Omega(n \log n)$ comparisons are needed even if promised
+    $A$ is some permutation of $\{1, \dots, n\}$ (all distinct as well).
+
+    \begin{proof*}
+        The first comparison such an algorithm might make might be:
+        is $A_i < A_j$? Then we branch off into two cases for each, where we require another comparison.
+        We can construct a binary tree that models the situation.
+
+
+        % \begin{tikzpicture}[grow'=down]
+        %     \Tree [.1
+        %             [.2]
+        %             [.3]]
+        % \end{tikzpicture}
+
+        First, notice that each leaf is when the algorithm terminates. Note that since every run of the algorithm with a different
+        input produces a different output permutation of the input, there must be at least $n!$ leaves.
+        Consider the maximum depth of this tree $T$. There are at most $2^T$ leaves, meaning that $2^T \geq n!$. This means
+        \begin{align*}
+            T &\geq \log(n!) \\
+            T &= \Omega(n \log n)
+        \end{align*}
+        The last claim can be shown by realizing
+        \begin{align*}
+            n! &\geq \qty(\frac{n}{2})^\frac{n}{2} \\
+            \log(n!) &\geq \frac{n}{2} \log\qty(\frac{n}{2})\\
+            \log(n!) &\geq \frac{n}{2} \log n - \frac{n}{2} \\
+            \log(n!) &= \Omega(n \log n)
+        \end{align*}
+    \end{proof*}
+\end{theorem}
+
+However, there are way more operations than comparisons that can be used for sorting. An example of this is counting sort:
+if you have $n$ integers and all the integers have values between $1$ and $b$, then you can sort in $\Theta(n + b)$, by just
+keeping a hashmap of all the elements that fit in each value "bucket" between $1$ and $b$. 
+
+The Word RAM model: suppose your machine can store words of size $w$ and you can do any common $C$ operations. The fastest known algorithm
+following this model (not just comparisons) is: $\mathcal{O}\qty(n \sqrt{\log \log n})$. This is also a randomized algorithm.
+
+There are two types of randomized algorithm (which will be revisited). A Monte Carlo randomized algorithm is one whose
+output may be incorrect with small probability. A Las Vegas algorithm is one whose runtime is fast in expectation, but may be slow
+with small probability.
+
+\subsubsection{Selection/Medians}
+
+We now consider the problem of selection. Suppose we want to select the $k$ smallest integer in a list $A$. Without loss of generality,
+assume all elements of $A$ are distinct (since we could replace $A[i]$ with the tuple $(A[i], i)$). For selection, there is Quick Select, which
+we will explore later. Notably, quick select requires knowing the median in linear time. We will instead focus on that problem,
+(the same as the selection problem for $k = n/2$).
+
+\begin{algothm} [Median of Medians]
+    Take an array $A$. Then break up the array into subarrays of size 5.
+    Next, we will recursively compute the median of each subarray. Note that this takes constant
+    time to complete since 5 is a constant. Now we have a $N / 5$ size array. We then find the median recursively of this smaller problem.
+    Call this median $m_1$.
+
+    Now, we change the array such that all the elements bigger than $m_1$ end up on the right of $m_1$,
+    elements smaller than $m_1$ end up on the left, and $m_1$ is in the middle of these two parts (this only requires a linear scan).
+    If $m_1$ is in position
+    less than $n / 2$, then the true median sits on its right, so we can recurse on the right half.
+    If $m_1$ is in position greater than $n / 2$, then the true median sits on its left, so we can recurse on the left half.
+    Finally, if $m_1$ is at exactly position, $n/2$, then we have found the median.
+
+    The claim is that at least 30\% of the elements are filtered out by comparisons to $m_1$. To show this,
+    consider $m_1$ compared to the other medians. Note that it is bigger than 3 of the elements in every median it is bigger than,
+    so, it is bigger than $\frac{3}{5} \cdot \frac{N}{10} = \frac{3}{10}$ of the elements. Thus, if $m_1$ is in the first half of the array,
+    then it will filter out at least $\frac{3}{10}$ of the numbers. Similarly, you can make a symmetric argument that if $m_1$ is in the second half,
+    then it must be less than $\frac{3}{10}$ of the numbers and thus will filter out 30\% of them. Either way, we can then produce the following recurrrence:
+
+    \[ T(n) \leq T\qty(\frac{7n}{10}) + T\qty(\frac{n}{5}) + \Theta(n) \]
+
+    This recurrence gives $T(n) = \mathcal{O}(n)$. We can give an inductive argument:
+    \begin{proof*}
+        We will show that $T(n) \leq Bn$ for sufficiently large $B$, which will imply our big-$\mathcal{O}$ runtime.
+
+        \textbf{Base Case}: if $n$ is 1, then we just return the input, so if $B$ is greater than the time needed to return
+        then the base case holds.
+
+        \textbf{Inductive Hypothesis}: Suppose that the claim holds for $k < n$.
+        
+        \textbf{Inductive Step}: By the recurrence and the inductive hypothesis, we have that
+        \[T(n) \leq B \frac{7n}{10} + B \frac{n}{5} + Cn\]
+        where $C$ is some other constant. Now, we have
+        \begin{align*}
+            T(n) &\leq \qty(\qty(\frac{7}{10} + \frac{1}{5})B + C)n \\
+            &\leq \qty(\frac{9}{10}B + C)n \\
+            &\leq Bn
+        \end{align*}
+        as long as $C \leq \frac{B}{10}$. Since $C$ is fixed, we can
+        set $B = 10C$ to make this true. \qed
+    \end{proof*}
+
+\end{algothm}
+
