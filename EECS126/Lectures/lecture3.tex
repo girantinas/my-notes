@@ -1,45 +1,51 @@
 \subsection{Lecture 3}
+\subsubsection{Concentration Inequalities}
+
+\begin{definition}[Indicator Random Variable]
+    $\mathbbm{1}_A$
+    is the indicator for event $A$, i.e. a random variable with the following values:
+
+    \[ \mathbbm{1}_A = 
+    \begin{cases}
+    1 & \text{ if sample point in event $A$} \\
+    0 & \text{ otherwise}
+    \end{cases} \]
+\end{definition}
 
 \begin{theorem} [Markov's Inequality]
     Consider random variable $X \geq 0$ and constant $a > 0$. Then,
     \[ \Pr{X \geq a} \leq \frac{\E{X}}{a} \]
+\begin{proof*}
+    Let $Y = \mathbbm{1}_{X \geq a}$. Then we know:
+
+    \begin{align*}
+        \E{Y} &= 0 \cdot \Pr{X < a} + 1 \cdot \Pr{X \geq a} = \Pr{X \geq a} \\
+        Y &\leq \frac{X}{a} \\
+        \E{Y} &\leq \E{\frac{X}{a}} = \frac{\E{X}}{a} \\
+        \Pr{X \geq a} &\leq \frac{\E{X}}{a}
+    \end{align*}
+\end{proof*}
 \end{theorem}
 
-Here is a quick proof of this fact. Note that $\mathbbm{1}_A$
-is the indicator for event $A$, i.e. a random variable with the following values:
-
-\[ \mathbbm{1}_A = 
-\begin{cases}
-   1 & \text{ if sample point in event $A$} \\
-   0 & \text{ otherwise}
-\end{cases}
-\]
-
-Let $Y = \mathbbm{1}_{X \geq a}$. Then we know:
-
-\begin{align*}
-    \E{Y} &= 0 \cdot \Pr{X < a} + 1 \cdot \Pr{X \geq a} = \Pr{X \geq a} \\
-    Y &\leq \frac{X}{a} \\
-    \E{Y} &\leq \E{\frac{X}{a}} = \frac{\E{X}}{a} \\
-    \Pr{X \geq a} &\leq \frac{\E{X}}{a}
-\end{align*}
 
 Markov's inequality tends to be a coarse bound, and $X, a$ have to be non-negative.
 
 \begin{theorem} [Chebyshev's Inequality]
     For random variable $X$ and $\epsilon > 0$:
     \[ \Pr{\abs{X - \E{X}}} \geq \epsilon) \leq \frac{\Var{X}}{\epsilon^2} \]
+
+    Define $Z = \abs{X - \E{X}}^2$, $a = \epsilon^2$, $\epsilon > 0$.
+
+    \begin{proof*}
+    Apply Markov's inequality:
+    \[ \Pr{Z \geq \epsilon^2} \leq \frac{\E{Z}}{\epsilon^2} \]
+
+    Note that \[\E{Z} = \E{(X - \E{X})^2} = \Var{X} \]
+
+    This means that \[ \Pr{\sqrt{Z} \geq \epsilon} \leq \frac{\Var{X}}{\epsilon^2} \]
+    which is exactly the statement of Chebyshev's.
+    \end{proof*}
 \end{theorem}
-
-Define $Z = \abs{X - \E{X}}^2$, $a = \epsilon^2$, $\epsilon > 0$.
-
-Apply Markov's inequality:
-\[ \Pr{Z \geq \epsilon^2} \leq \frac{\E{Z}}{\epsilon^2} \]
-
-Note that \[\E{Z} = \E{(X - \E{X})^2} = \Var{X} \]
-
-This means that \[ \Pr{\sqrt{Z} \geq \epsilon} \leq \frac{\Var{X}}{\epsilon^2} \]
-which is exactly the statement of Chebyshev's.
 
 Chebyshev's is generally a tighter bound than Markov's.
 
@@ -56,6 +62,7 @@ is bounded by $\frac{\Var{Y_n}}{\epsilon^2} = \frac{n\sigma^2}{n^2\epsilon^2} \t
 In words, this means the probability of the sample mean being within $\epsilon$ of the true mean
 approaches 1.
 
+\subsubsection{Covariance and Estimation}
 \begin{definition} [Covariance]
     \[ \Cov{X, Y} = \E{XY} - \E{X}\E{Y} = \E{(X - \E{X})(Y - \E{Y})} \]
 \end{definition}
@@ -83,9 +90,10 @@ This yields LLSE:
 
 \subsection{Lecture 3, Continued}
 
+\subsubsection{Infinite Collections of Events and Borel-Cantelli}
 There are some important consequences of the axioms of probability.
 
-\begin{theorem} [Convergence]
+\begin{theorem} [Infinite Sub-Events]
     Consider some set $A$ where $A = \bigcup_{n = 1}^{\infty} A_n$ where:
     \[ A_1 \subseteq A_2 \subseteq \dots \]
 
@@ -100,17 +108,56 @@ There are some important consequences of the axioms of probability.
     Let $\{A_n\}_{n = 1}^{\infty}$ be a collection of events such that $\sum_{n = 1}^{\infty} \Pr{A_n} < \infty$, then
     $\Pr{A_n \text{ infinitely often}} = 0$.
 
-    $\{A_n \text{ infinitely often}\}$ is the complement of the following event:
+    $\{A_n \text{ infinitely often}\}$ is the following event:
     \[ \{\omega \mid \exists N(\omega) \text{ such that } \forall n > N(\omega), \omega \not\in A_n \} \]
 
     In English, the set describes all outcomes where you can assign a number to that outcome such that
     after $A_N$, you have no set membership.
 
-    The theorem claims that you CANNOT assign such a number to any outcome with nonzero probability.
+    The theorem claims that you CAN assign such a number (max event) to any outcome with nonzero probability.
+
+    \begin{proof*}
+        Define
+        \[ B_n = \bigcup_{m \geq n} A_m \]
+        Note that $B_1 \supseteq B_2 \supseteq B_3 \dots$
+        
+        Calling,
+        \[ B = \bigcap_{n} B_n = B_n \]
+        Note that $\omega \in \{ A_n \text{ io}\}$ if and only if $\omega \in B_n$ for all $n$.
+        But this means that $\omega \in B$. This means that $\{ A_n \text{ io}\} = B$.
+
+        So we must calculate $\Pr{B}$. However, note that $\Pr{B_n} \to \Pr{B}$ as $n \to \infty$.
+        Thus, we must compute:
+        \begin{align*}
+            \Pr{B} &= \lim_{n \to \infty} \Pr{B_n} \\
+            \Pr{B_n} &\leq \sum_{m = n}^{\infty} \Pr{A_m} \to 0 \\
+            \Pr{B} &= 0
+        \end{align*}
+        The second step is justified by the following result from analysis. For non-negative sequence $a_n$, if $\sum_{i = 1}^{\infty} a_n < \infty$, then
+        $\lim_{n \to \infty} \sum_{m = n}^{\infty} a_m \to 0$.
+
+        Our result shows that $\Pr{A_n \text{ io}} = 0$ \qed
+    \end{proof*}
 \end{theorem}
 
-\begin{example} [Infinite Flips]
+Consider the following example for coin flips:
+
+\begin{example} [Infinite Coin Flips]
+    Consider the experiment of flipping a coin infinitely many times. Let
+    \[ A_n = \{ \text{$n$th flip is heads} \} \]
+    Then, in this experiment, the event \{$A_n$ infinitely often \} (which we denote as
+    $\{A_n \text{ io}\}$)
     \begin{align*}
-        \{A_n \text{ i o } \} = \{ \omega | \not\exists N(\omega) \} \\
+        \{A_n \text{ io} \} = \{ \omega \mid \text{heads never stop after some $N(\omega)$} \} \\
     \end{align*}
+    Here are some sequences that are in that event:
+    \begin{align*}
+        \omega &= 0, 0, 1, 1, 1, 1, \dots \\
+        \omega &= 0, 1, 0, 1, 0, 1, \dots \\
+        \omega &= 0, 0, \underbrace{\dots}_{\text{1 million 0's}}, 1, 0, 0, \underbrace{\dots}_{\text{1 million 0's}}, 1, \dots
+    \end{align*}
+    Now consider the assigning the following probabilities to each heads (instead of the normal, uniform probability space):
+    \[ \Pr{A_n} = \frac{1}{n^2} \]
+    \(\sum_{n = 1}^{\infty} \frac{1}{n^2}\) converges, so by Borel-Cantelli, $\Pr{A_n \text{ io}} = 0$, i.e.
+    the heads ALWAYS stop.
 \end{example}

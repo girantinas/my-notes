@@ -1,0 +1,143 @@
+\subsection{Lecture 4}
+
+\subsubsection{The Laws of Large Numbers, Revisited}
+Here is a recap of the two different laws of large numbers.
+
+First, we define two different types of convergence:
+\begin{definition} [Almost Sure Convergence]
+    A random variable $A$ almost surely converges to constant $b$ if
+    \[\Pr{A \to b} = 1 \]
+    as $n \to \infty$.
+\end{definition}
+
+\begin{definition}[Convergence in Probability]
+    A random variable $A$ converges in probability to constant $b$ if
+    \[ \Pr{\abs{A - b} < \epsilon \to 1} \]
+    for any real number $\epsilon > 0$.
+\end{definition}
+
+\begin{theorem} [Strong Law of Large Numbers]
+    Let $X_1, X_2, \dots, X_n$ be independent and identically distributed (iid)
+    random variables. Define:
+    \[ Y_n = \frac{X_1 + \dots + X_n}{n} \]
+    \[ Y = \E{X_1} \]
+    $Y_n$ converges to $Y$ almost surely.
+\end{theorem}
+
+Note the contrast with the weak law of natural numbers. The weak law had only convergence in probability.
+A key thing to note is that the strong law $\textbf{implies}$ the weak law.
+
+\subsubsection{Independence}
+Let us now refine the notion of Independence.
+
+\begin{definition} [Pairwise Independence]
+    Consider events $A_j$ with $j \in J$.
+
+    The events are pairwise independent if for any $j, k \in J$,
+    \[\Pr{A_j \cap A_k} = \Pr{A_j} \Pr{A_k}\]
+\end{definition}
+
+\begin{definition} [Mutual Independence]
+    Consider events $A_j$ with $j \in J$.
+
+    The events are mutually independent if 
+    \[\Pr{\bigcap_{j \in K} A_j} = \prod_{j \in K} \Pr{A_j}, \forall K \subseteq J \]
+\end{definition}
+
+Note that pairwise independence does not imply mutual independence. Here is
+an example of that edge case:
+
+\begin{example}
+    Take probability space $\Omega = \{1, 2, 3, 4\}$, all equally likely. Consider the events:
+    $A = \{1, 2\}, B = \{1, 3\}, C=\{1,4\}$.
+
+    Note that $\Pr{A \cap B} = \frac{1}{4} = \Pr{A} \Pr{B}$, 
+    
+    but
+    $\Pr{A \cap B \cap C} = \frac{1}{4} \neq \frac{1}{8} = \Pr{A} \Pr{B} \Pr{C}$.
+\end{example}
+
+Now with independence, we can find that the converse of Borel-Cantelli is often true:
+
+\begin{theorem} [Converse of Borel-Cantelli Theorem]
+    Let $A_n$ be a collection of mutually indpendent events such that
+    $\sum_{n = 1}^{\infty} \Pr{A_n} = \infty$. Then, $\Pr{A_n \text{ infinitely often}} = 1$.
+\end{theorem}
+
+Let us use another example to understand this:
+
+\begin{example}
+    Let $A_n$ be the same event as the other example (the nth flip is heads) and assign:
+    \[ \Pr{A_n} = \frac{1}{n} \]
+    where all the $A_n$ are mutually independent.
+
+    Since $\sum_{n = 1}^{\infty} \frac{1}{n} = \infty$ and thus by the converse of Borel-Cantelli:
+    $\Pr{A_n \text{ io}} = 1$.
+\end{example}
+
+\subsubsection{Conditional Probability}
+Now we refine conditional probability for many events.
+
+\begin{definition} [Conditional Probability]
+    Let $A$ and $B$ be two events, and assume $\Pr{B} > 0$. Then the conditional probability of $A$ given $B$ is:
+    \[ \Pr{A \mid B} = \frac{Pr{A \cap B}}{\Pr{B}} \]
+\end{definition}
+
+\begin{theorem} [Chain Rule]
+    For two events we had $\Pr{A \cap B} = \Pr{A \mid B} \Pr{B}$. For $n$ events
+    $A_i$, we have:
+    \[ \Pr{A_1 \cap A_2 \cap \dots \cap A_n} = \Pr{A_1} \Pr{A_2 \mid A_1} \Pr{A_3 \mid A_1 \cap A_2} \dots \Pr{A_n \mid A_1 \cap A_2 \cap \dots \cap A_{n -1}} \]
+    if $\Pr{A_1 \cap A_2 \cap \dots A_{n - 1}} > 0$.
+\end{theorem}
+
+The generalized result above can be shown by induction, taking the case of two events as the base case and then inducting on $n$.
+Now we will bring in some of the most powerful tools.
+
+\begin{theorem}[Law of Total Probability]
+    Let $A, B_1, \dots B_n$ be events where $B_i$'s are disjoint and $\bigcup_{i=1}^n B_i = \Omega$.
+    Then,
+    \[ \Pr{A} = \sum_{i = 1}^n \Pr{A \cap B_i} \]
+\end{theorem}
+
+\begin{theorem} [Bayes' Rule]
+    Let $A, B_1, \dots B_n$ be events where $B_i$'s are disjoint and $\bigcup_{i=1}^n B_i = \Omega$.
+    \[ \Pr{B_i \mid A} = \frac{\Pr{A \mid B_i} \Pr{B_i}}{\sum_{j = 1}^n \Pr{A \mid B_j}\Pr{B_j}} \]
+
+    \begin{proof*}
+        Note that we can use the initial definition to expand the left side:
+        \begin{align*}
+            \Pr{B_i \mid A} &= \frac{\Pr{A \cap B_i}}{\Pr{A}} \\
+            &= \frac{\Pr{A \mid B_i} \Pr{B_i}}{\sum_{j = 1}^n \Pr{A \cap B_j}} \\
+            &= \frac{\Pr{A \mid B_i} \Pr{B_i}}{\sum_{j = 1}^n \Pr{A \mid B_j} \Pr{B_j}} \\
+        \end{align*}
+        where the summation in the denominator comes from the law of total probability.
+    \end{proof*}
+\end{theorem}
+
+Often the $B_j$'s are termed the prior probabilities, and $A$ is considered the posterior probability.
+
+For an event $B \subseteq R$, $\Pr{X \in B} = \Pr{(X^{-1}(B))}$ where
+\[ X^{-1}(B) = \{ \omega \in \Omega \mid X(\omega) \in B \} \].
+
+We can define the following for a random variable to the reals.
+\begin{definition} [Cumulative Distribution Function (CDF)]
+    The Cumulative Distribution Function $F_X(x)$ of random variable $X$ is defined by:
+    \[ F_X(x) = \Pr{X \in (- \infty, x]} = \Pr{X \leq x} \]
+\end{definition}
+
+Here are some properties of the CDF:
+\begin{itemize}
+    \item $F_X$ is non-decreasing.
+    \item $F_X$ is right-continuous.
+    \item $F_X \to 0$ as $x \to -\infty$ and $F_X \to 1$ as $x \to \infty$.
+\end{itemize}
+
+\begin{example} [CDF of an Indicator]
+    Consider the following random variable:
+    \[ I = \begin{cases}
+        0 \text{ with probability $1-p$} \\
+        1 \text{ with probability $p$}
+    \end{cases} \]
+    Then the $F_I(i)$ is a step function:
+    TODO Add figure
+\end{example}
