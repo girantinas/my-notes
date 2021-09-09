@@ -1,0 +1,157 @@
+\section{Graph Algorithms}
+
+\subsection{Lecture 5}
+
+\subsubsection{Graph Representation}
+
+\begin{definition} [Graph]
+    A graph is a pair $G = (V, E)$ where $V$ is the set of vertices and $E$
+    is the set of edges. We generally call $n = |V|$ and $m = |E|$.
+
+    If $G$ is a directed graph, then $E \subseteq V \times V$. $G$ is simple if $(a, a)$ (a self loop) is not allowed.
+
+    If $G$ is an undirected graph, then $E$ is a set of unordered pairs from $V$. If there are no self-loops, $G$
+    is simple.
+\end{definition}
+
+\begin{example} [Examples of graphs]
+    Graphs are often used as convenient ways to represent data.
+    \begin{enumerate}
+        \item Road network where vertices are intersections, and edges are road segments connecting intersections. (Would be directed, also maybe "weighted" according to distance)
+        \item Social networks where vertices are people, and edges are friendships. (Facebook would undirected, Twitter/IG would be directed)
+    \end{enumerate}
+\end{example}
+
+How do we represent graphs on a computer? We will assume:
+$V = \{1, \dots, n \}$. Then to store edges, we will either:
+\begin{enumerate} [label=\alph*]
+    \item Adjacency Matrix: $A$ is an $n$-by-$n$ matrix where 
+    \[ A_{ij} = \begin{cases}
+        1 & (i, j) \in E \\
+        0 & (i, j) \not\in E
+    \end{cases} \]
+    for a weighted graph this becomes:
+    \[ A_{ij} = \begin{cases}
+        w_{ij} & (i, j) \in E \\
+        \infty & (i, j) \not\in E
+    \end{cases} \]
+    \item Adjaceny List: represent $E$ as an array $B$ of linked lists.
+    Then, $B[i]$ is a linked list containing all $j$ such that $(i, j) \in E$.
+\end{enumerate}
+
+We can compare the cost of these representations as follows:
+
+\begin{tabular}{c | c | c}
+    \empty & Adjancency Matrix & Adjancency List \\ \hline
+    Space & $n^2$ bits & $\Theta(m + n)$ words \\ \hline
+    $(u, v) \in E$? & $\mathcal{O}(1)$ & $\Theta(1 + d_u)$ \\ \hline
+    Print all the neighbors of $u$ & $\Theta(n)$ & $\Theta(d_u)$
+\end{tabular}
+
+where $d_u$ is the degree of $u$, i.e. $|\{w \mid (u, w) \in E\}|$.
+
+Note that we could also choose alternative representations. Remember that graphs are abstractions used to store data,
+so there is no one-size-fits-all solution.
+
+\subsubsection{Depth First Search (DFS)}
+We discuss graph exploration, i.e. visiting all vertices in a graph.
+
+\begin{algothm} [Depth First Search]
+    \begin{algorithmic}
+        \Function{dfs}{$V, E$}
+            \State global clock = 1
+            \State global visited = boolean[n]
+            \State global preorder, postorder = int[n], int[n]
+            \For{$v \in V$}
+                \If {visited[v] is false}
+                    explore($v$)
+                \EndIf
+            \EndFor
+        \EndFunction
+
+        \Function{explore}{$v$}
+            \State visited[v] = true
+            \State preorder[v] = clock
+            \State clock = clock + 1
+            \For{$(v, w) \in E$}
+                \If{visited $w$ is false}
+                    explore($w$)
+                \EndIf
+            \EndFor
+            \State postorder[v] = clock
+            \State clock = clock + 1
+        \EndFunction
+    \end{algorithmic}
+
+    The time window between postorder[$v$] and preorder[$v$] is exactly the amount of time we spend in recursive calls from $v$.
+
+    We have a claim about the subroutine $\textsc{explore}$. Namely, $\textsc{explore}(u)$ explores exactly:
+    $\{ v \mid \exists \text{ a path from $u$ to $v$}\}$, i.e. the connected component of $u$.
+
+    An argument for this claim is as follows:
+    \begin{proof*}
+        We need to show two directions.
+
+        First, if we explored $v$, there must be a path from $u$ to $v$, since every call in the recursion is from one neighbor to another. We can construct
+        the path by just following the path in the recursion tree.
+
+        In the other direction, for the sake of contradiction, suppose there exists a reachable $v$ that doesn't get explored. Let the path from $u$ to $v$ be:
+        \[ (u \to x_1 \to x_2 \to \dots \to x_r = v) \]
+        Let $x_j$ be the first vertex on the path which isn't explored. Then, look at $x_{j - 1}$, which was explored, which means we looped over all of $x_{j-1}$'s neighbors.
+        This means we had the opportunity to visit $x_j$, but we didn't. This means we must've visited $x_j$ and failed the if check. This is a contradiction, we visited $x_j$ and didn't.
+        Thus, we must have that all reachable $v$'s are explored.
+    \end{proof*}
+
+    Now we look at the runtime of the routine. First, note that the outer for loop runs $n$ times. Then, we have to enumerate the neighbors of $u$ for all vertices $u$ in the graph.
+    We only have to do this once, since we visit each vertex only once.
+
+    This means that the total running time is:
+    \[ T(n) = \Theta(n) + \sum_{u \in V} \text{time to enumerate neighbors} \]
+    which depends on our graph representation. With our adjacency matrix, the second term is quadratic. In the adjacency list,
+    it is just the sum of (degrees + 1) which will be exactly $2m + n$. (Since by adding degrees we double count the number of edges).
+
+    \begin{tabular}{c | c | c}
+        \empty & Adjancency Matrix & Adjancency List \\ \hline
+        DFS time & $\Theta(n^2)$ & $\Theta(m + n)$
+    \end{tabular}
+\end{algothm}
+
+TODO: Add a pictoral example of DFS from lecture.
+
+There are many applications of the DFS:
+\begin{itemize}
+    \item Reachability - Identifying the separate connected components
+    \item Articulation points - The set of vertices whose removal disconnects the graph
+    \item Finding biconnected/triconnected components - if there are two/three disjoint paths between any two vertices
+    \item Strongly connected components - In a directed graph, two vertices are strongly connected if there is a path from one vertex to another and from that other vertex back to the original
+    \item Planarity testing - Testing if a graph is planar, i.e. you can draw it without crossings
+    \item Isomorphism of planar graphs - Telling whether two planar graphs are isomorphic, i.e. we can turn one into the other with a bijection
+\end{itemize}
+
+The first set of problems we have already solved. Reachability is everything we visit in one iteration of the outer loop. The amount of connected components is the amount
+of explore calls in the outer loop.
+
+Now let us explore another claim about the DFS: that the set of intervals $[\text{pre}(u), \text{post}(u)]$ are either
+pairwise nested or disjoint. The argument is that pairwise, either two are in the same connected component or different components.
+In the same component, one must have started before the other, then the recursion finished the inner one, then it must've ended. In different components,
+the intervals are disjoint.
+
+\begin{definition} [Types of Graph Edges]
+    These are the types of edges in a DFS traversal of $G$.
+    \begin{enumerate}
+        \item Tree edge: Traversed edge during DFS (in the DFS tree).
+        \item Forward edge: Goes from an ancestor to a descendant in the DFS tree, and is not a tree edge.
+        \item Back edge: Goes from a descendant to an ancestor in the DFS tree, and is not a tree edge.
+        \item Cross edge: An edge that is not any of the above.
+    \end{enumerate}
+\end{definition}
+
+The useful facts about these edges are as follows:
+
+\begin{note}
+    Suppose $(u, v) \in E$. $\text{post}(u) < \text{post}(v)$ if and only if $(u, v)$ is a back edge.
+\end{note}
+
+\begin{note}
+    $G$ has a cycle if and only if it has a back edge.
+\end{note}
