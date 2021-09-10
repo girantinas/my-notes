@@ -160,4 +160,8 @@ Consider the following example for coin flips:
     \[ \Pr{A_n} = \frac{1}{n^2} \]
     \(\sum_{n = 1}^{\infty} \frac{1}{n^2}\) converges, so by Borel-Cantelli, $\Pr{A_n \text{ io}} = 0$, i.e.
     the heads ALWAYS stop.
+
+    Now there is one more question. Does $\Pr{A_n \text{ i.o.}} = 0 \implies \{A_n \text{i.o.}\} = 0$?
+    The answer is no. In this case, $\Pr{A_n \text{i.o.}} = 0$, but consider the outcome $\omega_n$ where the $n$th
+    flip onwards is a heads; these are all in the infinitely often set, so it actually has infinite cardinality!
 \end{example}
