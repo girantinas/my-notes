@@ -1,0 +1,133 @@
+\subsection{Lecture 5}
+
+\begin{definition}[Discrete Random Variable]
+    A discrete random variable $X$ can be described fully by:
+    \[ \{ (x_n, p_n), n = 1, \dots, N\} \] 
+    where $p_n = \Pr{X = x_n}$. This is called the probability mass function (PMF)
+    of $X$.
+\end{definition}
+
+We can write the expectation as follows:
+\[ \E{X} = \sum_{n = 1}^N x_n p_n \]
+
+With $N = \infty$, the expectation may not be defined.
+
+\begin{definition}[Function of a Random Variable]
+    Calling $h(X)$ means changing to another random variable with the following
+    PMF:
+    \[ (h(x_n), p_n), n = 1, \dots, N \]
+\end{definition}
+
+The expectation of this is as follows:
+\[ \E{h(X)} = \sum_{n = 1}^N h(x_n) p_n \]
+
+\begin{definition}[Coefficient of Variation]
+    The coefficient of variation $c$ of $X$ is defined:
+    \[ c = \sigma_X/\E{X} \]
+\end{definition}
+
+\subsection{Common Discrete Distributions}
+
+Bernoulli random variables model situations like individual coin flips.
+\begin{definition}[Bernoulli Random Variables]
+    If $X =_D B(p)$ with $p \in [0, 1]$,
+    then the PMF of $X$ is: \[\{(0, 1 - p), (1, p)\}\]
+    Furthermore,
+    $\E{X} = p$ and $\Var{X} = p(1-p)$.
+\end{definition}
+
+Geometric random variables model the situation where you count
+the number of coin flips until you get "heads".
+\begin{definition}[Geometric Random Variable]
+    If $X=_D G(p)$ with $p \in [0, 1]$,
+    then the PMF of $X$ is:
+    \[ \Pr{X = n} = (1 - p)^{n - 1} p \]
+    Furthermore,
+    $\E{X} = \frac{1}{p}$ and $\Var{X} = \frac{1 - p}{p^2}$.
+\end{definition}
+
+The CDF can also be derived as $\Pr{X \leq n} = 1 - (1- p)^n$,
+since it's the complement of failing $n$ times. The CCDF (Complementary CDF)
+is thus $\Pr{X < n} = (1 - p)^n$.
+
+\begin{note}[Memoryless Property]
+    The geometric distribution is memoryless, i.e. if $X =_D G(p)$, then
+    \[ \Pr{X > m + n \mid X > m} = \Pr{X > n} \]
+\end{note}
+
+Binomial random variables model the situation of doing $n$ coin flips and counting the heads,
+or the sum of $n$ i.i.d. Bernoulli random variables.
+\begin{definition}[Binomial Random Variable]
+    If $X =_D B(N, p)$ with $p \in [0, 1]$ and $N \geq 1$,
+    then the PMF of $X$ is:
+    \[ \Pr{X = n} = \binom{N}{n} p^n (1-p)^{N - n} \]
+    Furthermore,
+    $\E{X} = Np$ and $\Var{X} = Np(1 - p)$
+\end{definition}
+The mode of the binomial distribution (the maximum probability) is at
+$n = \floor{p(N + 1)}$.
+
+Poisson random variables are the limit of the binomials as the rate of
+coin flips goes to infinity. This represents the number of successes in an interval 
+during a continuous process.
+\begin{definition}[Poisson Random Variable]
+    If $X =_D P(\lambda)$ with $\lambda > 0$,
+    then the PMF of $X$ is:
+    \[ \Pr{X = n} = \frac{e^{-\lambda} \lambda^n}{n!} \]
+    Furthermore, $\E{X} = \lambda$ and $\Var{X} = \lambda$.
+\end{definition}
+
+In fact, we can make this limit more precise.
+\begin{theorem}[Binomial Converges to Poisson]
+    We have, setting $Np = \lambda$, where $\lambda$ is fixed,
+    \[ B(N, \lambda/N) \to P(\lambda) \]
+\end{theorem}
+
+\subsection{Multiple Discrete Random Variables}
+
+Consider a pair of random variables $(X, Y)$.
+
+\begin{definition}[Joint PMF]
+    The joint distribution is given by:
+    \[ p_{i, j} = \Pr{X = x_i, Y = y_j} \]
+\end{definition}
+
+To find the PMF of one of the variables from the joint distribution, we can
+\begin{note}[Marginal PMF from JPMF]
+    \[ \Pr{X = x_i} = \sum_j \Pr{X = x_i, Y = y_j} \]
+\end{note}
+
+Furthermore,
+\begin{theorem} [Independence for Random Variables]
+    $X$ and $Y$ are independent if and only if
+    \[ \Pr{X = x, Y = y} = \Pr{X = x} \Pr{Y = y} \]
+\end{theorem}
+
+If you have a function of multiple random variables, you can apply it similarly
+to the one variable case.
+\[ \E{h(X, Y)} = \sum_{i} \sum_{j} h(x_i, y_j) \Pr{X = x_i, Y = y_j} \]
+
+First we extend the idea of conditioning to random variables.
+
+\begin{definition}[Conditional PMF]
+    We call the conditional distribution of $Y$ given $X$ as:
+    \[ \Pr{Y = y_j \mid X = x_i} = \frac{\Pr{X = x_i, Y = y_j}}{\Pr{X = x_i}} \]
+\end{definition}
+
+\begin{definition}[Conditional Expectation]
+    The expectation of $Y$ given $X$ (i.e. the best guess of $Y$ given $X$)
+    is denoted $\E{Y \mid X}$ and is a function of $X$
+\end{definition}
+
+Furthermore, if we want to use a function, we can compute it as follows:
+\[ \E{h(Y) \mid X = x_i} = \sum_j h(y_j) \Pr{Y = y_j \mid X = x_i} \]
+
+\begin{theorem}[Properties of Conditional Expectation]
+    For two random variables $X, Y$,
+    \begin{align*}
+        \E{\E{Y \mid X}} &= \E{Y} \\
+        \E{h(X)Y \mid X} &= h(X) \E{Y \mid X} \\
+        \E{Y \mid X} &= \E{Y} \text{ if $X$ and $Y$ are independent} \\
+        \E{h_1(Y) + h_2(Y) \mid X} &= \E{h_1(Y) \mid X} + \E{h_2(Y) \mid X}
+    \end{align*}
+\end{theorem}
