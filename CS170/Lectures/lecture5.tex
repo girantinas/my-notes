@@ -131,10 +131,22 @@ There are many applications of the DFS:
 The first set of problems we have already solved. Reachability is everything we visit in one iteration of the outer loop. The amount of connected components is the amount
 of explore calls in the outer loop.
 
-Now let us explore another claim about the DFS: that the set of intervals $[\text{pre}(u), \text{post}(u)]$ are either
-pairwise nested or disjoint. The argument is that pairwise, either two are in the same connected component or different components.
-In the same component, one must have started before the other, then the recursion finished the inner one, then it must've ended. In different components,
-the intervals are disjoint.
+\begin{definition} [Preorder, Postorder]
+    The notation $\text{pre}(u)$ and $\text{post}(u)$ denote the preorder and postorder number of a given vertex $u$ in a run of the DFS algorithm on some graph containing $u$.
+\end{definition}
+
+Now let us explore another claim about the DFS.
+
+\begin{note}
+    For some vertex $u$, the set of intervals $[\text{pre}(u), \text{post}(u)]$ are either
+    pairwise nested or disjoint. The argument is that pairwise, either two are in the same connected component or different components.
+    In the same component, one must have started before the other, then the recursion finished the inner one, then it must've ended. In different components,
+    the intervals are disjoint.
+
+    Let us denote previsiting a vertex $u$ as $[_u$ and postivisiting that vertex as $]_u$.
+\end{note}
+
+It helps us to classify the graph edges during a DFS.
 
 \begin{definition} [Types of Graph Edges]
     These are the types of edges in a DFS traversal of $G$.
@@ -148,10 +160,27 @@ the intervals are disjoint.
 
 The useful facts about these edges are as follows:
 
-\begin{note}
+\begin{theorem}
     Suppose $(u, v) \in E$. $\text{post}(u) < \text{post}(v)$ if and only if $(u, v)$ is a back edge.
-\end{note}
 
-\begin{note}
+    \begin{proof*}
+    The backwards part of the claim is simpler. Basically $u$ is a decendant of $v$, so the order is something like $[_v \dots [_u$, so $]_u \dots ]_v$
+    must happen, i.e. the postorder numbers have the given order.
+
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem}
     $G$ has a cycle if and only if it has a back edge.
-\end{note}
+
+    We again take the backwards case first. By the definition of a back edge, there must be a series of tree edges from some vertex $u$ to $v$ and then a
+    back edge from $v$ to $u$. This implies there is a cycle from $u$ to $u$.
+
+    \begin{proof*}
+    Now the forward part of the claim, consider the cycle:
+    \[ u_0 \to u_1 to \dots \to u_k \to u_0 \]
+    Take $u_i$ with the lowest postorder number. Then the edge:
+    \[ (u_i, u_{(i + 1) \mod k}) \]
+    goes from a higher postorder number to a lower postorder number, which means that by the previous result, this edge is a back edge, showing our claim.
+    \end{proof*}
+\end{theorem}

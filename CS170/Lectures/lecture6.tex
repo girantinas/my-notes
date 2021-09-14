@@ -1,0 +1,118 @@
+\subsection{Lecture 6}
+
+\subsubsection{Topological Sort}
+
+We consider the problem of topological sort. We take as input a directed acyclic graph (DAG).
+We seek to find an ordering of $V$ such that $(u, v) \in E \implies u$ must come before $v$ in the ordering. Note that such an ordering of the graph
+is not necessarily unique. Intuitively, it represents the order that dependencies must be filled in order to solve a problem.
+
+%% TODO Insert example of Topo sort
+
+\begin{algothm} ["Brute-force" Search]
+    Try all permutations of the vertices. Return the first one that is a topological sort.
+
+    The runtime is $\mathcal{O}{n!mn}$, because for each of $n!$ permutations, we have to check $m$ edges that the edge is respected, and finding each endpoint
+    of the edge needs to be found in the sorted order.
+\end{algothm}
+
+To find a faster algorithm, let us define some terms.
+
+\begin{definition}[Source, Sink]
+    In a directed acyclic graph, a source is a vertex with no incoming edges. A sink is a vertex with no outgoing edges.
+    Note that every DAG has a source and a sink.
+\end{definition}
+
+\begin{algothm}[Source Peel-Off]
+    We can iteratively "peel-off" source vertices one at a time. It is possible to do this algorithm in linear time: $\mathcal{O}(m + n)$.
+
+    To do so, have $n$ linked list nodes, one for each vertex. Then we keep an array $B$ where the $i$th entry of the array stores a pointer to node $i$.
+    Then, we also keep an array $B$ of linked lists where the $i$th entry of that array is a doubly-linked list that has $i$ incoming edges.
+    To peel off a source, you take anything in the $0$th entry of the array and take it out, call it $u$. Then, for each outgoing edge $(u, v)$, move $v$
+    to the lower bucket in the array (since it now has one less incoming edge). Rinse and repeat.
+
+    This is a bit too complicated. There is an easier linear-time algorithm.
+\end{algothm}
+
+Consider the following pre and postorder traversals (subscripts dropped for clarity):
+\[ [[][]] [] [[]] \]
+then, it's easier to see that the vertex associated with last closing bracket is a source; it has nowhere else that lead to it.
+This leads to the following result:
+\begin{theorem} [Finding a Source with DFS]
+    The vertex $v$ with the largest postorder number must be a source.
+
+    \begin{proof*}
+        Suppose for the sake of contradiction that $v$ is not a source. That means there must exist a $u \in V$ such that $(u, v) \in E$.
+
+        We know that the only possibilities are that $[_u ]_u [_v ]_v$ or $[_v [_u ]_u ]_v$. The latter means that $(u, v)$ is a back edge, which
+        would mean there is a cycle. However there are no cycles since this is a DAG, so this cannot be the case. The former means that $u$ and $v$
+        are disconnected, but there is clearly an edge between them or that $v$ was already visited, which is also not the case.
+
+        By exhaustion of cases, we have a contradiction, so $v$ must be a source. \qed
+    \end{proof*}
+\end{theorem}
+
+\begin{algothm} [Topological Sort]
+    We begin by doing a DFS traversal on $G$. Then, we sort by postorder number. This exactly a topological sort of the graph.
+
+    This works because peeling off the source causes the DFS to be the exact same, so the order of postordering numbers does not change.
+
+    Note that postorder number is bounded between $2$ and $2n$, so it is easy to sort in linear time. Thus the runtime is dominated by DFS,
+    $\mathcal{O}(n + m)$.
+\end{algothm}
+
+\subsubsection{Strongly Connected Components}
+
+Next we try to find strongly connected components in a directed graph.
+
+\begin{definition} [Strongly Connected]
+    For some directed graph $G = (V, E)$, $u, v \in V$ are strongly connected if $u$ has a parth to $v$ and $v$ has a path to $u$.
+\end{definition}
+
+\begin{definition} [Strongly Connected Component (SCC)]
+    A strongly connected component in a graph $G$ is a maximal subset of strongly connected vertices.
+\end{definition}
+
+%% TODO add another example of a graph
+
+An easy algorithm to find SCCs would be to do $n$ DFS's from each vertex and check strong connectivity. However, this is fairly slow,
+about $\mathcal{O}(mn + n^2)$.
+
+\begin{theorem} [SCC Graph is a DAG]
+    The graph made from treating the SCCs as nodes is acyclic (a DAG).
+
+    \begin{proof*}
+        Suppose there was a cycle. Then, all the vertices in those components forming a cycle are strongly connected,
+        which would contradict the fact that the SCCs were maximal. Thus, there cannot be a cycle.
+    \end{proof*}
+\end{theorem}
+
+We want to find a sink of this reduced DAG. In particular, running a DFS from the sink SCC, we can peel it off and recurse.
+This means we want to find the SCCs in reverse topological sorted order. Imagine we had a subroutine that could find a vertex in a sink in constant time. Then, the runtime would be:
+$\mathcal{O}(n + m)$ because we have to DFS over every single strongly-connected component, visiting every vertex and edge once.
+
+To do this, first let us reverse the graph (make all the edges go the other direction). This will turn any source into a sink and vice versa.
+Now we have to find a source SCC in the reversed graph $G_{rev}$. The claim is that the highest postorder number still works.
+
+\begin{theorem}
+    If $u$ has the highest postorder number, then $u$ is in the source SCC.
+
+    \begin{proof*}
+        Suppose that $u$ is not in the source SCC. That means there is another SCC that point into that SCC of $u$. This means that $(v, w) \in E$,
+        where $w$ has a path to $u$ and $u$ has a path to $w$. Since $v$ thus has a path to $u$ but $u$ has the highest postorder number, the intervals cannot be disjoint.
+        Furthermore, the intervals cannot be inside each other, as this would imply $u$ would have a path $v$; but that would mean they're in the same SCC, which they're not.
+        Thus, the edge $(v, w)$ cannot exist, meaning that $u$ is in the source SCC.
+    \end{proof*}
+\end{theorem}
+
+Finally our algorithm to find the SCCs is as follows:
+
+\begin{algothm}
+    \begin{enumerate}
+        \item Reverse the graph and run topological sort on it. This will give you the ordering $S$ of sinks in the original graph.
+        \item Run DFS on each sink $s$ in order. The vertices reached are in SCC of $s$, so we can remove them from the graph (mark them) and keep going.
+        \item The SCCs removed are all the SCCs.
+    \end{enumerate}
+
+    This algorithm requires a topological sort and then small DFS's which amount to a single big DFS. This is
+    $\mathcal{O}(m + n)$.
+\end{algothm}
