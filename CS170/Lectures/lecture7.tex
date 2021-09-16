@@ -1,0 +1,153 @@
+\subsection{Lecture 7}
+
+\subsubsection{Single Source Shortest Paths}
+
+We now consider shortest paths. Suppose we are given
+a directed graph $G$ and a start vertex $s$. We wish to find the shortest path from $s$ to all other vertices. More precisely,
+we want two arrays:
+\begin{itemize}
+    \item prev$[1, \dots, n]$, where prev$[v]$ is the previous vertex to $v$ on the shortest path from $s$ to $v$.
+    \item dist$[1, \dots, n]$, where dist$[v]$ is the length of the shortest path from $s$ to $v$.
+\end{itemize}
+
+Note that the prev array has enough information to give us the actual shortest path from $s$ to $v$.
+
+There are many algorithms for single-source shortest paths. Here are a few:
+
+\begin{itemize}
+    \item Breadth-First Search - Assumes edges all have weight 1 ("unweighted")
+    \item Djikstra's Algorithm - Assumes edge weights are all non-negative.
+    \item Bellman-Ford Algorithm - Arbitrary edge weights.
+    \item Dynamic Programming on DAGs - Arbitrary edge weights, but $G$ must be a DAG.
+\end{itemize}
+
+Note that depth-first search does not work because going deep first may yield a longer path than some other traversal. Consider the graph:
+\[ V = \{S, A, B \}, E = \{(S, A), (A, B), (S, B)\} \]
+Then suppose the DFS traversal was $S, A, B$. Then the path to $B$ would seem like it's distance 2, when in reality it's 1, since the $(S,B)$ wouldn't be traversed by DFS.
+
+\begin{algothm} [Breadth-First Search]
+    Here is the main algorithm:
+    \begin{algorithmic}
+        \Function{BFS}{$G, s$}
+            \State dist$[1\dots n] \gets \infty$
+            \State prev$[1\dots n] \gets$ null
+            \State vis$[1\dots n] \gets$ False
+            \State Q $\gets$ queue($s$)
+            \State dist$[s] \gets 0$
+            \State vis$[s] \gets$ True
+            \State $Q$.push($s$)
+            \While{$Q$.size$>0$}
+                \State $u \gets Q$.pop()
+                \For{$(u, v) \in E$}
+                    \If{!vis$[v]$}
+                        \State vis$[v] \gets$ True
+                        \State dist$[v] \gets$ dist$[u] + 1$
+                        \State prev$[v] \gets u$
+                        \State $Q$.push($v$)
+                    \EndIf
+                \EndFor
+            \EndWhile
+            \State \Return dist, prev
+        \EndFunction
+    \end{algorithmic}
+
+    \textbf{Runtime Analysis}
+    \begin{proof*}
+        The first 3 operations are linear in $n$, and the last 4 are constant time. Then note that every vertex is added to the $Q$ once, and all of its edges are looped over.
+        So the total runtime is:
+        \[ T(n) \leq \Theta(n) + \sum_{v \in V} C \cdot (1 + \text{outdegree}(v)) \]
+        Note that the sum of the outdegrees counts every edge once. Thus, $T(n) = \mathcal{O}(m + n)$.
+    \end{proof*}
+
+\end{algothm}
+
+The interesting thing about BFS is that it is implemented the exact same as iterative DFS, but the stack is replaced with a queue.
+
+To show correctness, we require a few intermediate results: 
+\begin{theorem} [BFS Lemma 1]
+    $\forall v \in V$, dist$[v] \leq \delta(s, v)$ (the true shortest distance).
+
+    \begin{proof*}
+        We proceed by induction on $k$, the number of push operations to $Q$ so far. $k = 1$ is trivial, since the dist of $s$ is 0 and everyone else's
+        distance is infinity, satisfying the inequality. Consider the $k + 1$st push (with the induction holding for $\leq k$), during the edge $(u, v)$. We push $v$ when we visit $u$.
+        By the inductive hypothesis, $\text{dist}[u] \geq \delta(s, u)$, so 
+        \[ \text{dist}[v] = 1 + \text{dist}(u) \leq \delta(s, u) + 1 = \delta(s, u) + \delta(u, v) \geq \delta(s, v) \]
+        completing the induction.
+    \end{proof*}
+\end{theorem}
+
+\begin{theorem} [BFS Lemma 2]
+    Look at any point in time $i$. Say $Q = [v_1, \dots, v_r]$. Then
+    \begin{enumerate}
+        \item $\forall i, \text{dist}[v_i] \leq \text{dist}[v_{i + 1}]$
+        \item $\text{dist}[v_r] \leq \text{dist}[v_1] + 1$
+    \end{enumerate}
+
+    \begin{proof*}
+        The proof is similar to the theorem above. Induct on the number of queue operations.
+    \end{proof*}
+\end{theorem}
+
+Now we can show the correctness of BFS.
+
+\begin{theorem}[The Correctness of Breadth-First Search]
+    We will show that BFS finds shortest paths from $s$.
+
+    \begin{proof*}
+        For the sake of contradiction, suppose the dist arry is incorrect. Then, there is some $v \in V$ such that dist$[v] \neq \delta(s, v)$.
+        By BFS Lemma 1, we must have dist$[v] > \delta(s, v)$. This may be the case for many such $v$. Let us pick the $v$ such that
+        $\delta(s, v)$ is minimum (note that $v \neq s$). Then, let us take the shortest path from $s$ to $v$.
+        \[ s \to v_1 \dots v_{r - 1} \dots v \]
+        This means for all intermediate vertices until $v_{r - 1}$, the dist array was set correctly. Look at the point in time when $v_{r - 1}$ was popped
+        off $Q$. But this means that $v$ was not put into the $Q$ (since the distance was resolved incorrectly) at this point. This means that $v$ was visited already by some
+        other vertex $u$ and by BFS Lemma 2, this means that $\text{dist}[u] \leq \text{dist}[v_{r - 1}]$. But this would mean that $v$ got set to some value:
+        \[ \text{dist}[v] = \text{dist}[u] + 1 \leq \text{dist}[v_{r - 1}] + 1 = \delta(s, v) \]
+        However, we initially claimed dist$[v] > \delta(s,v)$, so this is a contradiction! So we cannot have any place where the dist array is incorrect.
+    \end{proof*}
+\end{theorem}
+
+
+\subsubsection{Weighted Graphs}
+Note that if all weights $w(e) \in \N$, then we can reduce finding the SSSP to the unweighted case by just subdividing edges into $w(e)$ fake vertices in the middle.
+If $w(e) \leq L$, then the BFS runtime is $\mathcal{O}(n + mL)$. We can do better (and also use $w(e) \in \R$).
+
+To do this, we use heaps (or priority queues). A min-heap is a data structure that maintains a set of (key, value) pairs $S$ subject to the following
+three operations:
+\begin{enumerate}
+    \item delMin$()$, returns $(k, v)$ from $S$ with the smallest $k$ and removes it from $S$.
+    \item decKey$(\*O, k')$, where $\*O$ is a pointer to the $v$ object, replaces the old key with a smaller key $k'$
+    \item insert$(k, v)$, inserts $(k, v)$ into $S$
+\end{enumerate}
+
+We can now use these heaps to solve SSSPs for arbitrary non-negative weighted graphs.
+\begin{algothm}[Djikstra's Algorithm]
+    \begin{algorithmic}
+        \Function{djikstra}{$G, s$}
+            \State dist$[1\dots n] \gets \infty$
+            \State prev$[1\dots n] \gets$ null
+            \State $H \gets$ heap()
+            \For{$v \in V$}
+                \State $H$.insert($\infty, v$)
+            \EndFor
+            \State dist$[s] \gets 0$
+            \State $H$.decKey($s, 0$)
+            \While{$H$.size$>0$}
+                \State $u \gets H$.delMin()
+                \For{$(u, v) \in E$}
+                    \If{dist$[u] + w((u, v)) < \text{dist}[v]$}
+                        \State $H$.decKay($v, \text{dist}[u] + w(u, v))$
+                        \State dist$[v] \gets$ dist$[u] + w((u, v))$
+                        \State prev$[v] \gets u$
+                    \EndIf
+                \EndFor
+            \EndWhile
+            \State \Return dist, prev
+        \EndFunction
+    \end{algorithmic}
+
+    \textbf{Runtime Analysis}
+    We do $n$ insertions and thus must do $n$ deleteMins, and we are doing potentially $\deg(v)$ insertions for each, so overall, considering $t_I$ as the runtime of insert,
+    $t_{dK}$ for decKey and $t_{dM}$ for delMin, we have the runtime is something close to:
+    $T(n) = \mathcal{O}(n + m + nt_I + nt_{dM} + mt_{dK})$ which is:
+    \[ T(n)  = \mathcal{O}((m + n) \log n) \]
+\end{algothm}
