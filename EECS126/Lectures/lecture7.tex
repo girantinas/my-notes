@@ -1,0 +1,112 @@
+\subsection{Lecture 7}
+
+\begin{definition} [JCDF]
+    For random variables $X$ and $Y$, the joint CDF (JCDF) is given by:
+    \[ F_{X, Y}(x, y) = \Pr{X \leq x, Y \leq y} \] 
+    For continuous random variables, this is:
+    \[ F_{X,Y}(x, y) = \int_{\infty}^x \int_{\infty}^y f_{X, Y}(x', y') \dd{y'} \dd{x'} \]
+\end{definition}
+
+Then, note that to find $F_{\max{X, Y}}(k) = \Pr{\max{X, Y} \leq k} = \Pr{X \leq k, Y \leq k}$, we can invoke the JCDF (and make simplifications if $X$ and $Y$ are independent).
+Furthermore, to find the probability density, we can simply differentiate with respect to $k$.
+
+Similarly, $\Pr{\min{X, Y} > k} = \Pr{X > k, Y > k}$, which would be the JCCDF (which is the product of the CCDFs if $X$ and $Y$ are independent).
+
+The sum of independent random variables is given by the convolution, *.
+\begin{theorem} [Convolution]
+    Let $Z = X + Y$ where $X$ and $Y$ are independent. Then,
+    \[ f_Z(z) = f_X * f_Y = \int_{-\infty}^{\infty} f_X(x) f_Y(z - x) \dd{x} \]
+\end{theorem}
+
+In addition, we have conditioning for continuous random variables as well.
+\begin{definition}[Conditional PDF]
+    Consider two random variables, $X$ and $Y$ such that $f_X(x) \neq 0$ at the point we are considering. Then:
+    \[ f_{X \mid Y}(x \mid y) = f_{XY}(x, y)/f_{Y}(y) \]
+\end{definition}
+
+\begin{definition}[Conditional Variance]
+    Let $X$ and $Y$ be random variables. Then we define conditional variance as:
+    \[ \Var{Y \mid X} = \E{Y^2 \mid X} - \qty(\E{Y \mid X})^2 \]
+\end{definition}
+
+Similar to the law of iterated expectation, there is a similar formula for variance:
+\begin{theorem} [Law of Iterated Variance]
+    Let $X$ and $Y$ be random variables. Then,
+    \[ \Var{Y} = \E{\Var{Y \mid X}} + \Var{\E{Y \mid X}} \]
+
+    \begin{proof*}
+        \begin{align*}
+            \Var{Y \mid X} &= \E{Y^2 \mid X} - \qty(\E{Y \mid X})^2 \\
+            \E{\Var{Y \mid X}} &= \E{Y^2} - \E{\qty(\E{Y \mid X})^2} \\
+            &= \Var{Y} + \qty(\E{Y})^2 -\E{\qty(\E{Y \mid X})^2} \\
+            &= \Var{Y} + \qty(\E{\E{Y \mid X}})^2 - \E{\qty(\E{Y \mid X})^2} \\
+            &= \Var{Y} - \Var{\E{Y \mid X}} \\
+            \Var{Y} &= \E{\Var{Y \mid X}} + \Var{\E{Y \mid X}}
+        \end{align*}
+    \end{proof*}
+\end{theorem}
+
+\section{Page Rank}
+
+\subsection{Lecture 7, Continued}
+
+Page rank is an algorithm originally used by Google for ranking the pages from a keyword search.
+
+It tries to look at the problem as a Markov chain;
+the weight of each page $p$ is sum over all pages linking to $p$, times
+the probability of visiting $p$ from that other page. Symbolically, this is:
+\[ \pi(i) = \sum_{j \in \mathcal{X}} \pi(j) P(j, i), \forall i \in \mathcal{X} \]
+where $\pi$ is a (row) vector of the weights, and $P$ is a matrix whose $(j, i)$ entry
+corresponds to the probability of transitioning from $j$ to $i$. So, we can rewrite the above equations
+as
+\[ \pi = \pi P \]
+We also add the normalization constraint
+\[ \sum_{i \in \mathcal{X}} \pi(i) = 1 \]
+So, $\pi$ is a probability distribution.
+
+\subsubsection{Markov Chain}
+
+\begin{definition}[Discrete Time Markov Chain (DTMC)]
+    The DTMC $\{X(n), n \geq 0\}$ over state space $\mathcal{X}$ with $P = [P(i,j)]$ as the transition matrix
+    with $P(i, j) = \Pr{X(n + 1) = j \mid X(n) = i}$.
+
+    Markov chains have the memoryless property:
+    \[\Pr{X(n + 1) = j \mid X(n) = i, X(m), m < n} = P(i, j) \forall i, j \]
+\end{definition}
+
+Generally, we have $P$ constant with respect to time, i.e. it's time-homogenous.
+
+Then, let $\pi_n(i)$ be the probability that the
+Markov chain is in state $i$ at time $n$. Then, for every time step,
+using vector notation, we get the recurrence:
+\[ \pi_{n + 1} = \pi_n P \implies \pi_n = \pi_0 P^n \]
+
+\begin{definition}[Stationary Distribution]
+    Let $P$ be the transition matrix of a markov chain. We call $\pi$ a stationary distribution
+    of the Markov chain if:
+    \[\pi = \pi P \text{ and } \sum_{i = 1}^n \pi(i) = 1\]
+    We call these equations the balance equations.
+\end{definition}
+
+Next, we have some ways to classify Markov chains.
+
+\begin{definition}[Irreducible]
+    A Markov Chain is irreducible if it can reach any state from any other state (possibly in multiple steps).
+\end{definition}
+
+\begin{definition}[Aperiodic]
+    Let $d(i) = \gcd\{n \geq 1 \mid P^n(i, i) > 0\}$. An irreducible DTMC is aperiodic if $d(i) = 1$ for all $i$
+    (in fact in an irreducible DTMC, $d(i)$ is the same as $i$).
+\end{definition}
+
+With these labels, we have the following results.
+
+\begin{theorem} [Big Theorem for Finite DTMC]
+    Consider an irreducible DTMC over a finite state space. Then,
+    \begin{itemize}
+        \item There is a unique invariant distribution $\pi$
+        \item The long-term fraction of time spent in state $n$ is given by
+        \[ \lim_{N \to \infty} \frac{1}{N} \sum_{n = 0}^{N - 1} \mathbbm{1}_\{X(n) = i\} = \pi(i) \]
+        \item If the DTMC is aperiodic, $\pi_n \to \pi$ as $n \to \infty$
+    \end{itemize}
+\end{theorem}
