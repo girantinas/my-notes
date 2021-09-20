@@ -1,4 +1,21 @@
 \section{Algorithms of Arithmetic}
 
 \subsection{Lecture 1}
-TODO: Fill in this section.
+
+\subsubsection{Addition/Multiplication}
+
+First, let us consider the problem of adding two $n$-bit numbers, $a$ and $b$. If both are a different amount of bits from each other,
+we can pad 0's to the left of the smaller one until it reaches the length of the larger one (note that padding 0's doesn't change the sum).
+The grade-school algorithm (add column-wise and do carries)
+has to compute at most $n + 1$ additions, which we can assume are all constant-time. Thus, we say addition has complexity linear in $n$,
+or $\Theta(n)$ (we drop the constant because 1 can pale in significance to how great $n$ can grow).
+
+But can we do better for addition? The answer is no; since it takes $n + 1$ bits to write our answer, any algorithm returning the sum
+must require $n + 1$ operations. Thus, we say as a lower bound, addition is $\Omega(n)$ (the full definitions of these terms will come shortly).
+
+Now we turn to the problem of multiplication. How fast is the grade school algorithm? First, we multiply digit-wise and then do a bunch of additions.
+In binary, multiplying by a 0 or 1 and then right-padding with 0s (bitshifting) corresponds to a constant time operation for each bit of $b$.
+Then, we have to add together $n$ potentially $2n$ bit numbers. This adds $n^2$ time. Thus, the runtime is quadratic in $n$
+or $\Theta(n^2)$.
+
+Now, can we do better for multiplication? It turns out we can. We do this by le
