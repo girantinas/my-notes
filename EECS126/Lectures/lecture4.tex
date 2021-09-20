@@ -80,8 +80,9 @@ Let us use another example to understand this:
     are $HHH\dots$ or $TTT\dots$. Then let $A_n = {\text{the $n$th coin is heads}}$. Note that
     \begin{align*}
         \Pr{A_n} &= \frac{1}{2} \\
-        &=
     \end{align*}
+    which means $\sum \Pr{A_n} = \infty$. Thus the probability of getting a sequence which has heads
+    infinitely often is 1.
 \end{example}
 
 \begin{theorem}[Kolmogorov's 0-1 theorem]
@@ -95,7 +96,7 @@ Now we refine conditional probability for many events.
 
 \begin{definition} [Conditional Probability]
     Let $A$ and $B$ be two events, and assume $\Pr{B} > 0$. Then the conditional probability of $A$ given $B$ is:
-    \[ \Pr{A \mid B} = \frac{Pr{A \cap B}}{\Pr{B}} \]
+    \[ \Pr{A \mid B} = \frac{\Pr{A \cap B}}{\Pr{B}} \]
 \end{definition}
 
 \begin{theorem} [Chain Rule]
