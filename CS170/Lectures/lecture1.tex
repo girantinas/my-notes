@@ -18,4 +18,5 @@ In binary, multiplying by a 0 or 1 and then right-padding with 0s (bitshifting) 
 Then, we have to add together $n$ potentially $2n$ bit numbers. This adds $n^2$ time. Thus, the runtime is quadratic in $n$
 or $\Theta(n^2)$.
 
-Now, can we do better for multiplication? It turns out we can. We do this by le
+Now, can we do better for multiplication? It turns out we can. We do this by leveraging the idea of divide-and-conquer;
+breaking our problem into smaller subproblems that we can solve recursively and then using these pieces to build the final solution.
