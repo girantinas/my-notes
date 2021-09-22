@@ -1,0 +1,61 @@
+\subsection{Lecture 8}
+
+\subsubsection{Hitting Times}
+
+\begin{note}
+Consider a Markov Chain $X_i$. Suppose we wanted to find
+the time it takes to hit any state in some set $A$, starting at some other state $i$.
+Formally, we are asking,
+
+\[ \beta(i) := \E{T_A \mid X_0 = i}, i \in \mathcal{X}, A \subseteq \mathcal{X} \]
+
+Since Markov chains are memoryless, we only need to consider the ways to step from
+edges out of us, i.e. one step. We call these equations first-step equations (FSEs).
+The FSEs for this problem are:
+\[
+\begin{cases}
+    1 + \sum_j P(i, j) \beta(j) & i \notin A \\
+    0 & i \in A
+\end{cases}
+\]
+
+The reasoning for this is as follows. If we are already in set $A$,
+it takes us 0 steps to get into it. Otherwise, we take one step to another state $j$,
+which has probability $P(i, j)$ of happening, and then the value of $\beta(i)$ will just be $1 + \beta(j)$.
+\end{note}
+
+This way of solving for hitting times produces $n^2$ linear equations to solve.
+
+Here are some other problems we can solve with FSEs/Hitting times.
+
+\begin{note}
+Suppose you want to find the probability of hitting a state in one set $A$ before another $B$,
+\[ \alpha(i) := \Pr{T_A < T_B \mid X_0 = i}, i \in \mathcal{X}, A,B \subseteq \mathcal{X}, A \cap B = \emptyset \]
+
+Then, the FSEs are the following:
+\[ 
+    \begin{cases}
+        \sum_j P(i, j) \alpha(j) & i \notin A \cup B \\
+        1 & i \in A \\
+        0 & i \in B
+    \end{cases}
+\]
+
+The reasoning is similar: once you hit a bad state, your probability drops to 0 and
+if you hit a good state, your probability is 1. Otherwise, it is the sum of the probabilities of
+of moving to an adjacent state and that state ending up as something good (the sum is due to total probability rule).
+\end{note}
+
+\begin{note}
+    Consider a discounted reward for visiting states earlier. Define $h(i)$ as the reward for being
+    in state $i$. Then we define
+    \[ Z = \sum_{n = 0}^{T_A} \beta^n h(X(n)), A \subseteq X, 0 < \beta \leq 1 \]
+    as the discounted reward (from a gambling run, perhaps). You accrue wealth until you hit $A$,
+    but take too long and your reward is reduced. We want to find:
+    \[ \E{Z \mid X_0 = i}, i \in X \]
+    The FSEs then become:
+    \[ \begin{cases}
+        h(i) + \beta \sum_j P(i, j) \delta(j) & i \in A \\
+        h(i) & i \in A
+    \end{cases} \]
+\end{note}

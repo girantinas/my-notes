@@ -48,6 +48,11 @@ Similar to the law of iterated expectation, there is a similar formula for varia
     \end{proof*}
 \end{theorem}
 
+An interpretation of this is to think about dividing $\Omega$ into disjoint sets where $S_i$ where $X = x_i$.
+The conditional expectation, The first term is saying that taking the variance of replacing each set with the average over the set,
+is the first-order
+approximation. Then, to correct, we average the variances across each and add those in.
+
 \section{Page Rank}
 
 \subsection{Lecture 7, Continued}
@@ -66,7 +71,7 @@ We also add the normalization constraint
 \[ \sum_{i \in \mathcal{X}} \pi(i) = 1 \]
 So, $\pi$ is a probability distribution.
 
-\subsubsection{Markov Chain}
+\subsubsection{Discrete-Time Markov Chains}
 
 \begin{definition}[Discrete Time Markov Chain (DTMC)]
     The DTMC $\{X(n), n \geq 0\}$ over state space $\mathcal{X}$ with $P = [P(i,j)]$ as the transition matrix
@@ -77,6 +82,8 @@ So, $\pi$ is a probability distribution.
 \end{definition}
 
 Generally, we have $P$ constant with respect to time, i.e. it's time-homogenous.
+Note that we have not shown that defining probabilities like this is
+consistent with the axioms of probability; let us assume such a choice exists for now.
 
 Then, let $\pi_n(i)$ be the probability that the
 Markov chain is in state $i$ at time $n$. Then, for every time step,
@@ -90,6 +97,10 @@ using vector notation, we get the recurrence:
     We call these equations the balance equations.
 \end{definition}
 
+One thing to note is that we can rewrite the equations as $(P - I) \pi = 0$. However,
+since every row sums to 0, this is not a full rank matrix, so we need the extra constraint about
+the sum of all the elements of $\pi$.
+
 Next, we have some ways to classify Markov chains.
 
 \begin{definition}[Irreducible]
@@ -101,14 +112,59 @@ Next, we have some ways to classify Markov chains.
     (in fact in an irreducible DTMC, $d(i)$ is the same as $i$).
 \end{definition}
 
-With these labels, we have the following results.
+Note that if a Markov chain has a self loop, it is aperiodic because we can
+get from $i$ to $i$ in a single step, so $d(i) = 1$ always.
+
+\begin{example}
+    Consider the following Markov chain, which is irreducible and aperiodic.
+    (DIAGRAM NEEDED)
+    \[ P = \begin{bmatrix}
+        0 & 1 & 0 \\
+        0.6 & 0 & 0.4 \\
+        0 & 0.9 & 0.1
+    \end{bmatrix} \]
+    Note that $P(i, j)$ is the probability of going from $i$ to $j$. Note that all the rows sum to
+    1 (by the total probability rule). Now let us solve the balance equations:
+    \begin{align*}
+        \pi &= \pi P \\
+        \begin{bmatrix}
+            \pi_0 & \pi_1 & \pi_2
+        \end{bmatrix} &= \begin{bmatrix}
+            \pi_0 & \pi_1 & \pi_2
+        \end{bmatrix} \begin{bmatrix}
+            0 & 1 & 0 \\
+            0.6 & 0 & 0.4 \\
+            0 & 0.9 & 0.1
+        \end{bmatrix} \\
+    \end{align*}
+    This yields the equations:
+    \[
+        \begin{cases}
+            0.6 \pi_1 = \pi_0 \\
+            \pi_0 + 0.9 \pi_2 = \pi_1 \\
+            0.4 \pi_1 + 0.1 \pi_2 = \pi_2 \\
+            \pi_0 + \pi_1 + \pi_2 = 0
+        \end{cases}
+    \]
+    Note that some of these equations are dependent, so we needed the extra constraint.
+    This can then be solved to get:
+    \[ \pi = \begin{bmatrix} 0.294 & 0.489 & 0.217 \end{bmatrix} \]
+\end{example}
+
+With these notions, we have the following results.
 
 \begin{theorem} [Big Theorem for Finite DTMC]
     Consider an irreducible DTMC over a finite state space. Then,
     \begin{itemize}
         \item There is a unique invariant distribution $\pi$
         \item The long-term fraction of time spent in state $n$ is given by
-        \[ \lim_{N \to \infty} \frac{1}{N} \sum_{n = 0}^{N - 1} \mathbbm{1}_\{X(n) = i\} = \pi(i) \]
-        \item If the DTMC is aperiodic, $\pi_n \to \pi$ as $n \to \infty$
+        \[ \lim_{N \to \infty} \frac{1}{N} \sum_{n = 0}^{N - 1} \mathbbm{1}_{\{X(n) = i\}} = \pi(i) \]
+        \item If the DTMC is aperiodic, $\pi_n \to \pi$ as $n \to \infty$, independent of $\pi_0$
     \end{itemize}
 \end{theorem}
+
+Another way to state the last result is that each row in $P^n$ converges to $\pi$ as $n \to \infty$. Why?
+Consider $\pi_0 = \begin{bmatrix}
+    1 & 0 & \dots & 0
+\end{bmatrix}$. Then $\pi_n = \pi_0 P^n = p_1 \to \pi$, so the first row approaches $\pi$.
+The argument is similar for any row.
