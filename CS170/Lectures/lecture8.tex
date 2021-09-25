@@ -1,3 +1,123 @@
 \subsection{Lecture 8}
 
-Zoom lecture was canceled due to technical difficulty. I'll update this when I find time to watch the normal lecture.
+\subsubsection{Minimum Spanning Trees}
+We look at finding the minimum spanning tree in some connected graph $G$. First, we define these notions.
+
+\begin{definition} [Tree]
+    A tree is an undirected graph that is connected and acyclic.
+\end{definition}
+
+\begin{definition} [Spanning Tree]
+    The spanning tree of some undirected graph $G = (V, E)$ is a subgraph of $G$ called $T = (V, E')$ with the same vertices and edges $E' \subseteq E$.
+\end{definition}
+
+Then, the notion of a minimum spanning tree is finding a spanning tree whose edge weights added up have minimal cost.
+
+Here is a nice result about trees.
+\begin{theorem}
+    Consider some graph $T$. Any of the following two implies the third:
+    \begin{enumerate}
+        \item $|E(T)| = n - 1$.
+        \item $T$ is connected.
+        \item $T$ is acyclic.
+    \end{enumerate}
+    As a corollary, any two of these define a tree.
+\end{theorem}
+
+Here is a slow algorithm to tackle the problem.
+\begin{algothm} [Brute Force MST]
+    Take all subgraphs with $n - 1$ edges. Next, check if each is connected (using DFS), if it is connected, then calculate the weight.
+    Finally take the minimum of the weights.
+
+    The runtime is roughly:
+    \[\mathcal{O}\qty(\binom{m}{n - 1} (n - 1 + n)) \leq \mathcal{O}\qty(\binom{n^2}{n - 1}n) \leq \mathcal{O}(n^n) \]
+\end{algothm}
+
+Next, let's discuss a faster algorithm; it's a meta-algorithm that we can use to make other algorithms
+by filling in key implementation details.
+
+\begin{algothm}[MST Meta-algorithm]
+    \begin{algorithmic}
+        \Function{MetaAlg}{$G$}
+            \State $X \gets \emptyset$
+            \While{$|X| < n - 1$}
+                \State Pick $S \subsetneq V$, $S \neq \emptyset$ such that no edge in $X$ cross $(S, V\setminus S)$
+                \State Let $e = (a, b)$ be one of the min-weight edges in $G$ crossing the partition
+                \State $X \gets X \cup \{e\}$
+            \EndWhile
+            \State \Return $(V, X)$
+        \EndFunction
+    \end{algorithmic}
+
+    \textbf{Proof of Correctness}
+    We will show at all points in time, there exists an MST $T$ containing $X$. If we show this, this means that at the end of the while loop, since $T$ conatins $X$ and is the same size,
+    $X$ becomes $T$. We proceed by induction on $|X|$.
+
+    Base case: $|X| = 0$ works because a connected graph $G$ always has an MST, which trivially contains the empty edge-set.
+
+    Inductive step: Suppose that for $X$ so far, it was contained by $T$. Now, we are adding one more edge $e = (a, b)$ where $a \in S$. There are two cases:
+
+    Case 1: $T$ had the edge $(a, b)$. Then $X$ is still contained by $T$.
+
+    Case 2: $T$ did not have the edge $(a, b)$. Note that since $T$ is a spanning tree, there must be a path from $a$ to $b$, i.e. it must
+    pass the partition $V$ and $V \setminus S$ somewhere. If we combine this path with $(a, b)$, we get a cycle. Then, there must be a family of
+    edges which all cross the partition; removing any one of them forms a tree. Suppose now we remove any edge $(x, y)$. We define
+    \[ T' = T \cup \{(a, b) \} \setminus \{ (x, y) \} \]
+    However, the weight of $T' \leq$ weight of $T$ since the weight of $(a, b)$ is at most the weight of $(x, y)$ because by construction it is the lightest edge
+    across the partition. This means that $T'$ is also an MST, which also contains $X$, so the claim holds.
+\end{algothm}
+
+Now, we are left with a choice: how do we construct our paritioning set $S$?
+
+\begin{algothm}[Prim's MST Algorithm]
+    Prim's partitions the set based off a starting vertex $s$.
+    \begin{algorithmic}
+        \Function{Prim}{$G, s$}
+            \State $X \gets \emptyset$
+            \State $S \gets \{s\}$
+            \For{$n - 1$ times}
+                \State $(a, b) \gets \text{min-weight crossing} (S, V\setminus S)$, where $b \notin S$
+                \State $S \gets S \cup \{b\}$
+                \State $X \gets X \cup \{(a, b)\}$
+            \EndFor
+            \State \Return $(V, X)$
+        \EndFunction
+    \end{algorithmic}
+
+    To implement this efficiently, we get the min-weight crossing by using a heap. We greedily take the cheapest edge that's
+    not yet in our tree; this is precisely that min-weight crossing. Every time we add something new to $S$, all we should do it scan the edges and
+    update it's distance from our tree accordingly. The implementation is ommitted here.
+
+    \textbf{Runtime Analysis} The runtime becomes the exact same as Dijkstra's algorithm, since we update distances and pop things off the heap
+    the same way (except updating distances is the distance to the tree, instead of doing an addition), so with a binary heap,
+    the runtime is the same $\mathcal{O}((m + n) \log n) = \mathcal{O}(m \log n)$ since $m \geq n - 1$ since the graph is connected.
+\end{algothm}
+
+To present another approach, we first discuss a new data structure.
+\begin{note} [Union-Find Data Structure]
+    Suppose we want to maintain a partition of $\{1, \dots, n\}$ subjects to 2 operations.
+    \begin{enumerate}
+        \item find$(a)$ returns the name of the partition that $a$ is in.
+        \item union$(a, b)$ merge the partitions containing $a$ and $b$.
+    \end{enumerate}
+\end{note}
+
+Now we discuss an even more greedy approach.
+
+\begin{algothm}[Kruskal's Algorithm]
+    Kruskal's algorithm uses a global approach.
+    \begin{algorithmic}
+        \Function{Kruskal}{$G$}
+            \State Sort $E$ in increasing order of weight.
+            \State $X \gets \emptyset$
+            \State Initialize a UnionFind data structure.
+            \For{$(a, b) \in E$ (in increasing order of weight)}
+                \If{find$(a) \neq$ Find$(b)$}
+                    \State $X \gets X \cup \{e\}$
+                    \State union$(a, b)$
+                \EndIf
+            \EndFor
+            \State \Return $(V, X)$
+        \EndFunction
+    \end{algorithmic}
+\end{algothm}

@@ -16,7 +16,7 @@ There are many algorithms for single-source shortest paths. Here are a few:
 
 \begin{itemize}
     \item Breadth-First Search - Assumes edges all have weight 1 ("unweighted")
-    \item Djikstra's Algorithm - Assumes edge weights are all non-negative.
+    \item Dijkstra's Algorithm - Assumes edge weights are all non-negative.
     \item Bellman-Ford Algorithm - Arbitrary edge weights.
     \item Dynamic Programming on DAGs - Arbitrary edge weights, but $G$ must be a DAG.
 \end{itemize}
@@ -120,9 +120,9 @@ three operations:
 \end{enumerate}
 
 We can now use these heaps to solve SSSPs for arbitrary non-negative weighted graphs.
-\begin{algothm}[Djikstra's Algorithm]
+\begin{algothm}[Dijkstra's Algorithm]
     \begin{algorithmic}
-        \Function{djikstra}{$G, s$}
+        \Function{dijkstra}{$G, s$}
             \State dist$[1\dots n] \gets \infty$
             \State prev$[1\dots n] \gets$ null
             \State $H \gets$ heap()
@@ -135,7 +135,7 @@ We can now use these heaps to solve SSSPs for arbitrary non-negative weighted gr
                 \State $u \gets H$.delMin()
                 \For{$(u, v) \in E$}
                     \If{dist$[u] + w((u, v)) < \text{dist}[v]$}
-                        \State $H$.decKay($v, \text{dist}[u] + w(u, v))$
+                        \State $H$.decKey($v, \text{dist}[u] + w(u, v))$
                         \State dist$[v] \gets$ dist$[u] + w((u, v))$
                         \State prev$[v] \gets u$
                     \EndIf
@@ -151,4 +151,40 @@ We can now use these heaps to solve SSSPs for arbitrary non-negative weighted gr
     $T(n) = \mathcal{O}(n + m + nt_I + nt_{dM} + mt_{dK})$ which is:
     \[ T(n)  = \mathcal{O}((m + n) \log n) \]
     for a binary heap implementation.
+
+    \textbf{Proof of Correctness}
+    First realize the following: Any non $\infty$ dist$[u]$ value corresponds to some $s \to u$ path. This can be shown formally
+    by induction on the main loop of the algorithm.
+
+    The main claim is that the final dist and prev arrays are correct, so for all $u$, dist$[u] = \delta(s, u)$. Note that if we do this,
+    then the prev array is correct because note that we change the prev arrays exactly when the dist arrays are set, so the path traced out
+    is the correct one.
+
+    To show the claim, let \[A = \{ \text{all vertices that have been popped off the heap so far} \}\]
+    at the end of the algorithm, the heap is empty so all the vertices have been popped off. Thus, we will show the following invariant:
+    that for any $u \in A$, dist$[u] = \delta(s, u)$. We proceed by induction.
+
+    Base case: If $|A| = 1$, then only $s$ has been removed off the heap. Since we set its distance initially, we know dist$[s] = 0 = \delta(s, s)$.
+
+    Inductive step: Say $|A| = k + 1$, so we just popped a vertex $v$ off the heap. So, we just need to make sure dist$[v]$ is correct; the rest are correct
+    by inductive hypothesis ($|A| = k$ without $v$). Then, $v$ must've been the minimum key in the heap, so its dist must've been set last by some $u \in A$ (since it was popped off previously).
+    Thus, there is an edge $(u, v)$. Furthermore, there is a path from $s$ to $u$ called $p$ by the inductive hypothesis. We claim that appending $(u, v)$ to $p$
+    yields the shortest path. Suppose it wasn't and we could do better, with some other path $p'$. Then at some point, this path must leave $A$ (since $v$ was still outside $A$ at this point).
+    Consider the last vertex before it leaves $A$ as $x$ and call the first vertex after it leaves as $y$. Let the subpath from $s$ to $x$ be $q$. Then, the length of $p'$ is as follows:
+    \begin{align*}
+        L(p') &\geq L(q) + w(x, y) \\
+        &= \delta(s, x) + w(x, y) \\
+        &= \text{dist}[x] + w(x, y) \\
+    \end{align*} 
+    But since $y$ is a neighbor of $y$, then we had to have updated it in the past, at least through the update at vertex $x$. Thus,
+    the dist value is at most the last line, since that is what an update in dijkstra's looks like.
+    \begin{align*}
+        L(p') &\leq \text{dist}[y]
+    \end{align*}
+    However, since $v$ was the last thing popped off the heap and $y$ wasn't, its dist value is lower.
+    \begin{align*}
+        L(p') &\leq \text{dist}[v] \\
+        &= L(p)
+    \end{align*}
+    Which means that $p'$ can't be any shorter than $p$
 \end{algothm}
