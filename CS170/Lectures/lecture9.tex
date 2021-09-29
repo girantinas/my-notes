@@ -1,0 +1,120 @@
+\section{Greedy Algorithms}
+\subsection{Lecture 9}
+
+A greedy algorithm is not super mathematically well-defined property. Generally,
+we can separate the problems that greedy can solve into two types of problems:
+\begin{enumerate}
+    \item Search problems: which try to find an object in a large set.
+    \item Optimization problems: which try to find the object (or objects) in a large set that have some maximal or minimal property.
+\end{enumerate}
+So, we then define:
+\begin{definition} [Greedy Algorithm]
+    A greedy algorithm is one that builds the solution to a problem iteratively using a sequence of local (or locally optimal) choices.
+\end{definition}
+Note that brute-force search is not greedy; in a greedy algorithm, you generally stick to your local decisions, never looking back.
+
+We now discuss three problems that one can solve with a greedy approach.
+
+\subsubsection{Scheduling}
+We take as input as a collection of jobs that need to be done. Each job has a time interval $[x_1, y_1], \dots, [x_n, y_n]$ where $x_i < y_i$.
+Now, we want to find the maximal amount of jobs that can be done without any time conflicts (e.g. with one thread).
+
+To be greedy, what local choice should be make? 
+
+One idea is to greedily keep doing the shortest possible remaining job; it unfortunately does not work. Consider the jobs $[1, 10], [9, 11], [11, 20]$, where
+this algorithm will choose only the middle interval as one job, but clearly the optimal solution is taking the first interval and the last one.
+
+Instead, let us make a different choice.
+
+\begin{algothm}[Scheduling]
+    Greedily pick the next job to have the shortest $y_i$ (end time) without conflicting with already-done jobs.
+
+    \textbf{Runtime Analysis} We can implement this by sorting by the end-times. Then take the first element $[x, y]$ and consider the next element $[x', y']$. Since $y \leq y'$
+    then checking for no conflict is just checking that $x' \geq y$. Thus, we have to just do a for loop over the array to implement the above logic. The bottleneck is the sort,
+    giving us $\mathcal{O}(n \log n)$.
+
+    Now, to prove correctness for greedy algorithms, we generally use an exchange argument, where we postulate the existence of a solution strictly better
+    to the output produced by the algorithm, and
+    show a contradiction.
+
+    \textbf{Proof of Correctness} Suppose our algorithm gives $J$, giving jobs $j_1, j_2, \dots, j_k$ (in sorted order by endpoint) and this not optimal. Take some optimal solution $S$ such that $|S \cap J|$
+    is maximum. We will show there exists another optimal solution $S'$ such that $|S' \cap J| > |S \cap J|$, giving us a contradiction of maximality.
+
+    Let us sort by endpoint on $S$, making $s_1, s_2, \dots, s_k, s_{k + 1}, \dots$. The $j$'s are not the same as the $s$'s because otherwise the greedy algorithm would've taken more $s$'s (since the $s$'s are not conflicting and 
+    sorted by end time). Thus, there must exist some first $t$ such that $j_t \neq s_t$. Now, let us introduce a new solution $S'$ with $s_t$ is replaced by $j_t$. $j_t$'s end-time
+    is earlier or at the same time as $s_t$, so there cannot be any conflicts after $j_t$ (otherwise there would've been a conflict with $s_t$) and there cannot be any conflict before $j_t$ (because the rest of the $s$'s agree with $j$,
+    and there is no conflict among the $j$'s). Furthermore, $|S'| = |S|$. Thus, $S'$ is also an optimal solution; but $|S' \cap J| = |S \cap J| + 1 > |S \cap J|$, as required for contradiction.
+\end{algothm}
+
+Now, working through the example above, we will select $[1, 10]$ first, then the second interval won't be added since it's conflicting, then the third interval will be added since it's not conflicting.
+
+\subsubsection{Huffman Encoding}
+We now discuss the problem of efficient encoding. Suppose we have some alphabet $\Sigma$, $|\Sigma| = n$ (e.g. $\{A, \dots, Z\}$) and some text $w$ whose characters come
+from $\Sigma$. Now there are character frequencies:
+\[ freq(\sigma) = \text{Number of occurences of $\sigma$ in text} \]
+Now, how can we encode the text as efficiently as possible using these characters (minimizing codeword length)?
+One concern for encoding is that certain codewords may have the same word that created it. We want our encoding to be unambiguous; one way to ensure this
+is using prefix-freeness.
+
+\begin{definition} [Prefix-Freeness]
+    An encoding is prefix-free if no character's encoding is a prefix of any other character's encoding.
+\end{definition}
+
+Note that any code that is prefix-free cannot be ambiguous, because the unique prefix will tell you which character to look at. Thinking in terms of bits,
+the following encoding:
+\[ A = 0, B = 01, C = 001, \dots \]
+can be represented by a binary trie where each branch is a 0 or 1; the leaves are all characters.
+
+Now,
+we want to find the optimal prefix-free encoding. Naively, we could find all binary trees on $n$ leaves ($2n - 1$ nodes) and assignments of characters to leaves.
+The number of binary trees is exponential, about $16^n$ and there $n!$ assignments. We also have to do a linear check of length to check cost; this means our total runtime is $\mathcal{O}(n!)$.
+Note that even we assigned all characters to leaves greedily, this would still be an exponential-time algorithm! 
+
+Furthermore, being fully greedy and letting the highest frequency character hang at the top of the tree is also not optimal.
+In the case of equal frequency, we want a perfectly balanced tree (the best compression of 26 characters is to use 5 bits, if they are equal frequencies). 
+
+Here is a better way:
+
+\begin{algothm}[Huffman Encoding]
+    We try to build the tree bottom-up. Note that at the lowest depth, any node $v$ has a sibling (otherwise we could delete the parent of $v$ and replace $v$ with that to have less bits).
+    At these two leaves, let us place the least-frequent characters here. We claim this is optimal; suppose there was another optimal way to do things where a different pair was at the
+    bottom of the tree, then you can switch the one of the least-frequent to the bottom, saving you characters in your encoding.
+
+    To do this algorithm greedily, we simply repeat this choice over and over iteratively. To see this in action, we present an example.
+
+    First, notice that we have to do $n - 1$ iterations. To find the smallest characters in the set,
+    we can keep a min-heap, requiring 1 $\Theta(\log n)$ insertion and 2 $\Theta(\log n)$ removals. Then, building the tree is done in constant time in each iteration.
+    Our total runtime is $\Theta(n \log n)$.
+\end{algothm}
+
+\begin{example}
+    Consider the following frequencies on the alphabet of capital vowels:
+    \[ A: 60, E: 70, I: 45, O: 50, U: 20, Y: 30 \]
+    Placing the two smallest nodes $U$ and $Y$ at the bottom of the tree then creates a certain "meta-character" $\{U, Y\}$ with frequency $20 + 30 = 50$. Our frequencies then become:
+    \[ A: 60, E: 70, I:45, O: 50, \{U, Y\}: 50 \]
+    Now we take the next two smallest nodes ($I$ and $\{U, Y\}$) and place it at the bottom of tree, creating:
+    \[ A: 60, E: 70, O: 50, \{I, U, Y\}: 95 \]
+    Continuing, we have:
+    \begin{align*}
+        &A: 60, E: 70, O: 50, \{I, U, Y\}: 95  \\
+        &E: 70, \{I, U, Y\}: 95, \{A, O\}: 110 \\
+        &\{E, I, U, Y\}: 165, \{A, O\}: 110 \\
+        &\{A, E, I, O, U, Y\}: 275
+    \end{align*}
+    Then, we've build the tree; we can traverse with DFS to then get the encoding per character.
+\end{example}
+
+\subsubsection{Set Cover}
+Now we consider another problem. We are given a Universe $\{1, \dots, n\} = [n]$ and a collection $S_1, \dots, S_m$ of subsets of $[n]$.
+We want to find a minimum-size subcollection to cover $[n]$. Generally, we don't expect there to be a polynomial-time algorithm to solve this.
+The natural greedy approach (where we take the biggest subset every time) does not give the optimal solution (easy to see with a counterexample).
+
+Let the optimal number of sets be $OPT$.
+Feige showed that if there exists a polynomial-time algorithm for set cover, which always uses less than $OPT \times \ln n)$ sets, then
+3-SAT can be solved in time $\leq n^{\log \log n}$ (which we don't believe to be true).
+
+This makes greedy even more tantalizingly close:
+\begin{theorem}
+    The natural greedy approach uses $\leq OPT \times \lceil \ln n \rceil$ sets.
+\end{theorem}
+
