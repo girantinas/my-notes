@@ -49,7 +49,7 @@ of moving to an adjacent state and that state ending up as something good (the s
 \begin{note}
     Consider a discounted reward for visiting states earlier. Define $h(i)$ as the reward for being
     in state $i$. Then we define
-    \[ Z = \sum_{n = 0}^{T_A} \beta^n h(X(n)), A \subseteq X, 0 < \beta \leq 1 \]
+    \[ Z = \sum_{n = 0}^{T_A} \beta^n h(X(n)), A \subseteq \mathcal{X}, 0 < \beta \leq 1 \]
     as the discounted reward (from a gambling run, perhaps). You accrue wealth until you hit $A$,
     but take too long and your reward is reduced. We want to find:
     \[ \E{Z \mid X_0 = i}, i \in X \]

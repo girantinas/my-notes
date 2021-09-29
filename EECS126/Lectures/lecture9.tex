@@ -1,0 +1,132 @@
+\subsection{Lecture 9}
+
+\subsubsection{Laws of Large Numbers}
+We now discuss the law(s) of large numbers in detail, and how they relate to Markov chains.
+
+\begin{theorem} [Laws of Large Numbers]
+    Let $\{X(i), i \geq 1\}$ be a sequence of independent and identically distributed (IID) random variables,
+    with mean $\mu$ and let $S(n) = \sum_{i = 1}^n X(i)$. Assume $\E{\abs{X(i)}} < \infty$.
+
+    The Strong Law of Large Numbers (SLLN) states that:
+    \[ \Pr{\lim_{n\to\infty} = \mu} = 1 \]
+    i.e. $S(n)/n$, the sample mean, converges to the true mean $\mu$ \textbf{almost surely}.
+
+    The Weak Law of Large Numbers (WLLN) states that fixing $\varepsilon > 0$:
+    \[ \lim_{n \to \infty} \Pr{\abs{\frac{S(n)}{n} - \mu} > \varepsilon} = 0 \]
+    i.e. $S(n)/n$, the same mean, converges to the true mean $\mu$ in \textbf{probability}.
+\end{theorem}
+
+Note that SLLN implies WLLN, so SLLN is stronger. Furthermore, 
+\[ \E{S_n/n} = \frac{\E{\sum_i X_i}}{n} = \frac{n \E{X_i}}{n} = \E{X_i} \]
+So, convergence in expectation is even weaker than WLLN (convergence in probability).
+
+We will show the first implication by showing something stronger; that almost sure convergence implies convergence in probability.
+
+\begin{proof} [A.S. implies Convergence in Probability]
+    Fix $\varepsilon > 0$ and let $X_n$ converge to $X$ almost surely. Define the following eevents:
+    \begin{align*}
+        A_n &= \{ |X_n - X| > \varepsilon \} \\
+        B_n &= \cup_{m \geq n} A_m \\
+        B &= \cap_{n = 1}^{\infty} B_n \\
+        B &= \{ A_n \text{i.o.} \} \\
+    \end{align*}
+    However, by definition of almost sure convergence, we must have $\Pr{A_n \text{i.o.}} = 0$. However:
+    \begin{align*}
+        \Pr{\abs{X_n - X} > \varepsilon} &\leq \Pr{B_n} \to 0 \\
+        \Pr{\abs{X_n - X} > \varepsilon} &\to 0
+    \end{align*}
+\end{proof}
+
+However, convergence in probability does not always imply almost sure convergence. Here is a counter-example:
+
+\begin{example} [Not all convergence is made equal]
+    Pick $\omega$ uniformly in $[0, 1]$.
+
+    Define $X_1(\omega) = 1$ and then for $n \geq 2$, make it piecewise, with value 1 for a width $1/n$ and value
+    0 for a width $1 - 1/n$. Furthermore, we stack the start of the pulse at the end of the interval of the last one; wrapping it around as
+    needed (modulo 1).
+
+    For any $\varepsilon$, the width of $X_n$ being 1 goes down to 0, as we continue along.
+    \[ \Pr{|X_n - 0| > \varepsilon} \to 0 \]
+    However,
+    \[\Pr{X_n \to 0} = 0\]
+    since for some $\omega$, we can always find an $X_n$ later which is 1 (there will be another pulse containing $\omega$).
+\end{example}
+
+Armed with the machinery, now we can finally prove the Big Theorem.
+
+\begin{proof}
+    Let us focus on part a).
+    We define:
+    \[ m_j = \E{T_j \mid X(0) = j} \]
+    where $T_j = \min\{n > 0 \mid X(n) = j\}$ (i.e. first time visiting $j$).
+
+    Then, we claim the following equality holds (for large $N$).
+    \[ N \sum_j \frac{1}{m_j} P(j, i) = \frac{N}{m_i} \]
+    Each term in the left hand side is the long term fraction of time you've spent in visiting $j$ and then $i$,
+    while the term on the right hand side is the long term fraction of time you've spent visiting $i$.
+
+    Dividing through by $N$, we have that:
+    \[ \sum_j \frac{1}{m_j} P(j, i) = \frac{1}{m_i} \]
+    calling $\pi = \begin{bmatrix}
+        \frac{1}{m_1} & \frac{1}{m_2} & \dots
+    \end{bmatrix}$, then we essentially have:
+    \begin{align*}
+        \pi(j) P(j, i) &= \pi(i) \\
+        \pi P &= \pi
+    \end{align*}
+    Proving uniqueness is simple and was left out of lecture.
+\\
+
+    Next let us prove part b).
+    Let $A(n)$ be the number of visits to state $i$ by time $n$.
+    Let $T_j^{\ell}$ be the difference between $\ell$th time you came back to $j$ and the $\ell -1$th time. Then:
+    \[ A(n)/n \sim \frac{k}{T_i^1 + T_i^2 + \dots + T_i^k} \]
+    since the LHS is frequency.
+    However, note that $T_i^{\ell}$ are i.i.d. because the Markov chain is memoryless, so coming back to yourself the next time
+    Then:
+    \[ \frac{1}{n/A(n)} = \frac{T_i^1 + T_i^2 + \dots + T_i^k}{k} \]
+    However, the RHS almost surely goes to the average value, $m_i$. This means
+    \[ \frac{1}{n/A(n)} \to \frac{1}{m_i} = \pi(i) \]
+\end{proof}
+
+\section{Multiplexing}
+
+\subsection{Lecture 9, Continued}
+Multiplexing relates to the sharing of a common resource. Consider some link or channel with some rate capacity $C$. Suppose it is
+being shared by some group of connections $x_1, x_2, \dots, x_n$, but not all connections are active at the same time. Think
+about a phone line--everyone doesn't have to use the phone at the same time. Then, the rate for each connection is
+$C/v$, where $v$ is a random variable the represents the number of active connections.
+
+Let us model link sharing with each channel being active as a Bernoulli random variable with probability $p$
+of the link being active. Then,
+\[ v \sim B(n, p) \]
+
+We also discuss the following:
+\begin{definition}[PPF]
+    The percent point function (PPF) of a random variable is the "inverse" CDF. Note that a lot of CDFs are
+    not bijections, so instead we say the following.
+
+    Suppose $F_X(x) = p_1$ for all $x \in [x_1, x_2)$ and then it jumps to $p_2$ at $x_2$, the
+    PPF as follows:
+    \begin{align*}
+        PPF(p) &= x_2 && \forall p \in (p_1, p_2] \\
+        PPF(p) &= x_1 && \forall p = p_1
+    \end{align*}
+\end{definition}
+
+Then suppose we wanted to find the smallest $m$ such that $\Pr{v > m} \leq \delta$ or $\Pr{v \leq m} \leq m > 1 - \delta$.
+If $\delta$ is small, this means that each active user will get at least
+a rate of $C/m$ with probability $1 - \delta$ or higher. To do this,
+just take $PPF(1 - \delta)$ to get the correct $m$ to be confident (typically $\delta = 0.05$).
+
+Now, we return to normal/gaussian random variables. Here's a few useful facts:
+
+\begin{note}
+    For $X \sim \mathcal{N}(\mu, \sigma^2)$:
+    \begin{itemize}
+        \item $f_X(x) = \exp(-\frac{1}{2}\qty(\frac{x - \mu}{\sigma})^2)$
+        \item $X = \mu + \sigma W$, where $W \sim \mathcal{N}(0, 1)$
+        \item $\Pr{W > 1.65} \approx 0.05$, $\Pr{W > 1.96} \approx 0.025$, $\Pr{W > 2.32} \approx 0.01$
+    \end{itemize}
+\end{note}
