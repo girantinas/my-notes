@@ -105,12 +105,12 @@ Here is a better way:
 \end{example}
 
 \subsubsection{Set Cover}
-Now we consider another problem. We are given a Universe $\{1, \dots, n\} = [n]$ and a collection $S_1, \dots, S_m$ of subsets of $[n]$.
+Now we consider another problem. We are given a Universe $\{1, \dots, n\} = [n]$ and a collection $C = \{S_1, \dots, S_m\}$ of subsets of $[n]$.
 We want to find a minimum-size subcollection to cover $[n]$. Generally, we don't expect there to be a polynomial-time algorithm to solve this.
 The natural greedy approach (where we take the biggest subset every time) does not give the optimal solution (easy to see with a counterexample).
 
 Let the optimal number of sets be $OPT$.
-Feige showed that if there exists a polynomial-time algorithm for set cover, which always uses less than $OPT \times \ln n)$ sets, then
+Feige showed that if there exists a polynomial-time algorithm for set cover, which always uses less than $OPT \times \ln n$ sets, then
 3-SAT can be solved in time $\leq n^{\log \log n}$ (which we don't believe to be true).
 
 This makes greedy even more tantalizingly close:
@@ -118,3 +118,34 @@ This makes greedy even more tantalizingly close:
     The natural greedy approach uses $\leq OPT \times \lceil \ln n \rceil$ sets.
 \end{theorem}
 
+The greedy algorithm for set cover is as follows:
+\begin{algothm}
+    \begin{algorithmic}
+        \Function{GreedySC}{$C$}
+            \State $A \gets \{ 1, \dots, n \}$ // Not covered yet
+            \State $B \gets \emptyset$ //Sets taken
+            \While{$|A| > 0$}
+                \State Let $j \in [m]\setminus B$, be s.t. $|A \cap S_j|$ is max
+                \State $A \gets A \setminus S_j$
+                \State $B \gets B \cup \{j\}$
+            \EndWhile
+            \State \Return $B$
+        \EndFunction
+    \end{algorithmic}
+
+    Now we prove our earlier claim. Say that OPT uses $k$ sets. We want to bound $|B|$.
+    \begin{proof*}
+        Let $A_t$ be $A$ after $t$ times through the main loop. Note $|A_0| = n$.
+        There must be some set $S^*_t$ in OPT covering $\geq \frac{1}{k} |A_t|$ elements in $A_t$, because on
+        average, every set covers that many elements on $A_t$, so there must be at least one that is at least the average.
+        This means that greedy took some set covering $\geq \frac{1}{k} |A_t|$ elements in $A_t$.
+        Therefore:
+        \[ |A_{t + 1} \leq \qty(1 - \frac{1}{k}) |A_t| \]
+        By induction on $t$, we just have:
+        \[ |A_L| \leq \qty(1 - \frac{1}{k})^L |A_0| = n \qty(1 - \frac{1}{k})^L \]
+        Now, we just want to understand when this quantity is less than 1. Since $1 + x < e^x$,
+        then:
+        \[ |A_L| < n(e^{-L/k}) < 1 \]
+        Which means $|B| = L^* \leq \lceil k \ln n \rceil$.
+    \end{proof*}
+\end{algothm}

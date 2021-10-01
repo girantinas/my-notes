@@ -1,0 +1,135 @@
+\subsection{Lecture 10}
+
+\subsubsection{Union Find}
+
+We now investigate how to build a union find data structure that
+we described earlier (disjoint sets where find($\cdot$) tells you
+the name of the set that some number is in, and union($\cdot$, $\cdot$)
+unions together the associated sets). See the Kruskal's section for more information.
+
+First, think of a naive approach. We could potentially store an array $A[1\dots n]$, where $A[x]$ tells you the name of $x$'s set.
+find$(x)$ is easy, just return $A[x]$. This runs in constant time. To union$(x, y)$, we find $a = A[x]$, $b = A[y]$
+and then change all of the indices having value $a$ to $b$ (by looping over them). This is linear time.
+
+Secondly, let's try an array of linked lists. Represent $x$ by a linked list node.
+$A[x]$ is a pointer to a linked list node that corresponds to $x$ (which is itself part of some circular doubly-linked list).
+Thus, we end up with a collection of linked lists; make each of these one of the sets.
+
+Then, to find$(x)$, we follow the pointer $A[x]$ all the way up its linked list to the head. This is worst-case
+linear time. To union$(x, y)$, then put the head of one linked list to point to the tail of another linked list.
+This also takes linear time to traverse, and then changing the pointers takes constant time.
+
+Let us think of an optimization. How about if every node stored a pointer to its list's head node?
+Well, during a union, we may need to update all the head pointers in some list; this would make union linear time
+and find constant time. Another optimization is to make sure the smaller list always goes under the bigger list.
+To do this, we can have the head pointers store their size.
+
+Now the claim is that this optimized version, any sequence of operations
+consisting of at most $m$ finds and at most $n$ unions takes total time $\mathcal{m + n \log n}$.
+This is slower than the sorting step in Kruskal's and is actually enough to get optimal runtime.
+
+\begin{proof*}
+    First, doing a find takes constant time. But a single union takes:
+    \[ \O(1) + \O(\text{head pointer changes}) \]
+    Thus, the total runtime is:
+    \[ \mathcal{O}(m + n + \text{total head pointer changes}) = \mathcal{O}(\sum_{x = 1}^n (\text{number of times I changed $x$'s' head pointer})) \]
+    Note that whenever I change a head pointer, the size of the list that $x$ is a part of at least doubles.
+    Thus, the maximum amount of times that list can double is $\log_2 n$, which will thus be at least amount of times I changed each node's head pointer.
+    Thus, we end up with:
+    \[ \mathcal{O}(m + n\log n) \]
+    as we wanted to show.
+\end{proof*}
+
+However, this isn't the best we know. We know an even better algorithm, with
+a disjoint forest. But first, we must digress to amortized runtime, to formalize
+the idea of "good" average cost.
+
+\begin{definition}[Amortized Runtime]
+    Suppose a data structure supports operations $O_1, O_2, \dots, O_k$.
+    Then, we say the amortized cost of each operation $t_j$ if for
+    any sequence of operations with $N_i$ of operation $O_i$ over all $i$, the total time
+    is
+    \[ \leq \sum_{j = 1}^k t_j N_j \]
+\end{definition}
+
+Now, we look at the best way we know of implementing union find.
+
+\begin{algothm}[Disjoint Forest Union Find]
+    Let us represent sets as collections of rooted trees.
+    First, we consider the path compression optimization. What this means is that whenever we traverse a find from some node to a root,
+    then for every node we pass along the way, we make its pointer point directly to the root.
+    
+    Then, we do an analogous "length" optimization
+    for union, where you make the shallower "list" (now trees) just point its root to the deeper tree's root (again, by storing the depth of the tree e.g.
+    in an array). Then, to update the depth; it doesn't change if the depths of the trees are different, and if they are the same,
+    then the depth of the root increases by 1.
+
+    However, doing both of these optimizations creates a problem: we have to update the depth every time we do path compression.
+    We just ignore updating the heights during a path compression (and maybe call this number rank instead of height).
+
+    Here is the pseudo-code.
+
+    $p[1\dots n]$, $r[1 \dots n]$ 
+    \begin{algorithmic}
+        \Function{MakeSet}{$x$}
+            \State $p[x] \gets x$
+            \State $r[x] \gets 0$
+        \EndFunction
+        \Function{Find}{$x$}
+            \If{$x = p[x]$} 
+            \State \Return $x$
+            \EndIf
+            \State $p[x] \gets$ \Call{Find}{$x$}
+            \Return $p[x]$
+        \EndFunction
+        \Function{Union}{$x, y$}
+            \State $x \gets$ \Call{Find}{$x$}
+            \State $y \gets$ \Call{Find}{$y$}
+            \If{$x = y$}
+                \State \Return
+            \EndIf
+            \If{$r[x] > r[y]$}
+                \State \Call{Union}{$x, y$}
+            \EndIf
+            \State $p[x] \gets y$
+            \If{$r[x] = r[y]$}
+                \State $r[y] \gets r[y] + 1$
+            \EndIf
+        \EndFunction
+    \end{algorithmic}
+
+    \textbf{Runtime Analysis} Let $\log^*(n)$ be the amount of times you have to take
+    the $\log(n)$ before you get down to 1 (for all practical purposes, this is no more than 5).
+    We claim any sequence of at most $m$ Finds and $n$ Unions/Makesets takes total time
+    \[ \mathcal{O}((m + n) \log^*(n)) \]
+    This gives us amortized $\log^*(n)$ runtime for all the operations.
+
+    Before we do this, we claim some properties:
+    \begin{enumerate}
+        \item Any root node $x$ has $\geq 2^{r[x]}$ elements in its tree.
+        \item Ranks strictly increase as you follow parent pointers.
+        \item The number of nodes with rank exactly $k$ is $\leq \frac{n}{2^k}$.
+    \end{enumerate}
+
+    \begin{proof*}
+        Imagine every number from 1 to $n$ either pays cash or charges its credit card (in terms of running time, every time it does an operation). Then,
+        to find the total running time (cost) we add up this "cash" and add up all the credit card dues.
+
+        Look at our $n$ items at any point in time. They all have some ranks; the ranks go from 0
+        to $\log n$. We can place these items into buckets based on rank, in the following way:
+        \[ [0, 1), [1, 2^1), [2, 2^{2}), [2, 2^{2^2}), \dots \]
+        The largest rank that can exist is $\log_2(n)$ (by claims 1 and 2), so the number of groups is
+        $\log^*(\log_2(n)) = \log^*(n) - 1$.
+
+        Now let's do some "accounting." Find is generally what takes time; the total time is:
+        \[ \mathcal{O}(m + n + \text{\# of parents pointers I follow}) \]
+        Suppose we following a parent pointer from $u$ to $v$. Then, we have a few cases:
+        \begin{enumerate}
+            \item $v$ is the root of its tree. Let's pay cash here. In every find/union operation, we do this exactly once, so this is $\mathcal{O}(1)$ per op.
+            \item $u, v$ are in different groups (as defined above) with neither as the root. We will again "pay cash".
+            how many times do we change groups? Since rank increases as we follow parent pointers,
+            so the maximum amount of times we can change groups while going up is $\mathcal{O}(\log^*(n))$ per op/
+            \item $u, v$ are in the same groups (as defined above) with neither as the root. We charge these operations to $u$'s credit card; we will account for this at the end.
+        \end{enumerate}
+    \end{proof*}
+\end{algothm}
