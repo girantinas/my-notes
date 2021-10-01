@@ -8,7 +8,7 @@ We now discuss the law(s) of large numbers in detail, and how they relate to Mar
     with mean $\mu$ and let $S(n) = \sum_{i = 1}^n X(i)$. Assume $\E{\abs{X(i)}} < \infty$.
 
     The Strong Law of Large Numbers (SLLN) states that:
-    \[ \Pr{\lim_{n\to\infty} = \mu} = 1 \]
+    \[ \Pr{\lim_{n\to\infty} S(n)/n = \mu} = 1 \]
     i.e. $S(n)/n$, the sample mean, converges to the true mean $\mu$ \textbf{almost surely}.
 
     The Weak Law of Large Numbers (WLLN) states that fixing $\varepsilon > 0$:
@@ -47,7 +47,7 @@ However, convergence in probability does not always imply almost sure convergenc
     needed (modulo 1).
 
     For any $\varepsilon$, the width of $X_n$ being 1 goes down to 0, as we continue along.
-    \[ \Pr{|X_n - 0| > \varepsilon} \to 0 \]
+    \[ \Pr{|X_n - 0| > \varepsilon} \to 1 \]
     However,
     \[\Pr{X_n \to 0} = 0\]
     since for some $\omega$, we can always find an $X_n$ later which is 1 (there will be another pulse containing $\omega$).
@@ -111,22 +111,26 @@ We also discuss the following:
     PPF as follows:
     \begin{align*}
         PPF(p) &= x_2 && \forall p \in (p_1, p_2] \\
-        PPF(p) &= x_1 && \forall p = p_1
+        PPF(p) &= x_1 && p = p_1
     \end{align*}
 \end{definition}
 
-Then suppose we wanted to find the smallest $m$ such that $\Pr{v > m} \leq \delta$ or $\Pr{v \leq m} \leq m > 1 - \delta$.
+Then suppose we wanted to find the smallest $m$ such that $\Pr{v > m} \leq \delta$ or $\Pr{v \leq m} \geq 1 - \delta$.
 If $\delta$ is small, this means that each active user will get at least
-a rate of $C/m$ with probability $1 - \delta$ or higher. To do this,
+a rate of $C/m$ with probability $1 - \delta$ or higher (think of this rate as the speed of your internet connection,
+for example). To do this,
 just take $PPF(1 - \delta)$ to get the correct $m$ to be confident (typically $\delta = 0.05$).
 
-Now, we return to normal/gaussian random variables. Here's a few useful facts:
+Now, we return to Normal/Gaussian random variables, as they help us investigate the sums
+of random variables. Here's a few useful facts:
 
 \begin{note}
     For $X \sim \mathcal{N}(\mu, \sigma^2)$:
     \begin{itemize}
-        \item $f_X(x) = \exp(-\frac{1}{2}\qty(\frac{x - \mu}{\sigma})^2)$
-        \item $X = \mu + \sigma W$, where $W \sim \mathcal{N}(0, 1)$
+        \item $f_X(x) = \frac{1}{\sqrt{2 \pi \sigma^2}}\exp(-\frac{1}{2}\qty(\frac{x - \mu}{\sigma})^2)$, $-\infty < x < \infty$.
+        \item $X = \mu + \sigma W$, where $W \sim \mathcal{N}(0, 1)$ (the standard normal). You can show this by change of variables on the CDF.
         \item $\Pr{W > 1.65} \approx 0.05$, $\Pr{W > 1.96} \approx 0.025$, $\Pr{W > 2.32} \approx 0.01$
+        \item The above facts holds for general Gaussian RV (i.e. if $\Normal{X}{\mu}{\sigma^2}$, then $\Pr{X > \mu + 1.65 \sigma} = 0.05$)
+        \item The normal is symmetric about its mean.
     \end{itemize}
 \end{note}

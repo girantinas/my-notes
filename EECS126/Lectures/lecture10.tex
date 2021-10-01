@@ -1,0 +1,93 @@
+\subsection{Lecture 10}
+
+\subsubsection{Central Limit Theorem}
+First, we talk about another type of convergence.
+\begin{definition} [Convergence in Distribution]
+    Let $\{X(n), n \geq 1\}$ and $X$ be random variables. We say $X(n)$ converges in distribution to $X$ (or it weakly converges), and write
+    $X(n) \xrightarrow[]{d} X$, if
+    \[ \Pr{X(n) \leq x} \to \Pr{X \leq x} \forall x \text{ s.t. } \Pr{X = x} = 0 \]
+\end{definition}
+
+Let us see why the $\Pr{X = x} = 0$ is necessary.
+\begin{example}
+    Consider $X(n) = 3 + \frac{1}{n}$ and $X = 3$. We want these to converge in distribution, but consider that
+    \[ \Pr{X(n) \leq 3} = 0 \]
+    for all $n$, but $\Pr{X \leq 3} = 1$, which would lead a lack of convergence. However,
+    we stipulate that we should only consider points $x$ where there is no discrete mass; $x = 3$ does not
+    qualify because $\Pr{X = 3} = 1 > 0$. So, the convergence in distribution still happens!
+\end{example}
+
+This is the weakest type of convergence we have discussed. If we know convergence in probability of $X(n)$ to $X$,
+then we can conclude that $X(n) \xrightarrow[]{d} X$. Let us see a counter example of the converse.
+
+\begin{example}
+    Take $X_n = \Bern{X}{1/2}$.
+    Note that $X_n \dconv 1 - X$ because the CDFs are identical. However, take $0 < \ve < 1$. Then:
+    \begin{align*}
+        \Pr{\abs{X_n - (1 - X)} > \ve} &= \Pr{\abs{X - (1 - X)} > \ve} \\
+        &= \Pr{\abs{2X - 1} > \ve} \\
+        &\to 1
+    \end{align*}
+    
+\end{example}
+
+We now have an important result, armed with our Gaussian knowledge.
+
+\begin{theorem}[Central Limit Theorem]
+    Let $\{X(n), n \geq 1\}$ be a set of iid random variable with mean $\E{X(n)} = \mu$ and variance $\Var{X(n)} = \sigma^2$.
+    Define $S(n) = \sum_{i = 1}^n X(i)$.
+    Then,
+    \[ \frac{S(n) - n\mu}{\sigma \sqrt{n}} \dconv \mathcal{N}(0, 1) \]
+\end{theorem}
+
+Here is a quick result out of CLT and the fact that a Binomial RV is the sum of many Bernoulli RVs.
+
+\begin{theorem}
+    If $\Bin{X_N}{N}{p}$, then:
+    \[ X_N \approx \mathcal{N}\qty(Np, Np(1- p)) \]
+    for large $N$.
+\end{theorem}
+
+Now let us see how to apply CLT to find bounds. Let $\Bin{Y(N)}{N}{p}/N$. Then 
+\[\sigma_{Y(N)} = \sqrt{p(1 - p)N/N^2} = \sqrt{p(1-p)/N}\] and
+the mean of $Y(N)$ is $p$. Define
+\begin{align*}
+    A_1 &= \{ Y(N) \geq p + 1.65 \sqrt{p(1-p)/N} \} \\
+    A_2 &= \{ Y(N) \leq p - 1.65 \sqrt{p(1-p)/N} \}
+\end{align*}
+
+Due to CLT, $\Pr{A_1 \cup A_2} \approx 0.1$ (from the tail identities we covered last lecture) and thus $\Pr{A_1^C \cap A_2^C} \approx 0.9$, i.e.
+\begin{align*}
+    \Pr{p - 1.65 \sqrt{p(1-p)/N} \leq Y(N) \leq p + 1.65 \sqrt{p(1-p)/N}} &= 0.9 \\
+    \Pr{Y(N)- 1.65 \sqrt{p(1-p)/N} \leq p \leq Y(N) - 1.65 \sqrt{p(1-p)/N}} &= 0.9
+\end{align*}
+This statement states that $Y(N)$ as an estimator for $p$ is within this interval with confidence 90%.
+Replacing the argument with $1.96$ gives $95\%$ confidence.
+
+\begin{definition}[Characteristic Function]
+    The characteristic function of a random variable $X$ is the function:
+    \[ \phi_X(u) = \E{e^{iuX}} \]
+    with domain $u \in \R$ and $i = \sqrt{-1}$.
+\end{definition}
+
+\begin{definition}[Moment Generating Function]
+    The moment-generating function (MGF) of a random variable $X$ is the function:
+    \[ M_X(t) = \E{e^{tX}} \]
+    with domain $t \in \R$.
+\end{definition}
+
+Note that the MGF does not always exist, but when it does
+the relationship between it and the characteristic function can be summarized as:
+\[ \phi_X(t) = M_{iX}(t) = M_X(it) \]
+
+Furthermore, we have the following:
+\begin{note}[Moment Generation]
+    \begin{align*}
+        M_X(t) &= \E{e^{tX}} \\
+        &= \E{\sum_{i = 0}^{\infty} \frac{(tX)^i}{i!}} \\
+        &= \sum_{i = 0}^{\infty} \frac{t^i \E{X^i}}{i!}
+    \end{align*}
+    So,
+    \[ \E{X^n} = M_X^{(n)} (0) \]
+    i.e. the $n$th derivative of $M_X$ evaluated at 0.
+\end{note}
