@@ -13,13 +13,13 @@ useful to derive the following result.
     \[ T(n) = a T\qty(\frac{n}{b}) + cn^d \]
     then, we have
     \[ T(n) = \begin{cases}
-        \Theta(n^d) & a < b^d \\
-        \Theta(n^d \log n) & a = b^d \\
-        \Theta(n^{\log_b a}) & a > b^d
+        \Theta\qty(n^d) & a < b^d \\
+        \Theta\qty(n^d \log n) & a = b^d \\
+        \Theta\qty(n^{\log_b a}) & a > b^d
     \end{cases} \]
 \end{theorem}
 
-Master's theorem can be shown by drawing a recursion tree,
+Master theorem can be shown by drawing a recursion tree,
 and then summing up the work done in each level (proof omitted for brevity).
 We can also think of the cases as symbolizing the following:
 
@@ -33,7 +33,7 @@ We can also think of the cases as symbolizing the following:
 \end{center}
 
 \subsubsection{Matrix Multiplication}
-Our first example of a divide and conquer algorithm is matrix multiplication.
+Another example of a divide and conquer algorithm is matrix multiplication.
 
 Consider multiplying two $n$-by-$n$ matrices $A$ and $B$.
 
@@ -66,13 +66,13 @@ We can try to break our input instead into $n / 2$-by-$n / 2$ blocks, as shown:
 \end{bmatrix} \]
 
 To find the runtime of this algorithm, let us realize there are
-8 multiplications (recursively) and then finally a $\Theta{n^2}$ addition at the end.
+8 multiplications (recursively) and then finally a $\Theta(n^2)$ addition at the end.
 This means our recurrence is:
 
 \[ T(n) = 8 T\qty(\frac{n}{2}) + \Theta(n^2) \]
 
 Note that for our Master theorem setup, $8 > 2^2$, so we have
-\[ T(n) = n^{\log_2{8}} = n^3 \]
+\[ T(n) = \Theta\qty(n^{\log_2{8}}) = \Theta\qty(n^3) \]
 so this is no better than our naive approach.
 
 Using a similar realization to Karatsuba, Strassen in 1969 found the following:
@@ -117,20 +117,23 @@ is still the most widely used.
 
 \begin{algothm}[MergeSort]
 
-    First, we define a procedure \textsc{merge} that takes two sorted lists and merges them in linear time. To do this, we first keep a pointer on both lists that starts at the beginning of each list.
+    First, we define a procedure \textsc{Merge} that takes two sorted lists and merges them in linear time. To do this, we first keep a pointer on both lists that starts at the beginning of each list.
     We then compare the pointed-to elements of each list. The lesser element is then added to the output, and the pointer of the list with that element is incremented
     by one place. This keeps going until all the elements are used. We then use merge to divide-and-conquer the list as follows:
     \begin{algorithmic}
-    \Function{merge-sort}{$A[1 \dots n]$} 
-        \State $B \gets \Call{merge-sort}{A[1 \dots \frac{n}{2}]}$
-        \State $C \gets \Call{merge-sort}{A[\frac{n}{2} + 1 \dots n]}$
-        \State \Return \Call{merge}{$B, C$}
+    \Function{MergeSort}{$A[1 \dots n]$}
+        \If{$n = 1$}
+            \State \Return $A$
+        \EndIf
+        \State $B \gets \Call{MergeSort}{A[1 \dots \frac{n}{2}]}$
+        \State $C \gets \Call{MergeSort}{A[\frac{n}{2} + 1 \dots n]}$
+        \State \Return \Call{Merge}{$B, C$}
     \EndFunction
     \end{algorithmic}
 
-    We get the following recurrence for \textsc{merge-sort}:
+    We get the following recurrence for \textsc{MergeSort}:
 
-    \[ T(n) = 2 T\qty(\frac{n}{2}) + \Theta(n) \], which through master theorem gives us a running time of
+    \[ T(n) = 2 T\qty(\frac{n}{2}) + \Theta(n) \] which through master theorem gives us a running time of
     \[T(n) = \Theta(n \log n) \]
 \end{algothm}
 
@@ -138,15 +141,17 @@ Another way of implementing this is a bottom up approach:
 
 \begin{algothm} [Iterative Merge Sort]
     \begin{algorithmic}
-        \Function{merge-sort-iter}{$A[1 \dots n]$}
+        \Function{MergeSortIter}{$A[1 \dots n]$}
             \State $Q \gets $ Divide $A$ into $n$ lists of size one
             \While{$Q$.size() $> 1$}
                 \State $X, Y \gets Q$.pop(), $Q$.pop()
-                \State $Q$.push(\textsc{merge}($X, Y$))
+                \State $Q$.push(\textsc{Merge}($X, Y$))
             \EndWhile
             \State \Return $Q$.pop()
         \EndFunction
     \end{algorithmic}
+
+    \textbf{Runtime Analysis}
     Now we can think about the runtime of this algorithm. Think of the algorithm as running in phases. Phase 0 is when lists popped have size 1.
     Phase 1 is when lists popped have size 2. Phase $i$ is when lists popped have size $2^i$. Note that in each phase, each element is looked at exactly once. Thus,
     the total runtime must be proportional to $n \cdot \text{ number of phases}$. How many phases are there? There are $\log n$ phases, giving us
@@ -220,18 +225,18 @@ sort (the problem is $\Omega(n \log n)$).
 
 However, there are way more operations than comparisons that can be used for sorting. An example of this is counting sort:
 if you have $n$ integers and all the integers have values between $1$ and $b$, then you can sort in $\Theta(n + b)$, by just
-keeping a hashmap of all the elements that fit in each value "bucket" between $1$ and $b$. 
+keeping an array of all the elements that fit in each value "bucket" between $1$ and $b$. 
 
 The Word RAM model: suppose your machine can store words of size $w$ and you can do any common $C$ operations. The fastest known algorithm
 following this model (not just comparisons) is: $\mathcal{O}\qty(n \sqrt{\log \log n})$. This is also a randomized algorithm.
 
-There are two types of randomized algorithm (which will be revisited). A Monte Carlo randomized algorithm is one whose
+There are two types of randomized algorithms (which will be revisited). A Monte Carlo randomized algorithm is one whose
 output may be incorrect with small probability. A Las Vegas algorithm is one whose runtime is fast in expectation, but may be slow
 with small probability.
 
 \subsubsection{Selection/Medians}
 
-We now consider the problem of selection. Suppose we want to select the $k$ smallest integer in a list $A$. Without loss of generality,
+We now consider the problem of selection. Suppose we want to select the $k$th smallest integer in a list $A$. Without loss of generality,
 assume all elements of $A$ are distinct (since we could replace $A[i]$ with the tuple $(A[i], i)$). For selection, there is Quick Select, which
 we will explore later. Notably, quick select requires knowing the median in linear time. We will instead focus on that problem,
 (the same as the selection problem for $k = n/2$).
@@ -249,6 +254,7 @@ we will explore later. Notably, quick select requires knowing the median in line
     If $m_1$ is in position greater than $n / 2$, then the true median sits on its left, so we can recurse on the left half.
     Finally, if $m_1$ is at exactly position, $n/2$, then we have found the median.
 
+    \textbf{Runtime Analysis}
     The claim is that at least 30\% of the elements are filtered out by comparisons to $m_1$. To show this,
     consider $m_1$ compared to the other medians. Note that it is bigger than 3 of the elements in every median it is bigger than,
     so, it is bigger than $\frac{3}{5} \cdot \frac{N}{10} = \frac{3}{10}$ of the elements. Thus, if $m_1$ is in the first half of the array,
@@ -275,7 +281,7 @@ we will explore later. Notably, quick select requires knowing the median in line
             &\leq Bn
         \end{align*}
         as long as $C \leq \frac{B}{10}$. Since $C$ is fixed, we can
-        set $B = 10C$ to make this true. \qed
+        set $B \geq 10C$ to make this true. \qed
     \end{proof*}
 
 \end{algothm}

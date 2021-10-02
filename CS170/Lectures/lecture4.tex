@@ -7,7 +7,7 @@ Suppose we have two polynomials as inputs:
 Then we want the output polynomial $C$ in the following form:
 \[ C(x) = c_0 + c_1x + \dots + c_{2d - 2}x^{2d - 2} \]
 Define $N = 2d - 1$ for simplicity, and notice that these can all be considered $N - 1$ degree polynomials
-if we pad $A$ and $B$ with 0 coefficients on higher order coefficients.
+if we pad $A$ and $B$ with 0 coefficients on higher order terms.
 
 There is a relationship between polynomial and integer multiplication.
 Given integers $\alpha, \beta$, if we want $\gamma = \alpha \times \beta$, we first write them digit-wise as
@@ -62,12 +62,12 @@ Here is a fact from elementary algebra:
     A degree $< N$ polynomial is fully determined by its evaluation on $N$ distinct points.
 
     \begin{proof*}
-    Here is an argument for why interpolation works. Represent $C$ as the vector
-    \[ \begin{bmatrix} c = 
+    Represent polynomial $C = c_0 + c_1 x + \dots + c_{N - 1} x^{N - 1}$ as the vector:
+    \[ c = \begin{bmatrix} 
         c_0 \\ c_1 \\ \vdots \\ c_{N - 1}
     \end{bmatrix} \]
-    Then consider the following matrix-vector multiplication:
-    
+    Suppose your points are represented as $(x_0, y_0), (x_1, y_1), \dots, (x_{N-1}, y_{N - 1})$.
+    Then we want $y_i = C(x_i)$ for all $i$. This is equivalent to the following matrix vector product
     \[ \begin{bmatrix}
         1 & x_0 & x_0^2 & \dots & x_0^{N-1} \\
         1 & x_1 & x_1^2 & \dots & x_1^{N-1} \\
@@ -80,12 +80,13 @@ Here is a fact from elementary algebra:
     \end{bmatrix}
     \]
 
-    I.e. we can call this $Vc = y$, solving this equation is only possible if
+    I.e. we can call this $Vc = y$ and solving this equation is only possible if
     $V$ is full rank.
 
-    Fact for "Vandermonde" matrix $V$:
-    \[ \det{V} = \prod_{i < j} (x_i - x_j) \neq 0 \]
-    so we can solve $c = V^{-1} y$, so there is a unique polynomial that interpolates.
+    However, a fact for the "Vandermonde" matrix $V$ is that
+    \[ \det(V) = \prod_{i < j} (x_i - x_j) \neq 0 \]
+    so we can solve $c = V^{-1} y$, so since we chose distinct $x_i$, there is a unique polynomial that interpolates, 
+    represented by the vector $c$.
     \end{proof*}
 \end{note}
 
@@ -116,7 +117,7 @@ Let us establish some types:
         1 & \omega & \omega^2 & \dots & \omega^{N-1} \\
         1 & \omega^2 & \omega^4 & \dots & \omega^{2(N-1)} \\
         \vdots & \vdots & \vdots & \ddots & \vdots \\
-        1 & \omega^{N - 1} & \omega^{2(N - 1)} & \vdots & \omega^{(N-1)(N - 1)}
+        1 & \omega^{N - 1} & \omega^{2(N - 1)} & \dots & \omega^{(N-1)(N - 1)}
     \end{bmatrix} \]
     i.e. the DFT matrix.
 \end{definition}
@@ -132,7 +133,7 @@ We take the latter interpretation.
 
 \begin{algothm} [Fast Fourier Transform (FFT)]
     The goal of this algorithm is to multiply by the DFT quickly. We will take a polynomial interpretation.
-    Consider our polynomial, assuming $N$ is a power of 2:
+    Consider our polynomial, assuming without loss of generality that $N$ is a power of 2:
     \begin{align*}
         P(z) &= p_0 + p_1z + p_2z^2 + \dots + p_{N - 1}z^{N - 1} \\
         &= \qty(p_0 + p_2z^2 + p_4\qty(z^2)^2 + \dots + p_{N - 2}\qty(z^2)^{N/2 - 1}) + z \qty(p_1 + p_3z^2 + p_5\qty(z^2)^2 + \dots) \\
@@ -141,11 +142,15 @@ We take the latter interpretation.
 
     For all $N$ roots of unity, squaring any of them will just give you another $N$th root of unity.
     In fact, it'll give you a $N/2$ root of unity. This means that we only have to evaluate $P_{\text{odd}}$ and
-    $P_{\text{even}}$ on $N/2$ roots of unity, which means our recurrence becomes:
+    $P_{\text{even}}$ on $N/2$ roots of unity.
+    
+    \textbf{Runtime Analysis} As we stated before, we only have to evaluate $P_{\text{odd}}$ and $P_{\text{even}}$
+    on $N/2$ roots, and they also have degree less than $N/2$, so we make two subcalls of size at most $N/2$. 
+    Furthermore, multiplying by $z$ and adding two polynomials takes linear time. This means our recurrence becomes:
 
-    \[ T(N) = 2 T\qty(\frac{N}{2}) + \Theta(N) \]
+    \[ T(N) \leq 2 T\qty(\frac{N}{2}) + \mathcal{O}(N) \]
     which solves to:
-    \[ T(N) = N \log N \]
+    \[ T(N) = \mathcal{O}(N \log N) \]
 \end{algothm}
 
 Finally, we give an algorithm for our initial problem of multiplying polynomials.
@@ -168,19 +173,18 @@ Finally, we give an algorithm for our initial problem of multiplying polynomials
     in constant time.
 \end{algothm}
 
-It may seem paradoxical that since it takes $N^2$ entries to write down $F$, how come we are faster?
-The heart of this is that we \textbf{never write down $F$}. Instead, we just use FFT to multiply $F$ by a vector (quickly).
+It may seem paradoxical that since it takes $N^2$ entries to write down $F$, how come we have come up with a faster way to multiply
+by $F$?
+The heart of this is that we \textbf{never explicitly write down $F$}. Instead, we just use FFT to multiply $F$ by a vector (quickly).
 
 \subsubsection{Cross Correlation}
-Suppose you have two vectors: $x$ and $y$:
+Next we consider the problem of cross correlation. Suppose you have two vectors: $x$ and $y$:
 \[ x = \begin{bmatrix}
     x_0 \\ x_1 \\ \vdots \\ x_{m - 1}
-\end{bmatrix} \]
-
-\[ y = \begin{bmatrix}
+\end{bmatrix}, y = \begin{bmatrix}
     y_0 \\ y_1 \\ \vdots \\ y_{n - 1}
 \end{bmatrix} \]
-where $n \geq m$. Suppose we want all shifted dot products of $x$ with $y$, i.e.
+where $n \geq m$. The cross correlation is all shifted dot products of $x$ with $y$, i.e.
 \begin{align*}
     &x_0 y_0 + x_1 y_1 + \dots + x_{m - 1}y_{m - 1} \\
     &x_0 y_1 + x_2 y_2 + \dots + x_{m - 1}y_{m} \\
