@@ -2,4 +2,51 @@
 
 \subsection{Lecture 2}
 
-TODO: Fill in this section
+Before we introduce some topics, let us set the stage for our analysis on the next algorithm.
+We define "Flops" as floating-point operations (additions, subtractions, multiplications, divisions, etc.). Now,
+we will consider the amount of flops that it takes an algorithm to run. We will use this to measure the runtime of
+certain algorithms.
+
+\subsubsection{Fibonacci Numbers}
+Consider the problem of computing the $n$th Fibonacci number. Recall
+the Fibonacci sequence is defined by the recurrence:
+\begin{align*}
+    F_0 = 0, F_1 = 1 \\
+    F_n = F_{n - 1} + F_{n - 2}
+\end{align*}
+
+The simplest algorithm one can do is the follow the recurrence word-for-word.
+
+TODO: Finish this section (Iteration, Fast Powering, Closed Form Solution)
+
+\subsubsection{Asymptotic Notation}
+Consider two functions $f, g: \Z^+ \to \Z^+$. Here is some information about common asymptotic notation used to analyze
+the size of these functions (these functions can maybe represent the runtime of an algorithm). 
+
+\begin{center}
+\begin{tabular}{ c|c|c|c }
+    Name & Notation & Meaning & Analogy \\ \hline
+    "Big-Oh" & $f = \mathcal{O}(g)$ & $\exists c > 0$ s.t. $f(n) \leq cg(n)$ & $\leq$\\ \hline
+    "Little-Oh" & $f = o(g)$ & $\lim_{n \to \infty} \frac{f(n)}{g(n)}$ & $<$ \\ \hline
+    "Big-Omega" & $f = \Omega(g)$ & $g = \mathcal{O}(f)$ & $\geq$ \\ \hline
+    "Little-Omega" & $f = \omega(g)$ & $g = o(f)$ & $>$ \\ \hline
+    "Theta" & $f = \Theta(g)$ & $f = \mathcal{O}(g)$ and $f = \Omega(g)$ & $=$ \\ \hline
+\end{tabular}
+\end{center}
+
+Here is an example to get a feel for how asymptotic notation works.
+
+\begin{example}
+    Take $f(n) = 3n^3$ and $g(n) = n^4$. Then, notice,
+    \begin{align*}
+        \lim_{n \to \infty} \frac{f(n)}{g(n)} = \lim_{n \to \infty} \frac{3n^3}{n^4} = 0
+    \end{align*}
+    So, $f = o(g)$. We can also conclude more. Realize that the above limit really means that
+    there exists an $N$ such that for all $n \geq N$, we have:
+    \[ \frac{f(n)}{g(n)} \leq 1 \implies f(n) \leq 1 \cdot g(n) \]
+    (Note that 1 is not important for this argument; we could've chosen any $\varepsilon > 0$).
+    Now, consider the values of $\frac{f(n)}{g(n)}$ for $n < N$; this has some maximum $c$. Thus, we can conclude
+    that for ALL $n$,
+    \[ f(n) \leq \max(c, 1) g(n) \]
+    which implies $f = \mathcal{O}(g)$.
+\end{example}

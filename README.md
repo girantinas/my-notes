@@ -1,6 +1,6 @@
 ### Notes
 
-Some Math/EECS/CS Notes of mine.
+Some Math/EECS/CS Notes of mine. To see pdf versions of them, open "lectures.pdf" in the relevant directory.
 
 ## Directories
 
