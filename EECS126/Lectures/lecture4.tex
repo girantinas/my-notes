@@ -5,15 +5,15 @@ Here is a recap of the two different laws of large numbers.
 
 First, we define two different types of convergence:
 \begin{definition} [Almost Sure Convergence]
-    A random variable $A$ almost surely converges to constant $b$ if
-    \[\Pr{A \to b} = 1 \]
+    A random variable $X_n$ almost surely converges to random variable $X$ if
+    \[\Pr{X_n \to X} = 1 \]
     as $n \to \infty$.
 \end{definition}
 
 \begin{definition}[Convergence in Probability]
-    A random variable $A$ converges in probability to constant $b$ if
-    \[ \Pr{\abs{A - b} < \epsilon \to 1} \]
-    for any real number $\epsilon > 0$.
+    A random variable $X_n$ converges in probability to random variable $X$ if
+    \[ \Pr{\abs{X_n - X} > \epsilon} \to 0 \]
+    for any real number $\epsilon > 0$ as $n \to \infty$.
 \end{definition}
 
 \begin{theorem} [Strong Law of Large Numbers]
