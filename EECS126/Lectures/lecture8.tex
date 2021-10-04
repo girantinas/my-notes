@@ -35,7 +35,7 @@ Suppose you want to find the probability of hitting a state in one set $A$ befor
 Then, the FSEs are the following:
 \[ 
     \begin{cases}
-        \sum_j P(i, j) \alpha(j) & i \notin A \cup B \\
+        1+\sum_j P(i, j) \alpha(j) & i \notin A \cup B \\
         1 & i \in A \\
         0 & i \in B
     \end{cases}
