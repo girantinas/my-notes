@@ -32,7 +32,7 @@ This is slower than the sorting step in Kruskal's and is actually enough to get 
     First, doing a find takes constant time. But a single union takes:
     \[ \O(1) + \O(\text{head pointer changes}) \]
     Thus, the total runtime is:
-    \[ \mathcal{O}(m + n + \text{total head pointer changes}) = \mathcal{O}(\sum_{x = 1}^n (\text{number of times I changed $x$'s' head pointer})) \]
+    \[ \mathcal{O}(m + n + \text{total head pointer changes}) = \mathcal{O}\qty(\sum_{x = 1}^n (\text{number of times I changed $x$'s' head pointer})) \]
     Note that whenever I change a head pointer, the size of the list that $x$ is a part of at least doubles.
     Thus, the maximum amount of times that list can double is $\log_2 n$, which will thus be at least amount of times I changed each node's head pointer.
     Thus, we end up with:

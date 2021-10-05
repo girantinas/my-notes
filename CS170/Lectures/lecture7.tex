@@ -65,13 +65,13 @@ The interesting thing about BFS is that it is implemented the exact same as iter
 
 To show correctness, we require a few intermediate results: 
 \begin{theorem} [BFS Lemma 1]
-    $\forall v \in V$, dist$[v] \leq \delta(s, v)$ (the true shortest distance).
+    $\forall v \in V$, dist$[v] \geq \delta(s, v)$ (the true shortest distance).
 
     \begin{proof*}
         We proceed by induction on $k$, the number of push operations to $Q$ so far. $k = 1$ is trivial, since the dist of $s$ is 0 and everyone else's
         distance is infinity, satisfying the inequality. Consider the $k + 1$st push (with the induction holding for $\leq k$), during the edge $(u, v)$. We push $v$ when we visit $u$.
         By the inductive hypothesis, $\text{dist}[u] \geq \delta(s, u)$, so 
-        \[ \text{dist}[v] = 1 + \text{dist}(u) \leq \delta(s, u) + 1 = \delta(s, u) + \delta(u, v) \geq \delta(s, v) \]
+        \[ \text{dist}[v] = 1 + \text{dist}(u) \geq \delta(s, u) + 1 = \delta(s, u) + \delta(u, v) \geq \delta(s, v) \]
         completing the induction.
     \end{proof*}
 \end{theorem}
@@ -176,15 +176,15 @@ We can now use these heaps to solve SSSPs for arbitrary non-negative weighted gr
         &= \delta(s, x) + w(x, y) \\
         &= \text{dist}[x] + w(x, y) \\
     \end{align*} 
-    But since $y$ is a neighbor of $y$, then we had to have updated it in the past, at least through the update at vertex $x$. Thus,
+    But since $y$ is a neighbor of $x$, then we had to have updated it in the past, at least through the update at vertex $x$. Thus,
     the dist value is at most the last line, since that is what an update in dijkstra's looks like.
     \begin{align*}
-        L(p') &\leq \text{dist}[y]
+        L(p') &\geq \text{dist}[y]
     \end{align*}
     However, since $v$ was the last thing popped off the heap and $y$ wasn't, its dist value is lower.
     \begin{align*}
-        L(p') &\leq \text{dist}[v] \\
+        L(p') &\geq \text{dist}[v] \\
         &= L(p)
     \end{align*}
-    Which means that $p'$ can't be any shorter than $p$
+    Which means that $p'$ can't be any shorter than $p$, completing the induction and the proof.
 \end{algothm}
