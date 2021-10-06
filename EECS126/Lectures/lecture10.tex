@@ -40,7 +40,9 @@ We now have an important result, armed with our Gaussian knowledge.
     \[ \frac{S(n) - n\mu}{\sigma \sqrt{n}} \dconv \mathcal{N}(0, 1) \]
 \end{theorem}
 
-Here is a quick result out of CLT and the fact that a Binomial RV is the sum of many Bernoulli RVs.
+In practice, we can think of CLT in another way. Let $X_i$ be iid random variables with mean $\mu$ and variance $\sigma^2$. Then
+\[ X_1 + X_2 + \dots + X_n \approx \mathcal{N}\qty(n \mu, n \sigma^2)\]
+Here is a quick result, based on the fact that a Binomial RV is the sum of many Bernoulli RVs.
 
 \begin{theorem}
     If $\Bin{X_N}{N}{p}$, then:
@@ -59,35 +61,30 @@ the mean of $Y(N)$ is $p$. Define
 Due to CLT, $\Pr{A_1 \cup A_2} \approx 0.1$ (from the tail identities we covered last lecture) and thus $\Pr{A_1^C \cap A_2^C} \approx 0.9$, i.e.
 \begin{align*}
     \Pr{p - 1.65 \sqrt{p(1-p)/N} \leq Y(N) \leq p + 1.65 \sqrt{p(1-p)/N}} &= 0.9 \\
-    \Pr{Y(N)- 1.65 \sqrt{p(1-p)/N} \leq p \leq Y(N) - 1.65 \sqrt{p(1-p)/N}} &= 0.9
+    \Pr{Y(N)- 1.65 \sqrt{p(1-p)/N} \leq p \leq Y(N) + 1.65 \sqrt{p(1-p)/N}} &= 0.9
 \end{align*}
 This statement states that $Y(N)$ as an estimator for $p$ is within this interval with confidence 90%.
-Replacing the argument with $1.96$ gives $95\%$ confidence.
+Replacing the argument with $1.96$ gives $95\%$ confidence. Sometimes,
+we argue that $p(1-p) < 1/4$, so 
+\begin{align*}
+    \Pr{Y(N)- 1.65 \sqrt{0.25/N} \leq p \leq Y(N) - 1.65 \sqrt{0.25/N}} &= 0.9 \\
+    \Pr{Y(N)- \frac{0.83}{\sqrt{N}} \leq p \leq Y(N) - \frac{0.83}{\sqrt{N}}} &= 0.9
+\end{align*} 
 
-\begin{definition}[Characteristic Function]
-    The characteristic function of a random variable $X$ is the function:
-    \[ \phi_X(u) = \E{e^{iuX}} \]
-    with domain $u \in \R$ and $i = \sqrt{-1}$.
-\end{definition}
+However, when we only have observations and do not know the underlying distribution, we can do the following.
 
-\begin{definition}[Moment Generating Function]
-    The moment-generating function (MGF) of a random variable $X$ is the function:
-    \[ M_X(t) = \E{e^{tX}} \]
-    with domain $t \in \R$.
-\end{definition}
-
-Note that the MGF does not always exist, but when it does
-the relationship between it and the characteristic function can be summarized as:
-\[ \phi_X(t) = M_{iX}(t) = M_X(it) \]
-
-Furthermore, we have the following:
-\begin{note}[Moment Generation]
+\begin{note}
+    Consider any iid random variables $\{X(n), n \geq 1\}$ without knowledge of variance.
     \begin{align*}
-        M_X(t) &= \E{e^{tX}} \\
-        &= \E{\sum_{i = 0}^{\infty} \frac{(tX)^i}{i!}} \\
-        &= \sum_{i = 0}^{\infty} \frac{t^i \E{X^i}}{i!}
+        \mu_n = \frac{X(1) + X(2) + \dots + X(n)}{n} \\
+        \sigma_n^2 = \frac{\sum_{m = 1}^n (X(m) - \mu_n)^2}{n - 1}
     \end{align*}
-    So,
-    \[ \E{X^n} = M_X^{(n)} (0) \]
-    i.e. the $n$th derivative of $M_X$ evaluated at 0.
+    where the $n - 1$ comes from the fact that we want $\sigma_n^2$ in expectation to be the same as the
+    true variance of the $X(i)$'s.
+    (see Walrand for derivation).
+
+    Then, the following is a 90\% confidence interval for $\mu = \E{X(i)}$:
+    \[ [\mu_n - 1.65 \frac{\sigma_n}{\sqrt{n}} < \mu < \mu_n + 1.65 \frac{\sigma_n}{\sqrt{n}}] \]
+    and this is a 95\% confidence interval for $\mu$:
+    \[ [\mu_n - 2\frac{\sigma_n}{\sqrt{n}} < \mu < \mu_n + 2\frac{\sigma_n}{\sqrt{n}}] \]
 \end{note}

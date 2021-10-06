@@ -1,0 +1,102 @@
+\subsection{Lecture 11}
+
+\subsubsection{Characteristic and Moment-Generating Functions}
+\begin{definition}[Characteristic Function]
+    The characteristic function of a random variable $X$ is the function:
+    \[ \phi_X(u) = \E{e^{iuX}} \]
+    with domain $u \in \R$ and $i = \sqrt{-1}$.
+\end{definition}
+
+\begin{definition}[Moment-Generating Function]
+    The moment-generating function (MGF) of a random variable $X$ is the function:
+    \[ M_X(t) = \E{e^{tX}} \]
+    with domain $t \in \R$.
+\end{definition}
+
+The characteristic function and moment generating function uniquely determines a random variable.
+For example, you can determine the associated PDF/CDF from it.
+
+Note that the MGF does not always exist (if $X$ is large with high probability, it may blow up), but when it does
+the relationship between it and the characteristic function can be summarized as:
+\[ \phi_X(t) = M_{iX}(t) = M_X(it) \]
+
+Furthermore, we have the following:
+\begin{note}[Moment Generation]
+    \begin{align*}
+        M_X(t) &= \E{e^{tX}} \\
+        &= \E{\sum_{i = 0}^{\infty} \frac{(tX)^i}{i!}} \\
+        &= \sum_{i = 0}^{\infty} \frac{t^i \E{X^i}}{i!}
+    \end{align*}
+    So,
+    \[ \E{X^n} = M_X^{(n)} (0) \]
+    i.e. the $n$th derivative of $M_X$ evaluated at 0.
+\end{note}
+
+We work through an example.
+
+\begin{example}[Characteristic of $\mathcal{N}(0,1)$]
+    We apply the definition with LOTUS directly.
+    \begin{align*}
+        \phi_X(u) &= \int_{-\infty}^{\infty} e^{iux} \frac{1}{2 \pi}  e^{-x^2/2} \dd{x} \\
+        \frac{\dd}{\dd{u}} \phi_X(u) &= \int_{-\infty}^{\infty} ix e^{iux} \frac{1}{\sqrt{2\pi}} e^{-x^2/2} \dd{x} \\
+        &= - \int_{-\infty}^{\infty} ie^{iux} \frac{1}{2\sqrt{\pi}} \dd{e^{-x^2/2}} \\
+    \end{align*}
+    Now we apply integration by parts:
+    \begin{align*}
+        \phi'_X(u) &= -ie^{iux} \frac{1}{\sqrt{2 \pi}} e^{-x^2/2} \Big|_{-\infty}^{\infty} + \int_{-\infty}^{\infty} i \frac{1}{\sqrt{2\pi}} e^{-x^2/2} \dd{e^{iux}} \\
+        \phi'_X(u) &= -u \int_{\infty}{\infty} e^{iux} \frac{1}{\sqrt{2\pi}} e^{-x^2/2} \dd{x} \\
+        \phi'_X(u) &= -u \phi_X(u) \\
+        \frac{\phi'_X(u)}{\phi_X(u)} &= -u \\
+        \qty(\log\qty(\phi_X(u)))' &= -u \\
+        \log\qty(\phi_X(u)) &= -u^2/2 + c \\
+        \phi_X(u) &= Ae^{-u^2/2} \\
+    \end{align*}
+    Furthermore, we know that $\phi_X(0) = 1$ (since this is just the integral of the Normal over $\R$). Thus,
+    \[ \phi_X(u) = e^{-u^2/2} \]
+
+    Now, let us use this form to find the moments of $\mathcal{N}(0, 1)$.
+    \begin{align*}
+        \phi_X(u) &= \E{e^{iuX}} \\
+        &= \sum_{n = 0}^{\infty} \frac{1}{n!} i^n u^n \E{X^n} \\
+        &= e^{-u^2/2} \\
+        &= \sum_{m = 0}^{\infty} \frac{1}{m!} \qty(\frac{-u^2}{2})^m
+    \end{align*}
+    Now, we match coefficients of $u^{2m}$.
+    \begin{align*}
+        \frac{1}{\qty(2m)!} i^{2m} \E{X^{2m}} &= \frac{1}{m!} \qty(\frac{-1}{2})^m \\
+        \E{X^{2m}} &= \frac{(2m)!}{m! \cdot 2^m}
+    \end{align*}
+    Note that the summation has no terms for $u^{2m + 1}$, so the coefficients are all zero.
+    This means $\E{X^{2m + 1}} = 0$. Altogether:
+    \[ \E{X^n} = \begin{cases}
+        \frac{n!}{(n/2)! \cdot 2^n} & \text{ if $n$ is even} \\
+        0 & \text{ if $n$ is odd}
+    \end{cases} \]
+\end{example}
+
+Here is a useful formula for MGFs:
+\begin{theorem} [Independent MGFs]
+    Consider indepdent random variables $X_1$ and $X_2$. Then the moment-generating function of their sum is given by:
+    \[ M_{X_1 + X_2}(t) = M_{X_1}(t) M_{X_2}(t) \]
+\end{theorem}
+
+\subsubsection{Proof of the CLT}
+We give a brief sketch of the proof of the Central Limit Theorem. This is not a full argument,
+as we do not show that the characteristic function uniquely determines a random variable.
+
+\begin{proof}
+    Define
+    \[ Y(n) = \frac{X(1) + X(2) + \dots + X(n) - n\mu}{\sigma \sqrt{n}} \]
+    Then, let us compute its characteristic function.
+    \begin{align*}
+        \phi_{Y(n)}(u) &= \E{e^{iuY(n)}} \\
+        &= \E{\prod_{m = 1}^n \exp{\frac{iu(X(m) - \mu)}{\sigma \sqrt{n}}}} \\
+        &= \prod_{m = 1}^n \E{\exp{\frac{iu(X(m) - \mu)}{\sigma \sqrt{n}}}} & \text{(Independence)} \\
+        &= \E{\exp{\frac{iu(X(1) - \mu)}{\sigma \sqrt{n}}}}^n & \text{(Identically Distributed)} \\
+        &= \E{1 + \frac{iu\qty(X(1) - \mu)}{\sigma \sqrt{n}} - \frac{u^2\qty(X(1) - \mu)^2}{2\sigma^2 n} + o\qty(\frac{1}{n})}^n \\
+        &= \qty(1 - \frac{iu(\E{X(1) - \mu})}{\sigma\sqrt{n}} - \frac{u^2}{2} \cdot \frac{\qty(X(1) - \mu)}{\sigma^2} + o\qty(\frac{1}{n}))^n \\
+        &= \qty(1 - \frac{u^2}{2} + o\qty(\frac{1}{n}))^n \\
+        &\to e^{-u^2/2} & \text{(Limit Definition of $e$)}
+    \end{align*}
+    Since the characteristic function converges to that of a standard normal, this means that the distribution converges as well.
+\end{proof}
