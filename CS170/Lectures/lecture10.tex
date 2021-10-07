@@ -106,30 +106,69 @@ Now, we look at the best way we know of implementing union find.
 
     Before we do this, we claim some properties:
     \begin{enumerate}
-        \item Any root node $x$ has $\geq 2^{r[x]}$ elements in its tree.
-        \item Ranks strictly increase as you follow parent pointers.
-        \item The number of nodes with rank exactly $k$ is $\leq \frac{n}{2^k}$.
+        \item Any root node $x$ has $\geq 2^{r[x]}$ elements in its tree. (Can prove with induction; it's an invariant)
+        \item Ranks strictly increase as you follow parent pointers. (Can prove with induction; it's an invariant)
+        \item The number of nodes with rank exactly $k$ is $\leq \frac{n}{2^k}$. 
     \end{enumerate}
 
+    First, let us show claim 3; this is a bit tricky.
+    \begin{proof*}
+        Say the items of rank exactly $k$ are $x_1, \dots, x_q$. We will show there exists disjoint subsets of the universe of nodes $S_1, \dots, S_q$ such that
+        $|S_i| \geq 2^k$. We claim this is enough. Consider
+        \[ \abs{\bigcup_{i = 1}^q = S_i} \leq n \]
+        but also that 
+        \[ \abs{\bigcup_{i = 1}^q = S_i} = \sum_{i = 1}^{q} \abs{S_i} \geq q \cdot 2^k \]
+        meaning,
+        \[ q \leq \frac{n}{2^k}  \]
+        Thus, we need to just find these $S_i$. Let $S_i$ be the set of items in $x_i$'s tree at the moment in time when $x_i$ becomes rank $k$.
+        This means that $x_i$ merged with a $k - 1$ rank tree, giving $2^k$ nodes at least under $x_i$. We now have to just argue that
+        the $S_i$'s are disjoint. Consider another $x_j$ and
+        when it became rank $k$, (which happened at some other time than $x_i$). WLOG, suppose $x_i$ became rank $k$ before $x_j$. Suppose FSOC the two trees under
+        $x_i$ and $x_j$ shared a node $z$; this may mean $x_i$ is under $x_j$, but this is impossible because by claim 2, rank must strictly increase when following
+        parent pointers. Thus, $z$ must be under something of rank higher than $x_i$; but none of these exist in the $x_j$ tree. Thus, the trees under $x_i$ and $x_j$
+        must be disjoint. Thus, the sets $S_i$ are disjoint.
+    \end{proof*}
+
+    Now, here is the proof of the main runtime:
     \begin{proof*}
         Imagine every number from 1 to $n$ either pays cash or charges its credit card (in terms of running time, every time it does an operation). Then,
         to find the total running time (cost) we add up this "cash" and add up all the credit card dues.
 
         Look at our $n$ items at any point in time. They all have some ranks; the ranks go from 0
         to $\log n$. We can place these items into buckets based on rank, in the following way:
-        \[ [0, 1), [1, 2^1), [2, 2^{2}), [2, 2^{2^2}), \dots \]
+        \[ [0, 1), [1, 2^1), [2, 2^{2}), [2^2, 2^{2^2}), \dots \]
         The largest rank that can exist is $\log_2(n)$ (by claims 1 and 2), so the number of groups is
         $\log^*(\log_2(n)) = \log^*(n) - 1$.
 
         Now let's do some "accounting." Find is generally what takes time; the total time is:
         \[ \mathcal{O}(m + n + \text{\# of parents pointers I follow}) \]
-        Suppose we following a parent pointer from $u$ to $v$. Then, we have a few cases:
+        Suppose we follow a parent pointer from $u$ to $v$. Then, we have a few cases:
         \begin{enumerate}
             \item $v$ is the root of its tree. Let's pay cash here. In every find/union operation, we do this exactly once, so this is $\mathcal{O}(1)$ per op.
             \item $u, v$ are in different groups (as defined above) with neither as the root. We will again "pay cash".
             how many times do we change groups? Since rank increases as we follow parent pointers,
-            so the maximum amount of times we can change groups while going up is $\mathcal{O}(\log^*(n))$ per op/
+            so the maximum amount of times we can change groups while going up is $\mathcal{O}(\log^*(n))$ per op.
             \item $u, v$ are in the same groups (as defined above) with neither as the root. We charge these operations to $u$'s credit card; we will account for this at the end.
         \end{enumerate}
+        Now, let us understand what our "credit card debt" is from case 3. Let $g[u]$ be the group of 
+        $u$ after all the operations. Then, the total debt is:
+        \begin{align*}
+            \text{debt} &= \sum_{u = 1}^{n} \text{\# of times $u$ was charged} \\
+            \text{debt} &= \sum_{u = 1}^{n} \sum_{t = 0}^{g[u]}\text{\# of times $u$ was charged while in group $t$}
+        \end{align*}
+        Now suppose $u$ is in the group, $[k, 2^k]$. In case 3, $u$'s new parent after a find is the root (due to path compression), which has a strictly higher rank than $v$. If $u$ is charged again
+        while staying in this group, then its parent is again replaced with a new root (which must have an even higher rank). So, we can only charge case 3 while still in this group
+        at most $|[k, 2^k]| = 2^k - k \leq 2^k$ times.
+        \begin{align*}
+            \text{debt} &\leq \sum_{u = 1}^{n} \sum_{t = 0}^{g[u]} \mathcal{O}\qty(2^t) \\
+            \text{debt} &\leq 2 \sum_{u = 1}^n 2^{g[u]} \\
+            \text{debt} &\leq 2 \sum_{\text{groups}} 2^k \cdot \text{\# items in group $k$} \\
+            \text{debt} &\leq 2 \sum_{\text{groups}} 2^k \cdot \sum_{j = k}^{2^{k} - 1} \frac{n}{2^j} \\
+            \text{debt} &\leq 2 \sum_{\text{groups}} 2^k \cdot 2 \cdot \frac{n}{2^k} \\
+            \text{debt} &\leq 4n \cdot \text{\# of groups} \\
+            \text{debt} &\leq 4 n \log^*(n)
+        \end{align*}
+        Thus, all operations are $\mathcal{O}((m + n) \log^*(n))$ combined. Thus, the amortized runtime of find and union are:
+        $\mathcal{O}(\log^*(n))$.
     \end{proof*}
 \end{algothm}
