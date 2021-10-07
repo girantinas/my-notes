@@ -1,0 +1,57 @@
+\section{Dynamic Programming}
+
+\subsection{Lecture 11}
+Dynamic Programming can be thought of in
+two structures:
+
+\begin{enumerate}
+    \item Top-down DP (Memoization): Recursion and a lookup table to not have to recompute $f(\cdot)$ multiple times on
+    the same arguments.
+    \item Bottom-up DP: Fill up the lookup table iteratively instead of recursively.
+\end{enumerate}
+
+You may have seen this in the past with the Fibonacci Sequence. We can implement top-down Fibonacci with the recurrence relation:
+\[ a_n = a_{n - 1} + a_{n - 2} \]
+but include a lookup table that checks if $a_n$ has already been calculated. However, bottom-up Fibonacci
+just has the base case $a_0 = 0, a_1 = 1$, and then iteratively calculates:
+\[ a_{i + 2} = a_{i + 1} + a_i \]
+
+When considering the recursive version of Fibonacci, we can draw a recursive tree. Furthermore, this is a dependency DAG!
+We should fill in the lookup table for the DAG in reverse topological sorted order, and then output the last entry in the table.
+
+\subsubsection{Shortest Paths on a DAG}
+This algorithm works even when edge weights are negative. We use the same dynamic programming approach as we did with
+Fibonacci (which is fundamentally a DAG).
+
+We will solve this using a general framework for DP.
+\begin{enumerate}
+    \item Think of a function $f(\cdot)$ that can be computed recursively such that I can extract the answer by looking at
+    $f(x)$ for some $x$.
+
+    Here, we define $f(t)$ as the length of the shortest path from $s$ to $t$.
+
+    \item Make a recurrence relation for $f(\cdot)$ (it's fine if this is brute-forcy).
+    
+    \[ f(t) = \begin{cases}
+        0 & t = s \\
+        \infty & \text{$t$ is a source} \\
+        \min_{u\in V: (u, t) \in E} w(u, t) + f(u) & \text{otherwise}
+    \end{cases}\]    
+    Note that this runs VERY slowly. Suppose you have $d$ diamonds in your DAG, so there are $3d + 1$ vertices; i.e. $2^d = 2^{n/3}$ paths, giving us exponential time.
+
+    \item Optimize the recurrence relation with a lookup table. 
+    
+    In this case, let's just store $f(a)$ if we've computed it already. This means that the runtime the sum of time spent on input summed over all the inputs:
+    \[ sum_{u \in V} C \cdot (1 + \text{indegree}(u)) = \Theta(m + n) \]
+
+    \item Potentially run the algorithm in some natural order (in the order of dependencies; i.e. a reverse topological sort).
+    This may save space.
+\end{enumerate}
+
+Here's a way you might run this algorithm:
+\begin{algothm}[Shortest Paths in a DAG]
+    Reverse the graph to get $G^R$.
+    As base cases, if $s$ is $t$, return 0; if $t$ is a sink (source in the main graph) return $\infty$.
+    Otherwise, loop over all outgoing edges of $t$ in $G^R$ and recurse on those. Take the min of the subproblems and adding the weight of the incoming edge to get $f(t)$.
+    Save the result of $f(t)$ in a memoization table.
+\end{algothm}
