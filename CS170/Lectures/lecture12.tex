@@ -1,0 +1,152 @@
+\subsection{Lecture 12}
+
+The first worry is that our dynamic programming examples
+often return only a cost, instead of the optimal "solution" (i.e. maybe the edges in 
+a path instead of just a length). However, we argue it is easy to modify dynamic programming algorithms to recover this.
+
+Thinking about the dependency DAG of the subproblems, we can see how to do this. We simply find the shortest/longest path in a DAG,
+which we already solved! To find the path explicitly, we can store the 'argmin' of the edge that minimized the shortest path, in
+a new lookup table ('prev' or 'choices').
+
+\subsubsection{Bellman-Ford}
+We once again revisit the problem of single-source shortest paths on directed graphs.
+We already know Dijkstra's algorithm; however, this algorithm does not work if some of the edge weights are negative.
+Furthermore, if there is a negative cycle in your graph, then the shortest path to certain nodes may be $\infty$ (keep
+following the cycle over and over to get an arbitrarily small length). Let us look at an algorithm which can find
+the shortest paths if they are well defined (even if edge weights are negative) or find the existence of a negative cycle.
+
+We first realize the following recursive thinking. Any shortest path from source $s$ to vertex $t$ has a last edge $v$ on
+the path. However, the last recurrence relation will not work because of the cycles possible in the graph.
+Furthermore, any shortest path to $t$, if it exists, has at most $|V| - 1 = n - 1$ edges (otherwise there is a cycle in that path we can remove which is not
+negative). Thus, this is what we develop at first.
+
+\begin{algothm} [Bellman-Ford (DP)]
+    Define $f(t, k)$ as the shortest path from $s$ to $t$ using $\leq k$ edges. We want to find $f(t, n - 1)$. Let us develop a recurrence:
+    \[ f(t, k) &= \begin{cases}
+        \infty & k = 0, t \neq s \\
+        0 & k = 1, t = s \\
+        \min\{f(t, k - 1), \min_{(v, t) \in E}\{w(v, t) + f(v, k - 1)\} & \text{otherwise}
+    \end{cases} \]
+
+    \begin{algorithmic}
+        \Function{BF}{$G,s$}
+            \State $T[1 \dots n][0\dots 1] \gets \infty$ for all values
+            \State $T[s][0] \gets 0$
+            \For{$k = 1$ to $n - 1$}
+                \For{$t = 1$ to $n$}
+                    $T[t][1] \gets T[t][0]$
+                    \For{$(v,t) \in E$}
+                        \State $T[t][1] \gets \min(T[t][1], w(v, t) + T[v][0])$
+                    \EndFor
+                \EndFor
+                \For{$t = 1$ to $n - 1$}
+                    \State $T[t][0] \gets T[t][1]$
+            \State \Return $T[1 \dots n][1]$
+        \EndFunction
+    \end{algorithmic}
+
+    \textbf{Memory Analysis} The memory table is $\mathcal{O}(n^2)$ size because $t$ can range from $1, n$ as can the path length. However,
+    note that $f(\cdot, k)$ only depends on $f(\cdot, k - 1)$ values, so we need to only have to remember a 1-d array of $f(\cdot, k)$ values. So,
+    we can reduce that to $\mathcal{O}(n)$ with bottom-up DP.
+
+    \textbf{Runtime Analysis} The runtime is $n$ times total time to compute all $f(\cdot, k)$. This is:
+    \[ n \sum_{t \in V} C \cdot (1 + \text{indeg}(t)) = \mathcal{O}(n^2 + mn) \]
+\end{algothm}
+
+However, this isn't the best we can do. Instead, the actual Bellman Ford runs yet faster on sparse graphs (in a textbook).
+
+\begin{algothm}[Bellman-Ford]
+    \begin{algorithmic}
+    \Function{BFBook}($G, s$)
+        \State $T[1 \dots n] \gets \infty$ for all values
+        \State $T[s] \gets 0$
+        \For{$k = 1$ to $n - 1$}
+            \For{$e = (u, v) \in E$}
+                \State $T[v] \gets \min(T[v], T[u] + w(u, v))$
+            \EndFor
+        \EndFor
+        \State \Return $T$
+    \EndFunction
+    \end{algorithmic}
+
+    \textbf{Runtime Analysis} Outer loop runs in $n$, inner in $m$; this gives us $\mathcal{O}(mn)$.
+
+    Why are these equivalent? Well, first, note that this is just a different ordering of filling in the DP table $T$.
+    This is because instead of using a specific node every time, we still look at all edges. Now, the question is, why is our replacement
+    overwriting our DP table instead of making a second column? First we make the following claims (easy to check with induction):
+
+    \begin{itemize}
+        \item At all points in time, for all $v$, $T[v]$ is the length of some path from $s \to v$ (counting the empty path as a path with length $\infty$).
+        \item For all $k$ and $v$, after going through the outer loop $k$ times, $T[v] \leq f(v, k)$.
+    \end{itemize}
+
+    Thus this means after all the iterations, $\delta(v) \leq T[v]$ (because all paths are at least the length of the shortest path), also $T[v] \leq f(v, n - 1) = \delta(v)$
+    by definition. Therefore, we must have $T[v] = \delta(v)$, as we claim.
+\end{algothm}
+
+Now, we have our finished algorithm; where is the negative cycle detection we've been promised. Assume WLOG everyone is reachable from $s$. We show the following:
+
+\begin{theorem}
+    There exists a negative cycle if and only if $f(v, n) < f(v, n - 1)$ for some $v$ in the recurrence we defined above.
+
+    \begin{proof*}
+        The if condition is straightforward. Suppose that there was some vertex $v$ where $f(v, n) < f(v, n- 1)$ but there was no negative cycle.
+        Because any path with at least $n$ edges has a cycle,
+        this means that we could splice out the cycle (which must be positive by assumption) and
+        make a path with $n - 1$ or less edges, which would mean $f(v, n) \geq f(v, n - 1)$,
+        which is a contradiction.
+
+        The only if is a bit trickier. We proceed by contrapositive. Suppose that for all $v$, $f(v, n) \geq f(v, n - 1)$.
+        Now, consider some cycle $C = v_1 \to v_2 \to \dots \to v_r \to v_1$. Well, we know that for all $i$,
+        \begin{align*}
+            f(v_{i + 1}, n - 1) \leq f(v_{i + 1}, n) &\leq f(v_1, n - 1) + w(v_i, v_{i + 1}) \\
+            \sum_{i = 1}^r f(v_{i + 1}, n- 1) - f(v_{i + 1}, n) &\leq \sum_{i = 1}^r w(v_i, v_{i + 1}) \\
+            0 &\leq \sum_{i = 1}^r w(v_i, v_{i + 1})
+        \end{align*}
+        Thus the sum of the weights of $C$ is non-negative, meaning we cannot have a negative cycle, which is exactly the contrapositive
+        of our only if claim.
+    \end{proof*}
+\end{theorem}
+
+\subsubsection{Floyd-Warshall Algorithm}
+Now we consider the problem of all pairs shortest paths. As input, we are given directed graph $G$. We should return the 2d array
+$d$ such that for all $i,j$, $d[i][j] =$ total length of the shortest $i \to j$ path.
+
+One way to do this would be to run Bellman-Ford $n$ times, once for each vertex. This gives us a total runtime of
+$\mathcal{O}(n^2 m) = \mathcal{O}(n^4)$ if the graph is dense. We can do better. Assume without loss of generality that $G$ is the complete graph (if $e \notin E$, just 
+pretend $w(e) = \infty$). We do the following:
+
+\begin{algothm}[Floyd-Warshall Algorithm]
+    Our recurrence relation is as follows. $f(i, j, k)$ is the length of the shortest path from $i$ to $j$, only using vertices from $\{1, \dots, k\}$. We want to find $f(\cdot, \cdot, n)$.
+    \[ f(i, j, k) = \begin{cases}
+        w(i, j) & k = 0, i \neq j
+        0 & k = 0, i = j
+        \min\{f(i, j, k - 1), f(i, k, k - 1) + f(k, j, k - 1)\} & \text{otherwise}
+    \end{cases} \]
+    The algorithm is ommitted for brevity. We can run a similar set of optimizations we did for Bellman-Ford.
+
+    \textbf{Memory Analysis}
+    The original memory is $\mathcal{O}(n^3)$, which can be made $\mathcal{O}(n^2)$ using bottom-up DP.
+
+    \textbf{Runtime Analysis} We triple for loop over $k, i, j$ and then update the table in constant time every time. $\mathcal{O}(n^3)$ runtime.
+\end{algothm}
+
+\subsubsection{More DP Examples}
+We consider the problem of longest increasing subsequence. We are given an input array $A$ of length $n$. We want to find the longest
+subsequence (that is, non-contiguous elements in the same order as in the original array) that is increasing.
+
+We again have to figure out a recurrence relation. At each index $i$, we have the choice of either taking that element into our
+subsequence or not. Furthermore, sometimes we cannot; in particular, if the last element of the subsequence is too large, taking $i$
+may cause it to stop increasing. Thus, we have the following recurrence relation, letting $f(i, last)$ be the length of the longest increasing
+subsequence of $A[i \dots n]$ such that all values we use are $\leq A[last]$. We want to find:
+\[ \max_{1 \leq i \leq n} \{ f(i, i + 1) + 1 \} \]
+Instead, we can use a sentinel trick to make this a bit easier. Prepend $- \infty$ to $A$. Now,
+$f(1, 2)$ is what we're solving for.
+
+Now, for the actual recurrence relation:
+\[ f(last, i) = \begin{cases}
+    0 & i = n + 1
+    f(last, i + 1) & A[i] \leq A[last]
+    \max\{f(last, i + 1), f(i, i + 1) \} + 1 & \text{otherwise}
+\end{cases} \]
+which can be done in $\mathcal{O}(n)$ with bottom-up dp, with runtime $\mathcal{O}(n^2)$.

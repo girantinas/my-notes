@@ -16,7 +16,8 @@ but include a lookup table that checks if $a_n$ has already been calculated. How
 just has the base case $a_0 = 0, a_1 = 1$, and then iteratively calculates:
 \[ a_{i + 2} = a_{i + 1} + a_i \]
 
-When considering the recursive version of Fibonacci, we can draw a recursive tree. Furthermore, this is a dependency DAG!
+When considering the recursive version of Fibonacci, we can draw a recursive tree. Furthermore, this is a dependency DAG! In an
+optimization problem, each choice may have a certain weight attached to it.
 We should fill in the lookup table for the DAG in reverse topological sorted order, and then output the last entry in the table.
 
 \subsubsection{Shortest Paths on a DAG}
@@ -34,8 +35,8 @@ We will solve this using a general framework for DP.
     
     \[ f(t) = \begin{cases}
         0 & t = s \\
-        \infty & \text{$t$ is a source} \\
-        \min_{u\in V: (u, t) \in E} w(u, t) + f(u) & \text{otherwise}
+        \infty & \text{$t$ is a sink, $t \neq s$} \\
+        \min_{(u, t) \in E} w(u, t) + f(u) & \text{otherwise}
     \end{cases}\]    
     Note that this runs VERY slowly. Suppose you have $d$ diamonds in your DAG, so there are $3d + 1$ vertices; i.e. $2^d = 2^{n/3}$ paths, giving us exponential time.
 
