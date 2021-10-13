@@ -1,0 +1,148 @@
+\subsection{Lecture 13}
+\subsubsection{Knapsack Problem}
+We consider the knapsack problem. Given as input an array $A[1 \dots n]$, of items.
+Each item is a pair $(w, v)$ (weight and value). We also have a knapsack (bag) that can hold at most $W$ weight.
+
+\begin{example}
+There is a natural greedy approach to solving this.
+\begin{align*}
+    A &= [(10.001, 10.002), (10, 10), (10, 10)] \\
+    W &= 20
+\end{align*}
+We greedily take the most "bang for your buck," biggest ratio of value to weight.
+Greedy will take $(10.001, 10.002)$, while optimal is $[(10, 10), (10, 10)]$.
+
+You can prove that you get at least half of the optimal solution with the greedy approach.
+\end{example}
+
+
+\begin{algothm} [Knapsack DP]
+    First, we again think about recursive brute force, and then form a recurrence relation. Define $f(i, C)$ is
+    the maximum value that you can make with the last $i$ items and capacity $C$. We want $f(1, W)$.
+    The recurrence relation is:
+    \[ f(i, C) = \begin{cases}
+        0 & i = n + 1 \\
+        f(i + 1, C) & w_i > C \\
+        \max\{f(i + 1, C), v_i + f(i + 1, C - w_i)\} & \text{otherwise} \\
+    \end{cases}\]
+
+    Note that $i$ ranges from 1 to $n$ and $C$ ranges from $0$ to $W$, furthermore we only need the answers from $i + 1$ to get $i$. Thus,
+    runtime is $\mathcal{O}(nW)$, memory is $\mathcal{O}(W)$ bottom-up.
+\end{algothm}
+
+This is pseudo-polynomial time. Why is that? Call $b$ the amount of bits in the input of your algorithm.
+We define an algorithm that runs in polynomial time as one where the runtime is a polynomial in terms of $b$.
+
+Note that the size of the input is $\Theta(n \log W)$ in bits (since every weight
+is at most $W$). This means that $nW$ is polynomial in $n$ and exponential in $\log W$!
+
+\subsubsection{Traveling Salesman Problem}
+Now consider the following problem. There are $n$ locations with distances $D[i][j]$ = distance from $i$ to $j$,
+which form a metric space (nonnegative and satisfy triangle inequality). We want to traverse this complete graph, visiting all verteices, starting
+at 1 while minimizing total travel.
+
+The naive brute force way is to try every ordering of visiting the vertices, this is $\mathcal{O}(n!)$.
+
+\begin{algothm}[TSP]
+    Define $f(i, S)$ as the min travel time to visit all locations in $S \subseteq \{1, 2, \dots, n\}$ when starting at $1$.
+    We want $f(1, \{2, 3, \dots, n\})$.
+    \[ f(i, S) = \begin{cases} 0 & S = \emptyset \\
+        \min_{j \in S} f\qty(j, S \setminus \{j\} + D[i][j]) & \text{otherwise} \end{cases} \]
+    \textbf{Runtime Analysis} We must calculate for $\mathcal{O}(n 2^n)$ entries in each set, with each maximum taking at most linear time, giving us:
+    $\mathcal{O}(n^2 2^n)$.
+    \textbf{Memory} Top-down memoization is $\mathcal{O}(n 2^n)$, but with bottom-up, it's
+    something like
+    \[ \max_{1 \leq k \leq n} n \binom{n}{k} = n \binom{n}{n/2} = \mathcal{O}(\sqrt{n} 2^n) \]
+\end{algothm}
+
+The example of chain matrix multiplication was also discussed, but I have ommitted it here; DPV does a pretty good job of explaining it.
+
+\section{Linear Programming}
+\subsection{Lecture 13, Continued}
+Linear programming is maximizing or minimizing some linear function subject to some linear inequality constraints.
+In the language of linear algebra this is:
+
+\begin{definition}[Linear Program]
+    A linear program is an optimization problem which can be framed as:
+    \[ \max_{x} c^T x : Ax \leq b \]
+    where the $A, b, c$ are given, and the inequalities are elementwise.
+\end{definition}
+
+This may seem abstract, so let us give an example of a linear program.
+\begin{example}
+    I run a factory that sells foo for \$4/oz and bar for \$5/oz. In my warehouse, I have
+    \begin{itemize}
+        \item W = 10 oz water
+        \item B = 6 oz butter
+        \item G = 6 oz goo
+    \end{itemize}
+    Also, to make our products, we need to following ingredients:
+    \begin{itemize}
+        \item In order to make 1 oz of foo, it takes 2 oz water, 1 oz butter, 4 oz goo.
+        \item In order to make 1 oz of bar, it takes 3 oz butter, 2 oz goo.
+    \end{itemize}
+    Call $x$ the oz of foo I make, and call $y$ the oz of bar I make.
+    The objective is thus:
+    \[ \max_{x, y} 4x + 5y \]
+    subject to:
+    \[ 2x + 0y \leq 10, 1x + 3y \leq 6, 4x + 2y \leq 6, -x \leq 0, -y \leq 0 \]
+    Then define:
+    \[ c = \begin{bmatrix}
+        4 \\ 5
+    \end{bmatrix}, b = \begin{bmatrix}
+        10 \\ 6 \\ 6 \\ 0 \\ 0
+    \end{bmatrix},
+    A = \begin{bmatrix}
+        2 & 0 \\ 1 & 3 \\ 4 & 2 \\ -1 & 0 \\ 0 & -1
+    \end{bmatrix}\]
+    Note that this satisfies the definition of LP we gave above.
+\end{example}
+
+We briefly discuss convexity in the context of LP.
+
+\begin{definition}[Convexity]
+    A region is convex if for any two points in the region, the line between them is also in the region.
+\end{definition}
+
+\begin{theorem}
+    The feasible region in any LP is always convex.
+\end{theorem}
+
+Furthermore, note that all of these constraints are "halfspaces" i.e. they are on one side of a bunch of lines. This defines
+a convex polygon (or polytope in higher dimensional space) that we have to satisfy (a feasible region). We have to maximize in the $c$ direction. One
+of the optimal solutions of this is always a vertex.
+
+Even though the amount of vertices may be exponential, there exist polynomial-algorithms to solve LPs. We are not too
+concerned about their details or implementations; we are recommended to take 270. Instead, we just need to understand how to formulate
+our problems as LPs.
+
+We briefly discuss duality. Remember in our example (without the nonnegative constraints) we had the following equations.
+\begin{align*}
+    2x + 0y &\leq 10 \\
+    1x + 3y &\leq 6 \\ 
+    4x + 2y &\leq 6
+\end{align*}
+Suppose I wanted to prove to you
+that the maximum amount you could make was no more than 5 dollars. Multiply all the equations by some multipliers $z_1, z_2, z_3 \geq 0$ and add them:
+\begin{align*}
+    (2z_1 + z_2 + 4z_3)x + (3z_2 + 2z_3)y \leq z^T b
+\end{align*}
+What if $2z_1 + z_2 + 4z_3 = 4$ and $(3z_2 + 2z_3) = 5$. Then we have recovered our original $c$.
+\begin{align*}
+    c^x \leq z^T b
+\end{align*}
+this is the dual linear program (upper bound on our revenue).
+
+\begin{definition} [Duality]
+    Suppose our original "Primal" LP was:
+    \[ p^* = \max_{x} c^T x : Ax \leq b \]
+    the dual LP is:
+    \[ q^* = \min_{z} b^T z : A^Tz = c, z \geq 0 \]
+\end{definition}
+
+\begin{theorem}[Weak/Strong Duality]
+    Weak duality tells us $p^* \leq q^*$.
+
+    Strong duality tells us that if the primal LP was feasible and bounded,
+    $p^* = q^*$.
+\end{theorem}

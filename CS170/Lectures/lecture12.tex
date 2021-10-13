@@ -22,7 +22,7 @@ negative). Thus, this is what we develop at first.
 
 \begin{algothm} [Bellman-Ford (DP)]
     Define $f(t, k)$ as the shortest path from $s$ to $t$ using $\leq k$ edges. We want to find $f(t, n - 1)$. Let us develop a recurrence:
-    \[ f(t, k) &= \begin{cases}
+    \[ f(t, k) = \begin{cases}
         \infty & k = 0, t \neq s \\
         0 & k = 1, t = s \\
         \min\{f(t, k - 1), \min_{(v, t) \in E}\{w(v, t) + f(v, k - 1)\} & \text{otherwise}
@@ -41,6 +41,8 @@ negative). Thus, this is what we develop at first.
                 \EndFor
                 \For{$t = 1$ to $n - 1$}
                     \State $T[t][0] \gets T[t][1]$
+                \EndFor
+            \EndFor
             \State \Return $T[1 \dots n][1]$
         \EndFunction
     \end{algorithmic}
@@ -119,8 +121,8 @@ pretend $w(e) = \infty$). We do the following:
 \begin{algothm}[Floyd-Warshall Algorithm]
     Our recurrence relation is as follows. $f(i, j, k)$ is the length of the shortest path from $i$ to $j$, only using vertices from $\{1, \dots, k\}$. We want to find $f(\cdot, \cdot, n)$.
     \[ f(i, j, k) = \begin{cases}
-        w(i, j) & k = 0, i \neq j
-        0 & k = 0, i = j
+        w(i, j) & k = 0, i \neq j \\
+        0 & k = 0, i = j \\
         \min\{f(i, j, k - 1), f(i, k, k - 1) + f(k, j, k - 1)\} & \text{otherwise}
     \end{cases} \]
     The algorithm is ommitted for brevity. We can run a similar set of optimizations we did for Bellman-Ford.
@@ -145,8 +147,8 @@ $f(1, 2)$ is what we're solving for.
 
 Now, for the actual recurrence relation:
 \[ f(last, i) = \begin{cases}
-    0 & i = n + 1
-    f(last, i + 1) & A[i] \leq A[last]
+    0 & i = n + 1 \\
+    f(last, i + 1) & A[i] \leq A[last] \\
     \max\{f(last, i + 1), f(i, i + 1) \} + 1 & \text{otherwise}
 \end{cases} \]
 which can be done in $\mathcal{O}(n)$ with bottom-up dp, with runtime $\mathcal{O}(n^2)$.
