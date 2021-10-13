@@ -67,7 +67,6 @@ Here are some more results of manipulation:
     \[\frac{x}{1 + x^2} f_X(x) \leq Q(x) \leq \frac{1}{x} f_X(x)\]
 \end{theorem}
 
-
 Now we return to the application of multiplexing. If there is a lot of traffic at an output port of a switch,
 this can cause buffering (building a buffer of things to transmit next, if there's too many to transfer all at once).
 How can we model buffering? Let's try using a discrete-time Markov chain.
@@ -123,6 +122,23 @@ Then, we have the following:
     \item If $p = 1/2$, then it is a null-recurrent.
     \item If $p < 1/2$, then it is a positive-recurrent.
 \end{itemize}
+Let's prove these, setting $p + q = 1$.
+\begin{proof*}
+    \begin{itemize}
+        \item $p > q$
+        Let $Z(n)$ be iid with $\Pr{Z(n) = 1} = p$, $\Pr{Z(n) = -1} = q$. Now define:
+        \begin{align*} 
+            X(n) &= \max(X(n - 1) + Z(n), 0) \\
+            X(n) &\geq X(0) + Z(1) + \dots + Z(n) \\
+            \frac{X(n)}{n} &\geq \frac{X(0) + Z(1) + \dots + Z(n)}{n} \\
+            &\to \E{Z}
+        \end{align*}
+        However, note that $\E{Z} = 1 \cdot p - \cdot q > 0 $, so $X(n) \to \infty$, meaning
+        the Markov chain is transient.
+    \end{itemize}
+
+\end{proof*}
+
 
 We also have to modify the big theorem for infinite DTMCs.
 
@@ -134,7 +150,7 @@ We also have to modify the big theorem for infinite DTMCs.
     \begin{enumerate}
         \item If the markov chain is positive recurrent, there is a unique invariant distribution $\pi$ where
         \begin{align*}
-            \lim_{N \to \infty} \frac{1}{N} \sum_{n = 0}^{N - 1} \mathbbm{1}_{X(n) = i} = \pi(i)
+            \lim_{N \to \infty} \frac{1}{N} \sum_{n = 0}^{N - 1} \mathbbm{1}_{\{X(n) = i\}} = \pi(i)
         \end{align*}
         i.e. the long-term fraction of time converges to the invariant distribution.
         \item If the markov chain is positive recurrent and aperiodic, $\pi_n \to \pi$ regardless of the initial distribution.
@@ -145,7 +161,7 @@ We also have to modify the big theorem for infinite DTMCs.
 
 We again try to apply to balance equations to our random walk reflected at 0. However,
 we can consider many states at once as a kind of "meta-state." Then, we track only the "net" flow in and out
-of our "meta-state." These must be equal in the balance equations (think of these as internal forces in mechanics;
+of our "meta-state." These must be equal in the balance equations (think of the internal transitions as internal forces in mechanics;
 by Newton's second law, these cancel out).
 
 Let us make our meta-state $\{0, 1, \dots, n\}$. The flow out is $p \pi(n)$ and the flow in is $(1- p) \pi(n + 1)$. Calling
@@ -158,16 +174,11 @@ $\rho = \frac{p}{1-p}$. This means:
 \end{align*}
 Note that if $p = 1/2$, then $\rho = 1$.
 
-\subsubsection{Poisson Process}
+Now, we define another condition:
 
-\begin{definition}[Poisson Process]
-    Let $\lambda > 0$ and $\{S_1, S_2, \dots \}$ be IID $Exp(\lambda)$ random variables, i.e. inter-arrival times.
-    Also, let $T_n = S_1 + \dots + S_n$
-    for $n \geq 1$, i.e. the $n$th arrival time. Define $N_t = 0$ if $t < T_1$, otherwise $N_t = \max\{n \geq 1 \mid T_n \leq t\}, t \geq 0$.
-    Then, $N = \{N_t, t \geq 0\}$ is a Poisson process with rate $\lambda$.
+\begin{definition}[Detailed Balance Equations]
+    The condition $\pi(i) P(i, j) = \pi(j) P(j, i)$ for any two
+    states $i$ and $j$ are called detailed balance equations.
 \end{definition}
 
-\begin{theorem}
-    Let $N = \{N_t, t \geq 0\}$ be a Poisson process with rate $\lambda$. Given $\{N_s, s \geq t\}$, then
-    $\{N_{s + t} - N_t, s \geq 0\}$ is a Poisson process with rate $\lambda$.
-\end{theorem}
+This notion will be important later (when we discuss reversibility).

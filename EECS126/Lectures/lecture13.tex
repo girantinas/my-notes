@@ -1,0 +1,92 @@
+\subsection{Lecture 13}
+\subsubsection{Poisson Process}
+
+\begin{definition}[Poisson Process]
+    Let $\lambda > 0$ and $\{S_1, S_2, \dots \}$ be IID $Exp(\lambda)$ random variables, i.e. inter-arrival times.
+    Also, let $T_n = S_1 + \dots + S_n$
+    for $n \geq 1$, i.e. the $n$th arrival time. Define $N_t = 0$ if $t < T_1$, otherwise $N_t = \max\{n \geq 1 \mid T_n \leq t\}, t \geq 0$.
+    Then, $N = \{N_t, t \geq 0\}$ is a Poisson process with rate $\lambda$.
+\end{definition}
+
+Intuitively,
+$N_t$ counts number of jumps (or arrivals) that have occurred by time $t$; every Expo($\lambda$) arrival time ($S_i$), there is a new arrival.
+The arrival times are iid.
+
+\begin{theorem}[Memorylessness of the Poisson Process]
+    Let $N = \{N_t, t \geq 0\}$ be a Poisson process with rate $\lambda$. Given $\{N_s, s \leq t\}$, then
+    $\{N_{s + t} - N_t, s \geq 0\}$ is a Poisson process with rate $\lambda$.
+\end{theorem}
+
+The reason for this is because of the memorylessness of the exponential random variable! After time $t$, the next "jump" is
+still Expo($\lambda$), because it is basically $\{ T_m - t \mid T_m \geq t \}$.
+
+\begin{theorem}
+    Any Poisson process has independent and stationary increments. To be precise,
+    for any $0 \leq t_1 < t_2 < t_3 < \dots$ increments, $\{N_{t_{n + 1}} - N_{t_n}\}$ are
+    independent for all $n$ and the distribution of $N_{t_{n + 1}} - N_{t_n}$ depends solely on $t_{n + 1} - t_n$
+    (it is 'stationary', i.e. absolute time-invariant).
+\end{theorem}
+
+In fact, the distribution of $N_t$ is easy to find.
+\begin{theorem}[Poisson Process is a Poisson Distribution]
+    Let $N = \{N_t, t \geq 0\}$ be a Poisson process with rate $\lambda$. Then $\Pois{N_t}{\lambda t}$.
+
+    \begin{proof*}
+        Let $T_n$ be the $n$th jump time and let $S_n = T_n - T_{n - 1}$, $n \geq 1$, $T_0 = 0$,
+        i.e. $S_n$'s are the inter-arrival times. Then, we can compute the probability of having exactly $n$ arrivals
+        in the interval 0 to $t$ around specific times $0 \leq t_1 < t_2 < \dots < t_n$
+        \begin{align*}
+            &\Pr{T \in (t_1, t_1 + \dd{t_1}), T_2 \in (t_2, t_2 + \dd{t_2}), \dots, T_n \in (t_n, t_n + \dd{t_n}), T_{n + 1} > t} \\
+            &\Pr{S_1 \in (t_1, t_1 + \dd{t_1}), \dots, S_n \in (t_n - t_{n - 1}, t_{n} - t_{n - 1} + \dd{t_n}), S_{n + 1} > t - t_n)} \\
+            &\Pr{S_{n + 1} > t - t_n} \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
+            &(e^{-\lambda(t - t_n)}) \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
+            & \lambda^n e^{-\lambda t} \Pi_{i = 1}^n \dd{t_i} \\
+        \end{align*}
+        Note that this does not depend on the actual $t_i$'s, only the difference between them. Thus,
+        any $t_i$'s could have been chosen and been equally likely. Thus, have exactly $n$ arrivals in the interval 0 to $t$
+        aroudn any times is just the integral over the volume of all the possibilities $S = \{(t_1, t_2, \dots, t_n) \mid \text{all $t_i$'s strictly increasing}\}$. 
+        Note that the volume of $|S| = \frac{t^n}{n!}$ because normally we would have a volume of $t^n$, but only one ordering of these is strictly increasing.
+        Thus, we take the integral to use total probability rule.
+        \begin{align*}
+            \Pr{N_t = n} &= \int_{S} \lambda^n e^{-\lambda t} \Pi_{i = 1}^n \dd{t_i} \\
+            &= \lambda^n e^{-\lambda} \cdot |S| \\
+            &= \frac{(\lambda t)^n e^{-\lambda}}{n!}
+        \end{align*}
+        Which is precisely the PMF of a Poisson distribution.
+    \end{proof*}
+\end{theorem}
+
+Here is another way to think of Poisson Processes; you can simulate them two ways:
+\begin{itemize}
+    \item Generate $N$ with a Posson distribution with parameter $\lambda t$.
+    \item If $N = n \geq 1$, generate $U_1, U_2, \dots, U_n$ iid distribution Uniform$[0, 1]$ and
+    order them (order statistics) to get, $U_{(1)}, U_{(2)}, \dots, U_{(n)}$. Then,
+    set the arrival times to be:
+    \[ (T_1, \dots, T_n) = (U_{(1)}, \dots, U_{(n)}) \]
+\end{itemize}
+
+The second way comes from the fact that the ordered arrival times between $0$ to $t$
+have uniform density $f(t_1, t_2, \dots, t_n) = \frac{n!}{t^n}$ (thus unordered ones are uniform with probability $\frac{1}{t^n}$).
+
+\subsubsection{Continuous Time Markov Chains}
+We begin again with the definition.
+\begin{definition}[Countinuous Time Markov Chain]
+    Let $\mathcal{X}$ be a finite or countable state space, and define a rate matrix $Q = \{q(i, j), i, j \in \mathcal{X}\}$
+    such that $q(i, j) \geq 0$ for all $i \neq j$ and $\sum_{j} q(i, j) = 0$ for all $i$ (this means the
+    diagonal entries in each row are the negative sum of all the other entries in that row).
+
+    A continuous-time Markov chain (CTMS) with initial distribution and rate matrix $Q$ is a process
+    $\{X_t, t \geq 0\}$ such that $\Pr{X_0 = i} = \pi_0(i)$ and the transition property:
+    \[ \Pr{X_{t + \epsilon \mid X_t = i, X_u, u < t}} = \mathbbm{1}_{\{i = j\}} + \epsilon q(i, j) + o(\epsilon) \]
+
+    Another way to consider this construction is as follows:
+    define $q_i = -q(i, i)$. We stay in some state $i$ until some time $\Expo{\tau}{q_i}$. If $X_t = i$,
+    then $X_{t + \tau} = j$ (it jumps to $j \neq i$) with probability $\Gamma(i, j) = \frac{q(i,j)}{q_i}$.
+    Note that:
+    \[ \sum_{j \neq i} \Gamma(i, j) = 1 \]
+\end{definition}
+
+Note that this is equivalent to taking the following: when you reach state $i$, start a clock for each of the other states
+which is exponential with parameter $q(i, j)$. Whichever clock jumps first, we go to that state. The reason this is equivalent is because
+this is taking the min of all these timers, which creates an exponential with parameter $\sum_{i \neq j} q(i, j) = q_i$, as we
+have in the original construction.
