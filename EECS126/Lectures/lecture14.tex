@@ -1,0 +1,18 @@
+\subsection{Lecture 14}
+
+Most of the lecture was going through some claims in previous lectures; I updated those sections accordingly.
+
+\begin{definition}[Stopping Time]
+    Stopping time is a random variable $\tau$ that has the property
+    $\{ \tau \leq t \}$ is completely determined by the process $\{ X_s, s \leq t \}$.
+\end{definition}
+
+This leads to the following property (called the "Strong Markov Property").
+
+\begin{theorem}[Strong Markov Property]
+    If $\tau$ is a stopping time,
+    \[ \Pr{\{X_{\tau + t}, t \geq 0\} \in A \mid X_{\tau} = k, X_t, t \leq \tau} = \Pr{\{X_t, t \geq 0\} \in A \mid X_0 = k}\]
+    Note that this is stronger than the normal Markov property ($\tau$ can be an RV instead of a constant).
+\end{theorem}
+
+For CTMCs and DTMCs that we discuss, the Strong Markov Property holds.

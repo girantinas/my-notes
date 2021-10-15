@@ -95,7 +95,8 @@ Irreducibility and aperiodicity are defined the same way as in the finite case. 
 the invariant distribution, as $\pi = \pi P$.
 
 \begin{definition}[Types of States]
-    A state is \textbf{transient} if starting the Markov Chain from this state causes it to be visited finitely often. A state is 
+    A state is \textbf{transient} if starting the Markov Chain from this state causes it to be visited finitely often (i.e. there
+    is some probability > 0 that you'll never come back to it). A state is 
     \textbf{recurrent} if it's not transient.
 
     A recurrent state is \textbf{positive recurrent} if the average time between successive visits is finite, otherwise
@@ -122,10 +123,11 @@ Then, we have the following:
     \item If $p = 1/2$, then it is a null-recurrent.
     \item If $p < 1/2$, then it is a positive-recurrent.
 \end{itemize}
-Let's prove these, setting $p + q = 1$.
+
 \begin{proof*}
+    We talk about the three cases separately, setting $p + q = 1$:
     \begin{itemize}
-        \item $p > q$
+        \item $p > q (p > 1/2)$
         Let $Z(n)$ be iid with $\Pr{Z(n) = 1} = p$, $\Pr{Z(n) = -1} = q$. Now define:
         \begin{align*} 
             X(n) &= \max(X(n - 1) + Z(n), 0) \\
@@ -133,12 +135,42 @@ Let's prove these, setting $p + q = 1$.
             \frac{X(n)}{n} &\geq \frac{X(0) + Z(1) + \dots + Z(n)}{n} \\
             &\to \E{Z}
         \end{align*}
-        However, note that $\E{Z} = 1 \cdot p - \cdot q > 0 $, so $X(n) \to \infty$, meaning
+        However, note that $\E{Z} = 1 \cdot p - 1 \cdot q > 0 $, so $X(n) = \lim_{n \to \infty} n(p - q) \to \infty$, meaning
         the Markov chain is transient.
     \end{itemize}
 
-\end{proof*}
+    \begin{itemize}
+        \item $p < q (p < 1/2)$
+        Note that $p \pi(n) = q \pi(n + 1)$ by the balance equations. Define $\rho = \frac{p}{q}$. This means
+        \[ \pi(n + 1) = \frac{p}{q} \pi(n) \implies \pi(n)  (1 - \rho)\rho^n \]
+        This means that $\pi(i) = \frac{1}{\E{T_i \mid {X(0) = i}}}$ meaning the average time to return to state $i$ is
+        finite (since $\frac{1}{\pi(i)}$ is finite). Thus, this Markov chain is positive-recurrent.
+    \end{itemize}
 
+    \begin{itemize}
+        \item $p = q (p = 1/2)$
+        We investigate $\E{T_0 \mid X(0) = 1}$. By means of first-step equations, this is:
+        \[\E{T_0 \mid X(0) = 1} = 1 + \frac{1}{2} \E{T_0 \mid X(0) = 2} \]
+        By symmetry,
+        \[ \E{T_0 \mid X(0) = 2} = 2 \E{T_0 \mid X(0) = 1} \]
+        However, this means:
+        \begin{align*}
+            \E{T_0 \mid X(0) = 1} &= 1 + \E{T_0 \mid X(0) + 1} \\
+            1 &= 0
+        \end{align*}
+        Thus, the expectation must be infinite! This means that:
+        \[ \E{T_0 \mid X(0) = 0} = 1 + \frac{1}{2} \E{T_0 \mid X(0) = 1} = \infty \]
+        Now, we just need show that the probability of returning to a state is 1.
+        Here is a sketch of the argument.
+        Suppose we are trying to return to state $n$. If we go to $n - 1$, then eventually we will come back to $n$,
+        this is intuitive (think about the ants homework problem). If we go to $n + 1$, then to return, we have to go to the left
+        a net amount of 1; i.e. it's like flipping a bunch of fair coins and having at some point more tails then heads. However,
+        this happens with probability 1 (which can be proved with Borel-Cantelli).
+
+        Thus, this Markov chain is null-recurrent.
+    \end{itemize}
+
+\end{proof*}
 
 We also have to modify the big theorem for infinite DTMCs.
 

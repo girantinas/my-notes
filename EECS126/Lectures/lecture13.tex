@@ -36,11 +36,11 @@ In fact, the distribution of $N_t$ is easy to find.
         i.e. $S_n$'s are the inter-arrival times. Then, we can compute the probability of having exactly $n$ arrivals
         in the interval 0 to $t$ around specific times $0 \leq t_1 < t_2 < \dots < t_n$
         \begin{align*}
-            &\Pr{T \in (t_1, t_1 + \dd{t_1}), T_2 \in (t_2, t_2 + \dd{t_2}), \dots, T_n \in (t_n, t_n + \dd{t_n}), T_{n + 1} > t} \\
-            &\Pr{S_1 \in (t_1, t_1 + \dd{t_1}), \dots, S_n \in (t_n - t_{n - 1}, t_{n} - t_{n - 1} + \dd{t_n}), S_{n + 1} > t - t_n)} \\
-            &\Pr{S_{n + 1} > t - t_n} \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
-            &(e^{-\lambda(t - t_n)}) \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
-            & \lambda^n e^{-\lambda t} \Pi_{i = 1}^n \dd{t_i} \\
+            &= \Pr{T \in (t_1, t_1 + \dd{t_1}), T_2 \in (t_2, t_2 + \dd{t_2}), \dots, T_n \in (t_n, t_n + \dd{t_n}), T_{n + 1} > t} \\
+            &= \Pr{S_1 \in (t_1, t_1 + \dd{t_1}), \dots, S_n \in (t_n - t_{n - 1}, t_{n} - t_{n - 1} + \dd{t_n}), S_{n + 1} > t - t_n)} \\
+            &= \Pr{S_{n + 1} > t - t_n} \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
+            &= (e^{-\lambda(t - t_n)}) \Pi_{i = 1}^n \lambda e^{-\lambda (t_i - t_{i - 1})} \dd{t_i} \\
+            &= \lambda^n e^{-\lambda t} \Pi_{i = 1}^n \dd{t_i} \\
         \end{align*}
         Note that this does not depend on the actual $t_i$'s, only the difference between them. Thus,
         any $t_i$'s could have been chosen and been equally likely. Thus, have exactly $n$ arrivals in the interval 0 to $t$
@@ -49,8 +49,8 @@ In fact, the distribution of $N_t$ is easy to find.
         Thus, we take the integral to use total probability rule.
         \begin{align*}
             \Pr{N_t = n} &= \int_{S} \lambda^n e^{-\lambda t} \Pi_{i = 1}^n \dd{t_i} \\
-            &= \lambda^n e^{-\lambda} \cdot |S| \\
-            &= \frac{(\lambda t)^n e^{-\lambda}}{n!}
+            &= \lambda^n e^{-\lambda t} \cdot |S| \\
+            &= \frac{(\lambda t)^n e^{-\lambda t}}{n!}
         \end{align*}
         Which is precisely the PMF of a Poisson distribution.
     \end{proof*}
@@ -89,4 +89,5 @@ We begin again with the definition.
 Note that this is equivalent to taking the following: when you reach state $i$, start a clock for each of the other states
 which is exponential with parameter $q(i, j)$. Whichever clock jumps first, we go to that state. The reason this is equivalent is because
 this is taking the min of all these timers, which creates an exponential with parameter $\sum_{i \neq j} q(i, j) = q_i$, as we
-have in the original construction.
+have in the original construction. Furthermore, we know
+\[ \Pr{\min_{j \neq i} T_j = T_k} = \frac{q(i, k)}{\sum_{j \neq i} q(i, j)} = \Gamma(i, j) \]
