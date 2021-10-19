@@ -1,0 +1,113 @@
+\subsection{Lecture 15}
+
+Another proof of correctness of Ford-Fulkerson comes from the following results (which take some setup).
+
+\begin{definition}[Vertex Cut]
+    A cut of a graph $G$ is a partition of $V$ into two non-empty sets $S$ and $V - S$.
+\end{definition}
+
+\begin{definition}[$s-t$ Cut, Capacity of a Cut]
+    An $s$-$t$ cut is a cut where $s \in S$ and $t \in V - S$.
+    We define the capacity of such a cut as:
+    \[ u(S) = \sum_{e \in S \times (V - S)} u_e \]
+\end{definition}
+
+\begin{definition}[Net Flow]
+    Given an $s$-$t$ cut $S$, we define the net flow $f(S)$ by:
+    \[ f(S) = \sum_{e \in S \times (V - S)} f_e - \sum_{e \in (V - S) \times S} f_e \]
+\end{definition}
+
+This means maximizing our flow means maximizing $f(\{s\})$. Furthermore,
+for all $s-t$ cuts, $f(S) = |f|$. Let's show this:
+
+\begin{proof*}
+    We induct on $|S|$. The base case is $|S| = 1 \implies S = \{s\}$. Note $f(\{s\}) = |f|$ by definition.
+
+    The inductive step has $|S| > 1$. There must be at least two vertices in $S$, $s$ and $v$. Suppose we looked
+    at $v$ being in $V - S$ instead. Then there are some edges that go from the other elements of $S$ to/from $v$.
+    There may also be edges from/to vertices in $T$. For the first two cases, call the flow $A$ and $B$; for the latter two cases,
+    call the flow $C$ and $D$. Note that by conservation of flow:
+    \[ A + D = B + C \implies A - B = C - D \]
+    Furthermore:
+    \[ f(S - \{v\}) = f(\text{stuff not with $v$}) + A - B \]
+    By the inductive hypothesis, the left-hand side is the flow, i.e. $|f|$.
+    However,
+    \[ f(S) = f(\text{stuff}) + C - D \]
+    So by our conservation equations, $f(S) = f(S - \{v\}) = |f|$.
+\end{proof*}
+
+\begin{theorem}[Max-flow, Min-cut Theorem]
+    Consider a flow $f$ and a cut $S$. We have
+    \[\max_f |f| = \min_S u(S)\]
+    This means the maximum flow is the same as the minimum cut capacity.
+    
+    \begin{proof*}
+        We will show $|f^*| \leq u(S^*)$ and $|f^*| \geq u(S^*)$.
+
+        To show the first claim, we will show for all flows $f$ and cuts $S$, $|f| \leq u(S)$.
+        \begin{align*}
+            |f| &= f(S) \\
+            &= \sum_{a \in S, b \in (V - S)} f_{ab} - f_{ba} \\
+            &\leq \sum_{a \in S, b \in (V - S)} f_{ab} \\
+            &\leq \sum_{a \in S, b \in (V - S)} u_{ab} \\
+            &= u(S)
+        \end{align*}
+        as required.
+
+        To show the second claim, we will show that there exists a flow $f$ and cut $S$ such that
+        $|f| = u(S)$, because $u(S) \geq u(S^*)$ and $|f| \leq |f^*|$. Let $f$ be a max flow, and define
+        \[ S = \{ v: \text{$s$ has a path to $v$ in $G_f$} \]
+        We know \[|f| = f(S) = \sum_{a \in S, b \in V - S} f_{ab} - \sum_{a \in S, b \in V - S} f_{ba}\]
+        However, every outgoing edge must be fully exhausted; otherwise it would be a part of $S$ (reachable in $G_f$).
+        Furthermore, any incoming edge to $S$ cannot have nonzero capacity, because otherwise in the residual graph there would be
+        an outgoing edge with nonzero capacity, meaning that more would be reachable than just $S$.s
+        Thus, we have:
+        \[ |f| = \sum_{a \in S, b \in V - S} u_{ab} = u(S) \]
+        Thus we have shown both directions, so we are done.
+    \end{proof*}
+\end{theorem}
+
+The min-cut problem is very close to the dual of the max-flow problem. As a reminder we have the following constraints:
+\begin{itemize}
+    \item $\forall e \in E, f_e \geq 0$ (Nonnegativity)
+    \item $\forall e \in E, f_e \leq u_e$ (Capacity constraint)
+    \item $\forall v \in V, \sum_{e = (v, \cdot)} f_e - \sum_{e = (\cdot, v)} f_e$ (Conservation of flow)
+    \item We wish to maximize the flows: $\max \sum_{e = (s, \cdot)} f_e = \max |f|$.
+\end{itemize}
+
+To massage them into the "primal" form, we have to convert all the constraints to $\leq$ constraints, which would be a lot of work.
+However, we use the same trick where we multiply by $y_i$ multipliers on each side. Here is the more general derivation:
+
+We start with the basic form of the constraints of the primal:
+\begin{align*}
+    Ax \leq b &\iff \sum a_{1j} x_j \leq b_1, \sum a_{2j} x_j \leq b_2, \dots \\
+    &\iff y_1 \sum a_{1j} x_j \leq b_1 y_1, \sum a_{2j} x_j \leq b_2 y_2, \dots \text{for some $y_i \geq 0$}\\
+    &\iff x_1(a_{11} y_1 + a_{21} y_2 + \dots) + x_2(a_{12}y_1 + a_{22}y_2 + \dots) + \dots \leq b^T y
+\end{align*}
+Where we want $A^T y = c$. Variables in the primal are constraints in the dual; constraints in the primal are variables in the dual.
+
+Going back to the max flow problem, we try to reformulate the dual. Note that if the $i$th constraint was an equals instead of inequality, then no need for $y_i \geq 0$ constraint.
+Furthermore, for all the non-negativity constraints, flip them to be $- x_i \leq 0$ and multiply by some other dual variables to get:
+$- w_i x_i \leq 0$ and $w_i \geq 0$, so we need
+\[ a_{1i} y_1 + a{2i} y_2 + \dots - w_1 = c_i \]
+but since we have the free parameter of $w$'s, we can just write this constraint as:
+\[ A^T y \geq c \]
+
+Let us now try writing the dual using the things we learned. Call $u$ the capacities of the edges (which were $\leq$ constraints originally).
+\begin{align*}
+    \min u^T y : A^T [y z] = c, y \geq 0
+\end{align*}
+We claim when the $y$'s and $z$'s are integers this is just the min-cut problem.
+
+Define:
+\begin{align*}
+    y_{ab} &= \begin{cases}
+    1 & a \in S, b \in V - S \\
+    0 & \text{otherwise}
+    \end{cases} \\
+    z_a &= \begin{cases}
+        1 & a \in S \\
+        0 & \text{otherwise}
+    \end{cases}
+\end{align*}
+We claim all the constraints are satisfied, with casework on $a$ and $b$ (omitted here).

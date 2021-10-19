@@ -59,6 +59,7 @@ The example of chain matrix multiplication was also discussed, but I have ommitt
 
 \section{Linear Programming}
 \subsection{Lecture 13, Continued}
+\subsubsection{Linear Programs}
 Linear programming is maximizing or minimizing some linear function subject to some linear inequality constraints.
 In the language of linear algebra this is:
 
@@ -98,14 +99,23 @@ This may seem abstract, so let us give an example of a linear program.
     Note that this satisfies the definition of LP we gave above.
 \end{example}
 
-We briefly discuss convexity in the context of LP.
+We briefly discuss convexity in the context of LP, as well as some other properties.
+
+\begin{definition}[Feasibility]
+    A linear program is feasible if there is at least one vector $x$ that satisfies all the constraints.
+\end{definition}
+
+\begin{definition}[Bounded]
+    A linear program is bounded if its solution is not $+ \infty$ or $- \infty$.
+\end{definition}
 
 \begin{definition}[Convexity]
     A region is convex if for any two points in the region, the line between them is also in the region.
 \end{definition}
 
 \begin{theorem}
-    The feasible region in any LP is always convex.
+    The feasible region in any LP is always convex. Furthermore, the solution to an LP always lies
+    on a vertex of this convex polytope.
 \end{theorem}
 
 Furthermore, note that all of these constraints are "halfspaces" i.e. they are on one side of a bunch of lines. This defines
@@ -137,12 +147,17 @@ this is the dual linear program (upper bound on our revenue).
     Suppose our original "Primal" LP was:
     \[ p^* = \max_{x} c^T x : Ax \leq b \]
     the dual LP is:
-    \[ q^* = \min_{z} b^T z : A^Tz = c, z \geq 0 \]
+    \[ q^* = \min_{y} b^T y : A^Ty = c, y \geq 0 \]
 \end{definition}
+
+Note that each $y$ is an upper bound to $c^T x$;
+the dual tries to find the "tightest upper bound."
 
 \begin{theorem}[Weak/Strong Duality]
     Weak duality tells us $p^* \leq q^*$.
 
-    Strong duality tells us that if the primal LP was feasible and bounded,
-    $p^* = q^*$.
+    Strong duality tells us that if the primal LP is feasible and bounded, so is the dual and
+    $p^* = q^*$. Furthermore, if the primal is unbounded, then the dual is infeasible.
 \end{theorem}
+
+Also, the dual of the dual is the primal.

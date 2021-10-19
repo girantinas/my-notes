@@ -1,0 +1,94 @@
+\subsection{Lecture 14}
+
+We briefly list algorithms used to solve LPs (but not detail them). They include:
+\begin{itemize}
+    \item Simplex (Dantzig '47), a greedy algorithm. Runs in exponential time worst-case; actually converges quickly in practice.
+    \item Ellipsoid (Khachiyan '79), first poly-time algorithm for LP. For $m$ constraints, $n$ variables and $L$ precision, this takes poly(m, n) $\cdot L$ time. Not as usable.
+    \item Interior Point (Karmarkar '84) Poly-time, but usable.
+\end{itemize}
+
+Maximizing an LP is basically just as hard as finding a feasible $x$ (suppose we could, we could just binary search
+to find an optimal point). Furthermore, we can write LPs in the "primal" ($\alpha$) form in the "dual" ($\beta$) form.
+
+\begin{example}
+    Suppose we start with the following example:
+    \[\min c^T x : Ax \leq b\]
+    Let us try to rewrite it in the dual form. First, we write $x = x^+ - x^-$ under the constraint $x^+, x^- \geq 0$.
+    Now we have non-negativity. Now how do we get inequalities to turn into equalities? We do the following:
+    \[ \sum_{j = 1}^n a_{ij} x_j \leq b_j \]
+    We introduce "slack" variables $s_j$ such that:
+    \[ \sum_{j = 1}^n a_{ij} x_j + s_j = b_j, s_j \geq 0 \]
+    So our entire LP becomes:
+    \[ \max -c^T (x^+ - x^-): A(x^+ - x^-) + s = b, x^+, x^-, s \geq 0 \]
+    Now let's go the other way. Suppose we start with:
+    \[ \max b^T y : A^T y = b, y \geq 0 \]
+    Then, note that the condition of equality is just equivalent to two inequality constraints.
+    Thus we can write,
+    \[ \min -b^Ty : A^Ty \leq b, A^Ty \leq -b, -y \leq 0 \]
+\end{example}
+
+\subsubsection{Maximum Flow}
+Imagine you have some directed graph of "pipes" which each have a certain "capacity."
+There is a single source vertex $s$ and sink vertex $t$ that all the "water" comes from and leaves.
+What is the maximum rate of water flow
+this network can support from the source to the sink?
+
+The above formulation is termed the $s-t$ formulation of the max flow problem.
+
+The natural algorithm is the following greedy algorithm; Keep finding $s \to t$ paths iteratively (perhaps using DFS)
+and push flow amount that saturates the bottleneck (shortest) edge. This unfortunately does not find the correct solution.
+It will find a flow, but it might not be optimal.
+
+This is actually a linear program! Our algorithms above are enough to solve it. Consider some flow $f \in \R^{m}$ (assign a number to each edge).
+There are certain constraints:
+\begin{itemize}
+    \item $\forall e \in E, f_e \geq 0$ (Nonnegativity)
+    \item $\forall e \in E, f_e \leq u_e$ (Capacity constraint)
+    \item $\forall v \in V, \sum_{e = (v, \cdot)} f_e - \sum_{e = (\cdot, v)} f_e$ (Conservation of flow)
+    \item We wish to maximize the flows: $\max \sum_{e = (s, \cdot)} f_e = \max |f|$.
+\end{itemize}
+
+The first correct algorithm that solved this in better than exponential time was Ford-Fulkerson in the 50s.
+
+\begin{algothm}[Ford-Fulkerson]
+    This algorithm runs in pseudo-polynomial. It's polynomial in the max capacity $U$, number of vertices $n$, and number of vertices $m$.
+
+    For all edges $e = (x, y)$, we will pretend $(y, x) \in E$ with $u_{(y, x)} = 0$ (if it isn't present already).
+    Furthermore, if there is $f_e$ flow on $e$, we will pretend $-f_e$ flow on the reversed edge (i.e. if we push flow $f_e$, then
+    the reversed edge will have capacity 0 + $f_e$). This allows us to "undo" the decision at some point.
+
+    Now, we follow the normal greedy algorithm. Iteratively try to find an $s \to t$ path in the "residual graph" until you can't (this path is called
+    an "augmenting path").
+
+    \textbf{Runtime Analysis} In the original paper, they gave an example graph $G$ with $|V| = 10$ and $|E| = 48$ such that the algoritihm
+    doesn't terminate. However, it hinged on using irrational numbers as capacities. Let us suppose they are integers from $1$ to $U$;
+    we can then make an argument for termination. Note that this means that all the flows are going to always be integral; this means
+    any capacity in the residual graph is an integer. This means when we find an augmenting path, we send at least 1 flow from $s$ to $t$;
+    this means at most we'll have to do a DFS the max-flow amount of times ($|f^*|$). This yields runtime:
+    \[\mathcal{O}((m + n) |f^*|) = \mathcal{O}((m + n)(n - 1)U) = \mathcal{O}(n(m + n)U) \]
+    since in the worst case, there are $n - 1$ nodes coming out of $s$ with capacity $U$ each.
+
+    Using BFS instead of DFS leads to so some savings and an even better $\mathcal{O}(m^2n)$. There are more improvements;
+    we'll leave those for Wikipedia.
+
+    \textbf{Proof of Correctness} We again start with some prerequisite lemmas.
+    \begin{itemize}
+        \item Any $s \to t$ flow can be decomposed into $\leq m$ cycles and $s \to t$ paths.
+        
+        \textbf{Proof} By induction on $m$. The base case (with nonzero flow) is a one-edge graph with $s$ to $t$ ($m = 1$). So it decomposes into a single-edge path from $s \to t$.
+
+        We consider the inductive step where $m > 1$. Consider some flow $f$ from $s$ to $t$. Make a graph $H$
+        where each edge exists if there is nonzero flow across that edge. Now let us do a DFS in $H$ from $s$.
+        There are a few possible cases.
+        \begin{itemize}
+            \item If we reach $t$ in this DFS, we found a path from $s \to t$ in this graph. We look at the minimum flow edge along that path,
+            and extract that path with that smallest value from $f$. Now, this graph has at least one fewer edge, so by inductive hypothesis,
+            this decomposes into $m - 1$ paths and cycles; adding the original path back gives us all $m$ paths and cycles.
+            \item If we find a cycle, then we can do the same thing as above; just extract the cycle.
+            \item We get stuck at some vertex $v \neq t$, this would mean there is no conservation of flow (since you can't "get out" of this vertex).
+        \end{itemize}
+        
+        \item Suppose $f$ is a non-max flow in $G$. Then $f^* - f$ is a feasible flow in $G_f$.
+    \end{itemize}
+    These are enough to show the correctness of Ford-Fulkerson (every augmenting path gives a better flow which is feasible).
+\end{algothm}
