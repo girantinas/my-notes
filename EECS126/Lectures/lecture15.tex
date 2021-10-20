@@ -1,0 +1,114 @@
+\subsection{Lecture 15}
+
+We next discuss the invariant distribution of a CTMC.
+\begin{theorem} [Invariant Distribution of a CTMC]
+    Let $\pi_t$ be the distribution of $X_t$.
+
+    Note that \[\pi_{t + \epsilon}(i) \approx \sum_{j \neq i} \pi_t(j) q(j, i) \epsilon + \pi_t(i)(1 - q_i \epsilon) \]
+    which can be rewritten as: $\pi_{t + \epsilon} = \pi_t(I + Q\epsilon)$, or $\frac{\pi_{t + \epsilon} - \pi{t}}{\epsilon} = \pi_t Q$
+
+    Hence by limits, $\frac{\dd}{\dd{t}} \pi_i = \pi_t Q$, which we call the Kolmogorov Forward Equation. This means that:
+    \[ \pi_t = \pi_0 e^{Qt} = \pi_0\qty(I + Qt + \frac{1}{2!} Q^2 t^2 + \frac{1}{3!} Q^3 t^3 + \dots) \]
+    
+    Now we will show $\pi_t = \pi, t \geq 0 \iff \pi_0 = \pi, \pi Q = 0$. The forward direction is:
+    \begin{align*}
+        \pi_0 &= \pi \\
+        \frac{\dd{\pi_t}}{\dd{t}} = 0 &= \pi_t Q = \pi Q
+    \end{align*}
+    Where the derivative equation
+
+    The backwards direction:
+    \begin{align*}
+        \pi_t &= \pi_0 e^{Qt} \\
+        \pi_t &= \pi (I + Qt + \dots) \\
+        \pi_t &= \pi
+    \end{align*}
+    as required.
+
+    Thus, to find the invariant distribution, we must have $\pi Q = 0$ and $\sum \pi(i) = 1$.
+\end{theorem}
+
+To see why the former condition is "flow-in = flow-out", let us carry out the matrix vector multiplication element-wise:
+\begin{align*}
+    \pi Q &= 0 \\
+    \sum_{i} \pi(i) q(i, k) &= 0 \\
+    \sum_{i \neq k} \pi(i) q(i, k) + \pi(k) q(k, k) &= 0 \\
+    \sum_{i \neq k} \pi(i) q(i, k) &= \sum_{j \neq k} \pi(k) q(k, j) 
+\end{align*}
+The LHS is the flow into state $k$; the RHS is flow out of state $k$.
+
+We also have some approximative notions.
+
+\begin{definition}[Embedded DTMC]
+   The embedded DTMC (or Jump DTMC) of a CTMCs has probability transition matrix $P = \Gamma$ where $\Gamma(i, j) = \frac{q(i, j)}{q_i}$.
+
+   The invariant distribution satisfies $\nu = \nu \Gamma$, and we have the following relationships between $\nu$ and $\pi$ (the invariant distribution of
+   the original CTMC):
+   \begin{align*}
+       \pi(i) &= \frac{\nu(i)/q_i}{\sum_k \nu(k)/q_k} \\
+       \nu(i) &= \frac{\pi(i) q_i}{\sum_k \pi(k) q_k}
+   \end{align*}
+\end{definition}
+
+Although these
+probabilities wouldn't capture the time spent "sojourning," it is still a decent approximation.
+
+\begin{definition}[Approximate DTMC]
+    We instead consider every time step in some CTMC to have size $\epsilon$. If $q(i, j) = \lambda$, then $P(i, j) = \lambda \epsilon$.
+    This yields a DTMC with $P = I + Q\epsilon$.
+
+    Note that the invariant distribution is the same as that of the CTMC.
+\end{definition}
+
+We now extend our usual Markov chain theorems to CTMC.
+
+\begin{theorem}
+    For an irreducible CTMC, states are either all transient, all positive recurrent, or all null recurrent.
+\end{theorem}
+
+\begin{theorem}[Big Theorem]
+    Consider an irreducible CTMC over a countable state space. Then,
+    \begin{itemize}
+        \item If it's positive recurrent, there is a unique invariant distribution $\pi$.
+        \item If it's positive recurrent, long-term fraction of time converges to the invariant distribution:
+        \[ (X_t = i) = \lim_{t \to \infty} \frac{1}{t} \int_0^{t} \mathbbm{1}_{X_s = i} \dd{s} = \pi(i) \]
+        \item If it's positive recurrent, $\pi_t \to \pi$.
+        \item If not positive recurrent, it does not have an invariant distribution, and fraction of time spent in any state goes to 0.
+    \end{itemize}
+    The contrapositive of the last case shows that there is an invariant distribution, then the markov chain is positive recurrent.
+\end{theorem}
+
+Note that we do not worry about periodicity in CTMCs because there is an implicit self-loop in the "sojourning" time
+in each state.
+
+\begin{example}
+    Consider now the random walk reflected at 0 in CTMC land. You go up 1 with rate $\lambda$ and go down 1 with rate $\mu$ (no self-loops in CTMCs). This gives rise to the following
+    $Q$ matrix:
+    \[ Q = \begin{bmatrix}
+        -\lambda & \lambda & 0 & 0 & \dots \\
+        \mu & -(\mu + \lambda) & \lambda & 0 & \dots \\
+        0 & \mu & -(\mu + \lambda) & \lambda & \dots \\
+        \vdots & \vdots & \vdots & \vdots
+    \end{bmatrix}\]
+    This means the jump DTMC will have $P = \Gamma$, i.e. the following:
+    \[ \Gamma = \begin{bmatrix}
+        0 & 1 & 0 & 0 & \dots \\
+        \frac{\mu}{\lambda + \mu} & 0 & \frac{\mu}{\lambda + \mu} & 0 & \dots \\
+        0 & \frac{\mu}{\lambda + \mu} & 0 & \frac{\mu}{\lambda + \mu} & \dots \\
+        \vdots & \vdots & \vdots & \vdots & \vdots
+    \end{bmatrix} \]
+
+    It turns out that this is analogous to our random walk reflected at 0 in DTMC land!
+    \begin{itemize}
+        \item $\lambda < \mu (p < \frac{1}{2})$ (Positive Recurrent)
+        \item $\lambda = \mu (p = \frac{1}{2})$ (Null Recurrent)
+        \item $\lambda > \mu (p > \frac{1}{2})$ (Transient)
+    \end{itemize}
+    Now, let us try to find the invariant distribution in the positive recurrent case. The balance equations read:
+    \begin{align*}
+        \lambda \pi(i) &= \mu \pi(i + 1) \\
+        \pi(i + 1) &= \frac{\lambda}{\mu} \pi(i) \\
+        &= \rho^{i + 1} \pi(0)
+    \end{align*}
+    Where $\rho = \frac{\lambda}{\mu}$, which is the same as the DTMC equation!
+\end{example}

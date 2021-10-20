@@ -7,6 +7,16 @@ Most of the lecture was going through some claims in previous lectures; I update
     $\{ \tau \leq t \}$ is completely determined by the process $\{ X_s, s \leq t \}$.
 \end{definition}
 
+An example of a stopping time is as follows.
+
+\begin{example}[Gambling]
+    Suppose we start with \$10 and bet \$1 each game, where we win \$1 with probability $p < 1/2$ and lose our money otherwise.
+
+    The time to go bust is a stopping time, since it does not depend on knowing the evolution of the Markov chain after that time.
+
+    The last time to have \$5 is not a stopping time, since it depends on knowing when you go bust (the future of that stopping time).
+\end{example}
+
 This leads to the following property (called the "Strong Markov Property").
 
 \begin{theorem}[Strong Markov Property]
