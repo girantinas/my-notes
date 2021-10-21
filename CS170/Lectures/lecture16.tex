@@ -1,0 +1,148 @@
+\section{Games}
+\subsection{Lecture 16}
+
+\begin{definition}[Game]
+    A game involves $p > 2$ players taking an action (in secret) from a set of possible actions.
+    Once all the actions are taken, an outcome is revealed; each player gains some utility (score)
+    for each possible outcome.
+\end{definition}
+
+We first note the most well-studied game: the Prisoner's Dilemma.
+
+\begin{example}
+    There are two apprehended suspects who the police are sure committed a crime and have a lesser charge,
+    but they need a confession to get a greater charge.
+    The police give the following deal to the suspects:
+    \begin{itemize}
+        \item If you stay silent: you get 1 year in prison.
+        \item You tell on your partner: you get 0 years in prison, your partner gets 3 years.
+        \item If both partners snitch: both get 2 years.
+    \end{itemize}
+
+    \begin{tabular}{c | c | c |}
+        \empty & \text{snitch} & \text{silent} \\ \hline
+        \text{snitch} & (-2, -2) & (0, -3) \\ \hline
+        \text{silent} & (-3, 0) & (-1, -1) \\ \hline
+    \end{tabular}
+
+    Thus, any rational prisoner will tell on their partner, since they only gain from their decision (hold the row constant; moving left is always better for the column player.)
+
+    We can think of this as an input to some algorithm, which might spit out the optimal strategy for the people.
+\end{example}
+
+\begin{definition}[Zero-Sum Games]
+    A zero-sum game is a game where the payoffs for the 2 players sum to 0 for any outcome.
+\end{definition}
+
+A good example of a zero-sum game is rock, paper, scissors. We can tabulate here in the following "payoff matrix."
+\begin{tabular}{ c | c | c | c |}
+    \empty & \text{rock} & \text{paper} & \text{scissors} \\ \hline
+    \text{rock} & (0, 0) & (-1, 1) & (1, -1) \\ \hline
+    \text{paper} & (1, -1) & (0, 0) & (-1, 1) \\ \hline
+    \text{scissors} & (-1, 1) & (1, -1) & (0, 0)  \\ \hline
+\end{tabular}
+
+We can just write this as the 1st number then, since all cells sum to 0:
+
+\begin{tabular}{ | c | c | c |} \hline
+    0 & -1 & 1 \\ \hline
+    1 & 0 & -1 \\ \hline
+    -1 & 1 & 0  \\ \hline
+\end{tabular}
+
+The row player thus wants to maximize the score and the column player wishes to minimize the score.
+
+Now we discuss strategies of playing the game.
+\begin{definition}[Strategies]
+    There are two main types of strategies.
+    \begin{enumerate}
+        \item Pure Strategies: Always picking some particular action.
+        \item Mixed Strategies: Some probability distribution over pure strategies.
+    \end{enumerate}
+\end{definition}
+
+Returning back to rock-paper-scissors, suppose player 1 plays mixed strategy:
+\[ x = (1/3, 1/3, 1/3) \]
+Then suppose player 2 plays some other mixed strategy:
+\[ y = (y_1, y_2, y_3) \]
+Then, the expected payoff (using the reduced payoff matrix $U$ with one entry) is:
+\[ \E{\text{payoff}} = \sum_{j = 1}^3 \sum_{i = 1}^3 \frac{1}{3} U(i, j) y_j = \sum_{j = 1}^3 y_j (-1/3 + 1/3 + 0) = 0 \]
+
+Thus, we have the following.
+
+\begin{definition}
+    \begin{itemize}
+        \item There exists a strategy $x$ for the row player which guarantees $\E{\text{payoff}} \geq 0$.
+        \item Similarly, there exists a strategy $y$ for the column player which guarantees $\E{\text{payoff}} \leq 0$.
+    \end{itemize}
+
+    Thus, we say that the pair of strategies is in equilibrium. This means the value of this game is $0$ (the value that can be guaranteed by both parties).
+\end{definition}
+
+Let us look at more examples:
+
+\begin{example}
+    \begin{tabular}{c|c|c|}
+        \empty & L & R \\ \hline
+        T & 5 & -3 \\ \hline
+        B & -1 & 1 \\ \hline
+    \end{tabular}
+
+    Let us try to find the equilibrium. What if the row player tries mixed strategy $x = (1/2, 1/2)$? Let's try pure strategies for the column player:
+    \begin{itemize}
+        \item L means the expected payoff is: \[ 5\frac{1}{2} - 1 \frac{1}{2} = 2 \]
+        \item R means the expected payoff is: \[ -3\frac{1}{2} + 1 \frac{1}{2} = -1 \]
+    \end{itemize}
+    Now, lets have the column player try mixed strategy $y = (1/2, 1/2)$. Let's again try pure strategies:
+    \begin{itemize}
+        \item T means the expected payoff is: \[ 5\frac{1}{2} - 3 \frac{1}{2} = 1 \]
+        \item B means the expected payoff is: \[ -1\frac{1}{2} + 1\frac{1}{2} = 0 \]
+    \end{itemize}
+    Thus, these strategies are not in equilibrium, because -1 is the minimization of the expected payoff (what the column player seeks to do)
+    and 1 is the maximization of the expected payoff (what the row player seeks to do).
+
+    Here is a better strategy: $x = (1/5, 4/5)$. Pure strats for column player:
+    \begin{itemize}
+        \item L means the expected payoff is \[5 \frac{1}{5} - 1 \frac{4}{5} = \frac{1}{5} \]
+        \item R means the expected payoff is \[ -3\frac{1}{5} + 1 \frac{5}{5} = \frac{1}{5} \]
+    \end{itemize}
+    $y = (2/5, 3/5)$ also guarantees at most $\frac{1}{5}$ payoff.
+
+    How can we find this magical pair of strategies that cause a payoff? Let us be more general.
+
+    If $x = (x_1, x_2)$, the strategy L gives payoff $5x_1 - 1x_2$ and R gives payoff $-3x_1 + 1x_2$. Thus, we want to find:
+    \begin{align*}
+        &\max_x \min\{5x_1 - x_2, -3x_1 + x_2\} : x_1 + x_2 = 1 \\
+        &= \max_{x, z} z : z \leq 5x_1 - x_2, z \leq -3x_1 + x_2, x_1 + x_2 = 1, x_1, x_2 \geq 0
+    \end{align*}
+    Where we introduce slack variable $z$, which will be the min at optimum.
+
+    Note that we could write a similar LP for the column player. Get $y = (y_1, y_2)$, the strategy T gives payoff $5y_1 - 3y_2$ and
+    the strategy B gives payoff $-y_1 + y_2$. Thus we want to find:
+    \begin{align*}
+        &\min_y \max\{5y_1 - 3y_2, -y_1 + y_2\} \\
+        &= \min_{y, w} w: w \geq 5y_1 - 3y_2, w \geq -y_1 + y_2, y_1 + y_2 = 1, y_1, y_2 \geq 0
+    \end{align*}
+
+    Taking Jelani's word for it, these two LPs are duals! This means that they have the same optimum; thus they both yield the equilibrium strategy.
+\end{example}
+
+We talk about some more duality facts that can help us see this connection:
+\begin{itemize}
+    \item $x_i \geq 0$ in primal; the corresponding constraint with any $x_i$ in dual is inequality (instead of $=$)
+    \item $Ax = b$ in primal; the corresponding dual variable does not have a nonnegativity constraint.
+\end{itemize}
+
+There are a few more unanswered questions. Firstly, let's generalize what we've seen in the specific game example.
+
+\begin{theorem}[Solving a General Zero-Sum Game]
+    Suppose our utility matrix is $U \in \R^{m \times n}$
+
+    The row player seeks to once again:
+    \[ \max_x \min_y \sum_{j = 1}^n\qty(\sum_{i = 1}^m x_i U(i, j)) y_j \]
+    note that the RHS is also $y^T U x$. Note that this is just a weighted sum of $y_j$, where the $y_j$'s all sum to 1. To minimize,
+    we just put all the probability on the smallest column. However, this is just a pure strategy. Thus, we have shown that the best response to
+    a fixed mixed strategy is a pure strategy.
+
+    This is also just an LP, so we can find them in polynomial time via linear programming.
+\end{theorem}

@@ -71,7 +71,7 @@ The min-cut problem is very close to the dual of the max-flow problem. As a remi
 \begin{itemize}
     \item $\forall e \in E, f_e \geq 0$ (Nonnegativity)
     \item $\forall e \in E, f_e \leq u_e$ (Capacity constraint)
-    \item $\forall v \in V, \sum_{e = (v, \cdot)} f_e - \sum_{e = (\cdot, v)} f_e$ (Conservation of flow)
+    \item $\forall v \in V, \sum_{e = (v, \cdot)} f_e - \sum_{e = (\cdot, v)} f_e = 0$ (Conservation of flow)
     \item We wish to maximize the flows: $\max \sum_{e = (s, \cdot)} f_e = \max |f|$.
 \end{itemize}
 
@@ -89,7 +89,7 @@ Where we want $A^T y = c$. Variables in the primal are constraints in the dual; 
 Going back to the max flow problem, we try to reformulate the dual. Note that if the $i$th constraint was an equals instead of inequality, then no need for $y_i \geq 0$ constraint.
 Furthermore, for all the non-negativity constraints, flip them to be $- x_i \leq 0$ and multiply by some other dual variables to get:
 $- w_i x_i \leq 0$ and $w_i \geq 0$, so we need
-\[ a_{1i} y_1 + a{2i} y_2 + \dots - w_1 = c_i \]
+\[ a_{1i} y_1 + a_{2i} y_2 + \dots - w_1 = c_i \]
 but since we have the free parameter of $w$'s, we can just write this constraint as:
 \[ A^T y \geq c \]
 
