@@ -39,16 +39,34 @@ The LHS is the flow into state $k$; the RHS is flow out of state $k$.
 
 We also have some approximative notions.
 
-\begin{definition}[Embedded DTMC]
-   The embedded DTMC (or Jump DTMC) of a CTMCs has probability transition matrix $P = \Gamma$ where $\Gamma(i, j) = \frac{q(i, j)}{q_i}$.
+\subsubsection{DTMC Approximation of CTMC}
 
-   The invariant distribution satisfies $\nu = \nu \Gamma$, and we have the following relationships between $\nu$ and $\pi$ (the invariant distribution of
+\begin{definition}[Embedded DTMC]
+   The embedded DTMC (or Jump DTMC) of a CTMCs has probability transition matrix $P = \Gamma$ where
+   \[ \Gamma(i, j) = \begin{cases}
+        \frac{q(i, j)}{q_i} & i \neq j \\
+        0 & i = j
+   \end{cases} \]
+\end{definition}
+
+\begin{theorem}
+   If the invariant distribution of the Jump DTMC satisfies $\nu = \nu \Gamma$, we have the following relationships between $\nu$ and $\pi$ (the invariant distribution of
    the original CTMC):
    \begin{align*}
        \pi(i) &= \frac{\nu(i)/q_i}{\sum_k \nu(k)/q_k} \\
        \nu(i) &= \frac{\pi(i) q_i}{\sum_k \pi(k) q_k}
    \end{align*}
-\end{definition}
+
+    \begin{proof*}
+        We give an intuitive argument.
+        Note that $\nu(i) \cdot N$ gives the amount of epochs spent in some state $i$ in the DTMC and $\frac{1}{q_i}$ is the average amount of time
+        spent in state $i$ when you're there: the long term (continuous) time spent in state $i$ is $\frac{\nu(i)}{q_i}$. Thus, this means that the average amount of
+        (continuous) time in state $i$, $\pi(i)$ is:
+        \[ \pi(i) = \frac{\nu(i)/q_i}{\sum_k \nu(k)/q_k} \]
+        For $\nu(i)$, we have similar reasoning. Since each epoch lasts on average $\frac{1}{q_i}$, then $\frac{\pi(i)}{\frac{1}{q_i}}$ gives you the amount
+        of times we visited state $i$ when running the Markov chain. Thus, the ratio of the fraction of visits to total visits is $\nu(i)$, which is consistent with the above formulation.
+    \end{proof*}
+\end{theorem}
 
 Although these
 probabilities wouldn't capture the time spent "sojourning," it is still a decent approximation.

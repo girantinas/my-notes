@@ -1,0 +1,91 @@
+\subsection{Lecture 16}
+
+We discuss one more discrete-time approximation of a CTMC.
+\begin{definition}[Uniformized DTMC]
+    Fix $\lambda \geq q_i$ for all $i$, and define 
+    \[ P(i, j) = \begin{cases}
+        \frac{q(i, j)}{\lambda} & i \neq j \\
+        1 - \frac{q_i}{\lambda} & i = j
+    \end{cases} \]
+    or equivalently, $P = I + \frac{1}{\lambda} Q$.
+    
+    Observe that $\pi P = \pi \iff \pi Q = 0$.
+\end{definition}
+
+We can apply this in the following ways:
+\begin{itemize}
+    \item The invariant distribution of $X_t$ can be found by computing $P^k$ as $k \to \infty$.
+    \item Transient distribution of $X_t$: Define CTMC $Y_t$ with inter-jump times being IID $\Expo{X}{\lambda}$ and jump probabilities given by $P$. Then:
+    \[ \pi_t = \sum_{n = 0}^{\infty} \pi_0 P^n \frac{(\lambda t) e^{-\lambda t}}{n!} \]
+\end{itemize}
+
+To prove this second claim, we show that our new CTMC $Y_t$ (with self-loops!) has the same behavior as $X_t$.
+\begin{proof*}
+    Let $Z_n$ be a DTMC with the transition matrix $P$ as defined above.
+    \[ Y_t \equiv_D Z_{N_t} \]
+    where $N_t$ is a Poisson process with rate $\lambda$.
+
+    Let $T_i$ be the time spent in state $i$ after entering state $i$:
+    \[ T_i = J_1 + \dots + J_S \]
+    where $\Expo{J_k}{\lambda}$ (the time until the next jump) and $\Geo{S}{\frac{q_i}{\lambda}}$ (our probability of leaving).
+    From our homework problem, we know that:
+    \[ \Expo{T_i}{q_i} \]
+    So, we have proved the sojourning time is the same as the original CTMC. Now we look at the probabilities of leaving. Suppose $i \neq j$
+    \begin{align*}
+        P(i, j) &= \frac{q(i,j) / \lambda}{\sum_{j \neq i} q(i, j) / \lambda} \\
+        &= \frac{q(i, j) / \lambda}{q_i/\lambda} = \frac{q(i,j)}{q_i}
+    \end{align*}
+    Thus, this new CTMC behaves exactly like our old CTMC!
+\end{proof*}
+
+\subsubsection{Reversibility}
+We now talk about reversing Markov chains.
+
+\begin{definition}[Time-Reversed CTMC]
+    A time-reversed process of some process $X_t$ is:
+    \[ \tilde{X}_t = X_{\tau - t} \]
+    for some fixed $\tau$.
+\end{definition}
+
+\begin{theorem}
+    Assume a CTMC $X_t$ has the invariant distribution $\pi$. Then $X_t$ reversed in time is a CTMC
+    with the same invariant distribution, and its matrix $\tilde{Q}$ is given by:
+    \[ \tilde{q}(i, j) = \frac{\pi(j) q(j, i)}{\pi(i)} \]
+\end{theorem}
+
+This suggests the following process:
+\begin{enumerate}
+    \item Guess the invariant distribution $\pi$ for the CTMC under consideration.
+    \item Guess the CTMC in reversed time and find it's rate matrix $\tilde{Q}$.
+    \item Show the equation in the theorem above is satisfied.
+    \item Proves our guesses for the invariant distribution and the cTMC in reversed time are correct.
+\end{enumerate}
+
+\begin{definition}[Reversibility]
+    If a Markov Chain satisfies the detailed balance equations, it is reversible (i.e. $\tilde{q}(i, j) = q(i, j)$). The detailed balance equations for DTMCs is:
+    \[ \pi(i) P(i, j) = \pi(j) P(j, i) \]
+    for all $i, j$.
+    The detailed balance equations for a CTMC is:
+    \[ \pi(i) q(i, j) = \pi(j) q(j, i) \]
+
+    Intuitively, this means that the chain behaves exactly the same in the reverse direction as it does in the forward direction.
+\end{definition}
+
+We now present a networks-based application of our CTMCs.
+
+\begin{example}[M/M/1 Queue]
+    Suppose cusomters arrive at a single-server queue according to a Poisson process with parameter $\lambda$,
+    and the server takes time $\text{Expo}(\mu)$ to handle a packet. 
+    
+    The first M refers to "memoryless" interarrivals, the second
+    refers to "memoryless" services, and 1 represents the amount of simultaneous servers. In general, this can generalize to a
+    A/B/n-type queue which can be first-come first-serve, last-come first-serve, etc. The default is the first one.
+
+    We can draw a state transition diagram for the queue as a CTMC; rate $\lambda$ to go up and $\mu$ to go down.
+    Assume $\lambda < \mu$ so the chain is positive recurrent. Then,
+    \begin{itemize}
+        \item Invariant distribution: $\pi(n) = (1 - \rho) \rho^n$ where $\rho = \lambda / \mu$
+        \item Average number in the queue under the invariant distribution: $\frac{\rho}{1 - \rho}$
+        \item Average delay in the system: $\frac{1}{\mu - \lambda}$.
+    \end{itemize}
+\end{example}
