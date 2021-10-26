@@ -1,0 +1,153 @@
+\subsection{Lecture 17}
+\subsubsection{Online Decision-Making}
+We illustrate what making an "online decision" is with an example. Basically, new information is being added incrementally,
+and every step that we get new information, we must make some sort of decision.
+
+\begin{example}[Rain/Umbrella]
+    Suppose there are some experts $1, 2, 3, \dots, n$ that predict the rain over $T$ days.
+    We say a 1 if the weather prediction was wrong and 0 if the weather prediction was right.
+
+    \begin{tabular}{c | c | c | c | c | c}
+        \text{experts} & \text{day 1} & \text{loss tally} & \text{day 2} & \text{tally} & \empty \\ \hline
+        1 & 1 & 1 & 1 & 2 & \dots \\ \hline
+        2 & 1 & 1 & 0 & 1 & \dots \\ \hline
+        $\vdots$ \\ \hline
+    \end{tabular}
+    How can we figure out on some day $t$ whether it's going to rain or not? Which "expert" do we trust?
+\end{example}
+
+We define some notation.
+\begin{itemize}
+    \item $n$ experts, $T$ days.
+    \item We follow expert $i_t \in [n]$ on day $t \in \{1, \dots, T\}$.
+    \item Expert $i$ incurs loss of $\ell_i^{(t)}$ on day $t$.
+    \item We define $\ell_i^{(t)} \in [0, 1]$, (not just a binary decision).
+    \item Our total loss is $L = \sum_{t = 1}^T \ell_{i_t}^{(t)}$.
+\end{itemize}
+
+So we want to minimize $L$.
+
+Ideally, we want to compare
+our loss $L$ to the minimum loss of $\sum_{t} \min_{i \in [n]} \ell_{i}^{(t)}$. However, this is not a realistic goal.
+If each day it rains or not randomly with probability $p = \frac{1}{2}$, no matter what determinism is used,
+$\E{L} = \frac{T}{2}$ (but the minimum loss is 0; suppose one expert always says it doesn't rain and one says it always does).
+
+Instead, we will settle for minimizing:
+\[ R = L - \min_{i \in [n]} \sum_{t = 1}^T \ell_i^{(t)} = L - L^* \]
+where $R$ is termed as "regret." We assume that the "adversary" that reveals the weather is strong enough to know our algorithm for decision-making,
+but cannot know the output of random calls.
+
+We give a few inefficient strategies before stating optimum.
+
+\begin{enumerate}
+    \item For all $t$, $i_t = 1$. Here, clearly, $R \geq T$.
+    \item Follow the majority opinion of experts. Again, we can have $R \geq T$.
+    \item Each day, listen to a uniformly random expert. Now, our regret (in expectation) is a little bit better.
+    \[ \E{R} = \qty(1 - \frac{1}{n})T \]
+    To prove the upper-bound:
+    \begin{align*}
+        \E{L} &= \sum_{t = 1}^T \sum_{i = 1}^n \frac{1}{n} \ell_i^{(t)} \\
+        &= \sum_{t = 1}^T \min_i \ell_{i}^{(t)} + \frac{1}{n} \sum_{j \neq i} \ell_j^(t) \\
+        &\leq L^* + \frac{n - 1}{n} T \\
+        \E{R} &= \E{L} - \E{L^*} = \qty(1 - \frac{1}{n})T
+    \end{align*}
+    \item Follow the expert who has the lowest loss so far.
+    \[ \E{R} \geq \qty(1 - \frac{1}{n})T \]
+    The proof is by adversarial example.
+
+    \begin{tabular}{c | c | c | c | c | c | c | c}
+        \text{experts} & $\ell^{(1)}$ & \text{tally} & $\ell^{(2)}$ & \text{tally} & $\ell^{(3)}$ & \text{tally} \\ \hline
+        1 & 0 & 0 & 1 & 1 & 0 & 1 \\ \hline
+        2 & $\frac{1}{3}$ & $\frac{1}{3}$ & 0 & $\frac{1}{3}$ & 1 & $\frac{4}{3}$ \\ \hline
+        3 & $\frac{2}{3}$ & $\frac{2}{3}$ & 0 & $\frac{2}{3}$ & 0 & $\frac{2}{3}$ \\
+    \end{tabular}
+
+    Note that we get maximum loss every day except for the first day, meaning our loss is $T - 1$. However, the best expert,
+    has loss $L^* = \frac{T}{n}$, so $R \approx \qty(1 - \frac{1}{n})T$
+\end{enumerate}
+
+Now we introduce the best strategy. We need both look at lowest loss, while also being randomized
+so our adversary can't just pick the one we're picking. This probability distribution needs to depend on the history of losses,
+and needs to be updated due to the online nature of the problem.
+
+\begin{algothm}[Hedge/Multiplicative Weights Algorithm]
+    Each day will have a probability distribution $x^{(t)}$ on the experts. This means that every day, our expected loss on day $t$,
+    \[ L_t = \sum_{i = 1}^n x_i^{(t)} \ell_i^{(t)} \]
+    And we redefine $L$ in terms of expectation, i.e.
+    \[ L = \sum_{t = 1}^T L_t, R = L - L^* \]
+    We also define weights for each expert and timestep, i.e. $w_i^{(t)}$.
+    
+    The algorithm to evolve this distribution is as follows:
+    \begin{itemize}
+        \item We choose a parameter $\epsilon \in (0, \frac{1}{2}]$.
+        \item We have a uniform prior on all the experts, i.e. $w_i^{(1)} = 1$  for all $i \in [n]$
+        \item Define $W^{t} = \sum_{j = 1}^n w_j^{(t)}$
+        \item $x_i^{(t)} = \frac{w_i^{(t)}}{W^{t}}$
+        \item $w_i^{(t + 1)} = w_i^{(t)} (1 - \epsilon)^{\ell_i^{(t)}}$
+    \end{itemize}
+
+    We can interpret the last line as a "Bayesian update."
+\end{algothm}
+
+We now claim how good the hedge algorithm is.
+
+\begin{theorem}
+    Choosing parameter $\epsilon$, then hedge achieves,
+    \[ \E{R} \leq \epsilon T + \frac{\ln n}{\epsilon} \]
+    which is minimized by choosing $\epsilon = \sqrt{\frac{\ln n}{T}}$, which means
+    \[ \E{R} \leq 2 \sqrt{T \ln n} \]
+
+    \begin{proof*}
+        We have two pre-requisite lemmas.
+        \begin{itemize}
+            \item $W_{T + 1} \geq (1 - \epsilon)^{L^*}$
+            \begin{align*}
+                W^{(T + 1)} &= \sum_{i = 1}^n w_i^{(T + 1)} \\
+                &\geq w_{i^*}^{(T + 1)} \\
+                &\geq \prod_{t = 1}^T (1 - \epsilon)^{\ell_{i^*}^{(t)}} \\
+                &= (1 - \epsilon)^{\sum_t \ell_{i^*}^{(t)}} \\
+                &= (1 - \epsilon)^{L^*}
+            \end{align*}
+            \item $W_{T + 1} \leq n \prod_{t = 1}^T (1 - \epsilon L_t)$
+            We need to show $W^{(t + 1)} \leq W^{(t)} (1 - \epsilon L_t)$. If this were true, then by induction:
+            \begin{align*}
+                W^{(T + 1)} \leq W^{(1)} \prod_t (1 - \epsilon L_t) = n \prod_{t = 1}^T (1 - \epsilon L_t)\\
+            \end{align*}
+            Note that:
+            \begin{align*}
+                W^{(t + 1)} &= \sum_{i = 1}^n w_i^{(t + 1)} \\
+                &= \sum_{i = 1}^n w_i^{(t)} (1 - \epsilon)^{\ell_i^{(t)}} \\
+                &\leq \sum_{i = 1}^n w_i^{(t)} (1 - \epsilon \ell_i^{(t)}) \\
+                &= \sum_{i = 1}^n x_i^{(t)} W^{(t)} (1 - \epsilon \ell_i^{(t)}) \\
+                &= W^{(t)} \sum_{i = 1}^n x_i^{(t)} (1 - \epsilon \ell_i^{(t)}) \\
+                &= W^{(t)} \qty(\sum_{i = 1}^n x_i^{(t)} - x_i^{(t)}\epsilon \ell_i^{(t)}) \\
+                &= W^{(t)} (1 - \epsilon L_t) \\
+            \end{align*}
+        \end{itemize}
+
+        So now we have that:
+        \begin{align*}
+            (1 - \epsilon)^{L^*} &\leq n \prod_{t = 1}^T (1 - \epsilon L_t) \\
+            L^* \ln(1 - \epsilon) &\leq \ln n + \sum_{t = 1}^T \ln(1 - \epsilon L_t) \\
+            L^* \ln(1 - \epsilon) &\leq \ln n + \sum_{t = 1}^T \ln(1 - \epsilon L_t) \\
+            L^* (- \epsilon - \epsilon^2) &\leq \ln n - \epsilon \sum_{t = 1}^T  L_t \\
+            L^* (- 1 - \epsilon) &\leq \frac{\ln n}{\epsilon} - L \\
+            L - L^* &\leq \frac{\ln n}{\epsilon} + \epsilon L^* \\
+            R &\leq \frac{\ln n}{\epsilon} + \epsilon T
+        \end{align*}
+        where we noted $\forall z \in [0, \frac{1}{2}], -z - z^2 \leq \ln(1 - z) \leq - z$
+    \end{proof*}
+\end{theorem}
+
+There is also a connection to zero-sum game. Using weak duality and the fact that in the hedge algorithm,
+\[ \lim_{t \to \infty} R = \frac{2 \sqrt{T \ln n}}{T} \to 0 \]
+we can prove the minimax theorem (instead of invoking strong duality). Furthermore, we can find the equilibrium by running
+the hedge algorithm on the original game, just treating payoffs as negative losses.
+
+\begin{algothm}[Zero-sum Game Hedging]
+    The row player starts with $x^{(1)} = (\frac{1}{m}, \frac{1}{m}, \dots, \frac{1}{m})$ and the column
+    player starts with $y^{(1)} = (\frac{1}{n}, \frac{1}{n}, \dots, \frac{1}{n})$, and we do the updates in both according to losses:
+    $\ell^{(t)} = -Ay^{(t)}$ and $\ell{(t)} = A^{\perp} x^{(t)}$ (i.e. the payoffs). As $t \to \infty$, we converge to the equilibrium,
+    optimal strategy for both players.
+\end{algothm}
+

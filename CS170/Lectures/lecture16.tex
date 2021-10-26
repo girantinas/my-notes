@@ -1,6 +1,5 @@
-\section{Games}
 \subsection{Lecture 16}
-
+\subsubsection{Games}
 \begin{definition}[Game]
     A game involves $p > 2$ players taking an action (in secret) from a set of possible actions.
     Once all the actions are taken, an outcome is revealed; each player gains some utility (score)
@@ -135,14 +134,17 @@ We talk about some more duality facts that can help us see this connection:
 
 There are a few more unanswered questions. Firstly, let's generalize what we've seen in the specific game example.
 
-\begin{theorem}[Solving a General Zero-Sum Game]
-    Suppose our utility matrix is $U \in \R^{m \times n}$
+Suppose our utility matrix is $U \in \R^{m \times n}$
 
-    The row player seeks to once again:
-    \[ \max_x \min_y \sum_{j = 1}^n\qty(\sum_{i = 1}^m x_i U(i, j)) y_j \]
-    note that the RHS is also $y^T U x$. Note that this is just a weighted sum of $y_j$, where the $y_j$'s all sum to 1. To minimize,
-    we just put all the probability on the smallest column. However, this is just a pure strategy. Thus, we have shown that the best response to
-    a fixed mixed strategy is a pure strategy.
+The row player seeks to once again:
+\[ \max_x \min_y \sum_{j = 1}^n\qty(\sum_{i = 1}^m x_i U(i, j)) y_j \]
+note that the RHS is also $y^T U x$. Note that this is just a weighted sum of $y_j$, where the $y_j$'s all sum to 1. To minimize,
+we just put all the probability on the smallest column. However, this is just a pure strategy. Thus, we have shown that the best response to
+a fixed mixed strategy is a pure strategy.
 
-    This is also just an LP, so we can find them in polynomial time via linear programming.
+This is also just an LP, so we can find them in polynomial time via linear programming. By duality, we have:
+
+\begin{theorem}[Minimax Theorem]
+    For any zero-sum game $U$, we have
+    \[ \max_x \min_y \sum_{j = 1}^n\qty(\sum_{i = 1}^m x_i U(i, j)) y_j = \min_y \max_x \sum_{i = 1}^m\qty(\sum_{j = 1}^n y_j U(i, j)) x_i \]
 \end{theorem}
