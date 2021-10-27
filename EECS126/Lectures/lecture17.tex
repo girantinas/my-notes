@@ -1,0 +1,125 @@
+\subsection{Lecture 17}
+
+Let's prove the claim of average delay $\E{D} = \frac{1}{\mu - \lambda}$ in an $M/M/1$ queue.
+
+\begin{proof*}
+    First we note that:
+    \[ \Pr{X_t = k \mid X_{t + \epsilon} = k + 1} = \Pr{X_t = k} \]
+    this is often termed the Poisson Arrivals See Time Average (PASTA) property.
+    Under invariant conditions, we have that:
+    \[ \Pr{X_t = k} = \pi(k) \]
+    So, now we try to find the $\E{D}$:
+    \begin{align*}
+        \E{D} &= \sum_{k = 0}^{\infty} \frac{k + 1}{\mu} \pi(k) \\
+        &= \sum_{k = 0}^{\infty} \frac{k + 1}{\mu} (1 - \rho) \rho^k \\
+        &= \frac{1}{\mu} \qty(\sum_{k = 0}^{\infty} k (1 - \rho) \rho^k + \sum_{k = 0}^{\infty} (1 - \rho) \rho^k)\\
+        &= \frac{1}{\mu} \qty(\frac{\rho}{1 - \rho} + 1)\\
+        &= \frac{1}{\mu - \lambda}
+    \end{align*}
+    from the definition of $\rho = \frac{\lambda}{\mu}$.
+\end{proof*}
+
+Furthermore, it's not hard to see that:
+\[ \Expo{D}{\mu - \lambda} \]
+Because
+\[ D = X_1 + \dots + X_N \]
+and $\Expo{X_i}{\mu}$ and $\Pr{N = i} = (1- \rho)\rho^i$, $i \geq 0$, where $N$ is independent of $X_i$ (shifted Geometric).
+
+\subsubsection{Little's Law and Jackson Network}
+Now we talk about a brief networking law called Little's Law.
+\begin{theorem}[Little's Law]
+    Suppose we have some black-boxed network with arrival rate $\mu$ with average delay through the network $D$. This means that for $L$,
+    the average amount of people waiting in the queue, we have $L = \lambda D$.
+\end{theorem}
+
+Let us see an example of this law holding in $M/M/1$ queues.
+\begin{example}
+    We just derived that $L = \frac{\lambda}{\mu - \lambda}$ and $D = \frac{1}{\mu - \lambda}$ so clearly we have $L = \lambda D$ hold.
+\end{example}
+
+Intuitively, Little's law is just saying the average occupancy is equal to the average delay times the average arrival rate.
+
+\begin{definition}[Jackson Networks]
+    Consider some network of $J$ $(\cdot/M/1)$ queues. External arrivals occur according to independent Poisson processes with rate $\gamma_i$ into queue $i$.
+    Service time at queue $i$ according to independent exponential distrbituion with rate $\mu_i$. When a customer leaves queue $i$, independent of the past,
+    they join queue $j$ with probability $r(i, j)$ and leaves the network with probability $1 - \sum_{j = 1}^J r(i, j)$.
+
+    Let $\lambda_i$ be the total rate into a state $i$. By flow conservation, total arrival rate into queue $i$ is given by
+    \[ \lambda_i = \gamma_i + \sum_{j = 1}^J \lambda_j r(j, i) \]
+    for all $i = 1, 2, \dots, J$.
+
+    Thus, we can define $X_t = (X_{1, t}, \dots, X_{J, t})$ as a multi-dimensional CTMC.
+\end{definition}
+
+We can find this Markov chain's solution. It's kind of elegant:
+
+\begin{theorem}[Product Form]
+    Assume that the solution $(\lambda_1, \dots, \lambda_J)$ is such that $\lambda_i < \mu_i$ (arrival rate < service rate) for all $i$, then
+    the CTMC $X_t$ admits the following invariant distribution:
+    \[ \pi(x_1, \dots, x_J) = \pi_1(x_1) \cdot \dots \cdot \pi_J(x_J) \]
+    where for each $j$,
+    \[ \pi_j(n) = (1 - \rho_j)\rho_j^n \]
+    for $n \geq 0$ and $\rho_j = \frac{\lambda_j}{\mu_j}$, i.e. it acts like $J$ $M/M/1$ queues which are mutually independent!
+\end{theorem}
+
+\begin{example}
+    Take the following Jackson network where $\lambda < \mu_1, \lambda < \mu_2$.
+
+    \[\begin{tikzcd}
+        {} & \mu_1 & \mu_2 & {}
+        \arrow["\lambda", from=1-1, to=1-2]
+        \arrow["", from=1-2, to=1-3]
+        \arrow["", from=1-3, to=1-4]
+    \end{tikzcd}\]
+
+    Then:
+    \[ \pi(x_1, x_2) = (1 - \rho_1) \rho_1^{x_1} (1 - \rho_2) \rho_2^{x_2} \]
+    where $\rho_1 = \frac{\lambda}{\mu_1}$ and $\rho_2 = \frac{\lambda}{\mu_2}$.
+
+    What you can do is also guess the reverse-time Markov chain is in the following form:
+
+    \[\begin{tikzcd}
+        {} & \mu_1 & \mu_2 & {}
+        \arrow["", from=1-2, to=1-1]
+        \arrow["", from=1-3, to=1-2]
+        \arrow["{\lambda}"', from=1-4, to=1-3]
+    \end{tikzcd}\]
+
+    We can find the $\tilde{Q}$ and check if the detailed balance equations are satisfied, or check
+    if the rate matrix condition is satisfied. Then, it shows it's reversible and the invariant distribution is right.
+\end{example}
+
+We look at now another Jackson network.
+
+\begin{example}
+    Suppose now we have the following example queue:
+
+    \[ \lambda + \gamma p = \gamma \implies \gamma = \lambda/(1 - p) \]
+    So we must have $\frac{\lambda}{1 - p} < \mu$ to have a stable queue. We define $\rho = \frac{\gamma}{\mu} < 1$.
+    \[ \Pr{X = i} = ( 1- \rho) \rho^{i} \]
+\end{example}
+
+\subsubsection{CTMC Potpourri Results}
+We have now a collection about CTMC and Poisson Process facts.
+
+\begin{theorem}[Residual Time Paradox]
+    Suppose inter-event times are IID non-negative RVs $X_i, i = 1, 2, \dots$ with PDF $f(x)$ and CDF $F(x)$ and $i$th moment $m_i$
+    for $i = 1, 2, \dots$. Suppose after the process has been running for a long time, an observer arrives at an arbitrary time.
+    \begin{itemize}
+        \item The inter-event time during which the observer arrives has the PDF $\frac{xf(x)}{m_1}$ (the bus interval the observer came). This means its expectation is $\frac{m_2}{m_1}$.
+        
+        \item The residual time to the next event (time I have to wait for the bus) and age time
+        (how long ago the last bus came) from the last event both have the PDF:
+        $\frac{1 - F(y)}{m_1}$.
+        The PDF is the same for both because of time-symmetry. Their expectations are $\E{Y} = \frac{m_2}{2 m_1}$.
+    \end{itemize}
+
+    Note that you're more likely to fall in an interval that's bigger rather than smaller; it scales linearly with the PDF by the theorem.
+    Furthermore, the probability that the residual time lies in some interval $(y, y + dy)$ is just $\frac{\dd{y}}{x}$ where $x$ is the length of the bus interval.
+    Multiplying by the PDF and integrating via total probability rule gives our result.
+\end{theorem}
+
+\begin{theorem}[Poisson Merging]
+    Let $N_1(t), \dots, N_m(t)$ be $m$ independent Poisson processes with rates $\lambda_1, \dots, \lambda_m$.
+    Then $N(t) = N_1(t) + \dots + N_m(t)$ is a Poisson process with rate $\lambda_1 + \dots + \lambda_m$.
+\end{theorem}

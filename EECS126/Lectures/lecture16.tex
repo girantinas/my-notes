@@ -28,7 +28,7 @@ To prove this second claim, we show that our new CTMC $Y_t$ (with self-loops!) h
     Let $T_i$ be the time spent in state $i$ after entering state $i$:
     \[ T_i = J_1 + \dots + J_S \]
     where $\Expo{J_k}{\lambda}$ (the time until the next jump) and $\Geo{S}{\frac{q_i}{\lambda}}$ (our probability of leaving).
-    From our homework problem, we know that:
+    From our homework problem (think of Poisson splitting on every geometric), we know that:
     \[ \Expo{T_i}{q_i} \]
     So, we have proved the sojourning time is the same as the original CTMC. Now we look at the probabilities of leaving. Suppose $i \neq j$
     \begin{align*}
@@ -36,7 +36,14 @@ To prove this second claim, we show that our new CTMC $Y_t$ (with self-loops!) h
         &= \frac{q(i, j) / \lambda}{q_i/\lambda} = \frac{q(i,j)}{q_i}
     \end{align*}
     Thus, this new CTMC behaves exactly like our old CTMC!
+
+    Note that our new CTMC has a litle bit different rate, it is $\lambda$.
 \end{proof*}
+
+Here is some intuition about the uniformization of the chain. First, set rates $r_1, \dots, r_{n - 1}$ rates of $j \neq i$ (which should behave like outward flow rates $q(i, j)$).
+Then, we add a timer for self-loop with rate $r_0$. Thus, the rate of all jumps is $r_0 + q_i$. This means the number of stays at state $i$ is
+$\Geo{\empty}{\frac{q_i}{r_0 + q_i}}$. Furthermore, each stay is $\Expo{\empty}{r_0 + q_i}$. However, you can prove that the overall stay at $i$ before jumping to $j \neq i$
+is $\Expo{\empty}{q_i}$. Uniformization picks $r_i$'s such that all of this works!
 
 \subsubsection{Reversibility}
 We now talk about reversing Markov chains.
@@ -84,8 +91,8 @@ We now present a networks-based application of our CTMCs.
     We can draw a state transition diagram for the queue as a CTMC; rate $\lambda$ to go up and $\mu$ to go down.
     Assume $\lambda < \mu$ so the chain is positive recurrent. Then,
     \begin{itemize}
-        \item Invariant distribution: $\pi(n) = (1 - \rho) \rho^n$ where $\rho = \lambda / \mu$
-        \item Average number in the queue under the invariant distribution: $\frac{\rho}{1 - \rho}$
-        \item Average delay in the system: $\frac{1}{\mu - \lambda}$.
+        \item Invariant distribution: $\pi(n) = (1 - \rho) \rho^n$ where $\rho = \lambda / \mu$ - we've beaten this horse to death. We can think of $\rho$ as the effective rate of people joining the queue.
+        \item Average number in the queue under the invariant distribution: $\frac{\rho}{1 - \rho}$ - can be shown with a straightforward expectation calculation
+        \item Average delay in the system (total time from someone ): $\frac{1}{\mu - \lambda}$ - next time
     \end{itemize}
 \end{example}
