@@ -1,0 +1,68 @@
+\subsubsection{Entropy}
+Let us introduce a new concept of entropy.
+
+\begin{definition}[Entropy of a Code]
+    Suppose $p_i$ is the probability (frequency) of a symbol $i$. Then the entropy in a string,
+    \[ H = - \sum_{i = 1}^m p_i \log_2{p_i} \]
+    You can think of entropy as "average surprise," where we define the surprise from $i$ (or the information revealed by $i$)
+    as $- \log_2{p_i}$. This is because it is a positive quantity which is small when $p_i$ is large and large when $p_i$ is small.
+
+    Furthermore, we define $p \log p$ as 0 when $p$ is 0 (this can be seen through L'Hopital's rule).
+\end{definition}
+
+Let us talk about a specific entropy that is easy to compute.
+\begin{example}
+    We define $H(p) = H$ for a Bernoulli($p$). The curve of $H(p)$ vs $p$
+    looks like an upside-down parabola with maximum at $p = 0.5$ with entropy 1.
+\end{example}
+
+\begin{theorem}
+    For any string of $n \gg 1$ symbols, there are $2^{nH}$ "typical" strings out of $m^n$ possible strings (where $m$ is the length of the alphabet).
+
+    \begin{proof*}
+        Let $X$ be a random $n$-length string. Define:
+        \[ \Psi(x) = \frac{1}{n} \log_2 {\Pr{X = x}} \]
+        Note that $\Pr{X = x} = 2^{n \Psi(x)}$.
+        Let $|x_i|$ denote the number of times symbol $i$ occurs in $x$ and let $p_i$ be the probability of symbol $i$ occurring. Then,
+        \begin{align*}
+            \Psi(x) &= \frac{1}{n} \log_2 {\prod_{i =1}^m p_i^{|x_i|}} \\
+            \Psi(x) &= \sum_{i = 1}^m \frac{|x_i|}{n} \log_2{p_i}
+        \end{align*}
+        However, by the strong law of large numbers, we know $\frac{|x_i|}{n} \to p_i$ a.s. as $n \to \infty$. This means for large $n$:
+        \[ \Psi(x) = \sum_{i = 1}^m p_i \log_2{p_i} = - H \]
+        This means that:
+        \[ \Pr{X = x} = 2^{-nH} \]
+        for any $x$, as long as the string follows the strong law of large numbers, i.e. its proportion of characters mirror
+        the true probabilities.
+        Thus, there must be about $2^{nH}$ typical strings.
+    \end{proof*}
+\end{theorem}
+
+\begin{example}
+    Take the binary alphabet, $m = 2$. Then there are $M = 2^n$ possible strings. If $p = 0.1$ (probability of a 1), then $H(p) \approx 0.5$,
+    so the number of typical strings is about $2^{nH} = 2^{0.5n} = \sqrt{M}$.
+\end{example}
+
+Now, we will return to source coding.
+
+\begin{theorem}
+    Let $\gamma$ be the average number of bits per symbol required optimally and let $n$ be the amount of symbols. This means $\gamma n$ is the average number of bits required.
+    This means there are $2^{\gamma n}$ distinct strings, but there are also about $2^{nH}$ of them. Thus, we have that for any source-coding setup $\gamma = H$.
+\end{theorem}
+
+Huffman is not always optimal of all codings.
+\begin{example}
+    Consider two symbols $A$ and $B$ where $\Pr(A) = 0.1$. We again have $H = 0.47$, so this means that the best code uses
+    0.47 bits/symbol; but Huffman gives 1 bit/symbol ($A$ is 0, $B$ is 1).
+\end{example}
+
+We now return to our Binary Symmetric Channel from before.
+
+\begin{definition}[Capacity]
+    The capacity of a channel is defined as the fastest rate you can transfer information such that decoding error is negligable.
+    The rate of information is defined as number of bits conveyed / number of bits transmitted.
+\end{definition}
+
+\begin{theorem}[Binary Symmetric Channel Capacity]
+    The capacity of this channel is $C(p) = 1 - H(p)$. where entropy $H(p) = -p \log p - (1 - p) \log (1- p)$.
+\end{theorem}
