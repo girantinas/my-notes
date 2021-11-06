@@ -1,0 +1,197 @@
+\section{"Hard Problems" and NP-Completeness}
+\subsection{Lecture 19}
+\subsubsection{Search Problems}
+
+As a reminder note that if $A \to B$ in the Cook sense,
+then it implies two things:
+\begin{itemize}
+    \item If B is "easy", then A is "easy".
+    \item If A is "hard", then B is "hard".
+\end{itemize}
+i.e. this means that $A$ is at least as hard as $B$.
+
+Let $R \subset \{0, 1\}^* \times \{0, 1\}^*$. Consider some element
+$(x, w) \in R$. Then we call $x$ the "instance" and $w$ the "witness".   
+
+Armed with this $R$, we will look at two problems:
+\begin{enumerate}
+    \item \textsc{Decide(R)}: Given $x$, does there exist a $w$ such that $(x, w) \in R$?
+    \item \textsc{Search(R)}: Given $x$, return one $w$ such that $(x, w) \in R$ (or detect if no such $w$ exists).
+\end{enumerate}
+
+Clearly, \textsc{Decide(R)} $\to$ \textsc{Search(R)} (if you have an oracle
+that can solve search, clearly it can solve decide). It turns out search can also be reduced to decide;
+first run the oracle on $R$, then run the oracle on the subset $Q = \{ (x, w) : w \text{has 0 as its first character} \}$, then choose another decision
+(i.e. using binary search).
+
+\begin{example}[Max Flow]
+    If $G$ is the graph, along with source $s$ and sink $t$. 
+    We define $x = <G, s, t>$ and $w = f^*$ (or really their binary encodings).
+
+    \textsc{Decide(R)}: for any $x$, the answer is yes (any graph has a max flow.
+
+    \textsc{Search(R)}: algorithm to find $f^*$.
+\end{example}
+
+Now, the question we ask is: does there always exist an algorithm to solve \textsc{Decide(R)}? The answer is no,
+this would be solving the famous halting problem. In particular, it corresponds to the instance $x = <P>$. $(x, w) \in R_{halt}$ if
+and only if $P$ halts when it runs.
+
+\subsubsection{P/NP}
+We consider problems $R$ with an efficient verfier, $V_R$ which is an algorithm where:
+\[ V_R(x, w) = \begin{cases}
+    1 & (x, w) \in R \\
+    0 & (x, w) \notin R
+\end{cases} \]
+
+By efficient, we have that $V_R$ runs in time poly($|x|$) (Polynomial in the length of $x$).
+
+\begin{note}
+    Any such $R$ can be decided (or even searched) in $\leq \exp(\text{poly}(|x|))$ time.
+    This is because such a $V_R$ exists, we can brute force search over all $w$ and try to find one
+    such that $V_R(x, w) = 1$.
+\end{note}
+
+Now, we define the complexity classes $\mathcal{P}$ and $\mathcal{NP}$.
+
+\begin{definition}[$\mathcal{P}$ and $\mathcal{NP}$]
+    \begin{itemize}
+    \item $\mathcal{P}$ means Polynomial-time.
+    A language $L \subseteq \{0, 1\}^*$, $L \in \mathcal{P}$ if there exists an algorithm solving $x \in L$ in time poly$(|x|)$.
+
+    \item $\mathcal{NP}$ means Nondeterministic Polynomial-time. Nondeterministic refers to a Nondeterministic Turing Machine,
+    where branching can happen in parallel with unlimited parallelism.
+    A problem $R \in \mathcal{NP}$ if there exists a poly$(|x|)$-time verifier $V_R$ such that for all $x$:
+
+    If there exists $w$ such that
+    $(x, w) \in R$ then there exists poly$(|x|)$-sized $w$ such that $(x, w) \in R$.
+    \end{itemize}
+\end{definition}
+
+Intuitively, NP means that you can verify solutions efficiently. Note that:
+\begin{theorem}[P in NP]
+    $\mathcal{P} \subseteq \mathcal{NP}$
+
+    \begin{proof*}
+        Consider some $L \in P$. Then, define $R = L \times \{0, 1\}^*$. There is an algorithm $A$ to solve if something is in $L$ in polynomial time.
+        The question $(x, w) \in R$ is the same as solving if $x \in L$, this means that we can run $A$ as a verifier on just the $x$ argument,
+        meaning that $R \in \mathcal{NP}$.
+    \end{proof*}
+\end{theorem}
+
+We also have a few related notions:
+\begin{definition}[NP-Hard]
+    A problem $R$ is NP-hard if $\forall B \in \mathcal{NP}$, then $B \to R$.
+    (i.e. it's at least as hard as everything in NP, but it could be outside NP).
+\end{definition}
+
+\begin{definition}[NP-Complete]
+    A problem $R$ is NP-complete if $R \in \mathcal{NP}$ and $R$ is NP-hard.
+    (i.e. the hardest problems in NP).
+\end{definition}
+
+However, how do you show that something is NP-hard? You need to show there's a reduction from every NP problem to it. It's a little bit easier
+if we start with a problem that every NP problem reduces to, and then show it reduces to another problem (we can then conclude that other problem is also NP-hard).
+
+\subsubsection{NP-Complete Problems}
+
+Here is our roadmap of reductions, with forward arrows if a problem reduces to another.
+\[\begin{tikzcd}
+	& {\mathcal{NP}} \\
+	& {\text{Circuit SAT}} \\
+	& {\text{SAT}} \\
+	& {\text{3SAT}} \\
+	{\text{Independent Set}} && {\text{3D Matching}} \\
+	{\text{Vertex Cover}} && {\text{ZOE}} \\
+	& {\text{Integer LP}} & {\text{Hamiltonian Cycle}} \\
+	&& {\text{Traveling Salesman}}
+	\arrow[from=1-2, to=2-2]
+	\arrow[from=2-2, to=3-2]
+	\arrow[from=3-2, to=4-2]
+	\arrow[curve={height=-30pt}, from=2-2, to=4-2]
+	\arrow[from=4-2, to=5-1]
+	\arrow[from=5-1, to=6-1]
+    \arrow[from=5-3, to=6-3]
+	\arrow[from=4-2, to=5-3]
+	\arrow[from=6-3, to=7-2]
+	\arrow[from=6-3, to=7-3]
+	\arrow[from=7-3, to=8-3]
+\end{tikzcd}\]
+
+We define the circuit SAT problem as follows.
+
+\begin{definition}[Circuit SAT (CSAT)]
+    Define:
+    \[ R = \{(x, w)\}, <C>, (x, w) \in R \text{ if } C(w) = 1 \]
+    where $C$ is a circuit with $AND, OR, NOT$ gates.
+\end{definition}
+
+Let us show CSAT is NP-complete.
+\begin{proof*}
+    First, clearly it's in NP:
+    an efficient verifier is $V_{CSAT}$; given $C, w$, the verifier just needs to evaluate the input on $C$.
+    
+    Secondly, we will show CSAT is NP-hard. We will use a handwavy argument; CS172 has more rigorous arguments.
+    Suppose $B \in \mathcal{NP}$. This means there exists an efficient verifier $V_B$. Preprocess $(V_B, x)$ (a program and instance) to
+    create a circuit $C_B$ such that $C_B(w) = V_B(x, w)$. Then, feed $C_B$ to the CSAT algo. We have reduced $B$ to CSAT.
+\end{proof*}
+
+\begin{definition}[SAT]
+    The input is a "formula" in Conjunctive Normal Form (CNF). It looks something like this:
+    \[ \phi(x) = (x_1 \lor \overline{x_7}) \land (x_8) \land (x_2 \lor x_1 \lor x_3 \lor \overline{x_4}) \land \dots \]
+    
+    The SAT question asks if there is a setting of $x$ that makes $\phi(x)$ true? The witness $w$ is this assignment of $x$.
+\end{definition}
+
+Now we claim SAT is NP-complete.
+
+\begin{proof*}
+    First, clearly it's in NP: an efficient verifier is just evaluating the formula after plugging in the $w$ (the values of $x_i$'s).
+
+    Secondly, we show it is NP-hard. Note that reductions are transitive; if we show CSAT reduces to SAT, then all NP problems reduce to SAT (so it is NP hard).
+    In a CSAT Circuit, assign to every wire a variable. For every True, the variable $z$ coming out of it is the clause $(z)$; for False it is $(\overline{z})$.
+    For every OR gate, if there $x$ and $y$ coming in and $z$ coming out, $(z \lor \overline{x}) \land (\overline{z} \lor \overline{y}) \land (\overline{z} \lor x \lor y)$. You can check the truth
+    table matches up with OR. There are similar decompositions for NOT and AND (omitted for brevity). Furthermore, the output gate O needs to be True. Thus, CSAT reduces to clauses in SAT.
+\end{proof*}
+
+Another claim is that SAT reduces to 3SAT (the version of the problem where every clause has size 3).
+
+We now define the Independent Set Problem.
+
+\begin{definition}[Independent Set]
+    An Independent Set is a subset $S \subseteq V$ such that no two elements in $S$ are neighbors.
+\end{definition}
+
+\begin{definition}[Independent Set Problem (IS)]
+    Given an undirected graph $G$ and an integer $k$, does there exist an Independent set of size $\geq k$?
+\end{definition}
+
+Let us show the reduction from 3SAT to ISET (by example).
+
+\begin{example}
+    Let this be our 3SAT instance:
+    \[ (\overline{x} \lor y \lor z) \land (x \lor \overline{y} \lor z) \land (x \lor y \lor z) \land (\overline{x} \lor \overline{y}) \]
+
+    Then, we define the IS instance as follows:
+    \[\begin{tikzcd}
+        & {\overline{x}} &&& x &&& x && {\overline{x}} \\
+        y & z && {\overline{y}} & z && z & y && {\overline{y}}
+        \arrow[no head, from=1-2, to=1-5]
+        \arrow[curve={height=-24pt}, no head, from=1-2, to=1-10]
+        \arrow[no head, from=1-8, to=1-10]
+        \arrow[curve={height=30pt}, no head, from=1-8, to=1-2]
+        \arrow[no head, from=1-2, to=2-1]
+        \arrow[no head, from=1-2, to=2-2]
+        \arrow[no head, from=2-1, to=2-2]
+        \arrow[no head, from=1-5, to=2-4]
+        \arrow[no head, from=1-5, to=2-5]
+        \arrow[no head, from=2-5, to=2-4]
+        \arrow[no head, from=1-8, to=2-7]
+        \arrow[no head, from=1-8, to=2-8]
+        \arrow[no head, from=2-8, to=2-7]
+        \arrow[no head, from=1-10, to=2-10]
+        \arrow[curve={height=24pt}, no head, from=2-1, to=2-4]
+        \arrow[no head, from=2-8, to=2-10]
+    \end{tikzcd}\]
+(Suppose all negations were neighbors). Now, solving 3SAT reduces to checking IS on this graph with $k =$ the number of variables. Doing this means that we've reduced 3SAT to IS (and this can be done generally). Thus IS is NP-complete.
+\end{example}

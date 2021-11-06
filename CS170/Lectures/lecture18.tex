@@ -1,0 +1,186 @@
+\section{Reductions}
+\subsection{Lecture 18}
+
+\subsubsection{Cook Reductions}
+We define algorithmic reduction, which is very useful for solving an extended set of problems.
+
+\begin{definition}[Reduction]
+    Given problems $A, B$, we say $A \to B$ or "$A$ reduces to $B$" if the existence of an efficient algorithm for $B$
+    implies there exists an efficient algorithm for $A$.
+\end{definition}
+
+Given a reduction $A \to B$, there is good and bad we can prove from it.
+\begin{itemize}
+    \item If we know how to solve $B$ efficiently, then we can solve $A$ efficiently.
+    \item If we know $A$ has no efficient algorithm, then neither does $B$.
+\end{itemize}
+
+There are many types of reductions. We discuss one of them:
+\begin{definition}[Cook Reduction]
+    Given a polynomial Time $Alg_B$ that solves $B$, we should be able to call it (possibly multiple times) to create a solution to $A$ that also runs in polynomial time.
+\end{definition}
+
+In general our roadmap is:
+\[\begin{tikzcd}
+	a & {\boxed{Pre}} & b & {\boxed{Alg_B}} & o & {\boxed{Post}} & o_A
+	\arrow[from=1-1, to=1-2]
+	\arrow[from=1-2, to=1-3]
+	\arrow[from=1-3, to=1-4]
+	\arrow[from=1-4, to=1-5]
+	\arrow[from=1-5, to=1-6]
+	\arrow[from=1-6, to=1-7]
+\end{tikzcd}\]
+We turn $a$, an instance of problem $A$ into $b$, and instance of $B$ in polynomial time with a preprocessing algorithm. Then,
+we run it through $Alg_B$, then run the output through a postprocessing algorithm to get a solution for $A$.
+
+\subsubsection{Maximum Bipartite Matching}
+We consider the problem of maximum Bipartite maching. As an input we get an undirected Bipartite graph with two classes $L$ and $R$
+where all the edges go between the two classes. We define
+
+\begin{definition}[Matching]
+    A bipartite matching $M \subseteq E$ is a subset $M$ such that no two edges in $M$ share a common vertex.
+\end{definition}
+
+Thus, we try to find the $M$ such that $|M|$ is as large as possible. To solve this problem, it actually reduces to (integral) max flow!
+
+\begin{algothm}[Max Bipartite Matching Reduction]
+    For the preprocessing, suppose the instance $a$ looks like on the left. We turn it into the directed one on the right:
+    \[\begin{tikzcd}
+        a & {\boxed{Pre}} & b & {\boxed{Alg_B}} & o & {\boxed{Post}} & a
+        \arrow[from=1-1, to=1-2]
+        \arrow[from=1-2, to=1-3]
+        \arrow[from=1-3, to=1-4]
+        \arrow[from=1-4, to=1-5]
+        \arrow[from=1-5, to=1-6]
+        \arrow[from=1-6, to=1-7]
+    \end{tikzcd}\]
+    We constrain all the flows to be integer and run maximum flow on the graph (there is always an integral max flow). Now,
+    we claim we can extract a matching from any integral flow (there is a bijective correspondence). In particular:
+    \begin{itemize}
+        \item matching $M$ maps to $f_M$ s.t. $|f_M| = |M|$
+        \item flow $f$ maps to $M_f$ s.t. $|f| = |M_f|$
+    \end{itemize}
+    Knowing this, we know that the best matching will map to some flow which must be the max one, and from any flow we can extract a matching, so therefore
+    the max flow must yield a max matching. We prove this claim.
+    \begin{proof*}
+        Suppose $M = \{e_1, \dots, e_R\}$. Then \[(f_M)_e = \begin{cases}
+            1 & \text{if $e = (s,a)$ and $a$ is matched in $M$} \\
+            0 & \text{if $e = (s,a)$ and $a$ is not matched in $M$} \\
+            1 & \text{if $e = (b,t)$ and $b$ is matched in $M$} \\
+            0 & \text{if $e = (b,t)$ and $b$ is not matched in $M$} \\
+            1 & \text{if $e \in M$} \\
+            0 & \text{if $e \notin M$} \\
+        \end{cases}\]
+        this can be seen graphically to have the same value as the matching ($|M|$ endpoints on each class that connect to $S$ or $T$ and the other class, flowing 1 each).
+
+        Now, consider some flow $f$. We know from our previous analyses that $f$ decomposes into a collection of cycles and $s$-$t$ paths. We know there are no cycles, so there is only the latter.
+        Thus, all the paths must be flowing exactly one unit of flow. One of these paths looks like $s \to a \to b \to t$. To construct $M_f$, place all the $(a, b)$ in this form into the matching.
+    \end{proof*}
+
+    \textbf{Runtime} The runtime of this is as follows. Note that constructing the flow network from the original graph and reading off the flows takes linear time.
+    Thus, we only care about the Ford-Fulkerson runtime, $\mathcal{O}(mn)$.
+\end{algothm}
+
+\subsubsection{Circuit Value Problem}
+We are given a Boolean circuit $C$ with $n$ input bits $x_1, \dots, x_n \in \{0, 1\}$ and one output bit $z$. We want to compute $z$.
+Such an input is a DAG, and it may look like this:
+
+\[\begin{tikzcd}
+	{x_1 = 1} \\
+	&& \land \\
+	{x_2 =0} &&&& \lor && {z =1} \\
+	&& \lor \\
+	{x_3=1}
+	\arrow["1"', from=1-1, to=2-3]
+	\arrow["0", from=3-1, to=2-3]
+	\arrow["0"', from=2-3, to=3-5]
+	\arrow["0"', from=3-1, to=4-3]
+	\arrow["1", from=5-1, to=4-3]
+	\arrow["1", from=4-3, to=3-5]
+	\arrow["1", from=3-5, to=3-7]
+\end{tikzcd}\]
+
+Thus to solve the problem, it can intuitively be seen that the following algorithm suffices, given a circuit $C$,
+\begin{enumerate}
+    \item Topologically sort $C$.
+    \item Simulate the circuit from left to right to compute values at intermediary gates in this order.
+\end{enumerate}
+
+This is linear-time algorithm. However, the circuit value problem is pretty powerful--it is what runs in our computers! In fact,
+any problem that can be solved in polynomial time (in $A \in \mathcal{P}$) has an "efficient, log-space" reduction to CVP (we define $\mathcal{P}$
+at length in the next lecture; log-space is covered in courses like CS172). Here is a brief proof sketch.
+\begin{proof*}[Sketch]
+    We know there exists a poly-time algorithm $Alg_A$ for $A$. Given an instance $a$ for $A$,
+    $Alg_A(a)$ uses $\leq T = \text{poly}(n)$ memory and time. Then, make $T$ circuits, one for each time step.
+    The outputs of $C_t$ are inputs for $C_{t + 1}$, where each change in memory state at timestep $t$ is tracked by circuit $C_t$ (a
+    computer implements this as just boolean gates).
+\end{proof*}
+
+Furthermore, note that reductions are transitive, $A \to B \to C$ implies $A \to C$. Now, we will show that CVP reduces to Linear Programming,
+which implies every poly-time problem reduces to LP.
+
+\begin{theorem}
+    CVP reduces to LP.
+
+    \begin{proof*}
+        Have one variable per gate and per input bit (treat them as constant-value gates).
+        Let $z_g$ is a variable that will store the value of gate $g$. The constraints we use are as follows:
+        \begin{itemize}
+            \item $\forall g, 0 \leq z_g \leq 1$ \\
+            \item $\forall \text{input gates where "$x_j = b$"}, z_j = b$ \\
+            \item If we have $g_1$ and $g_2$ feeding into AND gate $g$, we add constraints
+            \begin{align*}
+                z_g &\leq z_{g_1} \\
+                z_g &\leq z_{g_2} \\
+                z_g &\geq z_{g_1} + z_{g_2} - 1 \\
+            \end{align*}
+            \item Similar constructions can be made for NOT and OR gates.
+            \item We do not care about the objective, only feasibility, i.e. $z$ (the output) will be set by the LP, which is correct.
+            \item Note that all constraints force integrality, so there is no issue there.
+        \end{itemize}
+    \end{proof*}
+\end{theorem}
+
+\subsubsection{Matrix Inversion/Multiplication}
+We will show a two-sided reduction between $n$-by-$n$ Matrix Multiplication (MM) and Matrix Inversion (MI).
+
+\begin{algothm}[Matrix Inversion/Multiplication Reduction]
+    First, we reduce MM $\to$ MI.
+    We want $AB$. Preprocess \[M = \begin{bmatrix}
+        I & -A & 0 \\
+        0 & I & -B \\
+        0 & 0 & I
+    \end{bmatrix} \]
+    Then, if we compute the inverse, it is
+    \[ M^{-1} = \begin{bmatrix}
+        I & A & AB \\
+        0 & I & B \\
+        0 & 0 & I
+    \end{bmatrix}\]
+    Then, in postprocessing, spit out the top right block of $M^{-1}$. We see that both preprocessing and postprocessing take linear $\mathcal{O}(n^2)$ time
+    (super efficient!).
+
+    Now, we reduce MM $\to$ MI. By Gaussian Elimination, we can write any matrix as the product of a lower triangular matrix and an upper triangular one:
+    \[ M = \begin{bmatrix}
+        A & B \\ C & D
+    \end{bmatrix} = \begin{bmatrix}
+        I & 0 \\ CA^{-1} & I
+    \end{bmatrix} \begin{bmatrix}
+        A & B \\ 0 & D-CA^{-1}B
+    \end{bmatrix}\]
+    Calling $S = D - CA^{-1}B$ and $Y = CA^{-1}$, then:
+    \[M^{-1} = \begin{bmatrix}
+        A^{-1} & -A^{-1} B S^{-1} \\ 0 & S^{-1}
+    \end{bmatrix} \begin{bmatrix}
+        I & 0 \\ -Y & I
+    \end{bmatrix} = \begin{bmatrix}
+        A^{-1} - ZY & Z \\ -S^{-1}Y & S^{-1}
+    \end{bmatrix}\]
+    by calling $Z = -A^{-1}BS^{-1}$. Therefore, in order to invert an $n$-by-$n$ matrix, it suffices to invert 2 $n/2$-by-$n/2$ matrices
+    plus $\mathcal{O}(1)$ MMs and Matrix additions/subtractions. Suppose MM ran in time $\mathcal{O}(n^\omega)$. This means we have 
+    \[ T(n) \leq 2 T(\frac{n}{2}) + \mathcal{n^{\omega}} = \mathcal{O}(n^\omega) \]
+    Again, we have a linear-time reduction!
+\end{algothm}
+
+In fact, it turns out most problems in linear algebra reduce to matrix multiplication. It is kind of the central problem in
+linear algebra algorithms.
