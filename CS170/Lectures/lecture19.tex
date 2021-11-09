@@ -10,8 +10,12 @@ then it implies two things:
 \end{itemize}
 i.e. this means that $A$ is at least as hard as $B$.
 
-Let $R \subset \{0, 1\}^* \times \{0, 1\}^*$. Consider some element
-$(x, w) \in R$. Then we call $x$ the "instance" and $w$ the "witness".   
+\begin{definition}[Boolean Problems]
+    Let $R \subset \{0, 1\}^* \times \{0, 1\}^*$. Consider some element
+    $(x, w) \in R$. Then we call $x$ the "instance" and $w$ the "witness".
+
+    We can assign to each $(x, w)$ "instance/solution" a True or False.
+\end{definition}
 
 Armed with this $R$, we will look at two problems:
 \begin{enumerate}
@@ -26,7 +30,7 @@ first run the oracle on $R$, then run the oracle on the subset $Q = \{ (x, w) : 
 
 \begin{example}[Max Flow]
     If $G$ is the graph, along with source $s$ and sink $t$. 
-    We define $x = <G, s, t>$ and $w = f^*$ (or really their binary encodings).
+    We define $x = \langle G, s, t \rangle$ and $w = f^*$ (or really their binary encodings).
 
     \textsc{Decide(R)}: for any $x$, the answer is yes (any graph has a max flow.
 
@@ -34,7 +38,7 @@ first run the oracle on $R$, then run the oracle on the subset $Q = \{ (x, w) : 
 \end{example}
 
 Now, the question we ask is: does there always exist an algorithm to solve \textsc{Decide(R)}? The answer is no,
-this would be solving the famous halting problem. In particular, it corresponds to the instance $x = <P>$. $(x, w) \in R_{halt}$ if
+this would be solving the famous halting problem. In particular, it corresponds to the instance $x = \langle P \rangle$. $(x, w) \in R_{halt}$ if
 and only if $P$ halts when it runs.
 
 \subsubsection{P/NP}
@@ -57,14 +61,14 @@ Now, we define the complexity classes $\mathcal{P}$ and $\mathcal{NP}$.
 \begin{definition}[$\mathcal{P}$ and $\mathcal{NP}$]
     \begin{itemize}
     \item $\mathcal{P}$ means Polynomial-time.
-    A language $L \subseteq \{0, 1\}^*$, $L \in \mathcal{P}$ if there exists an algorithm solving $x \in L$ in time poly$(|x|)$.
+    A language $L \subseteq \{0, 1\}^*$, $L \in \mathcal{P}$ if there exists an algorithm solving $x \in L$ in time poly$(|x|)$ (decided in polynomial time).
 
     \item $\mathcal{NP}$ means Nondeterministic Polynomial-time. Nondeterministic refers to a Nondeterministic Turing Machine,
     where branching can happen in parallel with unlimited parallelism.
     A problem $R \in \mathcal{NP}$ if there exists a poly$(|x|)$-time verifier $V_R$ such that for all $x$:
 
-    If there exists $w$ such that
-    $(x, w) \in R$ then there exists poly$(|x|)$-sized $w$ such that $(x, w) \in R$.
+    If there exists poly$(|x|)$-sized $w$ such that
+    $(x, w) \in R$, then $V_R(x, w)$ is True, otherwise $V_R(x, w)$ is False.
     \end{itemize}
 \end{definition}
 
@@ -93,7 +97,7 @@ We also have a few related notions:
 However, how do you show that something is NP-hard? You need to show there's a reduction from every NP problem to it. It's a little bit easier
 if we start with a problem that every NP problem reduces to, and then show it reduces to another problem (we can then conclude that other problem is also NP-hard).
 
-\subsubsection{NP-Complete Problems}
+\subsubsection{CSAT, SAT, 3SAT, Independent Set}
 
 Here is our roadmap of reductions, with forward arrows if a problem reduces to another.
 \[\begin{tikzcd}
@@ -122,7 +126,7 @@ We define the circuit SAT problem as follows.
 
 \begin{definition}[Circuit SAT (CSAT)]
     Define:
-    \[ R = \{(x, w)\}, <C>, (x, w) \in R \text{ if } C(w) = 1 \]
+    \[ R = \{(x, w)\}, \langle C \rangle, (x, w) \in R \text{ if } C(w) = 1 \]
     where $C$ is a circuit with $AND, OR, NOT$ gates.
 \end{definition}
 
@@ -154,7 +158,7 @@ Now we claim SAT is NP-complete.
     table matches up with OR. There are similar decompositions for NOT and AND (omitted for brevity). Furthermore, the output gate O needs to be True. Thus, CSAT reduces to clauses in SAT.
 \end{proof*}
 
-Another claim is that SAT reduces to 3SAT (the version of the problem where every clause has size 3).
+Another claim is that SAT reduces to 3SAT (the version of the problem where every clause has size 3). This is not here (not sure why lol)
 
 We now define the Independent Set Problem.
 
