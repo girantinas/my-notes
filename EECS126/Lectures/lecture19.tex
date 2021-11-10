@@ -1,3 +1,4 @@
+\subsection{Lecture 19}
 \subsubsection{Entropy}
 Let us introduce a new concept of entropy.
 
@@ -34,7 +35,7 @@ Let us talk about a specific entropy that is easy to compute.
         \[ \Pr{X = x} = 2^{-nH} \]
         for any $x$, as long as the string follows the strong law of large numbers, i.e. its proportion of characters mirror
         the true probabilities.
-        Thus, there must be about $2^{nH}$ typical strings.
+        Thus, there must be about $2^{nH}$ typical strings, each with roughly uniform probability.
     \end{proof*}
 \end{theorem}
 
@@ -45,24 +46,15 @@ Let us talk about a specific entropy that is easy to compute.
 
 Now, we will return to source coding.
 
-\begin{theorem}
+\begin{theorem}[Source Coding Theorem]
     Let $\gamma$ be the average number of bits per symbol required optimally and let $n$ be the amount of symbols. This means $\gamma n$ is the average number of bits required.
     This means there are $2^{\gamma n}$ distinct strings, but there are also about $2^{nH}$ of them. Thus, we have that for any source-coding setup $\gamma = H$.
+    
+    In other words, $H$ bits per symbol is optimal.
 \end{theorem}
 
-Huffman is not always optimal of all codings.
+Huffman is not always optimal of all codings (only of the prefix-free ones).
 \begin{example}
-    Consider two symbols $A$ and $B$ where $\Pr(A) = 0.1$. We again have $H = 0.47$, so this means that the best code uses
+    Consider two symbols $A$ and $B$ where $\Pr{A} = 0.1$. We again have $H = 0.47$, so this means that the best code uses
     0.47 bits/symbol; but Huffman gives 1 bit/symbol ($A$ is 0, $B$ is 1).
 \end{example}
-
-We now return to our Binary Symmetric Channel from before.
-
-\begin{definition}[Capacity]
-    The capacity of a channel is defined as the fastest rate you can transfer information such that decoding error is negligable.
-    The rate of information is defined as number of bits conveyed / number of bits transmitted.
-\end{definition}
-
-\begin{theorem}[Binary Symmetric Channel Capacity]
-    The capacity of this channel is $C(p) = 1 - H(p)$. where entropy $H(p) = -p \log p - (1 - p) \log (1- p)$.
-\end{theorem}

@@ -1,0 +1,102 @@
+\subsection{Lecture 20}
+\subsubsection{Information Theory and Channel Coding}
+We now return to our Binary Symmetric Channel from before.
+
+\[\begin{tikzcd}
+	X & 0 && 0 & Y \\
+	& 1 && 1
+	\arrow["{1-p}", from=1-2, to=1-4]
+	\arrow["p"'{pos=0.3}, from=2-2, to=1-4]
+	\arrow["p"{pos=0.3}, from=1-2, to=2-4]
+	\arrow["{1-p}"', from=2-2, to=2-4]
+\end{tikzcd}\]
+
+\begin{definition}[Rate of Transmission]
+    The rate of information is defined as number of bits conveyed / number of bits transmitted.
+\end{definition}
+
+For example for our BSC, we could transmit each bit 3 times and have the channel follow majority rule. This leads to a rate of 
+$R = 1/3$.
+Note that our information-theoretic rate abstracts out the time (this is not megabits per second, for example).
+
+We define a few notions of information theory in order to build one of the most powerful results.
+
+\begin{definition}
+    Given a channel, let $p_e$ be the maximum probability of an error (over all possible codewords).
+\end{definition}
+
+\begin{definition}[Capacity]
+    The capacity of a channel is defined as the fastest rate you can transfer information such that decoding is asymptotically error-free (error rate approaches 0 as $n \to \infty$).
+\end{definition}
+
+\begin{theorem}[Capacity of BSC]
+    The capacity of this channel is $C(p) = 1 - H(p)$. where entropy $H(p) = -p \log p - (1 - p) \log (1- p)$.
+
+    \begin{proof*}
+        Define $E_i$ to be an indicator for when there is an error in $i$th position.
+        The sequence of errors/no-errors looks something like $0101100\dots$ where $\Pr{E_i = 1} = p$.
+        We can re-use the source-coding theorem from before! For large $n$ the typical amount of these strings is
+        $A = 2^{nH(p)}$.
+
+        Suppose there are $B$ different codewords (input strings) of length $n$ that are separable at output. Call them
+        $x_1, \dots, x_B$ and their outputs the random variables $Y_1, \dots, Y_B$. Let $x_i$ be composed of $n$ random bits (think of them as vectors).
+        Let $S_1$ be the set of $A$ typical outputs corresponding to $x_1$. Then, the probability of an error:
+        \begin{align*}
+            p_e &= \Pr{Y_2 \in S_1 \union Y_3 \in S_1 \union \dots \union Y_B \in S_1}
+            &\leq B \Pr{Y_2 \in S_1} \\
+            &= B A 2^{-n}
+        \end{align*}
+        where the last probability is true because $Y_2$ has $n$ random bits (since $x_2$ is arbitrarily random), so $\Pr{Y_2 \in S_1} = |S_1| 2^{-n} = A2^{-n}$.
+        Let $B = 2^{nR}$. Then,
+        \begin{align*}
+            p_e &\leq 2^{nR} 2^{nH(p)} 2^{-n}\\
+            &\leq 2^{n(R + H(p) - 1)}\\
+        \end{align*}
+        Thus, if we want the probability of an error to go to 0 as $n \to \infty$, then we need $R + H(p) - 1 < 0$ or $R < 1 - H(p)$.
+
+        We've shown that if $R < C(p)$, then there exists a coding scheme such that $p_e \to 0$ as $n \to \infty$ (it is asymptotically error free).
+        You need the converse to complete the proof: i.e. if $R > C(p)$, then
+        no coding scheme is asymptotically error-free.
+    \end{proof*}
+\end{theorem}
+
+Thus we see that our $R = 1/3$ example, there are $B = 2^{n/3}$ different codewords of length $n$ that are separable at output.
+
+In fact, there is a more general theorem for all channels.
+\begin{theorem}[Shannon's Channel Coding Theorem]
+    If the rate of information transfer is below the capacity of a channel, then there exists a channel coding such that error is nominally 0.
+\end{theorem}
+
+Note that neither of these theorems doesn't offer practical coding method for finite $n$ or a required $p_e$.
+
+\subsubsection{Hypothesis Testing}
+We formulate the problem of seeing the output of a link and we want to make predictions of its input.
+Suppose $X \in \{0, 1\}$ and $\Pr{Y \mid X}$ is known. Let $\hat{X}$ be the estimate of $X$. We wish to solve the following optimization problem.
+
+\begin{itemize}
+    \item Maximize Probability of Correct Detection (PCD), $\Pr{\hat{X} = 1 \mid X = 1}$
+    \item Subject to a constraint on Probability of False Alarm (PFA), $\Pr{\hat{X} = 1 \mid X = 0} \leq \beta$
+\end{itemize}
+
+\begin{definition}[Receiver Operating Characteristic (ROC)]
+    This is a graph of PCD for the solution of the above problem as a function $R(\beta)$.
+\end{definition}
+
+\begin{theorem}[Neyman-Pearson Theorem]
+    To maximize given the constraint, we should predict:
+    \[ \hat{X} = \begin{cases}
+        1 & \text{if } L(Y) > \lambda \\
+        1 & \text{with probability $\gamma$, if } L(Y) = \lambda \\
+        0 & \text{if } L(Y) < \lambda \\
+    \end{cases} \]
+    where $L(y)$ is the likelihood ratio, i.e. $L(y) = \frac{f_{Y \mid X}[y \mid 1]}{f_{Y \mid X}[y \mid 0]}$ and $\lambda, \gamma$ are chosen
+    such that $\Pr{\hat{X} = 1 \mid X = 0} = \beta$.
+\end{theorem}
+
+Let us see Hypothesis testing in action.
+
+\begin{example}
+    Consider a Gaussian Channel $Y = X + Z$, where $\Normal{Z}{0}{\sigma^2}$ is independent of $X$.
+    The receiver wants to guess $X$ from the received signal $Y$ with $PFA \leq \beta$. In this context,
+    \[ L(y) = \frac{\exp(-\frac{(y - 1)^2}{2 \sigma^2})}{\exp(-\frac{y^2}{2 \sigma^2})} = \exp(\frac{2y - 1}{2 \sigma^2})\]
+\end{example}

@@ -121,6 +121,17 @@ This is how we constructed the code. The code is prefix tree because all codewor
 
 \includegraphics[width=50mm]{huffmantree.png}
 
+The way we found the codewords is through the following algorithm.
+
+\begin{note}[Huffman Coding Algorithm]
+    We are given a list of symbols $i$ with probabilities $p_i$. The Huffman tree is built as follows:
+    \begin{itemize}
+        \item Take the two symbols with smallest probability $a$ and $b$.
+        \item Put them as leaves on a tree and combine them into a root $\{a, b\}$ with probability $p_a + p_b$.
+        \item Iteratively continue this, considering $\{a, b\}$ as one character with its new probability (and $a, b$ removed).
+    \end{itemize}
+\end{note}
+
 \begin{theorem}
     The Huffman Code has the smallest average number of bits per symbol among all prefix-free codes.
 \end{theorem}
