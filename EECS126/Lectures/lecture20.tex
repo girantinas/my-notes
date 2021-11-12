@@ -42,8 +42,8 @@ We define a few notions of information theory in order to build one of the most 
         $x_1, \dots, x_B$ and their outputs the random variables $Y_1, \dots, Y_B$. Let $x_i$ be composed of $n$ random bits (think of them as vectors).
         Let $S_1$ be the set of $A$ typical outputs corresponding to $x_1$. Then, the probability of an error:
         \begin{align*}
-            p_e &= \Pr{Y_2 \in S_1 \union Y_3 \in S_1 \union \dots \union Y_B \in S_1}
-            &\leq B \Pr{Y_2 \in S_1} \\
+            p_e &= \Pr{Y_2 \in S_1 \cup Y_3 \in S_1 \cup \dots \cup Y_B \in S_1} \\
+            &\leq B \cdot \Pr{Y_2 \in S_1} \\
             &= B A 2^{-n}
         \end{align*}
         where the last probability is true because $Y_2$ has $n$ random bits (since $x_2$ is arbitrarily random), so $\Pr{Y_2 \in S_1} = |S_1| 2^{-n} = A2^{-n}$.
