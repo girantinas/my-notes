@@ -1,0 +1,149 @@
+\subsection{Lecture 21}
+\subsubsection{Hypothesis Testing}
+We formulate the problem of seeing the output of a link and we want to make predictions of its input.
+Suppose $X \in \{0, 1\}$ and $\Pr{Y \mid X}$ is known. Let $\hat{X}$ be the estimate of $X$. We wish to solve the following optimization problem.
+
+\begin{itemize}
+    \item Maximize Probability of Correct Detection (PCD), $\Pr{\hat{X} = 1 \mid X = 1}$
+    \item Subject to a constraint on Probability of False Alarm (PFA), $\Pr{\hat{X} = 1 \mid X = 0} \leq \beta$
+\end{itemize}
+
+Note that sometimes in literature, $1 -$ PCD (False negative) is called a Type II error and PFA (False positive) is called a Type I error.
+
+\begin{definition}[Receiver Operating Characteristic (ROC)]
+    This is a graph of PCD for the solution of the above problem as a function $R(\beta)$.
+\end{definition}
+
+From drawing the curve, we can understand that this function $R(\beta)$ has the following properties:
+\begin{itemize}
+    \item $R(\beta)$ is increasing. This is because by being more lenient about PFA,
+    we decide $\hat{X} = 1$ more agressively,
+    \item $R(\beta)$ is concave (i.e. it's second derivative is negative). We get diminishing returns
+    \item  $R(1) = 1$, because we can have the decision rule be 1 always
+    \item $R(0) \neq 0$, all $R(0)$ means that you should never show a false positive
+    (but are free to show true positives, i.e. if you knew with 100\% certainty what the input is).
+\end{itemize}
+
+Finally, we claim a useful fact that will help us formulate a solution. In particular, we state that the constraint is active at optimum, i.e.
+\begin{theorem}
+    The PFA can't be strictly less than $\beta$ for the optimal decision rule if the PCD $< 1$.
+    Suppose for the sake of contradiction that the optimal rule $g_1(y)$ gives:
+    \[ \Pr{\hat{X} = 1 \mid X = 0} = \alpha < \beta \]
+    Then, define another decision rule $g_2(y) = 1$ (it is always 1). Now, consider $g_3(y)$ defined as:
+    \[ g_3(y) = \begin{cases}
+        g_1(y) & \text{with prob. $\frac{1 - \beta}{1 - \alpha}$} \\
+        g_2(y) & \text{otherwise} \\
+    \end{cases} \]
+    Now, let us calculate the PFA of this rule:
+    \begin{align*}
+        \Pr{g_3(Y) = 1 \mid X = 0} &= \Pr{g_1(Y) = 1 \mid X = 0} \qty(\frac{1 - \beta}{1 - \alpha}) + \Pr{g_2(Y) = 1 \mid X = 0} \qty( 1 - \frac{1 - \beta}{1 - \alpha})\\
+        \Pr{g_3(Y) = 1 \mid X = 0} &= \alpha \frac{1 - \beta}{1 - \alpha} + 1 \qty( 1 - \frac{1 - \beta}{1 - \alpha})\\
+        \Pr{g_3(Y) = 1 \mid X = 0} &= \beta \leq \beta
+    \end{align*}
+    Thus, $g_3(y)$ is feasible. Now, let us calculate the objective (PCD). Suppose the PCD of $g_1$ was $p^* < 1$.
+    \begin{align*}
+        \Pr{g_3(Y) = 1 \mid X = 1} &= p^* \qty(\frac{1 - \beta}{1 - \alpha}) + 1 \qty(1 - \frac{1 - \beta}{1 - \alpha}) \\
+        \Pr{g_3(Y) = 1 \mid X = 1} &> p^*
+    \end{align*}
+    which contradicts the optimality of $g_1$. Thus, we have that the PFA must always be $\beta$ (except in a degenerate case where we don't have to make prediction).
+\end{theorem}
+
+It turns out that to solve this optimization problem, there is a certain form our decision rule will always have.
+
+\begin{theorem}[Neyman-Pearson Theorem]
+    To maximize given the constraint, we should predict:
+    \[ \hat{X} = \begin{cases}
+        1 & \text{if } L(Y) > \lambda \\
+        1 & \text{with probability $\gamma$, if } L(Y) = \lambda \\
+        0 & \text{if } L(Y) < \lambda \\
+    \end{cases} \]
+    where $L(y)$ is the likelihood ratio, i.e. $L(y) = \frac{f_{Y \mid X}[y \mid 1]}{f_{Y \mid X}[y \mid 0]}$ and $\lambda, \gamma$ are chosen
+    such that $\Pr{\hat{X} = 1 \mid X = 0} = \beta$.
+
+    Note that in the continuous case, the middle probability does not matter.
+\end{theorem}
+
+Let us see Hypothesis testing in action.
+
+\begin{example}
+    Consider a Gaussian Channel $Y = X + Z$, where $X \in \{0, 1\}$ and $\Normal{Z}{0}{\sigma^2}$ is independent of $X$.
+    The receiver wants to guess $X$ from the received signal $Y$ with $PFA \leq \beta$. In this context,
+    \[ L(y) = \frac{\exp(-\frac{(y - 1)^2}{2 \sigma^2})}{\exp(-\frac{y^2}{2 \sigma^2})} = \exp(\frac{2y - 1}{2 \sigma^2})\]
+    where the numerator density is the conditional density, namely the density of $\Normal{X + Z}{1}{\sigma^2}$ and denominator is the same thing with mean 0.
+
+    Note that $L(y)$ is monotonically increasing and $\Pr{L(y) = \lambda} = 0$, so we do not need to worry about the decision rule in this case.
+    Thus, the decision rule will look like:
+    \[ \hat{X} = \begin{cases}
+        1 & y \geq y_0 \\
+        0 & \text{otherwise}
+    \end{cases}\]
+    for some $y_0$. Now, we need to choose $y_0$ such that PFA is $\beta$. This is done mathematically.
+    \begin{align*}
+        \beta &= \Pr{\hat{X} = 1 \mid X = 0} \\
+        &= \Pr{Y > y_0 \mid X = 0} \\
+        &= \Pr{\mathcal{N}(0, \sigma^2) \geq y_0} \\
+        &= \Pr{\mathcal{N}(0, 1) \geq \frac{y_0}{\sigma}} \\
+        &= 1 - \Phi\qty(\frac{y_0}{\sigma}) \\
+        y_0 &= \sigma \Phi^{-1}(1 - \beta)
+    \end{align*}
+    Similarly, the PCD can then be calculated knowing $y_0$.
+    \begin{align*}
+        \Pr{\hat{X} = 1 \mid X = 1} &= \Pr{\mathcal{N}(1, \sigma^2) \geq y_0} \\
+        &= \Pr{\mathcal{N}(0, 1) \geq \frac{y_0 - 1}{\sigma}} \\
+        &= 1 - \Phi(\frac{y_0 - 1}{\sigma})
+    \end{align*}
+    By picking different values of $\beta$, we can generate a ROC curve. We get different curves for different values of $\sigma^2$.
+\end{example}
+
+Here is another example.
+
+\begin{example}[Mean of Exponential RVs.]
+    A machine produces lightbulbs with IID $\text{Exp}(\lambda_x)$ lifespans, where $x \in \{0, 1\}$, $\lambda_0 < \lambda_1$ and $x = 1$ indicates
+    a defective machine. By observing the lifespans of $n$ lightbulbs, we want to detect if the machine is defective with PFA $\leq \beta$.
+    
+    We observe a vector $Y = (y_1, \dots, y_n)$. Firstly, we calculate the likelihood ratio,
+    \begin{align*}
+        \Pr{Y} &= \frac{f_{Y \mid x}(Y \mid 1)}{f_{Y \mid X}(Y \mid 0)}\\
+        &= \frac{f_{Y \mid x}(Y \mid 1)}{f_{Y \mid X}(Y \mid 0)}\\
+        &= \frac{\prod_{i = 1}^n \lambda_1 \exp(- \lambda_1 y_i)}{\prod_{i = 1}^n \lambda_0 \exp(- \lambda_0 y_i)} \\
+        &= \qty(\frac{\lambda_1}{\lambda_0})^n \exp(-(\lambda_1 - \lambda_0) \sum_{i = 1}^n y_i)
+    \end{align*}
+    Now note that since $\lambda_1 > \lambda_0$, $L(Y)$ is monotonically decreasing as $\sum_{i=1}^n y_i$ increases. Then, the rule looks something like:
+    \[ \hat{X} = \begin{cases}
+        1 & \sum_{i=1}^n y_i < a \\
+        0 & \text{otherwise}
+    \end{cases}\]
+    Now we must find $a$ to make the PFA constraint happy. Using the CLT, we sta
+    \begin{align*}
+        \beta &= \Pr{\hat{X} = 1 \mid X = 0} \\
+        &= \Pr{\sum_{i = 1}^n y_i \leq a \mid X = 0}
+    \end{align*}
+    This is the CCDF of an Erlang Distribution, but we can make this easier by applying CLT.
+    We see 
+    \begin{align*}
+        \Pr{\sum_{i = 1}^n y_i \leq a} &= \Pr{\frac{\sum y_i - \frac{n}{\lambda_0}}{\frac{\sqrt{n}}{\lambda_0}} \leq \frac{a - \frac{n}{\lambda_0}}{\frac{\sqrt{n}}{\lambda_0}}} \\
+        \Pr{\sum_{i = 1}^n y_i \leq a} &\approx \Pr{\mathcal{N}(0, 1) \leq \frac{a \lambda_0 - n}{\sqrt{n}}} \\
+        \beta &= \Phi(\frac{a \lambda_0 - n}{\sqrt{n}})\\
+        a &= \frac{n + \sqrt{n} \Phi^{-1}(\beta)}{\lambda_0}
+    \end{align*}
+\end{example}
+
+There is also an example of the discrete case.
+
+\begin{example}[Discrete Hypothesis Testing]
+    Given $\Pr{Y \mid X}$ we need a prediction rule for $X$.
+
+    \begin{tabular}{|c | c | c | c|} \hline
+        \empty & $Y = A$ & $Y = B$ & $Y = C$ \\ \hline
+        $ X = 0$ & $0.2$ & $0.5$ & $0.3$ \\ \hline
+        $ X = 1$ & $0.2$ & $0.2$ & $0.6$ \\ \hline \\
+    \end{tabular}
+
+    Furthermore, we have the following table for likelihood.
+
+    \begin{tabular}{| c | c | c |} \hline
+        $1.0$ & $0.4$ & $2.0$ \\ \hline
+    \end{tabular}
+
+    Suppose we take cutoff $\lambda = 1$. Then, PCD is
+\end{example}

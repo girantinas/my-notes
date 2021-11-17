@@ -68,35 +68,3 @@ In fact, there is a more general theorem for all channels.
 \end{theorem}
 
 Note that neither of these theorems doesn't offer practical coding method for finite $n$ or a required $p_e$.
-
-\subsubsection{Hypothesis Testing}
-We formulate the problem of seeing the output of a link and we want to make predictions of its input.
-Suppose $X \in \{0, 1\}$ and $\Pr{Y \mid X}$ is known. Let $\hat{X}$ be the estimate of $X$. We wish to solve the following optimization problem.
-
-\begin{itemize}
-    \item Maximize Probability of Correct Detection (PCD), $\Pr{\hat{X} = 1 \mid X = 1}$
-    \item Subject to a constraint on Probability of False Alarm (PFA), $\Pr{\hat{X} = 1 \mid X = 0} \leq \beta$
-\end{itemize}
-
-\begin{definition}[Receiver Operating Characteristic (ROC)]
-    This is a graph of PCD for the solution of the above problem as a function $R(\beta)$.
-\end{definition}
-
-\begin{theorem}[Neyman-Pearson Theorem]
-    To maximize given the constraint, we should predict:
-    \[ \hat{X} = \begin{cases}
-        1 & \text{if } L(Y) > \lambda \\
-        1 & \text{with probability $\gamma$, if } L(Y) = \lambda \\
-        0 & \text{if } L(Y) < \lambda \\
-    \end{cases} \]
-    where $L(y)$ is the likelihood ratio, i.e. $L(y) = \frac{f_{Y \mid X}[y \mid 1]}{f_{Y \mid X}[y \mid 0]}$ and $\lambda, \gamma$ are chosen
-    such that $\Pr{\hat{X} = 1 \mid X = 0} = \beta$.
-\end{theorem}
-
-Let us see Hypothesis testing in action.
-
-\begin{example}
-    Consider a Gaussian Channel $Y = X + Z$, where $\Normal{Z}{0}{\sigma^2}$ is independent of $X$.
-    The receiver wants to guess $X$ from the received signal $Y$ with $PFA \leq \beta$. In this context,
-    \[ L(y) = \frac{\exp(-\frac{(y - 1)^2}{2 \sigma^2})}{\exp(-\frac{y^2}{2 \sigma^2})} = \exp(\frac{2y - 1}{2 \sigma^2})\]
-\end{example}
