@@ -1,0 +1,134 @@
+\subsection{Lecture 21}
+\subsubsection{Coping with NP-Hardness}
+
+There are a few exact methods to solve NP-hard problems.
+\begin{itemize}
+    \item Faster exponential-time algorithms.
+    \item Backtracking (doing a brute-force search, but ending a recursive branch early if you know the assignments created will be unfeasible)
+    \item Branch and bound: cut off subtrees of a recursive brute-force search early if you can prove that any completion of a current partial solution cannot be optimal.
+\end{itemize}
+
+Branch and bound can be used for approximation as well, where we replace "be optimal" with "be 1\% worse than optimal.
+
+There are also heuristic methods to solve these problems.
+\begin{itemize}
+    \item Local search: start with a random solution, then iteratively make "local" adjustments greedily to make it better until you cannot anymore.
+    \item Simulated annealing: the same as local search, but allow yourself with a (small) probability to make local adjustments that increase cost.
+\end{itemize}
+
+\subsubsection{Approximation Algorithms for Vertex Cover}
+
+Finally, there are also approximation algorithms. These are heuristics with provable guarantees of closeness to OPT.
+For example, for minimization problems, we want to find a solution of cost $\leq \alpha \cdot OPT$ for an approximation ratio $\alpha \in [1, \infty)$.
+For maximization problems, you want the same thing, except solution of cost $\geq \beta \cdot OPT$ for an approximation ratio $\beta \in (0, 1]$.
+
+\begin{example}
+    For example, take the vertex cover problem. This is finding $S \subseteq V$ such that each $e \in E$ is incident upon at least one $v \in S$. We wish to minimize $|S|$.
+
+    The first observation is that there's a simple reduction from vertex cover to set cover. Vertices become sets of their edges and edges are universe elements.
+    We then use our old greedy approximation for set cover.
+    Therefore, our original greedy algorithm for vertex cover is a $\ln m$ approximation, which is at most $2 \ln n$. Is this approximation tight?
+    It IS tight for set cover (we showed this previously). However, this does not mean our set cover can be realized by some instance of vertex cover, so the approximation may not be tight.
+
+    It turns out it is. Remember that the greedy algorithm is something like take the highest degree vertex first, then the next highest, etc.
+    You can show with the following construction that greedy gives $OPT \cdot \ln n$. Have a bipartite graph with one class $L$ having $n$ vertices.
+    Then, in the other class $R$, $\floor{\frac{n}{i}}$ vertices of degree $i$. We claim OPT is at most $n$; just take everything in $L$. However,
+    greedy will either take everything in $R$ first, or take something in $L$ which has the same degree as something in $R$ (effectively replacing it). Either way, $|R|$ vertices will be taken.
+    But $|R| \approx n \ln n$ (harmonic series) so greedy is tight.
+\end{example}
+
+Here is a better algorithm for approximating vertex cover.
+\begin{algothm}[Greedier Vertex Cover]
+    \begin{algorithmic}
+        \Function{VC}($V, E$)
+            \State $S \to \emptyset$
+            \While{$\exists \in E$ not covered by $S$}
+                \State Add both endpoints of $e$ to $S$
+            \EndWhile
+            \State \Return $S$
+        \EndFunction
+    \end{algorithmic}
+
+    This is really good. In fact:
+    \begin{theorem}
+        Under this algorithm,
+        \[ |S| \leq 2 \cdot OPT \]
+
+        \begin{proof*}
+            Look at edges $e$ not covered while loop iterations which forced us to add to $S$. Call the set of such edges $M$. We claim $M$ is a maximal matching.
+            It is clearly a matching, as no edges can have a vertex in common (because otherwise after choosing one of the edges to trigger the while loop, we would not choose the other). Now, we
+            need to show that $M$ is maximal; i.e. we cannot add to it to make it bigger. Suppose there was a way to add an edge to increase the size of the matching;
+            this would mean that there would be an edge that we can add that has no vertex in common with any other edge; however, since $S$ at the end is a vertex cover,
+            this is impossible, thus $M$ is a maximal matching.
+
+            For all vertex covers $S$ and all matchings $M$, $|S| \geq |M|$, (which would mean $OPT \geq |M|$). The reason is the following: suppose you have some matching $M$;
+            then we have to take at least one vertex for each edge in $M$ (since they share no common vertices).
+
+            By the definition of the algorithm, $S \leq 2 |M|$ (since in each iteration we add both endpoints). Now the inequalities fall into place:
+            \[ |S| \leq 2|M| \leq 2 OPT \]
+            Thus, the $S$ we find is at most a 2-approximation.
+        \end{proof*}
+    \end{theorem}
+\end{algothm}
+
+So, this is a great approximation. Can we do better? No one knows. But we can do the same (in a cool way).
+
+\begin{algothm}[ILP Vertex Cover]
+    Take the following graph; the construction we show works generally.
+
+    % https://q.uiver.app/?q=WzAsMyxbMSwxLCJ2Il0sWzEsMCwidyJdLFswLDEsInUiXSxbMSwyLCIiLDIseyJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzEsMCwiIiwwLHsic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsyLDAsIiIsMix7InN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XV0=
+    \[\begin{tikzcd}
+        & w \\
+        u & v
+        \arrow[no head, from=1-2, to=2-1]
+        \arrow[no head, from=1-2, to=2-2]
+        \arrow[no head, from=2-1, to=2-2]
+    \end{tikzcd}\]
+
+    We write the following integer linear program:
+    \begin{align*}
+        &\min x_u + x_v + x_w \text{ subject to}\\
+        &x_u + x_v \geq 1 \\
+        &x_u + x_v \geq 1 \\
+        &x_u + x_w \geq 1 \\
+        &0 \leq x_u, x_v, x_w \geq 1 \\
+        &\text{$x$ must be integral}
+    \end{align*}
+
+    Now, what we do is do an LP Relaxation (take out the integrality constraint). Then, we shove this into an LP solver to solve in polynomial time.
+    However, this is doesn't work perfectly (for example, OPT here is: $x_u = x_v = x_w = \frac12$). To turn this into an integer solution,
+    "round" the fracational solution to an integral solution. "Rounding" in different cases can be done in different ways; in this case, let's round in the standard numerical sense.
+
+    \textbf{Correctness Concerns} The worry is that by rounding down, you may not have a vertex cover. However, for each edge $(u, v)$, note that at least one of the variables must be $\geq \frac{1}{2}$ in order for the
+    constraint to be satisfied. This means that every edge will be covered, since at least one of these will be rounded up to 1.
+
+    \textbf{Cost Analysis} We claim that $OPT(\text{LP}) \leq OPT(\text{ILP})$ since the feasible set in the LP is a superset of the one in the ILP. Furthermore, the vertex cover returned has size at most $2 \cdot OPT(\text{LP})$, because the objective
+    function can only at most double. Thus, the size of the vertex cover is at most $2 \cdot OPT(\text{ILP}) \leq 2 \cdot OPT(\text{VC})$. Thus, algorithm is a 2-approximation.
+\end{algothm}
+
+\subsubsection{Approximations for TSP}
+
+As a reminder, the Traveling Salesman Problem (TSP) is the following.
+
+Given $n$ cities with distances $d_{ij}$, the goal is to start at city 1, visit every other city once, and return to 1, such that this tour is
+as short as possible. We consider the metric TSP, i.e. the distances works as a metric (non-negative, $d_{ii} = 0$, triangle inequality holds).
+
+First, we think about how to build a tour. Any tour $C$ is a cycle from 1 back to itself. Thus, $C$ with the last edge removed is a path (which is a special case of a spanning tree).
+This means that $OPT \geq \text{cost of a spanning tree} \geq \text{cost(MST)}$. This gives rise to the following idea.
+
+\begin{algothm}[Metric TSP 2-approximation]
+    We do the following.
+    \begin{itemize}
+        \item Compute MST $T^*$.
+        \item Traverse $T^*$ with a DFS pre-order tour (i.e. traverse the vertices in pre-order).
+    \end{itemize}
+
+    Thus, from our property before, the cost of a full DFS tour (going from parents to children back to parent) is $2 \cdot \text{cost(MST)} \leq 2 \cdot OPT$. However, the cost of a pre-order
+    tour is even less by the triangle inequality. Thus the cost of the pre-order tour $\leq 2 \cdot OPT$, so this is a valid 2-approximation.
+\end{algothm}
+
+Now, we think about the general case of TSP, without the triangle inequality.
+
+\begin{theorem}[General TSP]
+    For any poly-time computable function $f(n)$, there is no $f(n)$-approximation of general TSP (no triangle inequality) unless $\mathcal{P} = \mathcal{NP}$.
+\end{theorem}
