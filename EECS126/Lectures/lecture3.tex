@@ -101,7 +101,7 @@ There are some important consequences of the axioms of probability.
 
     Furthermore, consider some set $B$ where $B = \bigcap_{n = 1}^{\infty} B_n$ where:
     \[ B_1 \supseteq B_2 \supseteq \dots \]
-    Then, $\Pr{B_n} \rightarrow \Pr{A}$.
+    Then, $\Pr{B_n} \rightarrow \Pr{B}$.
 \end{theorem}
 
 \begin{theorem} [Borel-Cantelli Theorem]
@@ -111,20 +111,21 @@ There are some important consequences of the axioms of probability.
     $\{A_n \text{ infinitely often}\}$ is the following event:
     \[ \{\omega \mid \exists N(\omega) \text{ such that } \forall n > N(\omega), \omega \not\in A_n \} \]
 
-    In English, the set describes all outcomes where you can assign a number to that outcome such that
-    after $A_N$, you have no set membership.
+    In English, the set describes all outcomes where you can assign a number $N$ to that outcome such that
+    after $A_N$, you have no set membership in a greater $A_n$.
 
     The theorem claims that you CAN assign such a number (max event) to any outcome with nonzero probability.
 
     \begin{proof*}
+        Suppose we have such a sequence of $A_n$ such that $\sum_{n = 1}^{\infty} \Pr{A_n} < \infty$.
         Define
         \[ B_n = \bigcup_{m \geq n} A_m \]
         Note that $B_1 \supseteq B_2 \supseteq B_3 \dots$
         
         Calling,
-        \[ B = \bigcap_{n} B_n = B_n \]
-        Note that $\omega \in \{ A_n \text{ io}\}$ if and only if $\omega \in B_n$ for all $n$.
-        But this means that $\omega \in B$. This means that $\{ A_n \text{ io}\} = B$.
+        \[ B = \bigcap_{n} B_n \]
+        Note that $\omega \in \{ A_n \text{ i.o.}\}$ if and only if $\omega \in B_n$ for all $n$.
+        But this means that $\omega \in B$. This means that $\{ A_n \text{ i.o.}\} = B$.
 
         So we must calculate $\Pr{B}$. However, note that $\Pr{B_n} \to \Pr{B}$ as $n \to \infty$.
         Thus, we must compute:
@@ -133,10 +134,10 @@ There are some important consequences of the axioms of probability.
             \Pr{B_n} &\leq \sum_{m = n}^{\infty} \Pr{A_m} \to 0 \\
             \Pr{B} &= 0
         \end{align*}
-        The second step is justified by the following result from analysis. For non-negative sequence $a_n$, if $\sum_{i = 1}^{\infty} a_n < \infty$, then
+        The second step is justified by the union bound and following result from analysis. For non-negative sequence $a_n$, if $\sum_{i = 1}^{\infty} a_n < \infty$, then
         $\lim_{n \to \infty} \sum_{m = n}^{\infty} a_m \to 0$.
 
-        Our result shows that $\Pr{A_n \text{ io}} = 0$ \qed
+        Our result shows that $\Pr{A_n \text{ i.o.}} = 0$ \qed
     \end{proof*}
 \end{theorem}
 

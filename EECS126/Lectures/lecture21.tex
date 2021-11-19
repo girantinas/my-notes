@@ -142,8 +142,33 @@ There is also an example of the discrete case.
     Furthermore, we have the following table for likelihood.
 
     \begin{tabular}{| c | c | c |} \hline
+        $Y = A$ & $Y = B$ & $Y = C$ \\ \hline
         $1.0$ & $0.4$ & $2.0$ \\ \hline
     \end{tabular}
 
-    Suppose we take cutoff $\lambda = 1$. Then, PCD is
+    If we arrange the outputs as $B$, $A$, $C$ (in increasing $L(y)$), then we have monotonicity.
+    Thus, our decision rule will be a simple threshold. Note that the threshold for $L(y)$, $\lambda$, is either $0.4, 1$ or $2$,
+    since we can set randomization probability, $\gamma$, to be 0, to emulate threshold in between two values.
+
+    Suppose we take threshold $\lambda = 1$ with some randomization $\gamma$. Then, PCD is:
+    \begin{align*}
+        PCD &= \Pr{\hat{X} = 1 \mid X = 1} \\
+        &= \Pr{Y=C \mid X = 1} + \gamma \Pr{Y = A \mid X = 1} \\
+        &= 0.6 + 0.2 \gamma
+    \end{align*}
+
+    Now, let us work out the probability of false alarm, PFA.
+    \begin{align*}
+        PFA &= \Pr{\hat{X} = 1 \mid X = 0} \\
+        &= \Pr{Y = C \mid X = 0} + \gamma \Pr{Y = A \mid X = 0} \\
+        &= 0.3 + 0.2 \gamma \\
+    \end{align*}
+
+    We can work this out for the other thresholds too. Suppose $\lambda = 2$, then $PCD = 0.6 \gamma$ and $PFA = 0.3 \gamma$. Suppose $\lambda = 0.4$,
+    then $PCD = 0.8 + 0.2 \gamma$ and $PFA = 0.5 + 0.5 \gamma$.
+
+    Note that together, these PFAs cover the interval $[0, 1]$ with $\gamma \in [0, 1]$. $\lambda = 2$ covers from $[0, 0.3]$, $\lambda = 1$ covers $[0.3, 0.5]$, and $\lambda = 0.4$ covers $[0.5, 1]$.
+    Furthermore, PFA at the boundaries can be met by two different choices; take $\lambda = 1$ and $\gamma = 0$ as well as $\lambda = 2$ and $\gamma = 1$; both give the same PFA and PCD.
+
+    This means, given the PFA significance $\beta$, choose the corresponding interval for it. Then, we shape the decision rule around that cutoff.
 \end{example}
