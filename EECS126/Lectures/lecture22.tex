@@ -56,17 +56,17 @@ We switch gears to jointly-Gaussian random variables. First, we define a certain
 
 \begin{definition}[Covariance Matrix]
     The covariance matrix $\Sigma_X$ of a random variable $X$ is defined as:
-    \[ \Sigma_Y = \E((Y - \E{Y})(Y - \E{Y})^T) \]
+    \[ \Sigma_Y = \E{(Y - \E{Y})(Y - \E{Y})^T} \]
     Expressing this elementwise is:
     \begin{align*}
         \Sigma_Y(i, j) &= \Cov{Y_i, Y_j} \\
-        \Sigma_Y(i, j) &= \E((Y_i - \E{Y_i})(Y_j - \E{Y_j})) \\
+        \Sigma_Y(i, j) &= \E{(Y_i - \E{Y_i})(Y_j - \E{Y_j})} \\
         \Sigma_Y(i, j) &= \E{Y_i Y_j} - \E{Y_i} \E{Y_j} \\
         \Sigma_Y(i, i) &= \Var{Y_i}
     \end{align*}
 \end{definition}
 
-\begin{definition}[J-G RVs]
+\begin{definition}[Jointly-Gaussian RVs]
     $Y_1, \dots, Y_n$ are jointly-Gaussian random variables if 
     \[Y = \begin{bmatrix}
         Y_1 \\ \vdots \\ Y_n
@@ -89,7 +89,7 @@ Let's prove these two facts.
 \begin{proof*}
     Recall the change of variables formula. If two random variables $U, V$ are related as $V = aU + b$ with $a, b$ constant,
     then $f_V(v) = \frac{1}{|a|} f_U(u)$. We can extend this to the vector case. Suppose $A, B$ are constant matrices. Then:
-    \[ V = AU + B \implies f_V(v) = \frac{1}{\det A} f_U(u) \]
+    \[ V = AU + B \implies f_V(v) = \frac{1}{|\det A|} f_U(u) \]
 
     Consider the PDF of $Z$:
     \begin{align*}
@@ -123,7 +123,7 @@ Let's prove these two facts.
     Thus, by change of variables formula:
     \begin{align*}
         f_Y(y) &= \frac{1}{\det A} \frac{1}{\sqrt{(2\pi)^n}} \exp\qty(-\frac{||z||^2}{2}) \\
-        f_Y(y) &= \frac{1}{\sqrt{(2\pi)^n \det \Sigma_Y}} \exp\qty(-\frac{1}{2} (y - \mu_Y)^T \Sigma_Y^{-1} (y - \mu_Y))
+        f_Y(y) &= \frac{1}{\sqrt{(2\pi)^n |\det \Sigma_Y|}} \exp\qty(-\frac{1}{2} (y - \mu_Y)^T \Sigma_Y^{-1} (y - \mu_Y))
     \end{align*}
     which is precisely the claim of the PDF.
 \end{proof*}
