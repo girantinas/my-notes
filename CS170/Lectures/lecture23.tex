@@ -1,0 +1,104 @@
+\subsection{Lecture 23}
+\subsubsection{Hashing}
+
+We consider the dictionary problem. We wish to maintain a database of (key, value) pairs were the keys are integers in $\{0, \dots, U - 1\}$.
+Suppose there are $n$ distinct keys in the dictionary.
+There are two different formulations of this idea.
+
+\begin{enumerate}
+    \item Static: The database is given up front (no insertions/deletions). Must support query$(k)$.
+    \item Dynamic: Supports insertions, deletions, and queries.
+\end{enumerate}
+
+There are many different solutions to this data structure problem.
+
+\begin{enumerate}
+    \item Store database in an array of size $U$. This works for both static and dynamic. $\mathcal{O}(1)$ insertion, deletion, and query, but $\mathcal{O}(U)$ memory.
+    \item Store database in a balanced binary search tree. $\mathcal{O}(n)$ memory, $\mathcal{O}(\log n)$ time per insertion/deletion (determinsitic).
+    \item In the static case, you can store data in an array sorted by key. To query, use binary search. This approach has similar asymptotics to the tree approach.
+\end{enumerate}
+
+It turns out there is a randomized way to do this even faster.
+
+\subsubsection{Dynamic Hashing}
+First we consider the dynamic case.
+
+\begin{algothm}[Hashing with Chaining]
+    First, we choose a random "hash" function $h: \{0, \dots, U - 1\} \rightarrow \{0, \dots, m - 1\}$. (That is, at initialization the function mapping the elements of $U$ is made in a random way).
+
+    Then, we store an array of $m$ elements, where $A[i]$ contains a doubly-linked list storing all $(k, v)$ such that $h(k) = i$.
+    To insert $(k, v)$, calculate $h(k)$ and put it at the front of the doubly-linked list at $A[h(k)]$. To delete, go to that linked list and then remove it from the doubly-linked list.
+    Finally, to query, go to $A[h(k)]$ and go through the entire linked list and search for the element.
+
+    \textbf{Runtime Analysis}
+    We claim $\E{\text{time for an op}} = \mathcal{O}(T_h + \frac{n}{m}) = \mathcal{O}(1)$ if $T_h = \mathcal{O}(1)$, $m \geq n$ where $T_h$ is the time to run the hash function.
+
+    \begin{proof*}
+        Call $T(x)$ the time to query $x$ (insertion and deletion are very similar). Define indicators $Z_i = \mathbf{1}\{h(k_i) = h(x)\}$ where $k_i$ is the $i$th key.
+        \begin{align*}
+            \E{T(x)} &\leq \E{T_h + C \cdot \text{Size of linked list containing $x$}} \\
+            &\leq T_h + C \cdot \sum_{i = 1}^n \E{Z_i} \\
+            &\leq T_h + C n \cdot \Pr{Z_i = 1} \\
+            &\leq T_h + C \frac{n}{m} \\
+        \end{align*}
+        Thus we have the claim.
+    \end{proof*}
+\end{algothm}
+
+However, there is a problem. Naively picking and storing a random $h$ takes $U$ memory (we have to decide the output for all inputs!).
+Note that in our analysis all that mattered was that the probability of a collision was $\frac{1}{m}$. Let us see how to solve this.
+
+We use an idea called universal hashing or $k$-wise independent hash families.
+
+\begin{definition}[$k$-wise Independent Hash Family]
+    A set $\mathcal{H}$ of functions mapping $\{0, \dots, U - 1\} \rightarrow \{0, \dots, m - 1\}$ is $k$-wise independent if
+    for all choices of inputs $x_1 \neq x_2 \neq \dots \neq x_k$ and all choices of outputs $y_1, y_2, \dots, y_k$,
+    \[ \mathbb{P}_{h \in \mathcal{H}} ((h(x_1) = y_1) \land (h(x_2) = y_2) \land \dots \land (h(x_k) = y_k)) = \frac{1}{m^k} \]
+\end{definition}
+
+\begin{definition}[Universal Hash Family]
+    A set $\mathcal{H}$ of functions mapping $\{0, \dots, U - 1\} \rightarrow \{0, \dots, m - 1\}$ is universal if for all choices of inputs $x_1 \neq x_2$,
+    \[ \mathbb{P}_{h \in \mathcal{H}} (h(x_1) = h(x_2)) = \frac{1}{m} \]
+    i.e. collision probability is $\frac{1}{m}$.
+\end{definition}
+
+Note that 2-wise independence implies universality. Thus, from our definition, our proof only needed $h$ to be drawn from a universal hash family.
+Now we ask "how do we get a universal hash family"?
+
+\begin{example}
+    Suppose $\mathcal{H}$ is the set of all functions mapping from $\{0, \dots, U - 1\}$ to $\{0, \dots, m - 1\}$. This is $k$-wise independent
+    for all $k$. Specifying any of these functions $h \in \mathcal{H}$ takes $\log_2 |\mathcal{H}|$ bits (as a 'seed'). In this case, $|\mathcal{H} = m^U|$,
+    so it takes $\Theta(U \log m)$ bits.
+\end{example}
+
+Let us see an even better hash family that has very short seed length.
+
+\begin{example}
+    Fix $U = m = p$ which is a prime.
+    Consider the family
+    \[ \mathcal{H} = \{ (a x + b) \mod{p} : a, b \in \{0, \dots, p - 1\}\} \]
+    Then note that $|\mathcal{H}| = p^2$, which means $\log |\mathcal{H}| = \mathcal{O}(\log p)$. You can show that $\mathcal{H}$ is $2$-wise independent;
+    the sketch of the proof is that $h(x_1) = y_1 \land h(x_2) = y_2$ is uniform over $y_1, y_2$ since you need two points to specify a line. However, it is not $3$-wise independent,
+    because once you specify the line, it is known what $h(x_3)$ is.
+\end{example}
+
+\subsubsection{Static (Perfect) Hashing}
+Now we turn to the static dictionary, where we have constant query time guaranteed, instead of in expectation.
+
+\begin{definition}[Perfect Hashing]
+    A hash function $h$ is a perfect hash function if for all $x_1 \neq k_2$ in the database, then $h(k_1) \neq h(k_2)$.
+\end{definition}
+
+The idea is with the "inverse" birthday paradox; if you have way less than $\sqrt{365}$ people in a room, probably no two people have the same birthday.
+This means we want $m$, the size of the hash table, to be roughly $m \geq \Omega(n^2)$, i.e. where $n$ is the size of the database.
+Let's do a more careful analysis:
+\begin{align*}
+    \Pr{\text{at least one collision}} &= \Pr{\text{number of collisions} \geq 1} \\
+    &\leq \frac{\E{\text{number of collisions}}}{1} \\
+    &= \binom{n}{2} \Pr{\text{$a$ and $b$ collide}} \\
+    &= \frac{\binom{n}{2}}{m} \\
+    &\leq \frac{1}{2}
+\end{align*}
+
+if we pick $m = n^2$. If we have a collision, we redo the process again (probability of infinite collisions is 0). Keep doing this over and over again.
+This means the expected number of times we have to redo the process is twice.

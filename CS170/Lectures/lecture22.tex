@@ -1,6 +1,6 @@
 \section{Randomized Algorithms}
 \subsection{Lecture 22}
-\subsubsection{Randomized Algorithm}
+\subsubsection{Randomized Algorithms}
 
 There are two types of randomized algorithms we will study.
 We can think of randomized algorithms as taking in two inputs $x$ (the usual input) and $r$ (some randomization source).
@@ -86,7 +86,7 @@ We now seek to verify the result of a matrix multiplication $C = A \times B$ (in
 \end{algothm}
 
 Lastly, we visit the problem of the the global min-cut. Suppose you have a weighted, undirected graph $G$. This means to find a cut (non-empty partition of $V$) such that the total weight crossing the cut is minimized.
-This problem can be solved by $n - 1$ calls of max-flow/min-cut. We consider the unweighted case to look at a beautiful random algorithm.
+This problem can be solved by $n - 1$ calls of max-flow/min-cut. We consider the unweighted case to look at a simple random algorithm.
 
 \begin{algothm}[Karger's Contraction Algorithm]
     First, we define contraction. Vertices $u$ and $v$ over an edge $(u, v)$ are contracted by "gluing" the nodes together into a meta-node, and keeping all the edges to other vertices (this may make the graph a multi-graph).
@@ -103,10 +103,25 @@ This problem can be solved by $n - 1$ calls of max-flow/min-cut. We consider the
     \textbf{(Probabilistic) Correctness}
     We first have the following claim. Fix a particular min-cut $S, V \setminus S$. Then,
     \[ \Pr{\text{contraction iteration returns $S$}} \geq \frac{1}{\binom{n}{2}} \]
-    This means the chance of failing every time is at most:
+    To see this, let $k$ denote the number of edges crossing $(S, V \setminus S)$. Note that the algorithm outputs $S$ if and only if it never contracts an edge crossing the cut.
+    Consider the 1st round of contraction. The probability of contracting an edge crossing the cut is $\frac{k}{m}$. 
+
+    Look at all cuts of the form $\{u\}$, $V \setminus \{u\}$. We know the amount of edges crossing the cut must be at least $k$, but the number of edges crossing is $\deg(u)$.
+    We know $\sum_{u \in V} \deg(u) = 2m \geq nk$. We must have $m \geq \frac{nk}{2}$.
+
+    Thus, the probability is at most $\frac{k}{\frac{nk}{2}} = \frac{2}{n}$. This means the probability of not contracting an edge across the cut
+    is at least $1 - \frac{2}{n}$. The next time around, the probability of not messing up is at least $1 - \frac{2}{n - 1}$, and so forth. This means the probability of returning the cut is:
+    \begin{align*}
+        \Pr{\text{contraction iteration returns $S$}} &\geq \qty(1 - \frac{2}{n}) \qty(1 - \frac{2}{n - 1}) \cdots \\
+        &= \frac{n - 2}{n} \cdot \frac{n - 3}{n - 1} \cdot \frac{n - 4}{n - 2} \cdot \frac{n - 5}{n - 3} \cdots \frac{2}{4} \cdot \frac{1}{3} \\
+        &= \frac{2}{n(n-1)} \\
+        &= \frac{1}{\binom{n}{2}}
+    \end{align*}
+
+    By this claim,    
+    the chance of failing every time is at most:
     \[ \Pr{\text{fail to find mincut}} \leq \qty(1 - \frac{1}{\binom{n}{2}})^r \leq e^{-\frac{r}{\binom{n}{2}}}\]
     If we want this to be at most some confidence $p$, then we choose $r = \ceil{\binom{n}{2} \ln \frac{1}{p}}$.
     Note that a corollary of this claim is that there are at most $\binom{n}{2}$ mincuts (a tight example is the $n$-cycle).
 
-    We will prove this claim next Tuesday.
 \end{algothm}
