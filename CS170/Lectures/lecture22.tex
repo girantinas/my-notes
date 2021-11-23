@@ -1,0 +1,112 @@
+\section{Randomized Algorithms}
+\subsection{Lecture 22}
+\subsubsection{Randomized Algorithm}
+
+There are two types of randomized algorithms we will study.
+We can think of randomized algorithms as taking in two inputs $x$ (the usual input) and $r$ (some randomization source).
+
+\begin{definition}[Las Vegas Random Algorithm]
+    A Las Vegas Random Algorithm is always correct. However, its runtime is a random variable that is small in expectation. An example of this is QuickSort. We put an upper bound on $\mathbb{E}_r{T(\mathcal{A}(x, r))}$ for all $x$ (i.e. worst-case $x$).
+\end{definition}
+
+\begin{definition}[Monte Carlo Random Algorithm]
+    Monte Carlo Random Algorithm is always efficient. However, correctness is a random variable that is nearly correct in expectation. An example of this is polling a sample of the population to estimate the incidence in the entire population. We put a lower bound on $\mathbb{P}_r(\mathcal{A}(x, r) \text{ is correct})$.
+\end{definition}
+
+\subsubsection{Las Vegas}
+The first random algorithm we look at is for comparison-based sorting, where without loss of generality all array elements are distinct. This is a Las Vegas randomized algorithm.
+\begin{algothm}[QuickSort]
+    The quicksort algorithm works as follows. Suppose our array is $A$.
+    \begin{enumerate}
+        \item Randomly choose an index $p$ (the pivot) in the array $A$.
+        \item Compare every element in $A$ to $A[p]$. If it's smaller, put it in the new array $L$; if it's bigger, put it in the new array $R$.
+        \item Recursively call QuickSort on $L$ and $R$. Then, the answer is sorted $L$, pivot, sorted $R$.
+    \end{enumerate}
+
+    \textbf{(Probabilistic) Runtime Analysis}
+    First, note that runtime is proportional to the number of comparisons. Also, note that you will never compare the same two elements twice (since we pull out the pivot from the recursion).
+    This means, we can bound the runtime as:
+    \[ T(n) = C \cdot \sum_{i < j} X_{ij} \]
+    where $X_{ij} = \mathbf{1}\{\text{if $i$th smallest element is compared with $j$th smallest element}\}$. By linearity, this means that:
+    \begin{align*}
+        \E{T(n)} &= C \cdot \E{\sum_{i <j} X_{ij}} \\
+        &= C \cdot \sum_{i < j} \E{X_{ij}} \\
+        &= C \cdot \sum_{i < j} \Pr{\text{$i$th and $j$th elements are ever compared}}
+    \end{align*}
+
+    This probability can be computed with the following logic. Note that we choose whether or not to compare $i$ or $j$ when we pick a pivot between $i$ and $j$, inclusive (otherwise $i$ and $j$ both end up in the same subarray and the decision is pushed to a recursive call).
+    If the pivot is in this region, we only compare the two elements if $i$ or $j$ is the pivot, which has probability $\frac{2}{j - i + 1}$. Then, we compute:
+    \begin{align}
+        \E{T(n)} &= 2C \sum_{i < j} \frac{1}{j - i + 1} \\
+        &= \sum_{i = 1}^n \sum_{j = i + 1}^n \frac{1}{j - i + 1} \\
+        &= \qty(\frac12 + \frac13 + \dots + \frac{1}{n}) + \qty(\frac12 + \frac13 + \dots + \frac{1}{n - 1}) + \dots \\
+        &= (n - 1) \frac12 + (n - 2) \frac13 + \dots + (1) \frac{1}{n} \\
+        &\leq n (\frac12 + \frac13 + \dots + \frac{1}{n}) \\
+        &\leq n \ln n = \mathcal{O}(n \log n)
+    \end{align}
+
+    If you use Markov's inequality, then we have:
+    \begin{align*}
+        \Pr{T(n) > d n \log n} < \frac{c \cdot n \log n}{d \cdot n \log n} = \frac{c}{d}
+    \end{align*}
+    which is shows that differing by a different enough constant is already fairly unlikely (concentration about the mean).
+\end{algothm}
+
+\subsubsection{Monte Carlo}
+Next, we take a look at some Monte Carlo Random Algorithms.
+
+Consider $A, B \in \mathcal{R}^{n \times n}$. Suppose something could multiply matrices and give us an answer.
+We now seek to verify the result of a matrix multiplication $C = A \times B$ (in faster than the $\mathcal{O}(n^3)$ time needed to just multiply $A$ and $B$).
+
+\begin{algothm}[Frievald's Algorithm]
+    Pick vectors $x_1, \dots, x_T \in \{0, 1\}^n$ independently, uniformly at random.
+    for $i = 1$ to $T$:
+    \begin{itemize}
+        \item If $AB x_i \neq C x_i$, then return False
+    \end{itemize}
+    Otherwise, return true.
+
+    Note that the time to run this algorithm is $\mathcal{O}(Tn^2)$ because each matrix-vector multiplication takes $n^2$ time.
+
+    \textbf{(Probabilistic) Correctness}
+    Let us denote $D = AB - C$. We essentially want to know if $D = 0$. Our claim is that $D \neq 0$, then $\Pr{Dx = 0} \leq \frac12$. This means the probability of never catching an error (incorrectness)
+    is at most $(\frac12)^T$. Suppose you want a bound on incorrectness to be $p$, set $T = \ceil{\log_2 \frac{1}{p}}$. Note that if $AB = C$, we will always return true, so we only need the other case.
+    Let's prove our probability claim.
+
+    If $D \neq 0$, then there exists an entry $D_{ij} \neq 0$, thus there exists a column $d_j$ that is not the zero vector.
+   
+    Note that if $Dx = 0$, then
+    \[ Dx = \sum_{k = 1}^n x_k d_k = x_j d_j + \sum_{k \neq j} x_k d_k = 0 \]
+    Let $x\Bigr|_{j}$ mean "flip the $j$th bit of $x$".
+    If $x_j = 0$, then $\sum_{k \neq j} x_k d_k$ must have been 0. This means $Dx \Bigr|_{j} \neq 0$, because it is $d_j$. 
+    If $x_j = 1$, then $\sum_{k \neq j} x_k d_k$ must have been $-d_j$. This means $Dx \Bigr|_{j} \neq 0$, because it is $d_j$.
+
+    Now, let us pair $\{0, 1\}^n$ into $2^{n - 1}$ pairs, where each $x$ is paired with $x \Bigr|_{j}$. This means that the number of $x$ such that $Dx = 0$ (since only at most one of the pairs can be 0)
+    is at most $2^{n - 1}$. Thus, $\Pr{Dx = 0} \leq \frac{2^{n - 1}}{2^n} = \frac12$.
+\end{algothm}
+
+Lastly, we visit the problem of the the global min-cut. Suppose you have a weighted, undirected graph $G$. This means to find a cut (non-empty partition of $V$) such that the total weight crossing the cut is minimized.
+This problem can be solved by $n - 1$ calls of max-flow/min-cut. We consider the unweighted case to look at a beautiful random algorithm.
+
+\begin{algothm}[Karger's Contraction Algorithm]
+    First, we define contraction. Vertices $u$ and $v$ over an edge $(u, v)$ are contracted by "gluing" the nodes together into a meta-node, and keeping all the edges to other vertices (this may make the graph a multi-graph).
+
+    Now the main runtime of the algorithm looks like:
+    \begin{enumerate}
+        \item Pick an edge uniformly at random and contract along that edge.
+        \item Keep doing this until there are two meta-vertices left; these meta-vertices are the cut.
+    \end{enumerate}
+    We run this $r$ times (where $r$ is sufficiently large--see below).
+    
+    Note the runtime is is $\mathcal{O}(rn^2)$.
+
+    \textbf{(Probabilistic) Correctness}
+    We first have the following claim. Fix a particular min-cut $S, V \setminus S$. Then,
+    \[ \Pr{\text{contraction iteration returns $S$}} \geq \frac{1}{\binom{n}{2}} \]
+    This means the chance of failing every time is at most:
+    \[ \Pr{\text{fail to find mincut}} \leq \qty(1 - \frac{1}{\binom{n}{2}})^r \leq e^{-\frac{r}{\binom{n}{2}}}\]
+    If we want this to be at most some confidence $p$, then we choose $r = \ceil{\binom{n}{2} \ln \frac{1}{p}}$.
+    Note that a corollary of this claim is that there are at most $\binom{n}{2}$ mincuts (a tight example is the $n$-cycle).
+
+    We will prove this claim next Tuesday.
+\end{algothm}
