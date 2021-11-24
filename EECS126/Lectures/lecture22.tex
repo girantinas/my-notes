@@ -129,7 +129,7 @@ Let's prove these two facts.
 \end{proof*}
 
 \begin{note}
-    Level curves for the Joint-Gaussian PDF are elliptical (i.e. the function is convex).
+    Level curves for the Joint-Gaussian PDF are elliptical, with semi-axis lengths $\sigma_i$, center at $\mu_Y$, and some axis rotations (because the $\Sigma$ matrix is not diagonal).
 \end{note}
 
 \begin{example}[2-Dimensional J-Gs]
@@ -142,12 +142,82 @@ Let's prove these two facts.
     However, it's clear from this expression that the $Y_i$'s are Gaussian (their marginal distribution) because it's a linear combination of two Gaussians.
 \end{example}
 
+\begin{example}
+    Suppose the $Y_i$'s are iid $\mathcal{N}(0, \sigma_i^2)$. Then, we have:
+    \[ \begin{bmatrix}
+        Y_1 \\ Y_2
+    \end{bmatrix} = \begin{bmatrix}
+        \sigma_1 & 0 \\ 0 & \sigma_2
+    \end{bmatrix} \begin{bmatrix}
+        Z_1 \\ Z_2
+    \end{bmatrix}\]
+
+    This means the covariance matrix looks like:
+    \[ \Sigma_Y = \begin{bmatrix}
+        \sigma_1^2 & 0 \\ 0 & \sigma_2^2
+    \end{bmatrix} \]
+    Which means its inverse is:
+    \[ \Sigma_Y^{-1} = \begin{bmatrix}
+        \frac{1}{\sigma_1^2} & 0 \\ 0 & \frac{1}{\sigma_2^2}
+    \end{bmatrix} \] 
+
+    Then, using the form of the joint PDF, we can write:
+    \begin{align*}
+        f_Y(y_1, y_2) &= \frac{1}{2 \pi \sigma_1 \sigma_2} \exp\qty(-\frac12 \begin{bmatrix}
+            y_1 & y_2
+        \end{bmatrix} \begin{bmatrix}
+            \frac{1}{\sigma_1^2} & 0 \\ 0 & \frac{1}{\sigma_2^2}
+        \end{bmatrix} \begin{bmatrix}
+            y_1 \\ y_2
+        \end{bmatrix}) \\
+        &=\frac{1}{2 \pi \sigma_1 \sigma_2} \exp\qty(-\frac12 \qty(\frac{y_1^2}{\sigma_1^2} + \frac{y_2^2}{\sigma_2^2})) \\
+        &= \frac{1}{\sigma_1 \sqrt{2 \pi}}\exp\qty(-\frac{y_1^2}{2\sigma_1^2}) \cdot \frac{1}{\sigma_2 \sqrt{2 \pi}} \exp\qty(-\frac{y_2^2}{2\sigma_2^2})  \\
+        &= f_{Y_1}(y_1) f_{Y_2}(y_2)
+    \end{align*}
+\end{example}
+
 \begin{theorem}[Marginal Distribution of J-G RVs]
-    If $Y_1, \dots, Y_n$ are J-G, then $Y_1, \dots, Y_n$ is Gaussian.
+    If $Y_1, \dots, Y_n$ are J-G, then the marginal distribution of $Y_1, \dots, Y_n$ is Gaussian.
 \end{theorem}
 
-The converse of this does not always hold.
+The converse of this does not always hold. You can construct an example where the random variables are marginally Gaussian, but not Jointly Gaussian.
 
 \begin{example}
-    TODO. Insert example.
+    Consider:
+    \begin{align*}
+        f_Y(y_1, y_2) &= \frac{1}{\pi \sigma_1 \sigma_2} \exp \qty(-\frac12 \qty(\frac{y_1^2}{\sigma_1^2} + \frac{y_2^2}{\sigma_2^2})) \\
+    \end{align*}
+    where the density is only defined where $y_1 \cdot y_2 > 0$ (first and third quadrants). Note that this is not Jointly-Gaussian because the level 
+    curves cannot be elliptical--namely there is no component in the second and fourth quadrants. But, we have the following marginal for $y_1 > 0$:
+    \begin{align*}
+        f_{Y_1}(y_1) &= \frac{1}{\pi \sigma_1 \sigma_2} \int_0^{\infty} \exp\qty(-\frac12 \qty(\frac{y_1^2}{\sigma_1^2} + \frac{y_2^2}{\sigma_2^2})) \dd{y_2} \\
+        &= \frac{1}{\pi \sigma_1 \sigma_2} \cdot \frac{1}{2} \sqrt{2\pi}  \sigma_2 \cdot \exp\qty(-\frac12 \frac{y_1^2}{\sigma_1^2}) \\
+        &= \frac{1}{\sqrt{2 \pi} \sigma_1} \exp \qty(-\frac{y_1^2}{2 \sigma_1^2}) \\
+    \end{align*}
+    You also have the same marginal for $y_1 \leq 0$, so $Y_1$ is marginally Gaussian (and so is $Y_2$, by symmetry). Thus we have found this tricky example.
 \end{example}
+
+We also have the following result.
+
+\begin{theorem}
+    If $Y_1, \dots, Y_n$ are Jointly-Gaussian RVs, then they are mutually independent if and only if they are pairwise uncorrelated.    
+\end{theorem}
+
+\begin{example}
+    Suppose $X$ and $Y$ and are independent $\mathcal{N}(0,1)$. Consider the random variables $X + Y$ and $X- Y$.
+    \begin{align*}
+        \begin{bmatrix}
+            X + Y \\ X - Y
+        \end{bmatrix} &= \begin{bmatrix}
+            1 & 1 \\ 1 & - 1
+        \end{bmatrix} \begin{bmatrix}
+            X \\ Y
+        \end{bmatrix}
+    \end{align*}
+    This means $X + Y$ and $X - Y$ are jointly-Gaussian.
+\end{example}
+
+\begin{theorem}
+    If $V$ and $W$ are jointly-Gaussian, then their linear combinations $AV + a$ and $BW + b$ are also jointly-Gaussian for some constant matrices $A, B$ and
+    some constant vectors $a$ and $b$.
+\end{theorem}

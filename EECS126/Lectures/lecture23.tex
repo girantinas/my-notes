@@ -1,0 +1,102 @@
+\section{Tracking}
+\subsection{Lecture 23}
+\subsubsection{MMSE, LLSE}
+
+We state the new problem we attempt to tackle. Let $(X, Y)$ be a pair of continuous RVs related to a system, and
+we want to estimate $X$ based on the observed value $Y$ by finding a function to estimate it. There are different ways this problem can be presented.
+\begin{enumerate}
+    \item The joint distribution of $(X, Y)$ is known.
+    \item Offline: We observe a set of samples $\{(X_i, Y_i)\}_{i = 1}^K$ from the joint distribution.
+    \item Online: We observe successive samples $(X_n, Y_n)$ and have to iteratively update our guess.
+\end{enumerate}
+
+If the prediction is $\hat{X} = g(Y)$, we want to minimize expected cost: $C(g) = \E{c(X, g(Y))}$.
+
+\begin{definition}[Squared-Error Cost]
+    \[ c(X, \hat{X}) = \norm{X - \hat{X}}^2 \]
+\end{definition}
+
+\begin{definition}[MMSE]
+    With squared-error cost and minimizing $C(g)$ over an arbitrary function $g$, $\hat{X}$ is the Minimum Mean Squared Error (MMSE) Estimate of $X$ given $Y$.
+\end{definition}
+
+\begin{definition}[LLSE]
+    With squared-error cost and minimizing $C(g)$ over all affine functions of $Y$ (i.e. $\hat{X} = a + bY$), $\hat{X}$ is the Linear Least Squares Error (LLSE) Estimate of $X$ given $Y$.
+    We denote this as $L[X \mid Y]$.
+\end{definition}
+
+It turns out there is a nice closed form for the LLSE.
+\begin{theorem}
+    Assuming $\Var{Y} \neq 0$:
+    \[ L[X \mid Y] = \E{X} + \frac{\Cov{X, Y}}{\Var{Y}} (Y - \E{Y}) \]
+
+    \begin{proof*}
+        For LLSE: the cost function is $C(a, b) = \E{(X - a - bY)^2}$.
+        To optimize this over two variables, we take partial derivatives.
+        \begin{align*}
+            \frac{\partial}{\partial a} C(a, b) &= 0 \\
+            2a - 2 \E{X} + 2b \E{Y} &= 0 \\
+            a &= \E{X} - b \E{Y}
+        \end{align*}
+
+        Then,
+        \begin{align*}
+            \frac{\partial}{\partial b} C(a, b) &= 0 \\
+            2b \E{Y^2} - 2 \E{XY} + 2a \E{Y} &= 0 \\
+            b &= \frac{\Cov{X, Y}}{\Var{Y}}
+        \end{align*}
+        Combining things proves the claim.
+    \end{proof*}
+\end{theorem}
+
+\begin{example}
+    Suppose we knew $Y = \alpha X + Z$ where $X,Z$ are zero-mean and independent.
+    \begin{align*}
+        \Cov{X, Y} &= \E{XY} - \E{X}\E{Y} \\
+        &= \E{(X(\alpha X + Z))} \\
+        &= \alpha \E{X^2} + \E{XZ} \\
+        &= \alpha \E{X^2}
+    \end{align*}
+
+    Furthermore,
+    \begin{align*}
+        \Var{Y} &= \alpha^2 \Var{X} + \Var{Z} \\
+        &= \alpha^2 \E{X^2} + \E{Z^2} \\
+    \end{align*}
+    This means that the LLSE is:
+    \begin{align*}
+        L[X \mid Y] &= \frac{\alpha \E{X^2}}{\alpha^2 \E{X^2} + \E{Z^2}} Y \\
+        &= \frac{\alpha^{-1} Y}{1 + SNR^{-1}}
+    \end{align*}
+    where $SNR$ is the signal-to-noise ratio, i.e.:
+    \[ SNR = \frac{\alpha^2 \E{X^2}}{Z^2} \]
+    Note that if SNR is high, then $\L[X \mid Y] = \alpha^{-1} Y$ and if SNR is low, then $L[X \mid Y] = \E{X} = 0$ (observing $Y$ doesn't help use find $X$).
+\end{example}
+
+We define the signal-to-noise ratio more generally.
+
+\begin{definition}[Signal-to-Noise Ratio]
+    Suppose you have some signal $W$ and noise $Z$. $\E{W^2}$ represents signal power and $\E{Z^2}$ represents noise power.
+    This means that the signal to noise ratio is:
+    \[ SNR = \frac{\E{W^2}}{\E{Z^2}} \]
+\end{definition}
+
+We can always think of the LLSE $L[X \mid Y]$ as the projection of $X$ onto the subspace $\mathcal{L}(Y)$ of linear functions of $Y$.
+To do this, first we have to set up the idea of a Hilbert space.
+
+\begin{definition}[Vector Space]
+    A set $S$ is a vector space if it's closed under addition and scalar multiplication (among other properties).
+\end{definition}
+
+\begin{definition}[Hilbert Space]
+    A set $\mathcal{H}$ is a Hilbert space if it's a vector space that has an inner product and is complete (all limits of convergent sequences are in the space).
+\end{definition}
+
+\begin{definition}[Inner Product]
+    An (real) inner product on a vector space $S$ is an operation $\langle \cdot, \cdot \rangle : S \to \R$
+    that satisfies.
+\end{definition}
+
+\begin{definition}[Norm]
+    The norm or length of a vector $v$ given an inner product is $\norm{v} = \sqrt{\langle v, v \rangle}$.
+\end{definition}
