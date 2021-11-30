@@ -1,0 +1,131 @@
+\subsection{Lecture 24}
+\subsubsection{Streaming Algorithms}
+
+\begin{definition}[Streaming Algorithms]
+    Streaming Algorithms are algorithms that make one pass over some set of data. Equivalently, these are dynamic data structures (supports updating the data).
+    In particular, we are concerned about minimizing memory consumption when doing these things (want $o(n)$ memory).
+\end{definition}
+
+One use case may be trying to figure out if you work at an internet company and are trying to find out if there is a DOS attack.
+Clearly, you can't store every single packet (this is a lot of data), so you want some kind of online algorithm that can sit at the router and make
+assertions from the data it sees flying by.
+
+Here are some types of problems streaming addresses.
+\begin{itemize}
+    \item Counting problems (below)
+    \item Graph problems on dynamically changing graphs (you can find a spanning forst in $\mathcal{O}(n \log^3 n)$ where $n$ is the amount of nodes).
+    \item Linear algebra problems (low-rank approximation, regression)
+    \item Geometric problems
+\end{itemize}
+
+Here is our first problem. We want to build a counter $N$ subject to 3 operations.
+\begin{enumerate}
+    \item init(): $N \gets 0$
+    \item incr(): $N \gets N + 1$
+    \item query(): $\Return \text{ } N$
+\end{enumerate}
+
+The trivial algorithm is a single counter with $N$ represented in binary. This takes $\Theta(\log N)$ bits. Suppose we want to do better and are given an upper bound on the counter (it will never exceed $T$).
+If we use $s$ bits of memory, the amount of states the program can have is $2^s$. Since we need at least $T$ distinct states, $s$ can be no smaller than $\log T$.
+
+\subsubsection{Approximate Counter}
+
+Instead, we need to settle for some kind of approximate counting scheme. Suppose Jelani gave us a counter value that was $N = 500$ digits long. We'd need 500 $\log_2 10$ bits of memory.
+We approximate by storing $5 - 0 - 0$, i.e. the $\ceil{\log_{10} N}$ (we know the true counter is between $10^{500}$ and $10^{501} - 1$).
+Alternatively we can say we want the number to $1 \%$ error, i.e. store $\ceil{\log_{1.01} N}$.
+
+To see how good this is, this means that because $\log(1 + \epsilon) = \Theta(\epsilon)$,
+\[ \log_{1.01} N = \frac{\log_{10} N}{\log_{10} 1.01} \approx 100\log_{10} N \]
+Thus for a general $\epsilon$, we only need to store a value that is roughly $\Theta\qty(\frac{\log N}{\epsilon})$ to know the answer within an error of $\epsilon$.
+This means we can hope to use about $\log \log N + \log \frac{1}{\epsilon}$ bits instead of $\log N$ bits.
+
+Now, let's figure out how to change this algorithm to be a bona-fide data structure; supporting increments. Suppose 
+randomly incremented instead. The first idea of the algorithm is not to store $N$ in memory, instead store $X$. Then the operations work as follows:
+\begin{itemize}
+    \item init(): $X \gets 0$
+    \item incr(): $X \gets X + 1$ with probability $p$
+    \item query(): $\Return \text{ }  \frac{X}{p}$
+\end{itemize}
+
+The problem with this is that in generally you only same $\log \frac{1}{p}$ bits of memory; we want this to increase with $N$.
+Instead, we use the following function.
+
+\begin{itemize}
+    \item init(): $X \gets 0$
+    \item incr(): $X \gets X + 1$ with probability $\frac{1}{2^X}$
+    \item query(): $\Return \text{ }  2^X - 1$
+\end{itemize}
+
+Let us show why this works to reduce memory. 
+
+\begin{theorem}
+    Let $X_n$ be the value of $X$ after first $n$ increments. We claim $\E{2^{X_n}} = n + 1$.
+    \begin{proof*}
+    To see this, proceed by induction. Note that for a base case $n = 0$, then $X_0 = 0$, so $\E{2^0} = 1 = 0 + 1$.
+    Now consider the inductive step.
+    \begin{align*}
+        \E{2^{X_{n + 1}}} &= \sum_{j = 0}^{\infty} \Pr{X_n = j} \E{2^{X_{n + 1}}\mid X_n = j} \\
+        &= \sum_{j = 0}^{\infty} \Pr{X_n = j} \qty(\frac{1}{2^j} 2^{j + 1} + \qty(1 - \frac{1}{2^j}) 2^j) \\
+        &= \sum_{j = 0}^{\infty} \Pr{X_n = j} (2^j + 1) \\
+        &= \sum_{j = 0}^{\infty} \Pr{X_n = j} (1) + \sum_{j = 0}^{\infty} \Pr{X_n = j} 2^j \\
+        &= 1 + \E{2^{X_n}} \\
+        &= n + 2
+    \end{align*}
+    because  $\E{2^{X_n}} = n + 1$ by inductive hypothesis. Thus the claim is true by induction.
+
+    We still have an issue. The error between $X$ and $N$ is large when $N$ is small.
+    \end{proof*}
+\end{theorem}
+
+\subsubsection{Reducing Randomized Error, Morris' Algorithm}
+
+To do further analysis, we cover other probabilistic tools.
+
+\begin{definition}[Variance]
+    For a random variable $X$, its variance is defined as:
+    \[ \Var{X} = \E{(X - \E{X})^2} = \E{X^2} - (\E{X})^2 \]
+\end{definition}
+
+\begin{theorem}[Chebyshev's Inequality]
+    Consider a random variable $X$ and some $\lambda > 0$. Then we have,
+    \[ \Pr{|X - \E{X}| > \lambda} \leq \frac{\Var{X}}{\lambda^2} \]
+\end{theorem}
+
+We have an unbiased estimator $Z$ for $N$ ($Z = 2^X - 1$). Let us bound the error probability to $p$, through Chebyshev's
+\[ \Pr{|Z - N| > \epsilon N} \leq \frac{\Var{Z}}{\epsilon^2 N^2} \leq p \]
+so to keep error probability low, we want the variance to be small. Since the expectation of $Z$ is fixed as $N$, we want $\E{Z^2}$.
+The algorithm so far does not even depend on $\epsilon$, so we can definitely not control the variance below this threshold. In fact,
+it is possible to show by induction that
+\[ \E{2^{2X_n}} = \frac32 n^2 + \frac32 n + 1 \implies \Var{Z} = \frac12 n^2 - \frac12 n - 1 \]
+
+There are two ways to reduce the variance down.
+\begin{enumerate}
+    \item Run $R$ copies of the algorithm in parallel, then us $Z = \frac{1}{R} \sum_{i = 1}^R Z_i$ as an estimator. In fact, $R = \frac{1}{\epsilon^2 p}$ works.
+    \item Change the base of exponentiation in the increment probability. Note that $0.5^X$ has low memory but high variance; $1.0^X$ has high memory but low variance. In fact, one can show that if the we increment with probability $\frac{1}{(1+a)^X}$ and use estimator $Z = \frac{(1 + a)^X - 1}{a}$ one can show $\E{Z} = N$
+    and $\Var{Z} \leq \frac{a N(N - 1)}{2}$. The choice $a = 2 \epsilon^2 p$ works. Furthermore, one can show the memory is close to 
+    \[ \mathcal{O}\qty(\log \log N + \log \frac{1}{a}) = \mathcal{O}\qty(\log \log N + \log \frac{1}{\epsilon} + \log \frac{1}{p}) \]
+    which is very close to our theoretical best (without the last term).
+\end{enumerate}
+
+The second approach is termed Morris' algorithm. It turns out, from cutting-edge research done by Professor Nelson himself found that the best bound is:
+\[ \mathcal{O}\qty(\log \log N + \log \frac{1}{\epsilon} + \log \log p) \]
+unless your $p$ and $\epsilon$ are so small that you're better off using a $\log N$ deterministic algorithm instead.
+
+\subsubsection{Unique Counting}
+
+We now consider the unique counting problem. Now, we want to consider distinct users that increment the counter. We see a stream of $m$ items (possibly with duplicates)
+coming from some universe $\{1, \dots, n\}$. Want to count the number of distinct elements in this stream.
+
+\begin{theorem}
+    There exists an algorithm for unique counting using $\mathcal{O}\qty(\frac{1}{\epsilon^2} + \log n)$ bits of memory with success probability $ 1 - \epsilon$.
+\end{theorem}
+
+Here is an idealized algorithm for this approach.
+\begin{itemize}
+    \item init(): $X \gets 1$, Pick a random hash function $h: [n] \to [0, 1]$.
+    \item update(i): $X \gets \min(X, h(i))$
+    \item query(): $\Return \text{ } \frac{1}{X} - 1$
+\end{itemize}
+
+You can run this many times to reduce variance again. However, there are a few issues; firstly you cannot store real numbers, secondly you have to store $h$ efficiently. These problems can be fixed
+by picking $h$ from a 2-wise independent hash family.

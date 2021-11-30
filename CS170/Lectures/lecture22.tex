@@ -13,6 +13,24 @@ We can think of randomized algorithms as taking in two inputs $x$ (the usual inp
     Monte Carlo Random Algorithm is always efficient. However, correctness is a random variable that is nearly correct in expectation. An example of this is polling a sample of the population to estimate the incidence in the entire population. We put a lower bound on $\mathbb{P}_r(\mathcal{A}(x, r) \text{ is correct})$.
 \end{definition}
 
+\subsubsection{Probability Basics}
+
+\begin{definition}[Random Variable]
+    A random variable $X$ is a function that maps outcomes in randomness (some "coin flip") to real numbers.
+\end{definition}
+
+\begin{definition}[Expectation]
+    The expectation of a random variable $X$ with support $\mathcal{X}$ is defined as:
+    \[ \E{X} = \sum_{x \in \mathcal{X}} x \Pr{X = x} \]
+\end{definition}
+
+\begin{theorem}[Markov's Inequality]
+    For some nonnegative random variable $X$, we have
+    \[ \Pr{X > k} \leq \frac{\E{X}}{k} \]
+\end{theorem}
+
+Markov's in particulary very good for bounding the runtime of Las Vegas algorithms (even though it's considered fairly "crude").
+
 \subsubsection{Las Vegas}
 The first random algorithm we look at is for comparison-based sorting, where without loss of generality all array elements are distinct. This is a Las Vegas randomized algorithm.
 \begin{algothm}[QuickSort]
