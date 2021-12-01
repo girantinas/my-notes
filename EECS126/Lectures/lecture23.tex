@@ -1,6 +1,6 @@
 \section{Tracking}
 \subsection{Lecture 23}
-\subsubsection{MMSE, LLSE}
+\subsubsection{LLSE}
 
 We state the new problem we attempt to tackle. Let $(X, Y)$ be a pair of continuous RVs related to a system, and
 we want to estimate $X$ based on the observed value $Y$ by finding a function to estimate it. There are different ways this problem can be presented.
@@ -79,24 +79,4 @@ We define the signal-to-noise ratio more generally.
     Suppose you have some signal $W$ and noise $Z$. $\E{W^2}$ represents signal power and $\E{Z^2}$ represents noise power.
     This means that the signal to noise ratio is:
     \[ SNR = \frac{\E{W^2}}{\E{Z^2}} \]
-\end{definition}
-
-We can always think of the LLSE $L[X \mid Y]$ as the projection of $X$ onto the subspace $\mathcal{L}(Y)$ of linear functions of $Y$.
-To do this, first we have to set up the idea of a Hilbert space.
-
-\begin{definition}[Vector Space]
-    A set $S$ is a vector space if it's closed under addition and scalar multiplication (among other properties).
-\end{definition}
-
-\begin{definition}[Hilbert Space]
-    A set $\mathcal{H}$ is a Hilbert space if it's a vector space that has an inner product and is complete (all limits of convergent sequences are in the space).
-\end{definition}
-
-\begin{definition}[Inner Product]
-    An (real) inner product on a vector space $S$ is an operation $\langle \cdot, \cdot \rangle : S \to \R$
-    that satisfies.
-\end{definition}
-
-\begin{definition}[Norm]
-    The norm or length of a vector $v$ given an inner product is $\norm{v} = \sqrt{\langle v, v \rangle}$.
 \end{definition}
