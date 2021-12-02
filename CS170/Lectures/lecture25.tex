@@ -1,0 +1,137 @@
+\subsection{Lower Bounds and Alternate Models of Computation}
+\subsubsection{Lower Bounds}
+
+So far, we have tried to minimize computational resources to solve various problems.
+In particular, we have cared about upper bounds; given some problem $P$, we can define some function $f_P(n)$
+as the minimum number of resources (number of timesteps, number of bits of memory, etc) to solve $P$ on worst-case inputs of size $n$.
+
+Thus, we can think of an algorithm as an upper bound of $f_P(n)$, i.e. there might exist a more efficient algorithm,
+but the theoretically $f_P(n)$ must be at least the runtime/memory of that algorithm. How can we prove a lower bound on $f_P(n)$?
+
+If the measure of complexity is the number of comparisons, we know that $f_{\text{sorting}}(n) = \Omega(n \log n)$
+and $f_{\text{sorting}}(n) = \mathcal{O}(n \log n)$ because merge-sort exists. Thus, we have a very tight bound.
+
+However, for non-comparison based algorithms, we want general time lower bounds. Turns out, this is pretty hard. For all we know, all NP-complete problems we mentioned prior may be able to be solved in linear time.
+There are a few problems where $\omega(n)$ complexity are known through the time hierarchy theorem (which we will not discuss in depth). Here's what such a problem looks like.
+
+\begin{example}
+    Take some problem that looks like the following.
+    \begin{itemize}
+        \item Input is the source code to a program $P$ and a string $x$.
+        \item If we run $P$ on input $x$, would it terminate in at most $|x|^3$ steps?
+    \end{itemize}
+    Clearly this takes $\Theta(|x|^3)$ on worst-case input if we were to just simulate it (where the program doesn't terminate at all; we cannot know this apriori due to the halting problem).
+    It turns out due to this "time hierarchy theorem," it turns out we can put a lower bound on it that looks like $\Omega(n^{3 - \epsilon})$ steps.
+\end{example}
+
+It turns out it's much easier to prove lower bounds for alternate models of computation. Here are a few we will study.
+
+\begin{itemize}
+    \item Comparison Model - Sorting example discussed above
+    \item Circuit Model
+    \item Cell Probe Model
+    \item Communication Model
+\end{itemize}
+
+\subsubsection{Circuit Model}
+Suppose one has a circuit of $n$ input bits, with AND, OR, NOT gates. Consider the problem of integer multiplication. Suppose we have a collection $\{M_{2n}\}_{n = 1}^{\infty}$
+which are functions that multiply two bit strings of size $n$ (i.e. two $n$-bit numbers).
+\[ M_{2n} : \{0, 1\}^n \times \{0, 1\}^n \to \{0, 1\}^{2n} \]
+The question is designing a family of Boolean circuits $\{C_{2n}\}$ each solving $M_{2n}$ so as to minimize some notion of complexity.
+
+We mentioned prior that one can always write a circuit that computes the output of an algorithm where the size of the circuit is proportional to the runtime of the algorithm.
+Thus, a trick to prove runtime lower bounds on algorithms would be to prove circuit size lower bounds.
+
+Suppose we measure size $s$ of a circuit by the number of wires. It turns out that
+\begin{theorem}
+    The number of circuits of size $s$ is $2^{\mathcal{O}(s \log s)}$.
+\end{theorem}
+
+However, the number of functions on $n$ bits mapping to an output bit is is exactly $2^{2^n}$ ($2^n$ choices for each input, 2 choices for each output).
+Thus if $s$ is polynomial in $n$, this means that $2^{\mathcal{O}(s \log s)}$ is very small to $2^{2^n}$ that almost every function cannot be computed by poly-sized circuits.
+We could try to find one of these an exponential lower bound for the circuit size of certain problems.
+However, coming up with a problem that takes exponential size to solve IS REALLY hard.
+
+\begin{note}
+    The highest known lower bound for any explicit function is size $\geq (3 + \frac{1}{86}) n$.
+\end{note}
+
+If we restrict depth, this becomes a little bit better.
+
+\begin{example}
+    Consider the parity problem, where we want to find the parity of some bitstring (the xor of all its bits); it turns out any $\mathcal{O}(1)$ depth
+    circuit family for PARITY requires size $\geq \exp(\Omega(n))$.
+\end{example}
+
+\subsubsection{Cell Probe Model}
+
+We analyze the cell probe model (for data structures). It looks like the following. Suppose you have some memory,
+where each word in the memory takes up $w$ bits and a finite memory of size $S$. Now, suppose a data structure algorithm receives a query call;
+it's going to read/write some of the cells of memory somehow. In a read call, we read all $w$ bits of some block; in a write call, we write all $w$ bits of some block.
+After some finite amount of rounds of communication between the algorithm and memory, the query call will be resolved. Thus, we measure the cost of the computation, the query time,
+(in lower bound) the number of rounds of communication.
+
+It turns out there is a lot more headway made in this area.
+
+\begin{example}
+    \begin{itemize}
+        \item We can use the cell probe model to prove that amortized complexity for union find is $\Omega(\alpha(m,n))$; meaning that the disjoint forest data structure is optimal (since it runs in $\mathcal{O}(\alpha(m,n))$).
+        \item Consider the dynamic partial sum problem. We have $n$ items, where a query$(j) = \sum_{i = 1}^{j} x_i$ and update$(j, \delta)$ does $x_j \gets \delta$. It turns out $\min(t_{update}, t_{query}) = \Omega(\log n)$,
+        but note that we can solve this with a balance binary search tree (store the sum of a node's subtree in the node); this already has $\mathcal{O}(\log n)$ updates and queries.
+    \end{itemize}
+\end{example}
+
+How were these bounds proven? They generally come from communication lower bounds (like information theory).
+
+\subsubsection{Communication Model}
+Suppose there are two entities Alice and Bob who want to together compute $f(x, y)$, where Alice gets input $x \in X$ and Bob gets input $y \in Y$.
+They send messages $m_1, m_2, \dots$ until one of them figures out the answer.
+
+Some goals are to minimize the number of rounds as well as minimize the total bits communicated. There are also variants to the problem.
+
+\begin{itemize}
+    \item Deterministic
+    \item Randomized
+    \begin{itemize}
+        \item Public coin (both know the same random string, without having to communicate it)
+        \item Private coin (each has their own random string, unknownst to the other)
+    \end{itemize}
+\end{itemize}
+
+\begin{example}
+    Consider the EQ (Equality) problem. $X = Y = \{0, 1\}^n$ and we wish to determine whether $x$ and $y$ are equal bit strings. We consider the amount of bits of communication one needs to use.
+    \begin{itemize}
+        \item In the deterministic setting, it turns out you need at least $n$ communication, so the problem is $\Theta(n)$.
+        \item In the randomized public coin settings, it turns out you have $\Theta(1)$ bits. Thus, we
+        \item In the randomized private coin setting, it turns out you have $\Theta(\log n)$. Alice will look at the first $n^2$ primes and choose a random prime $p$ amongst those
+        and send it to Bob. Then, we compute $x \mod p$ and set that. Then, Bob can compute $y \mod p$, and return yes if $(x - y)$ is 0. Since there are about $\frac{\log x}{\log \log x}$ prime factors of $x$
+        the chance that $x$ and $y$ share the prime factor $p$ is very small. 
+    \end{itemize}
+\end{example}
+
+\subsubsection{Lower Bounds for Streaming}
+It turns out one can prove memory lower bouhds for streaming algorithms via communication complexity lower bounds.
+
+\begin{theorem}[Lower Bound for Unique Counting]
+    Any space-$S$ deterministic streaming algorithm for exact unique counting means there exists a deterministic communication protocol for EQ with total communication $\leq S$.
+
+    \begin{proof*}
+        Suppose such an algorithm $\mathcal{A}$ exists. Then we can have the following protocol to solve EQ. Alice creates a stream containing all $i$ such that $X_i = 1$.
+        Then, Alice runs $\mathcal{A}$ on the stream. Then, Alice sends all $S$ bits of memory used by the algorithm to Bob. By the correctness of $\mathcal{A}$, Bob must be able to use $\mathcal{A}$ to query
+        the memory and find the number of 1s in Alice's input, suppose this number is $t$. Bob streams an index of 1 into $\mathcal{A}$. If the answer is $t+1$, then Alice's bit at position 1 is 0; otherwise it is a 1.
+        Repeating this over all indices allows Bob to reconstruct Alice's entire input. Then, Bob can simply check bit-by-bit if this matches his bit-string. This protocol only used $S$ bits of communication, proving the claim.
+    \end{proof*}
+\end{theorem}
+
+But any communication algorithm needs at least $n$ bits to be communicated; thus any exact deterministic streaming algorithm for unique counting must use at least $n$ bits of memory (hash maps are optimal).
+
+Here are two other results that arise. It's possible to show:
+
+\begin{theorem}[Relaxing Unique Counting]
+    \begin{itemize}
+        \item Any approximate deterministic algorithm for unique counting requires $\Omega(n)$ bits of memory.
+        \item Any exact randomized algorithm for unique counting requires $\Omega(n)$ bits of memory.
+    \end{itemize}
+\end{theorem}
+
+Thus, the only way to get an efficient solution for this problem is using a randomized algorithm and approximation.
