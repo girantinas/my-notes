@@ -68,7 +68,7 @@ without invoking the result.
 Now remember our online/offline regression problem; we can replace all the statistics by their sample estimates (like sample average). By law of large numbers,
 as the number of samples increases, the linear regression approaches the LLSE estimate.
 
-\subsection{MMSE}
+\subsubsection{MMSE}
 
 We now consider the MMSE problem. We want to find the function $g$ such that $g(Y)$ minimizes $\E{(X - g(Y))^2}$.
 
@@ -173,3 +173,47 @@ Returning to our Jointly-Gaussian RVs, we have an even cleaner result.
         \end{align*}
     \end{proof*}
 \end{theorem}
+
+We also have the following properties of LLSE.
+\begin{theorem}
+    The LLSE $L[\cdot \mid \cdot]$ satisfies:
+    \begin{enumerate}
+        \item $L[a_1 X_1 + a_2 X_2 \mid Y] = a_1 L[X_1 \mid Y] + a_2 L[X_2 \mid Y]$.
+        \item $L[L[X \mid Y, Z] \mid Y] = L[X \mid Y]$.
+        \item If $X, Y$ are uncorrelated, $L[X \mid Y] = \E{X}$.
+    \end{enumerate}
+    \begin{proof*}
+        We will show the second property (the rest are not too bad). Consider the error vector of the LHS:
+        $L[X \mid Y, Z] - L[X \mid Y]$; we will show it is orthogonal to $Y$. Adding and subtracting $X$ gives:
+        $-(X - L[X \mid Y, Z]) + (X - L[X \mid Y])$. Both terms are orthogonal to 1, $Y$, so the error vector is orthogonal to 1, $Y$.
+        This means that it is the LLSE, as we wanted to show.
+    \end{proof*}
+\end{theorem}
+
+Lastly, we have a few results for LLSE that can be explained mostly geometrically.
+
+\begin{theorem} [LLSE Orthogonal Update]
+    Assume that $X, Y, Z$ are zero-mean random variables, and that $Y, Z$ are orthogonal. Then, $L[X \mid Y, Z] = L[X \mid Y] + L[X \mid Z]$.
+    \begin{proof*}
+        To show this result, we need to show the projection error is orthogonal to $Y$ and $Z$ (because then it would be orthogonal to any linear combination there of).
+        The error is $X - (L[X \mid Y] + L[X \mid Z])$. The first two terms together are orthogonal to $Y$, and the last term is linear in $Z$, so it is also orthogonal to $Y$.
+        By a similar argument, the expression is orthogonal to $Z$. Thus, we are done, and this is uniquely the LLSE.
+    \end{proof*}
+\end{theorem}
+
+You can see this alternatively by looking at the following diagram:
+
+\includegraphics[width=300px]{orthogonal_update.png}
+
+We can project onto the subspaces separately and then add them up. Note that the projection error is smaller than the projection on either of the subspaces individually (this is intuitively appealing).
+
+\begin{theorem}[LLSE General Update]
+    Assume that $X, Y, Z$ are zero-mean random variables. Then, $L[X \mid Y, Z] = L[X \mid Y] + L[X \mid Z -  L[Z \mid Y]]$.
+    \begin{proof*}
+        Let $\tilde{Z} = Z - L[Z \mid Y]$.
+        We know $\tilde{Z} \perp Y$, and furthermore any linear combination of $Y, Z$ can be turned into a linear combination of $Y, \tilde{Z}$ (Suppose $L[Z \mid Y] = cY$ to see this).
+        Thus, this means that $L[X \mid Y, Z] = L[X \mid Y, \tilde{Z}] = L[X \mid Y] + L[X \mid \tilde{Z}]$ as we wanted to show.
+    \end{proof*}
+\end{theorem}
+
+We consider the term $\tilde{Z}$ as the "innovation" i.e. the new information we glean from new observation $Z$.
