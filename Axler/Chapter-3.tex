@@ -259,7 +259,7 @@ no solution exists?
 
 Define $T: \F^n \to \F^m$ by
 
-\[ T(x_1, \dots, x_n) = \qty(\sum{k=1}^n A_{1,k}x_k, \dots, \sum{k=1}^n A_{m, k}x_k) \]
+\[ T(x_1, \dots, x_n) = \qty(\sum_{k=1}^n A_{1,k}x_k, \dots, \sum_{k=1}^n A_{m, k}x_k) \]
 
 The equation $T(x_1, \dots, x_n) = (\listofnames{c}{m})$ is the same
 as the inhomogeneous system of linear equations above. This is the same
@@ -295,7 +295,7 @@ refers to column numbers.
 Thus $A_{2,3}$ refers to the entry in the second row, third column of $A$.
 
 \begin{definition} [Matrix of a Linear Map, $\Matof{T}$]
-   Suppose $T \in \L{V,W}$ and $\listofvectors$ is a basis of $V$ and
+   Suppose $T \in \Lin{V,W}$ and $\listofvectors$ is a basis of $V$ and
    $\listofnames{w}{m}$ is a basis of $W$. The \textbf{matrix} of $T$ with respect
    to these bases is the $m$-by-$n$ matrix $\Matof{T}$ whose entries
    $A_{j, k}$ are defined by
@@ -427,7 +427,7 @@ Consider linear maps $T: U \to V$ and $S: V \to W$. We
 want to define matrix multiplication such that
 \[ \Matof{ST} = \Matof{S}\Matof{T} \]
 
-We can try $(AB)_{j,k} = A_{j_k} \times B_{j,k}$, however
+We can try $(AB)_{j,k} = A_{j,k} \times B_{j,k}$, however
 this will not line up with our definition for linear maps.
 
 Instead consider the following, suppose $\Matof{S} = A$ and
@@ -436,10 +436,10 @@ $\Matof{T} = C$.
 For $1 \leq k \leq p$, we have
 
 \begin{align*}
-   (ST)u_k &= S \qty(\sum{r=1}^n C_{r,k}v_r) \\
-   &= \sum{r=1}^n C_{r,k}Sv_r \\
-   &= \sum{r=1}^n C_{r,k} \sum{j=1}^m A_{j,r}w_j \\
-   &= \sum{r=1}^n \qty(\sum{j=1}^m A_{j,r} C_{r,k}) w_j. 
+   (ST)u_k &= S \qty(\sum_{r=1}^n C_{r,k}v_r) \\
+   &= \sum_{r=1}^n C_{r,k}Sv_r \\
+   &= \sum_{r=1}^n C_{r,k} \sum_{j=1}^m A_{j,r}w_j \\
+   &= \sum_{j=1}^m \qty(\sum_{r=1}^n A_{j,r} C_{r,k}) w_j. 
 \end{align*}
 
 Thus, $\Matof{ST}$ is the $m$-by-$p$ matrix whose entry in row
@@ -489,17 +489,16 @@ Here are some alternate ways to think about matrix multiplication.
 \end{theorem}
 
 \begin{theorem} [Linear Combination of Columns]
-   Suppose $A$ is an $m$-by-$n$ matrix and $c = \begin{pmatrix*} c_1 \\ \dots \\ c_n \end{pmatrix*}$
-   is an $n$-by-1 matrix. Then $Ac = c_1 A_{\cdot, 1} + \dots + c_n A_{\cdot, n}$.
+   Suppose $A$ is an $m$-by-$n$ matrix and $c = \begin{pmatrix*} c_1 \\ \vdots \\ c_n \end{pmatrix*}$
+   is an $n$-by-1 matrix. Then \[Ac = c_1 A_{\cdot, 1} + \dots + c_n A_{\cdot, n}\]
 \end{theorem}
 
 In other words, $Ac$ is a linear combination of the columns of $A$,
 with the scalars that multiply the columns coming from $c$.
 
 \begin{theorem}
-   Suppose $a = \begin{pmatrix*} a_1 && \dots && a_n \end{pmatrix*}$ is
+   Suppose $a = \begin{pmatrix*} a_1 & \dots & a_n \end{pmatrix*}$ is
    a 1-by-$n$ matrix and $C$ is an $n$-by-$p$ matrix. Then
-
    \[ aC = a_1 C_{1, \cdot} + \dots + a_n C_{n, \cdot} \]
 \end{theorem}
 
@@ -636,7 +635,7 @@ Think of an isomorphism as a way to relabel vectors in a space.
 
 \begin{theorem}
    Suppose $U_1, \dots, U_m$ are subspaces of $V$.
-   Define a linear map $\Gamma: U_1 \cross \dots \cross U_m \to U_1 + \dots U_m$ by
+   Define a linear map $\Gamma: U_1 \cross \dots \cross U_m \to U_1 + \dots + U_m$ by
    \[ \Gamma(u_1, \dots, u_m) = u_1 + \dots + u_m. \]
    Then $U_1 + \dots + U_m$ is a direct sum if and only if $\Gamma$ is injective.
 \end{theorem}
@@ -753,7 +752,7 @@ the following properties of $\tilde{T}$:
       \item Define $\phi: \R^3 \to \R$ by $\phi(x, y, z) = 4x-5y+2z$. Then
       $\phi$ is a linear functional on $\R^3$.
       \item Define $\phi: \PolysAll{\R} \to \R$ by $\phi(p) = \int_{0}^1 p(x) \dd{x}$. Then
-      $\phi$ is a linear functional on $\PolysAll{R}$.
+      $\phi$ is a linear functional on $\PolysAll{\R}$.
    \end{itemize}
 \end{example}
 
@@ -768,8 +767,8 @@ the following properties of $\tilde{T}$:
 
    \begin{proof*}
       \begin{align*}
-         \dim V' &= \dim \Lin{V, \F}
-         &= (\dim V)(\dim \F)
+         \dim V' &= \dim \Lin{V, \F} \\
+         &= (\dim V)(\dim \F) \\
          &= \dim V
       \end{align*}
    \end{proof*}
@@ -830,6 +829,7 @@ Thus, their composition maps from $V$ to $\F$, thus $\phi \circ T \in V'$.
 \end{example}
 
 \begin{theorem} [Algebraic Properties of Dual Maps]
+   We have the following familiar properties of linearity, with a new one added in:
    \begin{itemize}
       \item $(S + T)' = S' + T'$ for all $S, T \in \Lin{V, W}$
       \item $(\lambda T)' = \lambda T'$ for all $\lambda \in \F$ and all $T \in \Lin{V, W}$
