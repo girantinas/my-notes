@@ -1,0 +1,83 @@
+\section{Lecture 2: Blackbody Radiation}
+
+\subsection{Formal Blackbody Radiation, continued}
+
+To use our DE solution, we need a few partials:
+\begin{align*}
+    \nabla^2 \Psi(\mbf{r}, t) &= \qty(A(t) \sin\qty(k_y y) \sin\qty(k_z z) \partialderivative{^2 \sin\qty(k_x x)}{x^2}) + \dots \\
+    &= - k_x^2 (A(t) \sin\qty(k_x x) \sin\qty(k_y y) \sin\qty(k_z z))  + \dots \\
+    &= - \qty(n_x^2 + n_y^2 + n_z^2) \frac{\pi^2}{L^2} A(t) B(x, y, z)
+\end{align*}
+Another one, letting $A(t) = A_0 \cos{\omega t + \phi}$.
+\begin{align*}
+    \partialderivative{^2 \Psi(\mbf{r}, t)}{t^2} &= - \omega^2 A(t) B(x, y, z)
+\end{align*}
+Let's plug our solution back into the wave equation.
+\begin{align*}
+    \nabla^2 \Psi(x, y, z, t) &= \frac{1}{c^2} \partialderivative{^2 \Psi(x, y, z, t)}{t^2} \\
+    - \qty(n_x^2 + n_y^2 + n_z^2) \frac{\pi^2}{L^2} A(t) B(x, y, z) &= \frac{- \omega^2}{c^2} A(t) B(x, y, z) \\
+    \omega^2 &= \frac{c^2 \pi^2}{L^2} \qty(n_x^2 + n_y^2 + n_z^2)
+\end{align*}
+This equation relates the angular frequency of the wave to its mode configurations. To find the number of modes for a given wavelength we define
+notion of density of states:
+\[ g(\omega) = \derivative{N(\omega)}{\omega} \]
+We choose to work with densities since $\omega$ is a continuous quantity. Differentiating both sides yields:
+\begin{align*}
+    N(\omega) &= \int_{0}^{\omega} g(\omega) \dd{\omega}
+\end{align*}
+This quantity will encapsulate all $(n_x, n_y, n_z)$ such that:
+\[ n_x^2 + n_y^2 + n_z^2 \leq \frac{\omega^2 L^2}{c^2 \pi^2} \]
+(because we are looking at frequencies less than $\omega$). Note that this looks like
+a sphere equation (with $n_i \geq 0$). The volume of this first octant is
+\[ N(\omega) = \frac{1}{8} \qty(\frac{4}{3} \pi \frac{\omega^3 L^3}{c^3 \pi^3}) = \frac{\omega^3 L^3}{6 c^3 \pi^3} \]
+Let $V = L^3$ be the volume of the blackbody. Converting from angular to linear frequency:
+\begin{align*}
+    N(f) &= \frac{(2 \pi f)^3 V}{6 c^3 \pi^2} = \frac{4 \pi f^3 V}{3 c^3} \\
+    g(f) &= \derivative{N(f)}{f} = \frac{4 \pi f^2 V}{c^3}
+\end{align*}
+However, this is slightly incomplete. This assumes a certain polarization of the electric field. However, there are two degrees of freedom in which
+this field can polarize, so the amount of states is actually double. This means:
+\[ g(f) = \frac{8 \pi f^2 V}{c^3} \]
+In classical statistical mechanics, the equipartition each mode of a system is excited with energy equal to $k_B T$ (??), so the total energy for frequency $f$ to $f + \dd{f}$ is:
+\begin{align*}
+    g(f) \dd{f} \cdot k_B T = \frac{8 \pi}{c^3} f^2 V k_B T \dd{f} \\
+\end{align*}
+This means the energy density (by volume) is:
+\begin{align*}
+    \kappa = \frac{8\pi}{c^3} f^2 k_B T \dd{f}
+\end{align*}
+and note since $f = \frac{c}{\lambda}$, $\dd{f} = \frac{-c}{\lambda^2} \dd{\lambda}$ and:
+\begin{align*}
+    \rho(\lambda, T) := \derivative{\kappa}{\lambda} = \frac{8\pi}{\lambda^4} k_B T
+\end{align*}
+where we dropped the negative sign (it just changes the order of integration). Note that our $R$ is proportional to this density (the outward rate is just constant).
+We have produced the Rayleigh-Jean law (which is inaccurate!).
+
+\subsection{The Quantum Calculation}
+To solve our ultraviolet catastrophe, Planck postulated that light waves cannot have arbitrary energy values. Instead, for a fixed frequency $f$, he proposed that energy
+is quantized in discrete packets as
+\[ E_n = nhf \]
+where $hf$ is a quanta and $n \in \N$. He then calculated the expected energy of a wave as:
+\begin{align*}
+    \bar{E} = \sum_{n = 0}^{\infty} nhf \frac{\exp\qty(- \frac{nhf}{k_B T})}{\sum_{m = 0}^{\infty} \exp\qty(- \frac{mhf}{k_B T})}
+\end{align*}
+where the fraction term is the Boltzmann factor normalized to a probability. Can we simplify this? Let $x = \exp\qty(- \frac{hf}{k_B T})$.
+\begin{align*}
+    \bar{E} &= hf \sum_{n = 0}^{\infty} n \frac{x^n}{\sum_{m = 0}^{\infty} x^m} \\
+    &= hf \frac{1 + x \sum_{n = 0}^{\infty} (n + 1) x^n}{(\frac{1}{1 - x})} \\
+    &= hf (1 - x) \qty(0 + x \derivative{\sum_{n = 0}^{\infty} x^{n + 1}}{x}) \\
+    &= hf (1 - x) \qty(x \derivative{\frac{x}{1 - x}}{x}) \\
+    &= hf x(1 - x) \qty(\frac{(1 - x) + x}{(1 - x)^2}) \\
+    &= hf \frac{x}{1 - x} \\
+    &= hf \frac{1}{x^{-1} - 1} \\
+    &= hf \frac{1}{\exp\qty(\frac{hf}{k_B T}) - 1}
+\end{align*}
+Then, our energy is:
+\begin{align*}
+    \frac{g(f) \dd{f}}{V} \bar{E} &= \frac{8 \pi h f^3}{c^3} \frac{1}{\frac{hf}{k_B T}) - 1} \dd{f}
+\end{align*}
+By converting from $f$ to $\lambda$, the correct formula is:
+\[ \rho(\lambda, T) = \frac{8 \pi hc}{\lambda^5} \frac{1}{e^{\frac{hc}{\lambda k_B T}} - 1} \]
+Quantum mechanics is all about things that can be \textit{quantized}. How far can we take this idea? Planck successfully
+applied it to energy radiated from a blackbody. What about an atom? Bohr applied this concept to the model of the Hydrogen atom,
+as we will soon see.

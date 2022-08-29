@@ -33,25 +33,35 @@ no one knew how this phenomenon worked. Here are some observations throw the age
     \end{center}
     \item ????: Rayleigh-Jeans Law
     \[ R(\lambda, T) \propto \frac{8 \pi k_B T}{\lambda^4} \]
-    which only works at longer frequencies (the area is unbounded).
+    which only works at longer frequencies (the area is unbounded). The original derivation was similar to many observations in astronomy (guess a power law and add fudge factors).
 \end{itemize}
 
-Let's derive the last law using thermodynamic principles and waves. Suppose our blackbody is a cube of length $L$.
+\subsection{A Formal Derivation}
+
+Let's derive the last law using thermodynamic principles and waves. We will analyze the energy density that the light trapped in the solid
+produces. The energy of a light wave increases with frequency, which in turn is proportional to the number of wave modes. In other words:
+\[ \text{Energy} = \text{Number of modes} \times \text{Energy per mode} \]
+Suppose our blackbody is a cube of length $L$.
 \begin{center}
     \includegraphics[width=200px]{../images/L_cube.jpeg}
 \end{center}
 Let's find the waves that are stable in the cube.
 First, we write the wave equation.
-\[ \nabla^2 \psi(\vec{r}, t) = \frac{1}{c^2} \partialderivative{}{t^2} \psi(\vec{r}, t) \]
+\[ \nabla^2 \Psi(\mbf{r}, t) = \frac{1}{c^2} \partialderivative{}{t^2} \Psi(\mbf{r}, t) \]
 where
 \[ \nabla^2 = \partialderivative{^2}{x^2} + \partialderivative{^2}{y^2} + \partialderivative{^2}{z^2} \]
 
 In addition, we need boundary conditions--consider a standing wave in 1-d. At the ends it is fixed at 0. For 3-d this is:
-\[ \psi(x = 0, y, z, t) = \psi(x = L, y, z, t) = 0, \forall y, z, t \]
-(and similar for $y$ and $z$).
+\begin{align*}
+    \Psi(x = 0, y, z, t) &= \Psi(x = L, y, z, t) = 0, \forall y, z, t \\ 
+    \Psi(x, y = 0, z, t) &= \Psi(x, y = L, z, t) = 0, \forall x, z, t \\
+    \Psi(x, y, z = 0, t) &= \Psi(x, y, z = L, t) = 0, \forall x, y, t
+\end{align*}
 
 The solution is:
-\[ \psi(\vec{r}, t) = A(t) \sin(k_x x) \sin(k_y y) \sin(k_z z) \]
-where $k_i = \frac{n_i \pi }{L}$ for $n_i \in \N$. This looks like:
-\[ \psi(\vec{r}, t) = A(t) B(x, y, z) \]
-So we are modulating the space component of the wave with some $A(t)$ that changes over the time.
+\[ \Psi(\mbf{r}, t) = A(t) \sin(k_x x) \sin(k_y y) \sin(k_z z) \]
+where $k_i = \frac{n_i \pi }{L}$ for $n_i \in \N$. $n_i$ is the number of nodes along the $i$th axis. Each tuple of $n_i$ is a valid mode (configuration) of the wave.
+
+This looks like:
+\[ \Psi(\mbf{r}, t) = A(t) B(x, y, z) \]
+So we are modulating the space component of the wave with some $A(t)$ that changes over the time. This is true for any standing wave.

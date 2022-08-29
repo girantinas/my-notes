@@ -48,7 +48,7 @@ Suppose our noise is such that one bit is missing (and the location of the noise
 we want to find what was in the question mark. 
 
 A simple code is repeating the same bit twice:
-\[ C_{rep} = \{(c_1, \dots, c_n) \mid c_1 = c_2, c_3 = c_4, \dots, c_{n - 1} = c_n \]
+\[ C_{rep} = \{(c_1, \dots, c_n) \mid c_1 = c_2, c_3 = c_4, \dots, c_{n - 1} = c_n \} \]
 Then the question mark is clearly recoverable from the neighbor bit.
 
 A better code that works with this is one with only even parity (called the parity-check code).
@@ -58,7 +58,7 @@ Then, the question mark is just the parity of the rest, i.e.
 
 The second one is better since we can represent more messages, i.e.
 \[ |C_{pc}| = 2^{n - 1} > |C_{rep}| = 2^{\frac{n}{2}} \]
-The number of redundant bits in $C_pc$ is 1, while there are $n/2$ redundant bits in $C_rep$.
+The number of redundant bits in $C_{pc}$ is 1, while there are $n/2$ redundant bits in $C_{rep}$.
 Here are the encoding maps:
 \[ (x_1, \dots, x_{n - 1}) \mapsto (x_1, \dots, x_{n - 1}, \bigoplus_{i} x_i) \]
 \[ (x_1, \dots, x_{n/2}) \mapsto (x_1, x_1, x_2, x_2 \dots, x_{n/2}, x_{n/2}) \]
@@ -83,20 +83,20 @@ Now, we can replicate the message 3 times as a code; we can use majority vote to
 This means $|C| = 2^{n/3}$.
 Let's see if we can be smarter.
 
-\[ C_{VT} = \{ (c_1, c_2, \dots, c_n) \mid c_1 + 2c_2 + \cdots + n c_n \equiv a \pmod B \]
+\[ C_{VT} = \{ (c_1, c_2, \dots, c_n) \mid c_1 + 2c_2 + \cdots + n c_n \equiv a \pmod B \} \]
 This is a ``weighted'' parity check. The claim is that if $B > 2n$, then you can correct 1-bit errors. Proof shell:
 suppose you flip a bit, it will go up or down by at most $n$ and this uniquely identifies which bit got flipped. If $B$ is larger, note that there
 will be less codewords, so we'd prefer $B$ to be as low as possible.
 
-Since there are some that are bigger than average, there exists an $a \in \{0, \dots, B - 1\}$ such that $|C_{VT}| \geq \frac{2^n}{B} = 2^{n}{2n + 1}$.
+Since there are some that are bigger than average, there exists an $a \in \{0, \dots, B - 1\}$ such that $|C_{VT}| \geq \frac{2^n}{B} = \frac{2^{n}}{2n + 1}$.
 
 \begin{definition}[Rate]
     An \textbf{alphabet} $\Sigma$ are the characters in the codeword.
 
-    The number of redundant bits is $n - \log_|\Sigma| |C|$.
-    The \textbf{rate} of $C$ is $R(C) = \frac{\log_{|Sigma|} |C|}{n}$,
+    The number of redundant bits is $n - \log_{|\Sigma|} |C|$.
+    The \textbf{rate} of $C$ is $R(C) = \frac{\log_{|\Sigma|} |C|}{n}$,
     i.e. the fraction of non-redundant bits in your code.
-    Note $|C| = |\Sigma|^{Rn}$.
+    Note $|C| = {|\Sigma|}^{Rn}$.
 \end{definition}
 
 So our code has $\leq \log_2 n + O(1)$ redundant bits, so a rate of nearly 1 asymbtotically.
@@ -118,7 +118,7 @@ We can also add a second check:
 \[ 1^2 c_1 + 2^2 c_2 + \dots + n^2 c_n \equiv a' \pmod A \]
 where $A = O\qty(n^2)$. This is a sufficient $\alpha$ because $f(n) = n^2$ is strictly convex. Thus, with the old check together, this makes a code strong enough.
 Similar to before:
-\[ |C| \geq \frac{2^n}{AB} = \Omega\qty(\frac{2^n}{n^3}) \]
+\[ |C| \geq \frac{2^n}{A \cdot B} = \Omega\qty(\frac{2^n}{n^3}) \]
 
 \begin{theorem}[Generalized Hamming Bound]
     If $C \subseteq \{0, 1\}^n$ corrects (up to) $k$-bit flips, then $|C| \leq \frac{2^n}{\sum_{i = 0}^{k} \binom{n}{k}} = O\qty(\frac{2^n}{n^k})$.
@@ -132,7 +132,7 @@ Let's revisit the single-bit flip case. Our ``VT Check'' was:
 Let's use linear algebra instead and map $ic_i$ to $\mathbf{v_i} c_i$,
 thus writing
 \[ \mathbf{v_1} c_1 + \mathbf{v_2} c_2 + \dots + \mathbf{v_n} c_n = \mathbf{0} \]
-where we take operations $\mod B$. Suppose we take $B = 2$, and $N = 7$. 
+where we take operations $\bmod \text{ } 2$. 
 
 To take a (potentially corrupted) $\mathbf{c}$ we can check the following using the parity check matrix on the left.
 \[ \begin{pmatrix}
@@ -140,15 +140,15 @@ To take a (potentially corrupted) $\mathbf{c}$ we can check the following using 
 \end{pmatrix} \begin{pmatrix}
     c_1 \\ c_2 \\ \vdots \\ c_n
 \end{pmatrix} = \mathbf{0} \]
-where $m$ is the total amount of bits to represent all the codewords. $m = \ceil{\log_2 (n + 1)}$.
+where $m$, the height of the matrix, is the total amount of bits to represent all the codewords. $m = \ceil{\log_2 (n + 1)}$.
 
 \begin{definition} [Code notation]
-    A linear $[n, k, d]_q$ code has block size $n$, dimension $k$, minimum distance $d$ and alphabet size $q$.
+    A linear $[n, k, d]_q$ code has block size $n$, dimension $k$, minimum distance $d$ and alphabet size $q$. The dimension $k$ is the dimension of $C$ as a subspace.
 \end{definition}
 
 If we choose $m = 3$, what we constructed above is the $[7, 4, 3]_2$ Hamming code.
 
-We argue this achieves the Hamming bound. Suppose $n = 2^m - 1$ exactly. Note that $\dim(C_{Ham}) = 2^m - 1 - m$ so 
+We argue this achieves the Hamming bound. Suppose $n = 2^m - 1$ exactly. Note that $\dim(C_{Ham}) = 2^m - 1 - m$ (because the rank of the parity-check matrix is $m$) so 
 \[ |C_{Ham}| = 2^{2^m - 1 - m} = \frac{2^n}{2^m} = \frac{2^n}{n + 1} \]
 
 Let's revisit our two-bit error correction with our Hamming knowledge. Let's write the equations in matrix vector form.
