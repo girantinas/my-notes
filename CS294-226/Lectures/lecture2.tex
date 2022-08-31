@@ -1,0 +1,140 @@
+\section{Lecture 2}
+
+\subsection{The Basic Definitions}
+We spam definitions which will help us formalize all the crazy stuff we saw last time.
+\begin{definition}[Distance of a Code]
+    $C \subseteq \Sigma^n$. Then the \textbf{distance} of the code is:
+    \[ d(C) = \min_{c \neq c' \in C} \delta(c, c') \]
+\end{definition}
+This is related to the ``packing radius,'' which is the largest radius $\tau$ such that
+Hamming balls of radius $\tau$ around codewords are disjoint. This is exactly $\tau = \floor{\frac{d - 1}{2}}$.
+
+The reason distance is so important is that it tells you how robust a code is.
+\begin{theorem}[Distance Property]
+    Consider a code $C \subseteq \Sigma^n$. The following are equivalent:
+    \begin{itemize}
+        \item $C$ has minimum distance at least $s + 1$
+        \item $C$ can detect up to $s$ errors
+        \item $C$ can correct up to $s$ erasures
+    \end{itemize}
+
+    In addition, you can correct up to $e$ errors if and only if the minimum distance is at least $2e + 1$.
+\end{theorem}
+This is true pretty intuitive (Hamming balls should not touch) but the proofs are not hard to figure out. What
+about both erasures and errors together?
+\begin{theorem} [Mixed Distances]
+    $C \subseteq \Sigma^n$ can correct $e$ errors and $s$ erasures if and only if $2e + s < d(C)$.
+\end{theorem}
+However, this distance analysis is a worst-case analysis. However, for typical codewords, you will not go in the direction of exactly another codeword!
+For stochastic errors, you can correct way more (with high probability).
+
+Even with worst-case analysis, you can ``LIST DECODE'' many more errors (in fact almost $\approx d(C)$). By ``LIST DECODE'', we give a list of possible codewords we could've gotten.
+
+\subsection{Linear Codes}
+The Hamming code we saw last time with parity check
+\[ H = \begin{bmatrix}
+    0 & 0 & 0 & 1 & 1 & 1 & 1 \\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\ 1 & 0 & 1 & 0 & 1 & 0 & 1
+\end{bmatrix} \]
+is an example of a linear code.
+
+\begin{definition}[Linear Code]
+    A $q$-ary linear code is a set $C \subseteq \F_q^n$ is a subspace of $\F_q^n$.
+\end{definition}
+
+The nice thing about subspaces is you can represent them with little space, despite the fact that the size of $C$ is exponential in the rate, since $|C| = q^{Rn}$.
+We can represent $C$ by a basis:
+\[ G = \begin{bmatrix}
+    g_1 & g_2 & \dots & g_k
+\end{bmatrix} \in \F_q^{n \times k} \]
+where $C = \range(G)$ or $C = \{G x \mid x \in \F_q^k\}$.
+
+\begin{definition}[Generator Matrix]
+    Suppose you have the above basis for $C$, $G$. Then $G$ is called a generator matrix for $C$.
+    In turn, $\dim(C) = k$ and the rate is $R = \frac{k}{n}$. Note that $G$ is not unique.
+\end{definition}
+Furthermore, you can find the normal vectors to $C$, i.e. describe it as the nullspace of some transformation.
+\begin{definition}[Parity Check Matrix]
+    For a code $C$, the parity check matrix $H \in \F_{q}^{(n - k) \times n}$ is a matrix such that for any codeword $c$, $Hc = 0$.
+    Furthermore, if $G$ is the generator matrix of $C$, this implies $HG = 0$.
+\end{definition}
+Both of these matrices are defined as full rank.
+
+Hamming distance is translation invariant, and subspace contains the difference between two codewords. So:
+\begin{theorem}
+    For any linear code:
+    \[ d(C) = \min_{c \neq 0} \text{wt}(c) \]
+    where
+    \[ \text{wt}(c) = |\{i \mid c_i \neq 0\}| \]
+\end{theorem}
+
+We can actually formulate distance in terms of the parity check matrix.
+\[ \min\{ \text{wt}(c) \mid Hc = 0, c \neq 0 \} \]
+i.e. this is the sparsest linear dependency of any columns of $H$.
+
+\begin{definition}[Relative Distance]
+    The relative distance of a code $C$ of length $n$ is:
+    \[ \delta(C) = \frac{d(C)}{n} \]
+\end{definition}
+In general, there are a few trade-offs:
+\begin{itemize}
+    \item $k$ vs $d$ trade-off
+    \item $R$ vs $\delta$ trade-off
+\end{itemize}
+
+We are going to see this trade-off in a bound.
+\begin{theorem}[Pigeonhole/Singleton bound]
+    Consider $C \subseteq [q]^n$. Then:
+    \[ |C| \leq q^{n - d(C) + 1} \]
+
+    \begin{proof}
+        Consider the map:
+        \begin{align*}
+            \text{proj}: C &\to [q]^{n - d(C) + 1} \\
+            (c_1, c_2, \dots, c_n) &\mapsto (c_1, c_2, c_{n - d(C) + 1})
+        \end{align*}
+        proj is a one-to-one function, because if two codewords $c, c'$ differ in the last bits cut off, their distance would be less than
+        $d(C)$. Since it is one-to-one, we have $|C| \leq q^{n - d + 1}$.
+    \end{proof}
+\end{theorem}
+For any linear code, this means: $q^{k} \leq q^{n - d + 1}$, or
+$d \leq n - k + 1$.
+
+With linear algebra comes duality, and linear codes are no different.
+\begin{definition}[Dual of a Linear Code]
+    The dual of $C$ is:
+    \[ C^{\perp} = \{y \in \F_q^n \mid y \cdot c, \forall c \in C\} \]
+    where the dot product is done mod $q$. Note that $C^{\perp}$ is also a linear code (i.e. a subspace).
+\end{definition}
+
+Another way to think of $C^{\perp}$ is the space of all parity checks that codewords of $C$ must satisfy.
+
+\begin{note}
+    We have
+    \begin{itemize}
+        \item $C^{\perp} = \range{H^T}$
+        \item the parity check matrix of the dual is $G^T$
+        \item $\qty(C^{\perp})^{\perp} = C$
+    \end{itemize}
+
+    In a real vector space, $C \cap C^{\perp} = \{0\}$.
+    However, over finite fields, it's also possible that $C \subseteq C^{\perp}$ (a self-orthogonal code) or $C = C^{\perp}$.
+    For example, $C_{Ham}^{\perp} \subseteq C_{Ham}$.
+\end{note}
+
+It turns out, the dual to $C_{Ham}$ is important. It is called the simplex code $C_{Simplex}$. The generator matrix is nice:
+\[ \begin{bmatrix}
+    0 & \dots & 0 & 1 \\
+    0 & \dots & 1 & 0 \\
+    \vdots & \vdots & \vdots & \vdots \\
+    1 & \dots & 1 & 1
+\end{bmatrix} \]
+which in general is a $(2^r - 1) \times r$ matrix. The code iswhich has rate:
+\[ \text{Rate}(C_{simplex}) = \frac{r}{2^r - 1} \to 0, \text{Rate}(C_{Ham}) = 1 - \frac{r}{2^r - 1} \to 1 \]
+But the distance is much better!
+
+Fix an $x \in \F_2^n$.
+\[ \Pr{z \in \F_2^n} [x \cdot z = 1] = \frac{1}{2} \]
+So the hamming weight will be at least half $n$, i.e.
+\[ d(C_{simplex}) = 2^{r - 1} \]
+
+So, we now ask, can we have both $R$ and $\delta$ bounded away from zero?

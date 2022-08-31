@@ -140,13 +140,27 @@ To take a (potentially corrupted) $\mathbf{c}$ we can check the following using 
 \end{pmatrix} \begin{pmatrix}
     c_1 \\ c_2 \\ \vdots \\ c_n
 \end{pmatrix} = \mathbf{0} \]
-where $m$, the height of the matrix, is the total amount of bits to represent all the codewords. $m = \ceil{\log_2 (n + 1)}$.
+where $m$, the height of the matrix, is the total amount of bits to represent all the codewords. $m = \ceil{\log_2 (n + 1)}$. This can still correct a one-bit flip!
+
+One can think of any codeword as a set of column linearly dependencies.
 
 \begin{definition} [Code notation]
     A linear $[n, k, d]_q$ code has block size $n$, dimension $k$, minimum distance $d$ and alphabet size $q$. The dimension $k$ is the dimension of $C$ as a subspace.
 \end{definition}
 
-If we choose $m = 3$, what we constructed above is the $[7, 4, 3]_2$ Hamming code.
+If we choose $m = 3$, what we constructed above is the $[7, 4, 3]_2$ Hamming code. And the parity check matrix is:
+\begin{align*}
+    H = \begin{bmatrix}
+        0 & 0 & 0 & 1 & 1 & 1 & 1 \\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\ 1 & 0 & 1 & 0 & 1 & 0 & 1
+    \end{bmatrix}
+\end{align*}
+To fix an error:
+\begin{align*}
+    Hy &= H(c + e_i) \\
+    &= Hc + He_i \\
+    &= 0 + \text{(binary representation of $i$)}
+\end{align*}
+where the quantity $Hy$ is defined as the ``syndrome.''
 
 We argue this achieves the Hamming bound. Suppose $n = 2^m - 1$ exactly. Note that $\dim(C_{Ham}) = 2^m - 1 - m$ (because the rank of the parity-check matrix is $m$) so 
 \[ |C_{Ham}| = 2^{2^m - 1 - m} = \frac{2^n}{2^m} = \frac{2^n}{n + 1} \]

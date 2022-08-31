@@ -6,3 +6,5 @@
 *.toc
 *.fdb_latexmk
 *.aux
+.DS_STORE
+*/.DS_STORE

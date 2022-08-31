@@ -1,0 +1,37 @@
+\section{Lecture 3}
+
+\subsection{Asymptotically Good Codes}
+As we have seen previously, the Hamming code is a $[2^r - 1, 2^r - r - 1, 3]_2$ code.
+To generalize the code to any length finite field, we want to do the same thing (having the columns of the parity check count up) and remove linear dependencies (we don't want any two columns to be linearly dependent, because that would imply the minimum distance is 2).
+
+We also saw its dual is a $[2^r - 1, r, 2^{r - 1}]_2$ code. The first two come from dual properties, the third we proved last time.
+These are two opposite ends of the spectrum. The Hamming code is optimal for distance 3 (by the Hamming bound).
+Simplex code is also optimally-sized for its distance.
+
+\begin{theorem}
+    If $C \subseteq \{0, 1\}^n$ is a code of distance $d > \frac{n}{2}$ then
+    \[ |C| \leq \frac{d}{d - \frac{n}{2}} \]
+
+    Proof shell: Map a codeword $c = (c_1, \dots, c_n) \mapsto v_c = \frac{1}{\sqrt{n}} ((-1)^{c_1}, \dots, (-1)^{c_n})$.
+    Then for any two codewords $c_1, c_2$, we have:
+    \[ v_{c_1} \cdot v_{c_2} = 1 - \frac{2 \Delta(c_1, c_2)}{n} \]
+    If $d > \frac{n}{2}$, then, $v_{c_1} \cdot v_{c_2} < 0$.
+
+    \begin{lemma}
+        If $v_1, \dots, v_m \in \mathbb{R}^n$, $\norm{v_i} = 1$, such that
+        $v_i \cdot v_j \leq - \alpha \text{ } \forall 1 \leq i \leq j \leq m$,
+        then $m \leq \frac{1}{\alpha} + 1$.
+    \end{lemma}
+    From here you can apply this theorem with the correct $\alpha$.
+
+    Furthermore, the bound for a $q$-ary code is of distance $d > \qty(1 - \frac{1}{q})n$,
+    \[ |C| \leq \frac{d}{d - \qty(\frac{q - 1}{q})n}\]
+\end{theorem}
+
+As an aside, if you have $v_i \cdot v_j \leq 0$, then $m \leq 2n$ and $v_i \cdot v_j \leq \epsilon$ is exponentially many.
+
+For the simplex code, $|C_{simplex}| = 2^r$ and $d = 2^{r - 1}$ and $n = 2^r - 1$,
+so
+\[ \frac{2d}{2d - n} = 2^r = |C_{simplex}| \]
+
+\subsection{Reed-Solomon Codes}
