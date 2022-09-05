@@ -74,7 +74,7 @@ the time and space components of the wave will be thinner!
 
 \subsection{Wave Packets and Normalization}
 By probability density laws,
-\[ \int{\mathbb{R}^3} |\Psi(\mbf{r}, t)|^2 \dd{\mbf{r}} = 1 \]
+\[ \int_{\mathbb{R}^3} |\Psi(\mbf{r}, t)|^2 \dd{\mbf{r}} = 1 \]
 but for this basic wave that spans all of space, this diverges! (Or the wavefunction is zero everywhere). Instead we have
 wave packets that are much more localized.
 
@@ -86,7 +86,7 @@ Suppose we have some waves indexed by $j$: $A_j e^{i (k_j x - \omega t)}$. We wa
 
 For a 1-D wavepacket, the wave function is as follows (our index $j$ has become continuous $p_x$).
 \[ \Psi(x, t) = \frac{1}{\sqrt{2 \pi \hbar}} \int e^{\frac{i(p_x x - Et)}{\hbar}} \phi(p_x) \dd{p_x} \]
-Let us assume $\phi(p_x)$ is a sharp (non-delta) function that is centered $p_0$ and has half-max width $2 \delta p_x$.
+Let us assume $\phi(p_x)$ is a sharp (non-delta) function that is centered $p_0$ and has half-max width $2 \Delta p_x$.
 
 Let
 \[ \beta(p_x) = p_x x - E(p_x) t \]
@@ -110,4 +110,5 @@ We can also find the phase velocity, the velocity of each component. Each compon
     k_0 x - \omega(k_0)t &= 0 \\
     v_p &= \frac{x}{t} = \frac{E(p_0)}{p_0}
 \end{align*}
+
 
