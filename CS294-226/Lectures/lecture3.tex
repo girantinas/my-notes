@@ -48,12 +48,13 @@ How do we know such asymptotically codes exist? By using bounds.
 \begin{theorem}[Gilbert-Varshamov Bound]
     For all $q, n, d \leq n$ there exists a code $C \subseteq [q]^n$ with $d(C) \geq d$ and
     \[ |C| \geq \frac{q^n}{\sum_{i = 1}^{d - 1} \binom{n}{i} (q - 1)^i} \]
-    \begin{proof}
-        The denominator here is $|B_q(0, d - 1)| = \{x \in [q]^n \mid \text{wt}(x) \leq d - 1\}$,
-        i.e. the volume of the Hamming ball around 0 of size $d - 1$.
-        Greedily pick codewords such that no codeword is not within $d - 1$ of any previously chosen ones. Stop when you can't, the balls must cover the space. The size union of the balls is no more than the sum of their sizes.
-        \[ |C| \cdot |B_q(0, d - 1)| \geq q^n \]
-    \end{proof}
+\begin{proof*}
+The denominator here is $|B_q(0, d - 1)| = \{x \in [q]^n \mid \text{wt}(x) \leq d - 1\}$,
+i.e. the volume of the Hamming ball around 0 of size $d - 1$.
+Greedily pick codewords such that no codeword is not within $d - 1$ of any previously chosen ones. Stop when you can't, the balls must cover the space. The size union of the balls is no more than the sum of their sizes.
+\[ |C| \cdot |B_q(0, d - 1)| \geq q^n \]
+which implies the result.
+\end{proof*}
 \end{theorem}
 
 In fact you can even modify this argument so that it gives you a linear code (over $\F_q$). Fill in columns of a $m \times n$ parity check matrix "greedily" (such that no $d - 1$ columns are linearly dependent). For the last column,

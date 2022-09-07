@@ -1,0 +1,135 @@
+\section{Lecture 4}
+
+\subsection{More Bounds on Codes}
+
+The GV bound told us that there exists a code that achieves the following
+tradeoff between distance and rate:
+\begin{align*}
+    R_{GV}(\delta) = 1 - h(\delta) 
+\end{align*}
+
+The limitations (upper bounds) of codes are the following:
+\begin{align*}
+    R_{Plotkin}(\delta) = 1 - 2\delta \\
+    R_{Hamming}(\delta) = 1 - h(\delta/2)
+\end{align*}
+which also has generalizations to $q$-ary. We will study codes in the blue region:
+
+
+However,
+we can improve both Plotkin and Hamming to the EB bound.
+\begin{theorem}[Elias-Bassalygo Bound]
+    Consider a binary code $C$. Calling $J(\delta)$ the Johnson radius:
+    \[ J(\delta) = \frac{1 - \sqrt{1 - 2 \delta}}{2} \]
+    then we have:
+    \[ R(\delta) \leq R_{EB}(\delta) = 1 - h\qty(J(\delta))\]
+    For $q$-ary, the bound uses:
+    \[ J_q(\delta) = \qty(1 - \frac{1}{q})\qty(1 - \sqrt{1 - \frac{q \delta}{q - 1}}) \]
+
+\begin{proof*}
+    We are going to take the Hamming bound and improve it, being a bit more careful using a list decoding idea.
+    We previously take balls of $\frac{d}{2} = \delta/2 n$. Now we want to expand the radius to some $\rho n$
+    and prove a bound like
+    \[ |C| \cdot 2^{h(\rho) n} \leq 2^n \]
+    However, we might end up double counting some points (the balls will not be disjoint at higher radii).
+    So, if each point is counted $L$ times we can prove something like:
+    \[ |C| \cdot 2^{h(\rho) n} \leq L \cdot 2^n \]
+    If this exponent is small, this will give us a good asymptotic bound. We will show
+    that for $\rho = J(\delta)$, one can take $L = O(n)$.
+
+    Equivalently, consider an arbitrary point $y \in \{0, 1\}^n$ then:
+    \[ |B(y, \rho n) \cap C| \leq O(n) \]
+    i.e. with any codeword, we can list-decode up to $\rho n$ errors, with list size $O(n)$.
+    This tells us list-decoding gives you even more give!
+    By translation, assume $y = 0$. Recall the map:
+    \[f : c \mapsto v_c = ((-1)^{c_1}, (-1)^{c_2}, \dots, (-1)^{c_n}) \]
+    Note $f(y) = (1, 1, \dots, 1)$. Suppose you have a bunch of codewords: $c_1, c_2, \dots, c_m$
+    such that:
+    \[ \Delta(c_i, c_j) \geq \delta n, \Delta(0, c_i) \leq \rho n \]
+    Consider $v_i$ of the codewords that are in the Hamming ball of the correct radius of $v_y$, number them $v_i$.
+    Pick a parameter $\alpha$ to ensure
+    \[ \langle v_i - \alpha v_y, v_j - \alpha v_y \rangle \leq 0 \]
+    which would imply $m \leq 2n$ (by the g). This can be rewritten as:
+    \[ \langle v_i, v_j \rangle - 2 \alpha \qty(\langle v_y, v_i \rangle) + \alpha^2 n \]
+    Note that the first term is at most $n - 2\delta n$, since these 
+    codewords differ in at least $\delta n$ places. Furthermore, the last term is bounded by the ball distance, i.e. this means:
+    \begin{align*}
+        \langle v_i - \alpha v_y, v_j - \alpha v_y \rangle &\leq n - 2\delta n + \alpha^2 n - 2 \alpha(1 - 2 \rho)n \\
+        &= n(1 - 2 \delta + \alpha^2 - 2\alpha + 4 \rho \alpha)
+    \end{align*}
+    Note that for that inner product to be negative,
+    \[ 4 \rho \leq 2 - \qty(\frac{1 - 2\delta}{\alpha} + \alpha) \]
+    which means that $\alpha = \sqrt{1 - \delta}$ works as the best upper bound (by AM-GM).
+\end{proof*}
+\end{theorem}
+
+Note that if $\delta \in (0 , \frac{1}{2}]$, then $\frac{1 - \sqrt{1 - 2\delta}}{2} > \frac{\delta}{2}$ so
+this is better than the Hamming bound. Furthermore, $\forall x \in [0, \frac{1}{2}], h(x) \geq 4x(1- x)$,
+so this is better than the plotkin bound as well. So this will make the blue region smaller!
+
+It turns out for list decoding purposes,
+\[ J_L(\delta) = \frac{1 - \sqrt{1 - 2\delta + \frac{2\delta}{L}}}{2} \]
+gives you exactly $L$ list entries.
+
+Also note that 
+sample two strings, where you make it a 1 with probability $\rho$ and a 0 otherwise,
+then their expected distance is $2 J(\delta)(1 - J(\delta)) = \delta$. In other words, $J(\delta)$
+is the solution to this polynomial.
+
+The best bound for the rate is the MRRW Linear Programming Bound.
+
+First, the original bound was weaker than $R_{EB}$ for $\delta \leq 0.15$.
+\[ R_{MRRW1} (\delta) = h\qty(\frac{1}{2} - \sqrt{\delta(1 - \delta)}) \]
+The better bound is pretty dank
+\[ R_{MRRW2}  (\delta) = \min_{\delta/2 \leq \rho \leq 1/2}\qty(1 - h(\rho) + R(\rho, \delta)) \]
+where $R(\cdot, \cdot)$ is crazy! Where does such a bound come from? 
+
+Consider a graph $G = (\{0, 1\}^n, E)$ where $(u, v) \in E \iff \Delta(u, v) < d$.
+Then a code $C \subseteq \{0, 1\}^n$ of distance $d(C) \geq d$ is just a independent set in $G$!
+This can be solved with LP, which is where these bounds come from.
+
+\subsection{Reed-Solomon Codes}
+Let's look at another class of codes, BCH.
+
+Now to define BCH, first take a field extension and distinct nonzero elements:
+\[ \alpha_1, \alpha_2, \dots, \alpha_n \in \F_{2^m} \]
+The BCH code is represented by the parity check matrix, parameterized by $t \ll n$:
+\[ H = \begin{bmatrix}
+    1 & 1 & \dots & 1 \\
+    \alpha_1 & \alpha_2 & \dots & \alpha_n \\
+    \alpha_1^3 & \alpha_2^3 & \dots & \alpha_n^3 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \alpha_1^{2t-1} & \alpha_2^{2t - 1} & \dots & \alpha_n^{2t - 1} \\
+\end{bmatrix} \]
+
+For very small $\delta$, Binary BCH codes approach the Hamming bound, i.e.
+\[ d = 2t + 1, k = n - t \ceil{\log_2 n} = O(1) \]
+while GV bound only guarantees $k \approx n - 2t \log n$.
+The proof of the distance is pretty easy, just show any $2t$ columns are linearly independent.
+Note that Hamming was just BCH with $t = 1$!
+
+Now we will construct Reed-Solomon codes over a field
+$\F_q$ over some choice of set $S \subseteq \F_q$ where $S = \{a_1, a_2, \dots, a_n\}$. We work with $1 \leq k \leq n \leq q$:
+\[ RS_{\F_q}(S, k) = \{ (f(a_1), f(a_2), \dots, f(a_n)) \mid f \in \F_q[X], \deg(f) < k \} \]
+There is now a natural encoding:
+\[ f(X) = f_0 + f_1 X + \dots + f_{k - 1} X^{k - 1} \]
+Where we can associate:
+\[ (f_0, f_1, \dots, f_{k - 1}) \mapsto (f(a_1), f(a_2), \dots, f(a_n)) \]
+Now that we're in abstract algebra land:
+\begin{theorem}[Interpolation]
+    For some field $\F$, all $a_1, \dots, a_k \in \F$ and distinct $b_1, \dots, b_k \in \F_q$,
+    there is a unique polynomial $f(X) \in \F_q[X]$
+    of degree less than $k$ such that $f(a_i) = b_i$ for $i = 1, 2, \dots, k$.
+\end{theorem}
+This means a lot for our code. What is the distance of the code? We consider some erasures.
+\[ (f(a_1), f(a_2), \dots, f(a_n)) \to (f(a_1), ?, ?, f(a_4), \dots, f(a_{n - 2}), ?, f(a_n)) \]
+We only need $k$ points to survive to recover the original polynomial. So $s = n - k $ erasures correctable.
+Thus, the distance is $d \geq n - k + 1$,
+which is exactly the Singleton bound, so $d = n - k + 1$ exactly!
+The generator matrix is just the Vandermonde matrix:
+\[ \begin{bmatrix}
+    1 & a_1 & a_1^2 \dots & a_1^{k - 1} \\
+    1 & a_2 & a_2^2 \dots & a_2^{k - 1} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    1 & a_n & a_n^2 \dots & a_n^{k - 1} \\
+\end{bmatrix} \]

@@ -86,15 +86,15 @@ We are going to see this trade-off in a bound.
     Consider $C \subseteq [q]^n$. Then:
     \[ |C| \leq q^{n - d(C) + 1} \]
 
-    \begin{proof}
-        Consider the map:
-        \begin{align*}
-            \text{proj}: C &\to [q]^{n - d(C) + 1} \\
-            (c_1, c_2, \dots, c_n) &\mapsto (c_1, c_2, c_{n - d(C) + 1})
-        \end{align*}
-        proj is a one-to-one function, because if two codewords $c, c'$ differ in the last bits cut off, their distance would be less than
-        $d(C)$. Since it is one-to-one, we have $|C| \leq q^{n - d + 1}$.
-    \end{proof}
+\begin{proof*}
+Consider the map:
+\begin{align*}
+\text{proj}: C &\to [q]^{n - d(C) + 1} \\
+(c_1, c_2, \dots, c_n) &\mapsto (c_1, c_2, c_{n - d(C) + 1})
+\end{align*}
+proj is a one-to-one function, because if two codewords $c, c'$ differ in the last bits cut off, their distance would be less than
+$d(C)$. Since it is one-to-one, we have $|C| \leq q^{n - d + 1}$.
+\end{proof*}
 \end{theorem}
 For any linear code, this means: $q^{k} \leq q^{n - d + 1}$, or
 $d \leq n - k + 1$.
