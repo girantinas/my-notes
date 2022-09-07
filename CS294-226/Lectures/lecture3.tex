@@ -34,4 +34,79 @@ For the simplex code, $|C_{simplex}| = 2^r$ and $d = 2^{r - 1}$ and $n = 2^r - 1
 so
 \[ \frac{2d}{2d - n} = 2^r = |C_{simplex}| \]
 
-\subsection{Reed-Solomon Codes}
+So our goal is:
+\begin{definition}[Asymptotically Good Family]
+    An asymptotically good family of codes is an infinite family of codes over a fixed alphabet $[q]$
+    \[ C_1, C_2, \dots \]
+    Where length $n_i$ of $C_i$ goes to $\infty$ as $i \to \infty$, where
+    \[ R(C_i) \geq R_0, \delta(C_i) \geq \delta_0 \]
+    for some $R_0, \delta_0 > 0$ which are absolute constants.
+\end{definition} 
+
+\subsection{Gilbert-Varshamov Bound}
+How do we know such asymptotically codes exist? By using bounds.
+\begin{theorem}[Gilbert-Varshamov Bound]
+    For all $q, n, d \leq n$ there exists a code $C \subseteq [q]^n$ with $d(C) \geq d$ and
+    \[ |C| \geq \frac{q^n}{\sum_{i = 1}^{d - 1} \binom{n}{i} (q - 1)^i} \]
+    \begin{proof}
+        The denominator here is $|B_q(0, d - 1)| = \{x \in [q]^n \mid \text{wt}(x) \leq d - 1\}$,
+        i.e. the volume of the Hamming ball around 0 of size $d - 1$.
+        Greedily pick codewords such that no codeword is not within $d - 1$ of any previously chosen ones. Stop when you can't, the balls must cover the space. The size union of the balls is no more than the sum of their sizes.
+        \[ |C| \cdot |B_q(0, d - 1)| \geq q^n \]
+    \end{proof}
+\end{theorem}
+
+In fact you can even modify this argument so that it gives you a linear code (over $\F_q$). Fill in columns of a $m \times n$ parity check matrix "greedily" (such that no $d - 1$ columns are linearly dependent). For the last column,
+the amount of linear combinations are $\sum^{d - 2}_{i = 0} \binom{n - 1}{i} (q - 1)^i$ (this basically proves the claim). If this is less than $q^m$, then we'd never run out vectors. 
+If it's MUCH BIGGER, then a random parity check matrix (RLC - random linear code) works with high probability.
+
+We can also define an RLC via a $n \times k$ generator matrix. This works if:
+\[ q^k \ll \frac{q^n}{\sum_{i = 1}^{d - 1} \binom{n}{i} (q - 1)^i} \]
+
+Let us think about the asymptotic form, as $n$ is large.
+For binary, fix relative distance $\delta \in [0, \frac{1}{2}]$. Note that binomial coefficients grow according to:
+\[ \frac{2^{h(\delta) n}}{\text{poly}(n)} \leq \binom{n}{\delta n} \leq 2^{h(\delta) n}\]
+where the binary entropy is:
+\[ h(x) = x \log \frac{1}{x} + (1 - x) \log \frac{1}{1 - x} \]
+Furthermore:
+\begin{align*}
+    \sum_{i = 0}^{\delta n} \binom{n}{i} \leq 2^{h(\delta) n}
+\end{align*}
+By the GV bound:
+\begin{align*}
+    |C| &\geq \frac{2^n}{\sum_{i = 0}^{d - 1} \binom{n}{i}} \\
+    &\geq \frac{2^n}{\sum_{i = 0}^{\delta n} 2^{h(\delta) n}} \\
+    |C| &\geq 2^{(1 - h(\delta))n}
+\end{align*}
+
+Thus,
+\begin{theorem}[Asymptotic Form of GV Bound]
+    There exists a binary linear code $C$ with $\delta(C) = \delta$ and rate $R(C) \geq R_{GV}(\delta) = 1 - h(\delta)$.
+\end{theorem}
+So the rate graph over delta is the upside-down entropy plot (convex instead of concave).
+
+In the $q$-ary case, we need to change the interval to $\delta \in [0, 1 - \frac{1}{q}]$,
+and using entropy function
+\[ h_q(x) = x \log_q (q - 1) + x \log_q \frac{1}{x} + x \log_q \frac{1}{1 - x} \]
+which is the entropy of a random variable which is 0 with probability $x$ and any value $1$ to $q$ with uniform other probability.
+If $q$ is large, we approach the singleton bound.
+
+For binary, no one knows if the asymptotic GV bound can be beaten (even existentially). It is known that for $q \geq 49$ that you can beat the bound.
+Also note that any algorithm trying to achieve the GV bound is either:
+\begin{itemize}
+    \item Exponential in runtime (Greedy)
+    \item Efficient to sample (RLC), but no known way to certify in polynomial time and no known way to decode.
+\end{itemize}
+In fact the lack of decoding is a popular hardness assumption in cryptography. This is called ``Learning parity with noise.''
+
+Let's look at the regimes at the ends of the GV bound.
+If $\delta \to 0$, then
+\[ R_{GV}(\delta) = 1 - O\qty(\delta \log(\frac{1}{\delta})) \]
+and if $\delta = \frac{1}{2} - \epsilon$, then \[ R_{GV}\qty(\frac{1}{2} - \epsilon) = \Theta(\epsilon^2) \]
+
+However, constructively, you can get from explicity construction:
+If $\delta \to 0$, then
+\[ R_{GV}(\delta) = 1 - O\qty(\delta \cdot \text{polylog}\qty(\frac{1}{\delta})) \]
+and if $\delta = \frac{1}{2} - \epsilon$, then \[ R_{GV}\qty(\frac{1}{2} - \epsilon) = \Omega\qty(\epsilon^{2 + o(1)}) \]
+
+We will achieve the SOTA with expander codes, expander walks, and pseudorandomness.
