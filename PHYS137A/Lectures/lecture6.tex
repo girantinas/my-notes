@@ -72,12 +72,12 @@ Let's do it for a conservative force, since the mathematics is simpler.
 \end{definition}
 
 Then note that for a conservative force:
-\[ \mbf{F}(\mbf{r}, t) = - \mbf{\nabla} V(\mbf{r}, t) \]
+\[ \mbf{F}(\mbf{r}, t) = - \mbf{\grad} V(\mbf{r}, t) \]
 
 So we can write down the full Schrodinger equation:
 \begin{theorem} [Time-Independent Schrodinger Equation]
     We have for a wave function $\Psi$:
-    \[ i \hbar \partialderivative{\Psi(\mbf{r}, t)}{t} = \qty[\frac{- \hbar^2}{2m} \nabla^2 + \hat{V}(\mbf{r}, t)] \Psi(\mbf{r}, t) \]
+    \[ i \hbar \partialderivative{\Psi(\mbf{r}, t)}{t} = \qty[\frac{- \hbar^2}{2m} \grad^2 + \hat{V}] \Psi(\mbf{r}, t) \]
     Where the sum in the brackets is often denoted $\hat{H}$, the \textbf{Hamiltonian operator}.
 \end{theorem}
 
@@ -91,8 +91,8 @@ Let's look at some properties of the $\hat{H}$ operator.
 which means:
 \begin{align*}
     \int \Psi^*(\hat{H} \Psi) \dd{r} &= \int \qty(\hat{H} \Psi)^* \Psi \dd{r} \\
-    \int \Psi^*(\hat{H} \Psi) \dd{r} &= \int \Psi^* \hat{H}^* \Psi \dd{r}
+    \int \Psi^* \hat{H} \Psi \dd{r} &= \int \Psi^* \hat{H}^* \Psi \dd{r}
 \end{align*}
 
-This means that $\hat{H} = \hat{H}^*$, i.e. $\hat{H}$ is a Hermitian operator. This means that $E$ is a real number, which makes sense,
-since it is observable!
+This means that $\hat{H} = \hat{H}^*$, i.e. $\hat{H}$ is a \textbf{Hermitian operator}. This means that $E$ is a real number, which makes sense,
+since it is observable! In fact, all observables will have associated Hermitian operators.

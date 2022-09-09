@@ -1,0 +1,51 @@
+\section{Lecture 7: Hermitian Operators}
+
+\subsection{Probability Current}
+Like we stated before, Hermitian operators have all real eigenvalues, and any operator that is observable is Hermitian! Now continuing from last lecture,
+we had (substituting the spatial part and assuming a real valued potential):
+\begin{align*}
+    \partialderivative{}{t} \int | \Psi |^2 \dd{\mbf{r}} &= \int \frac{1}{i \hbar} \qty[\Psi^* (\hat{H} \Psi) - (\hat{H} \Psi)^* \Psi] \dd{\mbf{r}} \\
+    &= \int \frac{i \hbar}{2m} \qty[\Psi^* (\grad^2 \Psi) - (\grad^2 \Psi)^* \Psi] \dd{\mbf{r}} \\
+    &= - \int \frac{i \hbar}{2m} \int \mbf{\grad} \cdot [\Psi^* \mbf{\grad} \Psi - (\mbf{\grad} \Psi^*) \Psi] \dd{\mbf{r}} \\
+    &= -\int \mbf{\grad} \cdot \mbf{j} \dd{\mbf{r}} \\
+\end{align*}
+Where we define:
+\[ \mbf{j} = \Psi^* \mbf{\grad} \Psi - (\mbf{\grad} \Psi^*) \Psi \]
+the "probability current." Using Stokes' theorem:
+\begin{align*}
+    \partialderivative{}{t} \int | \Psi |^2 \dd{\mbf{r}} &= - \int \mbf{j} \cdot \dd{\mbf{s}} \\
+    \partialderivative{P(\mbf{r}, t)}{t} + \mbf{\grad} \cdot \mbf{j}(\mbf{r}, t) &= 0
+\end{align*}
+So now the name of $\mbf{j}$ makes sense! This quantifies how much the current moves away from a given point.
+
+\subsection{Expectation Values}
+In classical mechanics, we have the average as:
+\[ \langle \mbf{r} \rangle = \int_{\R^3} \mbf{r} P(\mbf{r}, t) \dd{\mbf{r}} \]
+Now suppose we have an operator $\hat{r}$ that gives position as $\hat{r} \Psi = \mbf{r} \Psi$.
+\[ \langle \hat{r} \rangle = \int_{\R^3} \mbf{r} |\Psi(\mbf{r}, t)|^2 \dd{\mbf{r}} = \int_{\R^3} \Psi^* \hat{r} \Psi \dd{\mbf{r}} \]
+Now let's say we want the average of the momentum:
+\begin{align*}
+    \langle \hat{p} &= \int \Psi^* \hat{p} \Psi \dd{\mbf{r}} \\
+    &= -i\hbar \int \Psi^* \grad \Psi \dd{\mbf{r}} \\
+\end{align*} 
+
+Note that $\hat{p}$ is Hermitian but $\hat{p} = - i \hbar \grad$ and so its conjugate gives you a positive sign? That's because we only give the complex conjugate
+guarantees on the operator acting on a wave function! We will see more in homework.
+
+If you comes two Hermitian operators, the product is Hermitian only if the two operators commute. However, operators (even Hermitian ones) do not commute in general.
+For example, $\hat{x}$ and $\hat{p}_x$ do not commute.
+
+\begin{definition}
+    The commutator (bracket) is defined as:
+    \[ [\hat{A}, \hat{B}] = \hat{A} \hat{B} - \hat{B} \hat{A} \]
+\end{definition}
+Clearly the commutator is 0 if and only if the two operators commute. This means they are unrelated and can be measured simultaneously!
+
+\begin{align*}
+    [\hat{x}, \hat{p}_x] &= \hat{x} \hat{p}_x - \hat{p}_x \hat{x} \\
+    [\hat{x}, \hat{p}_x] \Psi &= \hat{x} \hat{p}_x \Psi - \hat{p}_x \hat{x} \Psi \\
+    &= - i \hbar x \partialderivative{}{x} \Psi + i \hbar \partialderivative{}{x} (x \Psi) \\
+    &= - i \hbar x \partialderivative{}{x} \Psi + i \hbar (\Psi + x \partialderivative{\Psi}{x} \\
+    &= i \hbar \Psi
+\end{align*}
+So the commutator is $i \hbar I \neq 0$. In fact, in general, the commutator of a canonical Fourier pair will always be this.
