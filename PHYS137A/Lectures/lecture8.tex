@@ -1,0 +1,64 @@
+\section{Lecture 8: Solving the Schrodinger Equation}
+
+We return to the Schrodinger equation:
+\[ i \hbar \partialderivative{\Psi}{t} = \qty[- \frac{\hbar^2}{2m} \nabla^2 + \hat{V}] \Psi \]
+We want to look for specific solutions: the separable stationary, eigen, or standing wave solutions. 
+\[ \Psi(\mbf{r}, t) = f(t) \Psi(\mbf{r}) \]
+We will assume the potential is time-independent. Let us substitute into the Schrodinger equation:
+\begin{align*}
+    i \hbar \Psi(\mbf{r}) \derivative{f(t)}{t} &= \qty[- \frac{\hbar^2}{2m} \nabla^2 \Psi(\mbf{r}) + \hat{V}(\mbf{r})] f(t) \\
+    i \hbar \frac{\derivative{f(t)}{t}}{f(t)} &= \frac{\qty[- \frac{\hbar^2}{2m} \nabla^2 \Psi(\mbf{r}) + \hat{V}(\mbf{r}) \Psi(\mbf{r})]}{\Psi(\mbf{r})}
+\end{align*}
+Since these are both independent, they must be both equal to some constant $E$. For the time portion:
+\begin{align*}
+    i \hbar \derivative{f}{t} &= Ef \\
+    f(t) &= Ce^{-iEt/\hbar}
+\end{align*}
+When $\hat{V} = 0$ the other differential equation similarly gives: $C_2e^{-i\mbf{k}\cdot\mbf{r}/\hbar}$. For $\hat{V} \neq 0$, then the spatial
+eigenfunctions of the Hamiltonian can be found using the time-independent Schrodinger equation (plugging into $\mbf{r}$):
+\[ \qty[-\frac{\hbar^2}{2m} \nabla^2 + \hat{V}(\mbf{r})] \Psi(\mbf{r}) = E \Psi(\mbf{r}) \]
+\begin{definition}[Eigenfunctions]
+    The \textbf{eigenfunctions} of an operator $\hat{H}$ is a solution to the equation:
+    \[ \hat{H} \Psi_E = E \Psi_E \]
+    for some $E \in \R$. They represent stationary states with time dependence $e^{-iEt/\hbar}$. You can find
+    $\Psi_E(\mbf{r})$ by solving the time-independent Schrodinger Equation.
+\end{definition}
+Let us find the expectation of the Hamiltonian, i.e. the energy of such a stationary state
+\begin{align*}
+    \langle \hat{H} \rangle_{\Psi_E} &= \int \Psi^* (\hat{H}) \Psi \dd{\mbf{r}} \\
+    &= \int \Psi^* E \Psi \dd{\mbf{r}} \\
+    &= E
+\end{align*}
+Let's find the probability density of one of these states:
+\begin{align*}
+    P(\mbf{r}, t) &= \Psi_E^*(\mbf{r}, t) \Psi_E(\mbf{r}, t) \\
+    &= \Psi_E^*(\mbf{r}) f^*(t) f(t) \Psi_E(\mbf{r}) \\
+    &= \Psi_E^*(\mbf{r}) \Psi_E(\mbf{r})
+\end{align*}
+which means the probability density is not time dependent! 
+\subsection{Solving Quantum Problems}
+This gives us a nice roadmap to solving quantum problems.
+\begin{enumerate}
+    \item Specify $\hat{V}(\mbf{r})$
+    \item Solve the time-independent Schrodinger Equation for $\Psi_E(\mbf{r})$, $E$.
+    \item Put together the full eigensolution: $\Psi_E(\mbf{r}, t) = \Psi_E(\mbf{r}) e^{-iEt/\hbar}$.
+    \item The general solution is a linear combination of these $\Psi_E(\mbf{r})$.
+\end{enumerate}
+It can be shown easily that $\Psi_E(\mbf{r})$ are orthonormal.
+We postulate that $(E, \Psi_E)$ found by solving the Schrodinger Equation represents all possible energies.
+\[ \Psi(\mbf{r}, t) = \sum_{E} c_E(t) \Psi_E(\mbf{r}) \]
+where 
+\[ c_{E'}(t) = \int_{-\infty}^{\infty} \Psi_{E'}^*(\mbf{r}) \Psi(\mbf{r}, t) \dd{\mbf{r}} \]
+So:
+\[ \Psi(\mbf{r}, t) = \sum_{E} c_E(0) \Psi_E(\mbf{r}) e^{-iEt/\hbar} \]
+and we can find the initial condition with:
+\[ c_{E}(0) = \int_{-\infty}^{\infty} \Psi_{E}^*(\mbf{r}) \Psi(\mbf{r}, 0) \dd{\mbf{r}} \]
+The $c_{E}$ also have a physical interpretation: the magnitude squared is the probability of finding the system at the energy $E$ and
+\[ \sum_{E} |c_E|^2 = 1 \]
+Now we can decompose 
+\begin{align*}
+    \langle \hat{H} \rangle_{\Psi} &= \int \Psi^*(\mbf{r}, t) \hat{H} \Psi(\mbf{r}, t) \dd{\mbf{r}} \\
+    &= \int \qty(\sum_E' c^*_{E'} e^{iE't/\hbar} \Psi^*_{E'}(\mbf{r})) \hat{H} \qty(\sum_E c_E e^{-iEt/\hbar} \Psi_E(\mbf{r}))  \dd{\mbf{r}} \\
+    &= \sum_E \sum_{E'} c^*_{E'} c_E e^{-i(E - E')t/\hbar} E \int \Psi^*_{E'}(\mbf{r}) \Psi_E(\mbf{r}) \dd{\mbf{r}} \\
+    &= \sum_E |c_E|^2 E
+\end{align*}

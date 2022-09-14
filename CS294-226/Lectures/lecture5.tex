@@ -1,0 +1,98 @@
+\section{Lecture 5}
+
+\subsection{Reed-Solomon Continued}
+What is the dual of the Reed-Solomon code? It's a (generalized) Reed-Solomon code.
+Let's consider a special case.
+\begin{theorem}
+    Consider $RS_{\F_q}(\F_q^*, k)$. We know $\F^*$, the nonzero elements of $\F_q$, is a cyclic group
+    $\F^* = \{1, \alpha, \alpha^2, \dots, \alpha^{q-2}\}$. The parity checks of this code is:
+    \[ \{(c_0, c_1, \dots, c_{n - 1}) \in \F^n \mid c(\alpha) = c(\alpha^2) = \dots = c(\alpha^{n - k}) = 0 \} \]
+    where $c(x) = c_0 + c_1 x + \dots + c_{n - 1}x^{n - 1}$.
+
+    \begin{proof*}
+    Follows from the fact that for $\gamma \in \F, \gamma \neq 1$:
+    \[ \sum_{j = 0}^{q - 2} \gamma^j = 0 \]
+    \end{proof*}
+\end{theorem}
+What does this mean? This means the parity check matrix is:
+\[ H = \begin{bmatrix}
+    1 & \alpha & \alpha^2 & \dots & \alpha^{n - 1} \\
+    1 & \alpha^2 & \alpha^4 & \dots & \alpha^{2(n - 1)} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    1 & \alpha^{n - k} & \alpha^{2(n - k)} & \dots & \alpha^{(n - k)(n - 1)} \\
+\end{bmatrix} \]
+which is also a Vandermonde matrix! This means
+\[ RS^{\perp}(\F^*, k) = \{(g(1), \alpha g(\alpha), \alpha^2 g(\alpha^2), \dots, \alpha^{n - 1} g(\alpha^{n - 1})) \in \F^n \mid deg(g) < n - k \} \]
+This is basically an RS code but we have extra multiplications in the polynomial (which actually doesn't change anything!). This is a \textbf{generalized Reed-Solomon code}.
+
+Let us return to the BCH code and represent in terms of the
+generator of $\F_{2^m}$, $\alpha$.
+\[ H = \begin{bmatrix}
+    1 & \alpha & \alpha^2 & \dots & \alpha^{n - 1} \\
+    1 & \alpha^3 & \qty(\alpha^3)^2 & \dots & \qty(\alpha^3)^{n - 1} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    1 & \alpha^{2t - 1} & \qty(\alpha^{2t - 1})^2 & \dots &  \qty(\alpha^{2t - 1})^{n - 1}
+\end{bmatrix} \]
+What are the parity checks here, $c(\alpha) = c(\alpha^3) = \dots = c(\alpha^{2t - 1}) = 0$.
+We can add the even parity checks for free, since in the finite field this is already true. This means the following fact is true:
+\begin{theorem}
+    A BCH code of length $n = 2^m - 1$ and desired distance at least $d = 2t + 1$ is:
+    \[ RS(\F_{2^m}^*, n - d + 1) \cap \F_2^n \]
+    i.e. they are the subfield subcode of RS (the ones where the codewords are binary rather than $2^m$-ary.)
+\end{theorem}
+Note the dimension is at least:
+\[ k \geq n - \frac{d - 1}{2} \log_2 (n + 1) \]
+This is desirable because it's a binary code while Reed-Solomon can only function
+with field elements in a large field. The problem is that the relative distance goes to $0$ for large $n$, i.e.
+\[ \frac{d}{n} \leq \frac{1}{\log n} \to 0 \]
+
+\subsection{Binary Codes from R-S Codes}
+Fix some linear bijection $\phi: \F_{2^m} \to \F_2^m$ (we can do this due to vector space properties).
+Consider taking some message $f \to (f(a_1), \dots, f(a_n)) \in \F_{2^m}^n$.
+Now lets apply $\phi$ to get:
+\[ \qty[\phi(f(a_1)) \dots \phi(f(a_n))] \in \F_2^{nm} \]
+This is a linear code.
+
+The block length of this code is $N = nm$. What is its rate? It's still the same $\frac{k}{n}$.
+Now let's argue the distance. Take two polynomials $f(x), g(x)$ with minimum distance $d$, they differ at that many points.
+Suppose $f(a_i) \neq g(a_i)$. How many bits to these differ at? At least 1.
+\[ \delta \geq \frac{n - k + 1}{nm} \approx \frac{1 - R}{m} \geq \Omega\qty(\frac{1}{\log n}) \]
+There are some RS codes where no $\phi$ can save you from this. However,
+for all RS codes, $\phi_1, \phi_2, \dots, \phi_n$ can work and can get to GV bound asymptotically.
+But these are hard to come up with--they have to be randomly sampled.
+
+The solution is to take each of these $\phi(f(a_i))$ and use
+an ``inner code'' $C_{in}$ of rate $\frac{1}{2}$ to get a vector in $\F_2^{2m}$. This is called code concatenation or code composition.
+
+\begin{definition}[Code Composition]
+    Suppose $C_{out}$ is a code over $\F_{q^m}$ that is a $[n, k]_{\F_{q^m}}$ code
+    and $C_{in}$ is a $[n', m]_{\F_q}$ code. The composing the maps into $C_{out} \diamond C_{in}$
+    yields a $[nn', km]_{F_q}$ code.
+\end{definition}
+
+There are $d_{out}$ positions where $c_i \neq c'_i$. At these positions,
+$c_{in}$ encodes them into vectors at Hamming distance $\geq d_{in}$. This means the distances multiply as well!
+\[ d(C_{out} \diamond C_{in}) \geq d_{out} \cdot d_{in} \]
+
+Returning to our $\frac{1}{2}$ example. We see this fixes everything.
+\[ R_{total} = \frac{R}{2} \]
+\[ \delta \geq (1 - R) \delta_{in} \]
+If we can have a constant distance, we meet the GV Bound. To do this, we will pick an inner code
+in exponential time but since the code is of dimension $\log n$, this is OK! Our goal
+is a $[2m, m, \delta_{in} m]_{\F_2}$ inner code with $\delta_{in}$ bounded away from $0$ as $m \to \infty$.
+We can construct this in $2^{O(m)}$ time with $\delta_{in} \approx h^{-1}(\frac{1}{2}) = 0.11$
+with the GV bound construction. This is is a $poly(N)$ time construct of an asymptotically good binary code.
+\[ \delta(R) = (1 - 2R) h^{-1}\qty(\frac{1}{2}) \]
+To find the best delta we can:
+\[ \delta_{\text{Zyablov}}(R) = \max_{1 \geq r \geq R} \qty(1 - \frac{R}{r}) h^{-1}(1 - r) \]
+This is an explicit polytime construction! Obviously this is not as great as the GV Bound, which needs exponential time to construct,
+but still pretty good.
+
+If $\delta = \frac{1}{2} - \epsilon$ then Zyablov is $\epsilon^3$, GV is $\epsilon^2$ and a recent paper found
+an explicit construction of $\epsilon^{2 + o(1)}$.
+
+To clean this up consider the inner code that expands to:
+\[ f(a_1) a_1 f(a_1) f(a_2) a_2 f(a_2) \dots f(a_n) a_n f(a_n) \]
+and then apply $\phi$ afterwards, i.e. to get
+\[ \phi(f(a_1)) \phi(a_1 f(a_1)) \phi(f(a_2)) \phi(a_2 f(a_2)) \dots \phi(f(a_n)) \phi(a_n f(a_n)) \]
+this code can also get that bound.
