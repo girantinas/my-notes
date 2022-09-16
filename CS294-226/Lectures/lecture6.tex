@@ -1,0 +1,80 @@
+\section{Lecture 6}
+
+\subsection{Justesen Codes and Friends}
+We said last time that the Justesen encoding:
+\[ \phi(f(a_1)) \phi(a_1 f(a_1)) \phi(f(a_2)) \phi(a_2 f(a_2)) \dots \phi(f(a_n)) \phi(a_n f(a_n)) \]
+also gives our nice Zyablov bound:
+\[ \delta(R) \geq (1 - 2R) h^{-1}\qty(\frac{1}{2}) - o(1) \]
+Here, we think of the inner code for each $a_i$:
+\[ E(C_{\alpha}): x \mapsto (x, \alpha x) \]
+which is a map $\F_{2^m} \to \F_{2^m} \times \F_{2^m}$.
+The reason this works is the following fact.
+\begin{theorem}[Wozencraft Ensemble]
+    For must (all but $o(1)$ values of $\alpha \in \F^*$), $c_{\alpha}$ is close to the GV bound.
+    \[ \forall \epsilon > 0, P_{\alpha}\qty[\delta(C_{\alpha}) > h^{-1}\qty(\frac{1}{2}) - \epsilon] \to 1 \]
+    \begin{proof}
+        We first claim that for each $z \in \F_2^{2m}$ s.t. $z \neq 0$ is in at most one $C_{\alpha}$. 
+        For a good $C_{\alpha}$, we want the weight of a $z$ to be $\leq \qty(h^{-1}(1/2) - \epsilon) 2m = \rho \cdot 2m$. Then the amount of bad $C_{\alpha}$'s
+        is at most the amount of these $z$'s, i.e.:
+        \[ |\text{ball}| = 2^{h(\rho) 2m} = 2^{(1/2 - \epsilon)2m} = 2^{(1 - 2\epsilon)m} \]
+    \end{proof}
+\end{theorem}
+You can consider this Ensemble as a "derandomization" of a random linear code. We only need $m$ random bits (the $\alpha$s), not $O(m^2)$ for the randomized matrix case.
+
+Note that the rate we get is limited to be at most $\frac{1}{2}$ because of the inner code. To fix this, we can use an inner code that is less damaging to the rate:
+\[ C_{\alpha}^{\text{trunc}}: x \mapsto (x, (\alpha x)_{\text{first $s$ bits}}) \]
+This has rate: $\frac{m}{m + s}$, so we can pick $s$ to be whatever we want.
+
+Now our bound is:
+\[ \delta_{Justesen}(R) = \max_{\max\{R, \frac{1}{2}\} \leq r \leq 1} \qty(1 - \frac{R}{r}) h^{-1}(1 - r) \]
+For $R \geq 0.31$, optimizing $r$ is bigger than $\frac{1}{2}$, so the bound applies the same as Zyablov. For lower rates $R$,
+you have choose some other code like:
+\[ C_{\alpha, \beta}: x \mapsto (x, \alpha x, \beta x) \]
+and playing this game over and over fits the Zyablov bound.
+
+\subsection{Reed-Solomon Decoding}
+Remember that $RS_{\F}(S, k)$ has distance $n - k + 1$, which hits the Singleton bound. We will call the polynomial it generates $f(x)$
+
+\textbf{Erasure Decoding.} If up to $s = n - k$ erasures, then we can interpolate the unerased positions (there are $k$ points so we can recover the polynomial). Note for any generator matrix of a linear code with dimension $k$,
+we can just recover erasures by solving a linear system which is nicely poly-time anyways.
+
+\textbf{Error Decoding.} We know we can correct up to $e = \floor{\frac{d - 1}{2}} = \floor{\frac{n - k}{2}}$ errors, we don't know what's right and what's wrong. Perhaps our output looks like (with bolded things being errors).
+\[ y_1 y_2 \mathbf{y_3} y_4 \mathbf{y_5} \dots \mathbf{y_{n - 1}} y_n \]
+This means $f(x)$ is uniquely determined by any (corrupted) output. How can we find $f(x)$ efficiently?
+
+Well, the brute force algorithm is considering each subset of $e$ errors and interpolating the rest. An efficient algorithm is
+the Welch-Berlekamp algorithm. Let $F = \{i \mid f(a_i) \neq y_i\}$. If we know $F$, we are done.
+The idea is we want to work with an algebraic form of $F$. We call this the error locator polynomial:
+\[ E(x) = \prod_{i \in F} (x - a_i) \]
+Observe that for all $a_i$, either $y_i - f(a_i) = 0$ or $E(a_i) = 0$.
+Then we know:
+\[ (y_i - f(a_i)) E(a_i) = 0 \]
+We define the function:
+\[ P(x, y) = (y - f(x)) E(x) = E(x) y - E(x) f(x) \]
+so that:
+\[ P(a_i, y_i) = 0 \]
+The idea is that we will interpolate this curve with a polynomial that is the right degree,
+and this will recover exactly $f$. Let's define $N(x) = E(x) f(x)$. Then:
+\[ P(x, y) = E(x)y - N(x) \]
+where we insist that $\deg(E) \leq e$ and $\deg(N) \leq e + k - 1$. Now we can state the algorithm.
+
+\begin{enumerate}
+    \item Find a nonzero polynomial $Q(x, y)$ such that:
+    \begin{enumerate}
+        \item $Q(a_i, y_i) = 0, \forall i$
+        \item $Q(x, y) = E_1(x) y - N_1(x)$ with the appropriate degree restrictions.
+    \end{enumerate} 
+    which amounts to solving a linear system.
+    \item Output $f(x) = \frac{N_1(x)}{E_1(x)}$.
+\end{enumerate}
+
+The following claims are necessary for correctness:
+\begin{enumerate}
+    \item A nonzero $Q$ sought after in step 1 exists. Take $Q = P$, such a polynomial does exist by explicity construction.
+    \item Any such $Q$ found in step 1 must satisfy $\frac{N_1(x)}{E_1(x)} = f(x)$. Well, we know that
+    \[ Q(x, f(x)) = R(x) = f(x) E_1(x) - N_1(x) \]
+    and if we show that $R(x) = 0$, then we are done. Note that degree of $R$ is at most $e + k - 1$. But, it is $0$ for all $n - e$ of the correct
+    points! By the amount of errors, this is more than the degree. So it must be the 0 polynomial.
+\end{enumerate}
+
+So, the Reed-Solomon code of rate $R$ can be efficiently decoded to $\frac{1 - R}{2}$ error fraction.
