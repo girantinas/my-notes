@@ -77,4 +77,5 @@ The following claims are necessary for correctness:
     points! By the amount of errors, this is more than the degree. So it must be the 0 polynomial.
 \end{enumerate}
 
-So, the Reed-Solomon code of rate $R$ can be efficiently decoded to $\frac{1 - R}{2}$ error fraction.
+So, the Reed-Solomon code of rate $R$ can be \underline{efficiently} decoded to $\frac{e}{n} = \frac{1 - R}{2}$ error fraction. In fact, it can be shown that an RS code can be coded from any
+combination of $e$ errors and $s$ erasures as long as: $2e + s \leq n - k$.
