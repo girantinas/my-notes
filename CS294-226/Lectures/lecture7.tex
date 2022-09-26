@@ -65,18 +65,18 @@ This is called the Generalized Minimum Distance (GMD) decoding.
 \subsection{Concatenation: ``Serial'' vs. ``Parallel''}
 We can think of the inner codes as local codes $C_0$. With $r \ll n$ where $r = O(1)$ or $r = O(\log n)$.
 
-% img
+\includegraphics[width=400px]{badserial.jpeg}
 
 What if we do the following instead:
 
-% img
+\includegraphics[width=300px]{overlapcode.jpeg}
 
 We specify a set $\mathcal{F} \subseteq \binom{[n]}{r}$ (choose a subset of size $r$ under some fixed global ordering)
 such that for all $S \in \mathcal{F}$, we have $c_S \in C_0$ (where $c$ is projected onto the coordinates in $S$).
 
 Suppose we want each $i$ to belong to two local checks. Here is one such code, a product code:
 
-% img
+\includegraphics[width=100px]{tensoroverlap.jpeg}
 
 $n = r^2$. Then if $C_0$ is a $[r, s, d]_q$ code, then $C_0^2$ is $[r^2, s^2, d^2]_q$ code. But, rate and $\delta$ both square tho (which means they go down...).
 The issue with this tensor product representation is I cannot take a local $r$ code and build a code of arbitrary size $n$.
