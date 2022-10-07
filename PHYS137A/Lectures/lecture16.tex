@@ -1,0 +1,83 @@
+\section{Lecture 16: QHO from Dirac Notation, Quantum Postulates}
+
+Let's choose a basis $\{\ket{n}\}_{n = 0}^{\infty}$ for our transforms.
+We will define the infinite matrix:
+
+\begin{align*}
+    [\hat{H}]_{ij} = \begin{bmatrix}
+        \hbar \omega / 2 & 0 & \dots \\
+        0 & 3\hbar\omega / 2 & \dots \\
+        \vdots & \vdots & \ddots
+    \end{bmatrix}
+\end{align*}
+
+Because the matrix element $\bra{i} \hat{H} \ket*{j} = 0$
+when $i \neq j$ and $\bra{i} \hat{H} \ket*{i} = E_i$. It's very obvious
+that this matrix will be diagonal because we chose the eigenbasis. Let's
+write down the matrices for $\hat{a}_{+}$ and $\hat{a}_{-}$
+\begin{align*}
+    [\hat{a}_{+}]_{kn} &= \sqrt{n + 1} \delta_{k, n + 1} \\
+    [\hat{a}_{-}]_{kn} &= \sqrt{k + 1} \delta{k + 1, n}
+\end{align*}
+So for example the $\hat{a}_{+}$ operator looks like:
+\[
+    [\hat{a}_{+}] = \begin{bmatrix}
+        0 & 0 & 0 & 0 & \dots \\
+        \sqrt{1} & 0 & 0 & 0 & \dots \\
+        0 & \sqrt{2} & 0 & 0 & \dots \\
+        0 & 0 & \sqrt{3} & 0 & \dots \\
+        \vdots & \vdots \vdots & \vdots & \ddots
+    \end{bmatrix}
+\]
+Remember the zero-indexing!
+
+Now, we return to our dimensionless variable $\xi = \qty(\frac{m \omega}{\hbar})^{1/2} x = \alpha x$.
+Then our operators are:
+\[ \hat{a}_{\pm} = \frac{1}{\sqrt{2}} \qty(\xi \mp \derivative{}{\xi}) \]
+We know by the annihilation of the ground state:
+\begin{align*}
+    \hat{a}_{-} \ket*{0} &= 0\\
+    \qty(\xi + \derivative{}{\xi}) \Psi_0(\xi) &= 0 \\
+    \Psi_0(\xi) &= \qty(\frac{\alpha}{\sqrt{\pi}})^{1/2} e^{-\xi^2/2}
+\end{align*}
+Applying the raising operator $n$ times:
+\[ \Psi_n(\xi) = \frac{1}{\sqrt{n!}} \qty[\frac{1}{\sqrt{2}} \qty(\xi - \derivative{}{\xi})]^n \Psi_0(\xi) \]
+which is exactly the generating function we derived for Hermite polynomials!
+
+\subsection{The Fundamental Postulates of Quantum Mechanics}
+We now precisely define the assumptions of quantum mechanics. There are chiefly
+8 of these postulates:
+\begin{enumerate}
+    \item To an ensemble of physical systems (a bunch of identical copies of the same system),
+    one can assign a wavefunction $\Psi$ which contains all the information that can be known about the ensemble.
+
+    For example take a system of $N$ particles. Then we have a function $\Psi(\mbf{r}_1, \mbf{r}_2, \dots, \mbf{r}_N)$,
+    then $\Psi^* \Psi$ is the probability to find particle 1 at $\mbf{r}_1$, particle 2 at $\mbf{r}_2$, etc.
+
+    In general, $\Psi$ is complex.
+    \item The superposition principle.
+    
+    If $\Psi_1, \Psi_2$ are solutions, then $\Psi = c_1 \Psi_1 + c_2 \Psi_2$ is a solution.
+    \item With every dynamical variable $\mathcal{A}$ there is an associated linear operator $\hat{A}$.
+    
+    For example, in position space $\mathcal{A} = \hat{A}(\mbf{r}_1, \dots, \mbf{r}_{N}, \mbf{p}_1, \dots, \mbf{p}_N, t)$.
+    \item The result of an infinitely precise measurement of $\mathcal{A}$ is one of the eigenvalues of $\hat{A}$. Upon
+    instantaneous remeasurement of the operator, the measurement is that same eigenvalue.
+    \[ \hat{A} \ket*{\Psi_n} = a_n \ket*{\Psi_n} \]
+    If $\hat{A}$ is Hermitian, $a_n \in \R$.
+    \item If a series of measurements are made on $\hat{A}$, the result is called the expectation value:
+    \[ \langle \hat{A} \rangle = \frac{\bra*{\Psi} \hat{A} \ket*{\Psi}}{\bra*{\Psi}\ket*{\Psi}} \]
+    Note that $\langle \hat{A} \rangle$ is not the average of a classical statistical distribution.
+    \item A wavefunction representing any dynamical state can be expressed as a linear combination of the eigenstates of
+    an operator $\hat{A}$.
+    \[ \ket{\Psi} = \sum_n c_n \ket{\Psi_n} \]
+    \item The time evolution of a system is given by the time-dependent Schrodinger equation:
+    \[ i \hbar \partialderivative{\Psi(t)}{t} = \hat{H} \Psi(t) \]
+\end{enumerate}
+Some notes surrounding the discussion of the postulates.
+
+Quantum vs Classical uncertainty: In a classical setup, the apparatus gives
+you some kind of uncertainty, i.e. a meterstick with not enough lines. The value is
+still a fixed, deterministic quantity.
+The expectation value is not sharp because there is actually a probability of being in one state or the other,
+and such ``uncertainty" is irreducible.

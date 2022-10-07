@@ -8,4 +8,47 @@ Recall that we defined operators:
 \[ \hat{a}_{\pm} = \frac{1}{\sqrt{2}} \qty[\qty(\frac{m\omega}{\hbar})^{1/2} \hat{x} \mp i \frac{\hat{p}_x}{(m\hbar \omega)^{1/2}}] \]
 In fact, this ladder operator can always be written with any Fourier pair of operators (instead of $\hat{x}, \hat{p}$).
 
-We said that $\hat{H} = \hbar \omega(\hat{N} + \frac{1}{2})$.
+We said that $\hat{H} = \hbar \omega(\hat{N} + \frac{1}{2})$. We also have:
+\[ \hat{a}_{-} \ket*{E_0} = 0 \]
+because acting on the ground state should annihilate it. Now acting with
+$\hbar \omega \hat{a}_{+}$ on the left:
+\begin{align*}
+    \hbar \omega \hat{a}_{+} \hat{a}_{-} \ket*{E_0} &= 0 \\
+    \hbar \omega \qty(\frac{\hat{H}}{\hbar\omega} - \frac{1}{2}) \ket*{E_0} &= 0\\
+    \qty(\hat{H} - \frac{1}{2} \hbar \omega) \ket*{E_0} &= 0\\
+    \hat{H} \ket*{E_0} &= \qty(\frac{1}{2} \hbar \omega) \ket*{E_0}
+\end{align*}
+this means we know the energy of the ground state is $\frac{1}{2}\hbar \omega$.
+Furthermore, suppose we want the raising operator to increase the energy with 
+\[ \ket*{E_{n + 1}} = c_{n + 1} \hat{a}_{+} \ket*{E_n} \]
+To satisfy normalization we need $\bra{E_{n + 1}}\ket*{E_{n + 1}} = 1$.
+\begin{align*}
+    \bra{E_{n + 1}}\ket*{E_{n + 1}} &= (c^*_{n + 1} \hat{a}^{\dagger}_{+} \bra{E_n})(c_{n + 1} \hat{a}_{+}\ket*{E_n}) \\ 
+    1 &= |c_{n + 1}|^2 \bra{E_n} \hat{a}_{+}^{\dagger} \hat{a}_{-} \ket*{E_n} \\
+    1 &= |c_{n + 1}|^2 \bra{E_n} \hat{a}_{-} \hat{a}_{+} \ket*{E_n} \\
+    1 &= |c_{n + 1}|^2 \bra{E_n} (\hat{N} + 1) \ket*{E_n} \\
+    1 &= |c_{n + 1}|^2 (n + 1) \bra{E_n} \ket*{E_n} \\
+    c_{n + 1} &= \frac{1}{\sqrt{n + 1}}
+\end{align*}
+We take $c_{n + 1}$ real for simplicity. So:
+\[ \hat{a}_{+} \ket*{E_n} = \sqrt{n + 1} \ket*{E_{n + 1}} \]
+
+And similarly,
+\[ \hat{a}_{-} \ket*{E_n} = \sqrt{n} \ket*{E_{n - 1}} \]
+
+Chaining together reveals:
+\[ \ket*{E_n} = \frac{1}{n!} \hat{a}_{+}^n \ket*{E_0} \]
+
+Let's write $\hat{x}$ and $\hat{p}$ as:
+\[ \hat{x} = \qty(\frac{\hbar}{2 m \omega})^{1/2} (\hat{a}_{+} + \hat{a}_{-}) \]
+
+Suppose we wanted to calculate
+\begin{align*}
+    \bra{E_0} \hat{x}^4 \ket*{E_0} &= \frac{\hbar^2}{4 m^2 \omega^2} \bra{E_0}\hat{a}_{+}^4 + \hat{a}_{+}^3 \hat{a}_{-} + \dots + \hat{a}_{-}^4 \ket*{E_0}
+\end{align*} 
+Since all the states are orthogonal, any raising and lowering will cancel with the $\bra{E_0}$. Thus,
+only the terms with the same amount of raising and lowering remain.
+\begin{align*}
+    \bra{E_0} \hat{x}^4 \ket*{E_0} &= \frac{\hbar^2}{4m^2 \omega^2} \bra{E_0}\hat{a}_{-}\hat{a}_{+}\hat{a}_{-}\hat{a}_{+} + \hat{a}_{-}\hat{a}_{-}\hat{a}_{+}\hat{a}_{+}\ket{E_0}
+\end{align*}
+One can then apply the raising and lowering rules to find the final value.

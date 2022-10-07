@@ -1,0 +1,64 @@
+\section{Lecture 17: Operator Properties}
+
+Recall that $\ket{\Psi}$ is a state vector and $\bra{\Psi}$ is its adjoint.
+Furthermore, eecall the adjoint of an operator, where if
+\[ \ket{\phi} = \hat{A} \ket{x} \]
+then
+\[ \bra{\phi} = \bra{x} \hat{A}^{\dagger} \]
+
+\begin{note}[Adjoint/Inner product properties]
+    Here are some properties of the inner product.
+    \[ \bra{\Psi_1}\ket{\Psi_2}  = \int \Psi_1^*(\mbf{r}) \Psi_2(\mbf{r}) \]
+    \[ \bra{\Psi_1}\ket{\Psi_2}^* = \bra{\Psi_2}\ket{\Psi_1}\]
+    \[ \bra{\Psi_1}\ket{c \Psi_2} = c \bra{\Psi_1}\ket{\Psi_2} \]
+    \[ \bra{c \Psi_1}\ket{\Psi_2} = c^* \bra{\Psi_1}\ket{\Psi_2} \]
+    For orthonormal $\Psi_1, \Psi_2$,
+    \[ \bra{\Psi_1}\ket{\Psi_2} = \delta_{12} \]
+    Also, taking the adjoint of a scalar function is just:
+    \[ f(\hat{A})^{\dagger} = f^*(\hat{A}^{\dagger}) \]
+\end{note}
+
+\begin{definition}[Inverses/Identity]
+    The identity operator is defined as
+    \[ \hat{I} \ket{\Psi} = \ket{\Psi} \]
+
+    If $\hat{B}\hat{A} = \hat{A}\hat{B} = \hat{I}$, then $\hat{B} = \hat{A}^{-1}$.
+\end{definition}
+Then we can also define a unitary operator.
+\begin{definition}[Unitary Operator]
+    A linear operator is said to be unitary if $\hat{U}^{-1} = \hat{U}^{\dagger}$, i.e.
+    \[ \hat{U} \hat{U}^{\dagger} = \hat{U}^{\dagger} \hat{U} = \hat{I} \]
+\end{definition}
+These can be said to be like rotations: they do not change things like commutators, inner products, and all
+the physics we have done until this point.
+\begin{definition}[Projection Operator]
+    The projection operator $\hat{\Lambda}$ does the following If we have $\ket{\Psi} = \ket{\phi} + \ket{x}$,
+    then
+    \[ \ket{\phi} = \hat{\Lambda} \ket{\Psi}, \ket{x} = \qty(\hat{I} - \hat{\Lambda})\ket{\Psi} \]
+\end{definition}
+Here is an incredibly useful theorem. It uses the sum of an outer product $\ket{u}\bra{v}$.
+\begin{theorem}
+    The following is true:
+    \[ \sum_n \ket{\Psi_n}\bra{\Psi_n} = \hat{I} \]
+
+    \begin{proof*}
+    \begin{align*} 
+        \ket{\Psi} &= \sum_n c_n \ket{\Psi_n} \\
+        \bra{\Psi_m}\ket{\Psi } &= \sum_n c_n \bra{\Psi_m} \ket{\Psi_n} = c_m \\
+        \Psi(\mbf{r}, t) &= \sum_{n} \int \Psi^*_n(\mbf{r'}) \Psi(\mbf{r'}, t) \Psi_n(\mbf{r}) \dd{\mbf{r'}} \\
+        \Psi(\mbf{r}, t) &= \int \Psi(\mbf{r'}, t) \qty(\sum_{n} \Psi^*_n(\mbf{r'}) \Psi_n(\mbf{r})) \dd{\mbf{r'}} \\
+    \end{align*}
+    So we must have $\sum_n  \Psi^*_n(\mbf{r'}) \Psi_n(\mbf{r}) = \delta(\mbf{r} - \mbf{r'})$,
+    since it acts like a delta under the integral sign.
+
+    Note that
+    \begin{align*}
+        \bra{x}\ket{\Psi} &= \int x^*(\mbf{r}, t) \Psi(\mbf{r}, t) \dd{\mbf{r}} \\
+        \bra{x}\ket{\Psi}&= \int \int x^*(\mbf{r}, t) \Psi(\mbf{r}, t) \delta(\mbf{r} - \mbf{r}') \dd{\mbf{r}} \dd{\mbf{r'}} \\
+        \bra{x}\ket{\Psi}&= \sum_n \int x^*(\mbf{r}, t) \Psi_n(\mbf{r}) \dd{\mbf{r}} \int \Psi_n^*(\mbf{r'}) \Psi(\mbf{r'}, t) \dd{\mbf{r'}} \\
+        \bra{x}\ket{\Psi} &= \sum_n \bra{x}\ket{\Psi_n}\bra{\Psi_n}\ket{\Psi} \\
+        \bra{x}\ket{\Psi} &= \bra{x} \qty(\sum_n \ket{\Psi_n} \bra{\Psi_n})\ket{\Psi}
+    \end{align*}
+    The only operator that always satisfies this is the identity, so $\sum_n \ket{\Psi_n} \bra{\Psi_n} = \hat{I}$.
+\end{proof*} 
+\end{theorem}
