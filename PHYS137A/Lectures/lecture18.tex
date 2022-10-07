@@ -4,4 +4,88 @@ Suppose you want to find the expectation value of some operator:
 \[ \langle \hat{A} \rangle_{\Psi} = \bra{\Psi} \hat{A} \ket{\Psi} \]
 We know if $\ket{\Psi} = \ket{\Psi_a}$, then it's easy to act $\hat{A}$ on
 $\ket{\Psi}$ with a decomposition.
-\[ \ket{\Psi} = \sum_n c_n \ket{\Psi_n}, \ket{\Psi} = \sum_m c_m^* \ket{\Psi_m} \]
+\[ \ket{\Psi} = \sum_n c_n \ket{\Psi_n}, \bra{\Psi} = \sum_m c_m^* \bra{\Psi_m} \]
+So:
+\begin{align*}
+    \langle \hat{A} \rangle_{\Psi} &= \sum_{m, n} c_m^* c_n \bra{\Psi_m} \hat{A} \ket{\Psi_n} \\
+    &= \sum_{m, n} c_m^* c_n a_n \bra{\Psi_m}\ket{\Psi_n} \\
+    &= \sum_{m} \sum_{n} c_m^* c_n a_n \delta_{mn} \\
+    &= \sum_n |c_n|^2 a_n
+\end{align*}
+Where again $|c_n|^2$ is the probability is you are in state $n$.
+This means that $\sum_n |c_n|^2 = 1$.
+
+Suppose you have degeneracy, where there are multiple linearly independent
+$\Psi$ such that they have the same eigenvalue $a_n$. We index them $\Psi_{n, 1}, \Psi_{n, 2}, \dots$.
+If it is $\alpha$ times degenerate, then $\Psi_{nr}$ ranges from $r = 1, \dots, \alpha$.
+The probability to observe $a_n$ is:
+\[ P_n = \sum_{r = 1}^{\alpha} |c_{nr}|^2 = \sum_{r = 1}^{\alpha} |\bra{\Psi_{nr}}\ket{\Psi}|^2 \]
+After measurement
+\[ \ket{\Psi}_{\text{after}} = \sum_{r = 1}^{\alpha} c_{nr} \ket{\Psi_{nr}} \] 
+this quantum effect is called entanglement of measurement.
+
+You can be in a superposition of continuum and bound state. The most general state is:
+\[ \ket{\Psi} = \sum_n c_n \ket{\Psi_n} + \int c(a) \ket{\Psi_a} \dd{a} \]
+Remember that for wave packets, $c(a)$ would be the Fourier transform $\phi(k)$ of the wave packet, and
+$\ket{\Psi_a}$ was the basis of plane waves. In this way, we can find:
+\[ \langle \hat{A} \rangle_{\Psi} = \sum_{n} |c_n|^2 a_n + \int |c(a)|^2 a \dd{a} \]
+
+\subsection{Commuting Operators}
+$\hat{A}, \hat{B}$ ``commute'' if $[\hat{A}, \hat{B}] = 0$. This also means that there
+exists a common set of eigenfunctions for both of them, $\{ \ket{\Psi_n}\}$, where
+\[ \hat{A}\ket{\Psi_n} = a_n \ket{\Psi_n}, \hat{B} \ket{\Psi_n} = b_n \ket{\Psi_n} \]
+
+Recall for the free particle:
+\[ \hat{H} = \frac{\hat{p}}{2m} \]
+So this means that $[\hat{H}, \hat{p}] = 0$ (just express everything in terms of $\hat{p}$).
+We found in the past a common eigenbasis for them, the plane wave basis $\ket{\Psi_k} = e^{ikx}$.
+\[ \hat{p} \ket{\Psi_k} = \hbar k \ket{\Psi_k}, \hat{H} \ket{\Psi_k} = \frac{\hbar^2 k^2}{2m} \ket{\Psi_k} \]
+
+\subsection{Formalizing Heisenberg Uncertainty}
+Define 
+\begin{align*}
+    \delta \hat{A} &= \qty[]\langle \qty(\hat{A} - \langle \hat{A} \rangle)^{2} \rangle]^{1/2} \\
+    &= \sqrt{\langle \hat{A}^2 \rangle - \langle \hat{A} \rangle^2} 
+\end{align*}
+
+Then we can state the formal version of Heisenberg Uncertainty:
+\begin{theorem}[Heisenberg Uncertainty Principle]
+    For any two operators $\hat{A}, \hat{B}$ we have:
+    \[ \delta \hat{A} \delta \hat{B} \geq \frac{1}{2} \qty|\langle [\hat{A}, \hat{B}] \rangle|\]
+\end{theorem}
+
+\subsection{Unitary Transforms}
+Suppose you have \[ \hat{A} \ket{\Psi} = \ket{x} \] for some linear Hermitian operator $\hat{A}$.
+Consider $\hat{U}$ unitary. Define $\ket{\Psi'} = \hat{U} \ket{\Psi}$. Then:
+\[ \ket{x'} = \hat{U} \ket{x} = \hat{U}\hat{A}\ket{\Psi} = \hat{U}\hat{A}\hat{U^{\dagger}}\ket{\Psi'} \]
+This means if we want an $\hat{A}'$ to transform vectors in that other basis, it is just $\hat{U}\hat{A}\hat{U^{\dagger}}$.
+Or in other words, $\hat{A} = \hat{U}^{\dagger} \hat{A}' \hat{U}$.
+
+We have now the following facts about Unitary transforms, which correspond well to a physical change of coordinates.
+\begin{itemize}
+    \item If $\hat{A}$ is Hermitian, then $\hat{A}'$ is Hermitian.
+    \item Operator equations are unchanged, \[ \hat{A} = c_1 \hat{B} + c_2 \hat{C} \hat{D} \implies \hat{A'} = c_1 \hat{B'} + c_2 \hat{C'} \hat{D'}  \]
+    \item The eigenfunctions and eigenvalues of $\hat{A}'$ and $\hat{A}$ are the same.
+    \item Matrix elements are unchanged, e.g. $\bra{x}\hat{A}\ket{\Psi} = \bra{x'}\hat{A'}\ket{\Psi'}$.
+\end{itemize}
+
+\begin{theorem}
+    In fact, can always express a unitary $\hat{U}$ in terms of any Hermitian operator $\hat{A}$
+    \[ \hat{U} = e^{i\hat{A}} = \sum_{j = 0}^{\infty} \frac{(i\hat{A})^j}{j!}\]
+    $\hat{A}$ is dubbed the generator of the Unitary.
+    \begin{proof}[Heuristic]
+        Why is this true? Well, consider an infinitesimal unitary operator
+    \[ \hat{U} = e^{i\hat{F}} \approx \hat{I} + i \epsilon \hat{F} \]
+    for some small $\epsilon > 0$. Then take some function
+    \[ \ket{\Psi'} = \ket{\Psi} + \ket{\delta \Psi} \]
+    where $\ket{\delta \Psi} = i \epsilon \hat{F} \ket{\Psi}$.
+
+    Now take some operator:
+    \begin{align*}
+        \hat{A'} &= \hat{A} + \delta\hat{A}
+        &= \hat{U} \hat{A} \hat{U}^{\dagger} \\
+        &= \hat{A} + i \epsilon \hat{F}\hat{A} - i \epsilon \hat{A}\hat{F} + O(\epsilon^2) \\
+    \end{align*}
+    This means $\delta A = i \epsilon [\hat{F}, \hat{A}]$.
+    \end{proof}
+\end{theorem}
