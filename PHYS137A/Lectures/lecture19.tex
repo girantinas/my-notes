@@ -1,0 +1,72 @@
+\section{Lecture 19: Unitary Change of Bases, Angular Momentum}
+
+Suppose you have some unitary time evolution, $\hat{U}(t, t_0)$ that advances the system from $t = t_0$ to $t = t$. Clearly $\hat{U}(t_0, t_0) = \hat{I}$.
+\[ \ket{\Psi(t)} = \hat{U}(t, t_0) \ket{\Psi(0)} \]
+Consider that $\hat{U}^{-1}(t, t_0) = \hat{U}(t_0, t)$. We know for time elements:
+$\hat{U}(t, t_0) = \hat{U}(t, t') \hat{U}(t', t_0)$.
+
+Note the Schrodinger Equation becomes:
+\[ i\hbar \partialderivative{\hat{U}}{t}(t, t_0) = \hat{H}\hat{U}(t, t_0) \]
+By formal integration, the solution is simply:
+\[ \hat{U}(t, t_0) = \hat{I} - \frac{i}{\hbar} \int_{t_0}^t \hat{H}\hat{U(t', t_0)} \dd{t'} \]
+
+Consider the first order behavior for a small timestep $\delta t$.
+\begin{align*}
+    i\hbar\qty[\hat{U}(t_0 + \delta t, t_0) - \hat{U}(t_0, t_0)] &= \hat{H} \hat{U}(t_0, t_0) \delta t \\
+    \hat{U}(t_0 + \delta t, t_0) &= \hat{I} - \frac{i}{\hbar} \hat{H} \cdot \delta t
+\end{align*}
+this means that the Hamiltonian is the gnerator of time translation. Similarly, $\hat{p}$ is the generator of space translations.
+
+Consider a time-independent Hamiltonian. Then:
+\begin{align*}
+    \dv{}{t} \langle \hat{A} \rangle &= \dv{}{t} \bra{\Psi} \hat{A} \ket{\Psi} \\
+    &= \bra{\pdv{\Psi}{t}} \hat{A} \ket{\Psi} + \bra{\Psi} \hat{\partialderivative{A}{t}} \ket{\Psi} + \bra{\Psi} \hat{A} \ket{\pdv{\Psi}{t}} \\
+    &= -\frac{1}{i\hbar} \bra{\hat{H}\Psi} \hat{A} \ket{\Psi} + \frac{1}{i\hbar} \bra{\Psi} \hat{A} \ket{\hat{H}\Psi} + \bra{\Psi}  \hat{\partialderivative{A}{t}} \ket{\Psi} \\
+    &= -\frac{1}{i\hbar} \bra{\Psi} \hat{H}^{\dagger} \hat{A} \ket{\Psi} + \frac{1}{i\hbar} \bra{\Psi} \hat{A}\hat{H} \ket{\Psi} + \bra{\Psi}  \hat{\partialderivative{A}{t}} \ket{\Psi} \\
+    &= \frac{1}{i\hbar} \langle [A, H] \rangle + \left\langle \pdv{\hat{A}}{t} \right\rangle
+\end{align*}
+
+In the special case of an time-independent $\hat{A}$, then
+\[ \derivative{}{t}\langle\hat{A}\rangle = \frac{1}{i\hbar} \langle [\hat{A}, \hat{H}] \rangle \]
+If $\hat{A}$ commutes with $\hat{H}$, then $\hat{A}$ is a constant of motion, e.g. conserved.
+
+\subsection{Angular Momentum}
+We know in classical mechanics, $\mathbf{L} = \mathbf{r} \cross \mathbf{p}$:
+\begin{align*}
+    L_x &= y p_z - z p_y \\
+    L_y &= z p_x - x p_z \\
+    L_z &= x p_y - y p_x
+\end{align*}
+Turning these into Quantum mechanic operators:
+\begin{align*}
+    \hat{L}_x &= -i\hbar\qty(y \partialderivative{}{z} - z \partialderivative{}{y}) \\
+    \hat{L}_y &= -i\hbar\qty(z \partialderivative{}{x} - x \partialderivative{}{z}) \\
+    \hat{L}_z &= -i\hbar\qty(x \partialderivative{}{y} - y \partialderivative{}{x}) \\
+\end{align*}
+which can be succinctly written as $\mbf{\hat{L}} = -i\hbar(\mbf{r} \cross \nabla)$. Do the components commute?
+\begin{align*}
+    [\hat{L}_x, \hat{L}_y] &= [yp_z - z p_y, zp_x - x p_z] \\
+    &= [y p_z, zp_x] + [zp_y, xp_z] - [y p_z, x p_z] - [zp_y, zp_x]
+\end{align*}
+Consider the first term:
+\[ [y p_z, zp_x] = y p_z z p_x - z p_x y p_z = y p_x [p_z, z] = -i \hbar y p_x\]
+because any momentums in orthogonal directions commute and any spacial coordinates in orthogonal directions commute.
+We can resolve the rest of the components similarly.
+\begin{align*}
+    [\hat{L}_x, \hat{L}_y] &= i\hbar(x p_y - y p_x) \\
+    &= i\hbar \hat{L}_z
+\end{align*}
+Similarly, $[\hat{L}_y, \hat{L}_z] = i\hbar\hat{L}_x$ and $[\hat{L}_z, \hat{L}_x] = i\hbar\hat{L}_y$. So you cannot know
+all three components simultaneously! However, we can know the length.
+
+\begin{align*}
+    [L^2, L_x] &= [L_x^2 + L_y^2 + L_z^2, L_x] \\
+    &= [L_x^2, L_x] + [L_y^2, L_x] + [L_z^2, L_x] \\
+    &= 0 + L_y [L_y, L_x] + [L_y, L_x]L_y + L_z [L_z, L_x] + [L_z, L_x] L_z \\
+    &= - i\hbar (L_y L_z - L_z L_y) + i\hbar (L_y L_z - L_z L_y) \\
+    &= 0
+\end{align*}
+So we can write a simultaneous eigenbasis for both the quantities.
+
+Note that the vector cannot point towards $\hat{z}$, because then you would know $\hat{L}_x$ and $\hat{L}_y$.
+$|\hat{L}|$ must be at least $\hbar \hat{L}_z$ in order to satisfy the uncertainty relation.
