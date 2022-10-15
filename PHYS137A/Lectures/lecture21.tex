@@ -1,0 +1,59 @@
+\section{Lecture 20: Angular Momentum, Part 3} 
+
+As we did last time, call a separable eigenfunction of the $\hat{L}^2$ as $Y_{\ell m}(\theta, \varphi) = \Theta_{\ell m}(\theta) \Phi_m(\varphi)$, the spherical harmonic. Note that this is
+also an eigenfunction for $\hat{L}_z$. We can call the eigenvalue $a$, but calling it $\ell(\ell + 1)\hbar^2$ makes our life easier (and makes $\ell$ integer-valued).
+The eigenequation writes
+\[ \hat{L}^2 Y_{\ell m}(\theta, \varphi) = \ell(\ell + 1) \hbar^2 Y_{\ell m}(\theta, \varphi) \]
+Solving this is hard, but we shall do it:
+\begin{align*}
+    \qty[\frac{1}{\sin \theta} \pdv{}{\theta} \qty(\sin \theta \pdv{}{\theta}) + \frac{1}{\sin^2 \theta} \pdv{^2}{\varphi^2}] Y_{\ell m}(\theta, \varphi) &= - \ell(\ell + 1) Y_{\ell m}(\theta, \varphi) \\
+    \qty[\frac{1}{\sin \theta} \pdv{}{\theta} \qty(\sin \theta \pdv{}{\theta}) + \qty[\ell(\ell + 1) - \frac{m^2}{\sin^2 \theta}]] Y_{\ell m}(\theta, \varphi) \Theta_{\ell m}(\theta) &= 0
+\end{align*}
+where this is because $Y = \Theta \Phi$. Let $w = \cos \theta$ and $F_{\ell m}(w) = \Theta_{\ell m}(\theta)$.
+\[ \qty[(1 - w^2) \dv{^2}{w^2} - 2w \dv{}{w} + \ell(\ell + 1) - \frac{m^2}{1 - w^2}] F_{\ell m}(w) = 0 \]
+Let's start with $m = 0$, which is no angular momentum in the $z$.
+\[ \qty[(1 - w^2) \dv{^2}{w^2} - 2w \dv{}{w} + \ell(\ell + 1)] F_{\ell 0}(w) = 0 \]
+This is a well-known equation called the Legendre equation. Their solutions are the Legendre polynomials $P_{\ell}$. These are not
+necessary to know by heart, but are useful to look up.
+\begin{align*}
+    P_0(w) &= 1 \\
+    P_1(w) &= w \\
+    P_2(w) &= \frac{1}{2}(3w^2 - 1) \\
+    &\vdots
+\end{align*}
+Their generating function is:
+\[ P_{\ell}(w) = 2^{-\ell} (\ell!)^{-1} \frac{\dd{^{\ell}}}{\dd{w^{\ell}}} (w^2 - 1)^{\ell} \]
+For general $m$, these are associated legendre polynomials 
+\[ P_{\ell}^{|m|}(w) = (1 - w^2)^{|m|/2} \dv{^{|m|}}{w^{|m|}} P_{\ell}(w)\]
+We have a restriction that $m = - \ell, -\ell + 1, \dots, \ell$. This can be seen by simplifying
+\[ \langle L^2 \rangle \geq \langle L_z^2 \rangle \]
+This step was omitted since it was similar enough to the Hermite derivation.
+
+This means our solution becomes:
+\begin{align*}
+    \Theta_{\ell m}(\theta) &= \begin{cases}
+        (-1)^m \qty[\frac{(2 \ell + 1)(\ell - m)!}{2(\ell + m)!}]^{1/2} P_{\ell}^m(\cos \theta) & m \geq 0 \\
+        (-1)^m \Theta_{\ell, -m}(\theta) & m < 0
+    \end{cases}
+\end{align*}
+
+Eventually we yield the \textbf{Spherical Harmonics}.
+\begin{align*}
+    Y_{\ell m}(\theta, \varphi) &= \begin{cases}
+        (-1)^m \qty[\frac{(2 \ell + 1)(\ell - m)!}{4 \pi (\ell + m)!}]^{1/2} P_{\ell}^m (\cos \theta) e^{i m \varphi} & m \geq 0 \\
+        (-1)^m Y_{\ell, -m}^*(\theta, \varphi) & m < 0
+    \end{cases}
+\end{align*}
+these are the simultaneous eigenfunctions of $L^2$ and $L_z$. We only allow $\ell = 0, 1, 2, \dots$ and $m = - \ell , -\ell + 1, \dots, \ell$.
+
+In chemistry, the magnetic quantum number $\ell$ determines the type of orbital.
+If $\ell = 0$, the orbital is $s$, $\ell =1$ means $p$, $\ell = 2$ means $d$ and $\ell = 3$ means $f$. We know there
+are $2\ell + 1$ values of $m$. Each of these corresponds to a "lobe" of the orbital. And the orbital shape is exactly the $|Y_{\ell m}|^2$!
+
+\subsection{Spherical Harmonics as a Basis}
+These $Y_{\ell m}$ form a orthonormal basis set, i.e.:
+\[ \int Y^*_{\ell' m'} (\theta, \varphi) Y_{\ell m}(\theta, \varphi) \dd{\Omega} = \delta_{\ell \ell'} \delta_{m m'} \]
+where $\dd{\Omega} = \sin\theta\dd{\theta}\dd{\varphi}$. They are also complete so:
+\[ f(\theta, \varphi) = \sum_{\ell = 0}^{\infty} \sum_{m = -\ell}^{\ell} a_{\ell m} Y_{\ell m}(\theta, \varphi) \]
+And we can recover:
+\[ a_{\ell m} = \int Y^*_{\ell m} (\theta, \varphi) f(\theta, \varphi) \dd{\Omega} \]
