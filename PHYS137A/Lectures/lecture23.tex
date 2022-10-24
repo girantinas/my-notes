@@ -1,0 +1,100 @@
+\section{Lecture 23: Generalized Angular Momentum, Spin} 
+
+We wish to generalize angular momentum, not just the orbital case (which was enforced to be $2\pi$-periodic). We'll call it $\mbf{J}$.
+We preserve commutators but remove the original circle definition:
+\[ [\hat{J}_x, \hat{J}_y] = i\hbar \hat{J}_z\]
+\[ \hat{J}^2 = \hat{J}_x^2 + \hat{J}_y^2 + \hat{J}_z^2 \]
+\[ [\hat{J}^2, \hat{J}_z] = 0 \]
+which means that $\hat{J}^2, \hat{J}_z$ have a simultaneous eigenfunctions $\ket{jm}$, where the eigenvalues are:
+\begin{align*}
+    \hat{J}^2 \ket{jm} &= j(j + 1) \hbar^2 \ket{jm} \\
+    \hat{J}_z \ket{jm} &= m\hbar \ket{jm}
+\end{align*}
+Since $\langle \hat{J}^2 \rangle \geq \langle \hat{J}_z^2 \rangle$, this must mean:
+\[ j(j + 1) \geq m^2 \]
+which characterizes the allowable values of $m$. We can define the raising and lowering operators similarly to last time:
+\[ \hat{J}_{\pm} = \hat{J}_x \pm i \hat{J}_y, \hat{J}_{\pm}^{\dagger} = \hat{J}_{\mp} \]
+Finally we have:
+\begin{align*}
+    [\hat{J}^2, \hat{J}_{\pm}] &= 0 \\
+    \hat{J}_{\pm} \hat{J}_{\mp} &= \hat{J}^2 - \hat{J}_z^2 \pm \hbar \hat{J}_z \\
+    [\hat{J}_{+}, \hat{J}_-] &= 2 \hbar \hat{J}_z\\
+    [\hat{J}_z, \hat{J}_{\pm}] &= \pm \hbar \hat{J}_{\pm} \\
+    \hat{J}_{\pm} \ket{jm} &= [j(j + 1) - m(m \pm 1)]^{1/2} \ket{j, m \pm 1}
+\end{align*}
+
+We know $j = 0, 1, 2, \dots$ since it must be a length. Call $m_T$ the top of the ladder. We know:
+\begin{align*}
+    \hat{J}_{+} \ket{j m_T} &= 0 \\
+    \hat{J}_{-} \hat{J}_{+} \ket{j m_T} &= 0 \\
+    \hat{J}^2 \ket{j m_T} - \hat{J}_z^2 \ket{j m_T} - \hbar \hat{J}_z \ket{j m_T} &= 0 \\
+    j(j + 1) \hbar^2 - m_T^2 \hbar^2 - m_T \hbar^2 \ket{j m_T} &= 0 \\
+    j(j + 1) &= m_T^2 + m_T
+\end{align*}
+Similarly, we can apply this at the bottom of the ladder $m_B$ to get:
+\[ j(j + 1) = m_B^2 - m_B \]
+Equating them, we get
+\[ m_T^2 + m_T = m_B^2 - m_B \]
+Either $m_T = - m_B$ or $m_T = m_B - 1$, discarding the second one because it's non-physical (the top of the ladder can't be below the bottom).
+This means that $m_T = j$ and $m_B = -j$. So $m_T - m_B = 2j$ for $j = 0, 1, 2, \dots$. But if we only care about $m$ being integer,
+so we must conclude $j = 0, 1/2, 1, 3/2, \dots$: half-integer valued!
+
+\subsection{Spin Matrices}
+To ensure orthonormality:
+\[ \bra{j'm'}\ket{jm} = \delta_{j j'} \delta_{m m'} \]
+We can work out matrix elements:
+\begin{align*}
+    [\hat{J}^2]_{j'm'jm} &= \mel**{j'm'}{\hat{J}^2}{jm} \\
+    &= j(j + 1) \hbar^2 \delta_{j j'} \delta_{mm'}
+\end{align*}
+Note that such a matrix is a 4-dimensional tensor, so we can't draw it out very nicely. Let's work out another one:
+\begin{align*}
+    [\hat{J}_z]_{j'm'jm} &= \mel**{j'm'}{\hat{J}_z}{jm} \\
+    &= m\hbar \delta_{j j'} \delta_{mm'} \\
+    [\hat{J}_{\pm}]_{j'm'jm} &= \mel**{j'm'}{\hat{J}_{\pm}}{jm} \\
+    &= \sqrt{j(j + 1) - m (m \pm 1)}^{1/2} \bra{j'm'}\ket{j, m \pm 1} \\
+    &= \sqrt{j(j + 1) - m (m \pm 1)}^{1/2} \delta{j j'} \delta_{m \pm 1, m'} \\
+\end{align*}
+We can find the matrix for $\hat{J}_x$ using $\frac{1}{2}(\hat{J}_{+} + \hat{J}_{-})$.
+
+Now let's take $j = 0$. Then $m = 0$, so:
+\[ J_x = 0, J_y = 0, J_z = 0, J^2 = 0 \]
+
+The first interesting case is $j = \frac{1}{2}$. Then: $m = \pm \frac{1}{2}$
+\begin{align*}
+    \hat{J}_x &= \frac{\hbar}{2} \begin{pmatrix}
+        0 & 1 \\ 1 & 0
+    \end{pmatrix} \\
+    \hat{J}_y &= \frac{\hbar}{2} \begin{pmatrix}
+        0 & -i \\ i & 0
+    \end{pmatrix} \\
+    \hat{J}_z &= \frac{\hbar}{2} \begin{pmatrix}
+        1 & 0 \\ 0 & -1
+    \end{pmatrix} \\
+    \hat{J}^2 &= \frac{3\hbar}{4} \begin{pmatrix}
+        1 & 0 \\ 0 & 1
+    \end{pmatrix}
+\end{align*}
+
+The next interesting case is $j = 1$. Then $m = 1, 0, -1$
+\begin{align*}
+    \hat{J}_x &= \frac{\hbar}{\sqrt{2}} \begin{pmatrix}
+        0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0
+    \end{pmatrix} \\
+    \hat{J}_y &= \frac{\hbar}{\sqrt{2}} \begin{pmatrix}
+        0 & -i & 0 \\ i & 0 & -i \\ 0 & i & 0
+    \end{pmatrix} \\
+    \hat{J}_z &= \hbar \cdot \mathrm{diag}(1, 0, -1) \\
+    \hat{J}^2 &= 2\hbar^2 \cdot \mathrm{diag}(1, 1, 1)
+\end{align*}
+
+We can also use a block diagonal matrix formalism:
+\[ \begin{pmatrix}
+    (j = 0) & & & \\
+    & (j = 1/2) & & \\
+    & & (j = 1) & \\
+    & & & \ddots
+\end{pmatrix} \]
+
+We call these different values of $j$ "spin-states."
+Spin is a fundamental vector label of a particle, that behaves like angular momentum and is intrinsic to matter (i.e. charge, mass).
