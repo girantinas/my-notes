@@ -1,0 +1,87 @@
+\section{Lecture 24: Spin} 
+
+\begin{definition}[Spin]
+    Elementary particles ahve an internal degree of freedom that behaves as an angular momentum and is called spin.
+    The operator that gives you the spin of a state is $\hat{\mbf{S}}$.
+\end{definition}
+
+Since spin is angular momentum, we have:
+\begin{align*}
+    [\hat{S}_x, \hat{S}_y] &= i \hbar \hat{S}_z \\
+    [\hat{S}_y, \hat{S}_z] &= i \hbar \hat{S}_x \\
+    [\hat{S}_z, \hat{S}_x] &= i \hbar \hat{S}_y
+\end{align*}
+Also, the simultaneous eigenbasis of $\hat{S}^2, \hat{S}_z$ called $\ket{s m_s} = \chi_{s, m_{s}}$ acts
+\begin{align*}
+    \hat{S}^2 \ket{s m_s} &= s(s + 1)\hbar^2 \ket{s m_s} \\
+    \hat{S}_x \ket{s m_s} &= m_s\hbar \ket{s m_s} \\
+\end{align*}
+$s$ can be $0, 1/2, 1, 3/2, \dots$. $m_s$ has $(2s + 1)$ allowed values: $(-s, -s + 1, \dots, s)$. Recall the matrix
+representations of these operators. Let's take $s = 1$.
+\begin{align*}
+    \hat{S}_z &= \hbar \mqty(\dmat{1, 0, -1}) \\
+    \hat{S}^2 &= 2 \hbar^2 \mqty(\dmat{1, 1, 1}) \\
+    \hat{S}_{\pm} &= \hat{S}_x \pm i \hat{S}_y
+\end{align*}
+The eigenvectors in this basis are just the elementary basis vectors over $\R^3$. The eigenvalues of $\hat{S}_z$ are $\hbar, 0, -\hbar$ respectively.
+All the eigenvalues of $\hat{S}^2$ are $2\hbar^2$.
+
+\subsection{Wave Function with Spin}
+Let's add another argument to the wavefunction $\Psi(\mbf{r}, t, \sigma)$. We can write a general state as:
+\begin{align*}
+    \sum_{m_s = -s}^{s} \Psi_{m_s}(\mbf{r}, t) \chi_{s, m_{s}}
+\end{align*}
+Then naturally, $|\Psi_{m_s}(\mbf{r}, t)|^2 \dd{\mbf{r}}$ is the probability of being in a ball of volume $\dd{\mbf{r}}$ around $\mbf{r}$
+at time $t$ at spin state $S_z = m_s \hbar$. Then
+\[ \sum_{m_s = -s}^s |\Psi_{m_s}(\mbf{r}, t)|^2 \dd{\mbf{r}} \neq 1 \]
+gives you the probability irrespective of spin (i.e. for all spins)
+\[ \int |\Psi_{m_s}(\mbf{r}, t)|^2 \dd{\mbf{r}} \neq 1 \]
+gives you the probability is a particle with $m_s \hbar$ at time $t$.
+
+In our above discussion, we assumed that position and spin $s$ are independent. This may not necessarily be the case (as we will see in entanglement).
+
+\subsection{Spin = 1/2}
+Some examples of systems with spin 1/2 are: electrons, protons, qubits. We take $s = \frac12$, $m_s = -\frac{1}{2}, +\frac{1}{2}$.
+Note that the length of the vector is $\sqrt{\text{e-val of }\hat{S}^2}$. The eigenvalue $s(s + 1) \hbar^2 = \frac{3}{4} \hbar^2$,
+so the length is $\frac{\sqrt{3}}{2}$. The $z$ projection can be $\frac{\hbar}{2}$ or $\frac{-\hbar}{2}$.
+
+We can write this $\chi_{1/2, 1/2}, \chi_{1/2, -1/2}$ or $\ket{\uparrow}, \ket{\downarrow}$ or $\ket{+}, \ket{-}$. In
+a sense, this algebra describes anything that can take two takes perfectly!
+\begin{align*}
+    S^2 \ket{+} &= \frac{3\hbar^2}{4} \ket{+} \\
+    S^2 \ket{-} &= \frac{3\hbar^2}{4} \ket{-} \\
+    S_z \ket{+} &= \frac{\hbar}{2} \ket{+} \\
+    S_z \ket{-} &= -\frac{\hbar}{2} \ket{-} \\
+    S_{\pm} \ket{\mp} &= \hbar \ket{\pm} \\
+    S_{\pm} \ket{\pm} &= 0 \\
+    S_x \ket{+} &= \frac{\hbar}{2} \ket{-} \\
+    S_y \ket{-} &= \frac{-i\hbar}{2} \ket{+}
+\end{align*}
+Let's write the matrices:
+\begin{align*}
+    [S_z] &= \frac{\hbar}{2} \smqty(\pmat{3}) \\
+    [S_x] &= \frac{\hbar}{2} \smqty(\pmat{1}) \\
+    [S_y] &= \frac{\hbar}{2} \smqty(\pmat{2})
+\end{align*}
+If you have some state:
+\[ \ket{\chi} = a \ket{+} + b \ket{-} \]
+The probability of being spin up $|a|^2$ and being spin down $|b|^2$ where:
+\[ |a|^2 + |b|^2 = 1 \]
+(this made Patrick very happy). For spin $1/2$:
+\begin{align*}
+    S^2 &= \frac{3}{4} \hbar^2 I \\
+    S_x^2 &= S_y^2 = S_z^2 = \frac{\hbar^2}{4} I \\
+    S_{\pm}^2 &= 0
+\end{align*}
+
+\begin{definition}[Anticommutator]
+    The Anticommutator for two operators $\hat{A}, \hat{B}$ is:
+    \begin{align*}
+        [\hat{A}, \hat{B}]_{+} &= \hat{A}\hat{B} + \hat{B} \hat{A}
+    \end{align*}
+\end{definition}
+
+This means:
+\[ [S_x, S_y]_{+} = 0 \]
+
+Note that the Pauli matrices (the matrices above without the $\hbar$) combined with the identity froms a basis for all 2 by 2 matrices.
