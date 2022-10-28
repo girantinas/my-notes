@@ -1,0 +1,71 @@
+\section{Lecture 25: Conservation of Angular Momentum} 
+
+Consider a particle with revolutional and spin angular momentum.
+\[ \mbf{J} = \mbf{L} + \mbf{S} \]
+Note that $\mbf{L}$ is a function of $\theta, \phi$ and $\mbf{S}$ only operators on spin variables. Thus we know $[\mbf{L}, \mbf{S}] = 0$.
+If we want a unitary transform for an angle $\alpha$ about an axis $\hat{\mbf{n}}$ is:
+\[ \hat{U}_{\hat{\mbf{n}}}(\alpha) = \exp(-\frac{i}{\hbar} \alpha \hat{\mbf{n}} \cdot \mbf{J}) \]
+For an isolated system, total angular momentum is conserved! This means $[\mbf{J}, \hat{H}] = 0$. There must be
+simultaneous eigenfunctions for $\hat{H}, \hat{J}^2, \hat{J}_z$.
+
+This also means the energy only depends on $j$ (i.e. not $m$) because spatial orientation doesn't matter. Let's consider the addition of
+$\mbf{J}$ for two particles.
+\[ \mbf{J} = \mbf{J}_1 + \mbf{J}_2 \]
+
+We can describe $\mbf{J}_i$ as $\ket{j_i, m_i}$ as operators $\hat{J}^2_i$, $\hat{J}_{iz}$. Note that $[\mbf{J}_1, \mbf{J}_2] = 0 $ for two independent particles.
+This means the general state is a product state:
+\[ \ket{j_1 j_2 m_1 m_2} = \ket{j_1 m_1} \ket{j_2 m_2} \]
+We need 4 quantum numbers to describe two particles. For a given pair of $(j_1, j_2)$ there are a total of $(2j_1 + 1)(2j_2 + 2)$ states. We
+can also describe the system as a combination of the two, using the total angular momentum. This is described by $\hat{J}^2, \hat{J}_z$, but this is only two
+quantum numbers, so this is not enough information to describe our system. We can supplement to get $\ket{j m j_1 j_2}$ OR $\ket{j m m_1 m_2}$. However,
+the last one doesn't actually work. Let's see this.
+
+We know $j_{max} = j_1 + j_2$ and $j_{min} = |j_1 - j_2|$.
+\begin{align*}
+    \hat{J}_z \ket{j_1 j_2 m_1 m_2} &= \hat{J}_z \ket{j_1 m_1} \ket{j_2 m_2} \\
+    &= (\hat{J}_{1z} \otimes \hat{I} + \hat{I} \otimes \hat{J}_{2z}) \ket{j_1 m_1} \ket{j_2 m_2}
+    &= (m_1 + m_2)\hbar \ket{j_1 m_1} \ket{j_2 m_2} \\
+    &= (m_1 + m_2)\hbar \ket{j_1 j_2 m_1 m_2}
+\end{align*}
+Let's also consider the squared operator:
+\begin{align*}
+    \hat{J}^2 &= (\mbf{J}_1 + \mbf{J}_2)^2 \\
+    &= J_1^2 + J_2^2 + 2 \mbf{J}_1 \cdot \mbf{J}_2 \\
+    &= J_1^2 + J_2^2 + 2J_{1x}J_{2x} + 2 J_{1y} J_{2y} + 2 J_{1z} J_{2z}
+\end{align*}
+From the above, note $J^2$ commutes with $J_1^2, J_2^2$ but does not commute with $J_{1z}$ or $J_{2z}$.
+
+So, $\ket{j m j_1 j_2}$ is a complete description and $\ket{j m m_1 m_2}$ does not. There is a unitary transformation between the former and $\ket{j_1 j_2 m_1 m_2}$.
+Again note the sum on the right is finite.
+\[\ket{j m j_1 j_2} = \sum_{m_1, m_2} \bra{j_1 j_2 m_1 m_2}\ket{j m} \ket{j_1 j_2 m_1 m_2} \]
+The coefficients $\bra{j_1 j_2 m_1 m_2}\ket{j m}$ are termed Clebsch-Gordon coefficients.
+
+Let's consider the addition of two particles with $S = \frac{1}{2}$. Particle one has states $\chi_{1/2, 1/2}^{(1)}, \chi_{1/2, -1/2}^{(1)}$. Similar for particle two.
+We shall abbreviate this as: $\ket{i\uparrow}, \ket{i\downarrow}$.
+
+Now for state $\ket{s_1 s_2 m_{s_1} m_{s_2}}$:
+
+\begin{center}
+\begin{tabular}{|c | c | c | c|} \hline
+    $m_{s_1}$ & $m_{s_2}$ & total state & total $m_s$ \\ \hline
+    $\ket{1\uparrow}$ & $\ket{2\uparrow}$ & $\ket{\uparrow \uparrow}$ & $1$ \\
+    $\ket{1 \uparrow}$ & $\ket{2\downarrow}$& $\ket{\uparrow \downarrow}$ & $0$\\
+    $\ket{1 \downarrow}$ & $\ket{2\uparrow}$ & $\ket{\downarrow \uparrow}$ & $0$\\
+    $\ket{1 \downarrow}$ & $\ket{2\downarrow}$ & $\ket{\downarrow \downarrow}$ & $-1$\\
+    \hline
+\end{tabular}
+\end{center}
+
+For $s = 0$, $m_s$ must be $0$, so we must subtract the two
+\[ \chi_{s = 0, m = 0} = \frac{1}{\sqrt{2}} \qty(\ket{\uparrow \downarrow} - \ket{\downarrow \uparrow}) \]
+This is the anti-symmetric spin singlet. We subtract because we want $m = 0$ and the only way to do this
+
+For $s = 1$ there are $m_s = -1, 0, 1$.
+\begin{align*}
+    \chi_{1, 1} &= \ket{\uparrow \uparrow} \\
+    \chi_{1, 0} &= \frac{1}{\sqrt{2}} \qty(\ket{\uparrow \downarrow} + \ket{\downarrow \uparrow})\\
+    \chi_{1, -1} &= \ket{\downarrow \downarrow}
+\end{align*}
+This spin-1 state is a symmetric spin triplet.
+
+Note that the final basis we get at the end still has size four, as we expect.
