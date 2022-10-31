@@ -1,0 +1,54 @@
+\section{Lecture 26: 3-Dimensional Problems in Cartesian Coordinates}
+
+Let's consider having two bodies now. What is the Schrodinger equation in such a system?
+Consider two particle with masses $m_1, m_2$ where the potential only depends on $\mbf{r}_1 - \mbf{r}_2$.
+\[ i\hbar \pdv{}{t} \Psi(\mbf{r}_1, \mbf{r}_2, t) = \qty[-\frac{\hbar^2}{2m_i} \nabla^2_{\mbf{r}_1} - \frac{\hbar^2}{2m_i} + \hat{V}(\mbf{r}_1 - \mbf{r}_2)] \Psi(\mbf{r}_1, \mbf{r}_2, t) \]
+There are three spatial dimensions for each particle and a time dimension, so this is a seven dimensional PDE. 
+Introduce the relative coordinate $\mbf{r} = \mbf{r}_1 - \mbf{r}_2$ and the center of mass $\mbf{R} = \frac{m_1\mbf{r}_1 + m_2\mbf{r}_2}{m_1 + m_2}$.
+The total mass is $M = m_1 + m_2$, we also consider reduced mass $\mu = \frac{m_1 m_2}{m_1 + m_2}$.
+We can simplify to:
+\[ i\hbar \pdv{}{t} \Psi(\mbf{R}, \mbf{r}, t) = \qty[-\frac{\hbar^2}{2M} \nabla_{\mbf{R}}^2 - \frac{\hbar^2}{2\mu} \nabla_{\mbf{r}}^2 + \hat{V}(\mbf{r})] \Psi(\mbf{R}, \mbf{r}, t) \]
+So now, this has a separablee solution for $\mbf{R}$ and $\mbf{r}$, where the former looks like a free particle and the latter
+looks like a normal time-independent wavefunction.
+\begin{itemize}
+    \item With time independent $\hat{V}$, we find time-independent eigenfunction.
+    \item Separate $\Psi(\mbf{R}, \mbf{r}, t)$
+\end{itemize}
+In total:
+\[ \Psi(\mbf{R}, \mbf{r}, t) = \Phi(\mbf{R}) \psi(\mbf{r}) e^{-i(E_{CM} + E_{rel})t/\hbar}\]
+where $E_{CM}$ is a free particle and $E_{rel}$ depends on the potential. Resubstituting into the Schrodinger equation yields:
+\begin{align*}
+    -\frac{\hbar^2}{2M} \nabla_R^2 \Phi(\mbf{R}) &= E_{CM} \Phi(\mbf{R}) \\
+    \qty[-\frac{\hbar^2}{2\mu} + \hat{V}(\mbf{r})] \psi(\mbf{r}) &= E_{rel} \psi(\mbf{r})
+\end{align*}
+
+\subsection{3D Free Particle}
+Let's take the case of coordinate independent potential:
+\[ V(\mbf{r}) = V_1(x) + V_2(y) + V_3(z) \]
+The Hamiltonian is:
+\[ \hat{H} = \qty[-\frac{\hbar^2}{2m} \pdv{^2}{x^2} + \hat{V}_1(x)] + \qty[-\frac{\hbar^2}{2m} \pdv{^2}{y^2} + \hat{V}_2(y)] + \qty[-\frac{\hbar^2}{2m} \pdv{^2}{z^2} + \hat{V}_3(z)]\]
+which we can think of as $\hat{H} = \hat{H}_x + \hat{H}_y + \hat{H}_z$. This means for $E = E_x + E_y + E_z$:
+\[ \hat{H}\Psi(x, y, z) = E\Psi(x, y, z) \]
+and this must be $\Psi(x, y, z) = X(x) Y(y) Z(z)$. The 1-D Schrodinger equations look like:
+\[ \qty[-\frac{\hbar^2}{2m} \dv{^2}{x^2} + \hat{V}_1(x)] X(x) = E_x X(x) \]
+Suppose you have a free particle: $\hat{V}(\mbf{r}) = 0$.
+\[ X(x) = Ae^{i |k_x| x} + Be^{-i|k_x| x} \]
+This means:
+\[ \Psi_{\mbf{k}}(\mbf{r}) = Ce^{i \mbf{k} \cdot \mbf{r}} \]
+This means $\mbf{p} = \hbar \mbf{k}$ and $E = \frac{\hbar^2}{2m}(k_x^2 + k_y^2 + k_z^2)$.
+
+\subsection{3D Box}
+Consider a box where $\Psi \to \mbf{0}$ at walls, which is $L_1$ by $L_2$ by $L_3$. Solving the $x$ equation:
+\[ -\frac{\hbar^2}{2m} \dv{^2X(x)}{x^2} = E_x X(x) \]
+Enforcing boundary conditions:
+\[ X(x) = 0 \text{ if } x \leq 0, x \geq L_1 \]
+Then we know the solution is a sine wave between the points. It looks like:
+\[ X(x) = \sqrt{\frac{2}{L_1}} \sin(\frac{n_x \pi x}{L_1})\]
+This means: $E_{n_x} = -\frac{\hbar^2}{2m} \frac{\pi^2 n_x^2}{L_1^2}$. This gives you, defining $V = L_1 L_2 L_3$:
+\[ \Psi_{n_x, n_y, n_z}(x, y, z) = \sqrt{\frac{3}{V}} \sin(\frac{n_x \pi x}{L_1}) \sin(\frac{n_y \pi y}{L_2}) \sin(\frac{n_z \pi z}{L_3}) \]
+where
+\[ E_{n_x, n_y, n_z} = \frac{\hbar^2 \pi^2}{2m}\qty(\frac{n_x^2}{L_1^2} + \frac{n_y^2}{L_2^2} + \frac{n_z^2}{L_3^2}) \]
+Consider a cube where $L_1 = L_2 = L_3 = L$. Let's graph the amount of ways to get a certain energy state:
+
+For $(1, 1, 1)$ there is only one way to get the ground state energy. However, $(2, 1, 1), (1, 2, 1), (1, 1, 2)$ all have the same energy,
+so there is degeneracy of 3. But there is 2 times the energy. Next is $(2, 2, 1)$ with degeneracy 3. Then the next is $(3, 1, 1)$ with degeneracy 3, etc.
