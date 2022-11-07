@@ -1,0 +1,67 @@
+\section{Lecture 27: 3D Harmonic Oscillator, Spherical Coordinates}
+
+Consider the potential
+\[ V(\mbf{r}) = \frac{1}{2} k_1 x^2 + \frac{1}{2} k_2 y^2 + \frac{1}{2} k_3 z^3 \]
+Then the wave function $\Psi(x, y, z) = X(x) Y(y) Z(z)$ satisfies:
+\[ X(x) = \frac{-\hbar^2}{2m} \dv{^2 X(x)}{x^2} + \frac{1}{2} k_1 x^2 X(x) = EX(x) \]
+We saw in the 1D case that the eigenvalues are:
+\[ E_{n_x} = \qty(n_x + \frac{1}{2}) \hbar \omega_1, \omega_1 = \sqrt{\frac{k_1}{m}} \]
+and the eigenfunctions were:
+\[ \Psi_{n_x}(x) = \qty(\frac{\alpha_1}{\sqrt{\pi} 2^{n_x} (n_x)!})^{1/2} e^{-\frac{\alpha_1^2 x^2}{2}} H_{n_x}(\alpha_1 x)\]
+where $\alpha_1 = \qty(\frac{mk_1}{\hbar^2})^{1/4}$. The combined solution is:
+\[ \Psi_{n_x, n_y, n_z}(x, y, z) =  \qty(\frac{\alpha_1}{\sqrt{\pi} 2^{n_x} (n_x)!})^{1/2} \qty(\frac{\alpha_2}{\sqrt{\pi} 2^{n_y} (n_y)!})^{1/2} \qty(\frac{\alpha_3}{\sqrt{\pi} 2^{n_z} (n_z)!})^{1/2} e^{-\frac{1}{2}(\alpha_1^2 x^2 + \alpha_2 y^2 + \alpha_3 z^2)} H_{n_x}(\alpha_1 x) H_{n_y}(\alpha_2 y) H_{n_z}(\alpha_3 z) \]
+The energies are:
+\[ E_{n_x, n_y, n_z} = \qty(n_x + \frac{1}{2}) \hbar \omega_1 + \qty(n_y + \frac{1}{2}) \hbar \omega_2 + \qty(n_z + \frac{1}{2}) \hbar \omega_3  \]
+Take the isotropic case, with $\omega_1 = \omega_2 = \omega_3 = \omega$. Then let's look at degeneracy. There is only one way to get $\frac{3}{2} \hbar \omega$,
+with $(n_x, n_y, n_z) = (0, 0, 0)$. There are three ways to get $\frac{5}{2} \hbar \omega$, where $n$ is 1 in some place. Since the energy is linear,
+there are actually six ways to get $\frac{7}{2} \hbar \omega$, because putting a 2 in any $n$ is the same as putting a 1 in any two places!
+
+\subsection{Central Potential}
+Consider a potential $\hat{V}(\mbf{r}) = \hat{V}(r)$, i.e. independent of the angle. Lets write the Hamiltonian,
+\begin{align*}
+    \hat{H} &= - \frac{\hbar^2}{2m} \nabla^2 + \hat{V}(r) \\
+    &= -\frac{\hbar^2}{2m} \qty[\frac{1}{r^2} \pdv{}{r}\qty(r^2 \pdv{}{r}) + \frac{1}{r^2 \sin\theta} \pdv{}{\theta}\qty(\sin \theta \pdv{}{\theta}) + \frac{1}{r^2 \sin^2 \theta} \pdv{^2}{\varphi^2}] + \hat{V}(r) \\
+    &= -\frac{\hbar^2}{2m} \qty[\frac{1}{r^2} \pdv{}{r}\qty(r^2 \pdv{}{r}) - \frac{\hat{L}^2}{\hbar^2 r^2}] + \hat{V}(r)
+\end{align*}
+
+Recall that $[\mbf{L}, L^2] = \mbf{0}$. But also, $[V(r), L^2] = 0$ since the latter only has $\theta$ derivatives.
+$[V(r), \mbf{L}] = 0$ (TODO: why?)
+By the above, this means that $[H, \mbf{L}] = \mbf{0}$ 
+
+and $[H, L^2] = 0$ (TODO: why?)
+
+We can seek simultaneous eigenfunctions of $\hat{H}, \hat{L}_z, \hat{L}^2$. We can clearly factor into two pieces:
+\[ \Psi(\mbf{r}) = R_{E\ell m}(r) Y_{\ell m}(\theta, \varphi) \]
+Substituting into the Schrodinger Equation, this yields the radial equation:
+\[ [-\frac{\hbar^2}{2m}(\dv{^2}{r^2} + \frac{2}{r} \dv{}{r}) + \frac{\ell(\ell + 1)\hbar^2}{2mr^2} + V(r)] R_{E\ell}(r) = ER_{E\ell}(r) \]
+Note that the angular momentum term acts kind of an effective potential $V_{eff}(r) = V(r) + \frac{\ell(\ell + 1)\hbar^2}{2mr^2}$! Let's normalize:
+\[ |\Psi_{E\ell m}(r, \theta, \varphi)|^2 = |R_{E \ell}(r)|^2 |Y_{\ell m}(\theta, \varphi)|^2 \]
+This means:
+\begin{align*}
+    \int_{0}^{\infty} \int_{0}^{\pi} \int_{0}^{2\pi} r^2 \sin\theta |\Psi_{E\ell m}(r, \theta, \varphi)|^2 \dd{\varphi} \dd{\theta} \dd{r} &= 1 \\
+    \int_{0}^{\infty} r^2 |R_{E\ell}(r)|^2 \dd{r} &= 1
+\end{align*}
+This means that we should define a wave function that is $U_{E\ell}(r) = R_{E\ell}(r)$.
+\[ -\frac{\hbar^2}{2m} \dv{^2 U_{E\ell}(r)}{r^2} + V_{eff}(r) U_{E \ell}(r) = E U_{E\ell}(r) \]
+
+Ultimately to solve a 3d problem, we just use the spherical harmonics for the $(\theta, \varphi)$ piece
+and substitute $U(r) = r R(r)$ to make a 1d problem.
+
+\subsection{Free Particle in Spherical Coordinates}
+Take $V = 0$. Recall that for Cartesian coordinates, the solutions where $e^{\pm i \mbf{k} \cdot \mbf{r}}$. Let's
+write the Radial equation:
+\begin{align*}
+    [\dv{^2}{r^2} + \frac{2}{r} \dv{}{r} - \frac{\ell(\ell + 1)}{r^2} + k^2] R_{E\ell}(r) &= 0 \\
+    [\dv{^2}{r^2} - \frac{\ell(\ell + 1)}{r^2} + k^2] U_{E\ell}(r) &= 0 \\
+\end{align*}
+If $\ell = 0$, then $U_{E_0}(r) \propto \sin(k r)$ and $R_{E_0}(r) \propto \frac{\sin(kr)}{r}$. Note that this 
+is a spherical wave! We are no longer picking a plane wave basis, but instead a spherical wave basis (and somehow these are equivalent).
+In general for $\ell \neq 0$, these are the Bessel functions. Let $\rho = kr$. Then $R_{\ell}(\rho) = R_{E\ell}(r)$.
+The equation becomes exactly the spherical bessel equation:
+\[ \qty[\dv{^2}{\rho^2} + \frac{2}{\rho} \dv{}{\rho} + \qty[1 - \frac{\ell(\ell + 1)}{\rho^2}]] R_{\ell}(\rho) = 0 \]
+\[ j_{\ell}(\rho) = \sqrt{\frac{\pi}{2\rho}}^{1/2} J_{\ell + \frac{1}{2}}(\rho) \]
+\[ n_{\ell}(\rho) = (-1)^{\ell + 1} \sqrt{\frac{\pi}{2\rho}}^{1/2} J_{-\ell- \frac{1}{2}}(\rho) \]
+The $J$ functions are the ordinary Bessel functions. The basis vectors finally become:
+\[ \psi_{E \ell m} (r) = C j_{\ell}(kr) Y_{\ell m} (\theta, \varphi) \]
+and thus to put the vector in the other basis:
+\[ e^{i \mbf{k} \cdot \mbf{r}} = \sum_{\ell = 0}^{\infty} \sum_{m = -\ell}^{\ell} c_{\ell m} j_{\ell}(k r) Y_{\ell m}(\theta, \varphi) \]

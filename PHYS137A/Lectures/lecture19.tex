@@ -8,7 +8,10 @@ $\hat{U}(t, t_0) = \hat{U}(t, t') \hat{U}(t', t_0)$.
 Note the Schrodinger Equation becomes:
 \[ i\hbar \partialderivative{\hat{U}}{t}(t, t_0) = \hat{H}\hat{U}(t, t_0) \]
 By formal integration, the solution is simply:
-\[ \hat{U}(t, t_0) = \hat{I} - \frac{i}{\hbar} \int_{t_0}^t \hat{H}\hat{U(t', t_0)} \dd{t'} \]
+\begin{align*}
+    \hat{U}(t, t_0) &= \hat{U}(t_0, t_0) - \frac{i}{\hbar} \int_{t_0}^t \hat{H}\hat{U}(t', t_0) \dd{t'} \\
+    &= \hat{I} - \frac{i}{\hbar} \int_{t_0}^t \hat{H}\hat{U}(t', t_0) \dd{t'}
+\end{align*}
 
 Consider the first order behavior for a small timestep $\delta t$.
 \begin{align*}
