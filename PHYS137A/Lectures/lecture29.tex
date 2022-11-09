@@ -1,0 +1,46 @@
+\section{Lecture 29: The Hydrogen Atom, Continued}
+
+Recall we were trying to solve the differential equation:
+\[ \qty[\dv{^2}{\rho^2} - \frac{\ell(\ell + 1)}{\rho^2} + \frac{\lambda}{\rho} - \frac{1}{4}] U(\rho) = 0\]
+For the limit $\rho \to \infty$, we get:
+\[ \qty[\dv{^2}{\rho^2} - \frac{1}{4}] U(\rho) = 0 \]
+$U \sim e^{\pm \rho/2}$. We keep the one that goes to 0 at $\infty$: $e^{-\rho /2}$. From this we say
+\[ U(\rho) = e^{-\rho/2} f_{E\ell}(\rho) \]
+Then from substitution:
+\[ \qty[\dv{^2}{\rho^2} - \dv{}{\rho} - \frac{\ell(\ell + 1)}{\rho^2} + \frac{\lambda}{\rho}] f(\rho) = 0 \]
+If we take $\rho \to 0$, then $f \sim p^{\ell + 1}$. This means $U(\rho) = e^{-\rho/2} p^{\ell + 1} g(\rho)$.
+Now let's expand $g$ with it's power series:
+\[ g(\rho) = \sum_{k = 0}^{\infty} c_k \rho^k \]
+where $c_0 \neq 0$.
+\begin{align*} 
+    \qty[\rho \dv{^2}{\rho^2} + (2 \ell + 2 - \rho) \dv{}{\rho} + (\lambda - \ell - 1)]g(\rho) &= 0\\
+    \sum_{k = 0}^{\infty} [k (k - 1) c_k \rho^{k - 1} + (2 \ell + 2 - \rho) k c_k \rho^{k - 1} + (\lambda - \ell - 1) c_k \rho^k] &= 0\\
+    \sum_{k = 0}^{\infty} [ k(k + 1) c_{k + 1} + (2 \ell + 2 - \rho)(k + 1) c_{k + 1} + (\lambda - \ell - 1)c_k ]\rho^k &= 0 \\
+    c_{k + 1} &= \frac{k + \ell + 1 - \lambda}{(k + 1) (k + 2\ell + 2)} c_k
+\end{align*}
+
+For large $k$,
+\[ \frac{c_{k + 1}}{c_k} \sim \frac{1}{k} \]
+This means that if the series were infinite, $g(\rho) \sim \rho^p e^{\rho}$, so $u \sim e^{\rho/2} \rho^{l + 1 + p}$,
+which is not normalizable. Thus this means the series must terminate at some point.
+\begin{align*}
+    n_r + \ell + 1 - \lambda &= 0 \\
+    \lambda = n_r + \ell + 1
+\end{align*}
+$n_r$ can be any nonnegative integer. Bringing back the redimensioning and calling $\lambda = n = 1, 2, 3, \dots$ the parameter,
+\[ E = - \frac{\mu}{2\hbar^2} \qty(\frac{ze^2}{4\pi\epsilon_0}) \frac{1}{n^2} = \frac{-13.6 eV}{n^2} \]
+For the eigenfunctions:
+\[ \rho \dv{^2}{\rho^2} + (2 \ell + 2 - \rho) \dv{}{\rho} + (\lambda - \ell - 1) g(\rho) = 0 \]
+Recall the Kummer-Laplace Equation:
+\[ z \dv{^2w}{z^2} + (c - z) \dv{w}{z} - aw = 0 \]
+The mappings looks like:
+\begin{align*}
+    z &= \rho \\
+    w &= g \\
+    a &= \ell + 1 - \lambda \\
+    c &= 2 \ell + 2
+\end{align*}
+The solutions to these are called the Confluent Hypergeometric functions 
+\[ _1F_1(a, c, z) = \sum_{k = 0}^{\infty} \frac{(a)_k z^k}{(c)_k k!}\]
+where $(\alpha)_k = \alpha(\alpha + 1)\dots(\alpha + k - 1)$ is the falling factorial.
+

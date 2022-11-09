@@ -55,9 +55,7 @@ This gives Schrodinger equation:
 We know for a central potential, this is separable:
 \[ \Psi_{E\ell m}(\mbf{r}) = R_{E \ell}(r) Y_{\ell m}(\theta, \phi) \]
 Where $Y$ is again the spherical harmonic. We write then write the Radial Equation with substitution $u_{E\ell}(r) = r R_{E\ell}(r)$
-\begin{align*}
-    \dv{^2}{v^2}
-\end{align*}
+(TODO)
 Where 
 \[ V_{eff}(r) = V + \frac{\ell(\ell + 1)\hbar^2}{2\mu r^2} = \frac{-ze^2}{4\pi\epsilon_0 r} + \frac{\ell(\ell + 1)\hbar^2} 2\mu r^2\]
 This creates a series of curves that looks like:
@@ -70,12 +68,11 @@ The boundary condition must be that $u \to 0$ as $r \to \infty$ (since $R$ shoul
 Let
 \begin{align*}
     \rho &= \qty(\frac{-8\mu E}{\hbar^2})^{1/2} r \\
-    \lambda &= \frac{ze^2}{4\pi\epsilon_0 \hbar} \qty(\frac{-\mu}{2E})^{1/2} \\
-    &= z \alpha \qty(\frac{-\mu c^2}{2E})^{1/2} \\
+    \lambda &= \frac{ze^2}{4\pi\epsilon_0 \hbar} \qty(\frac{-\mu}{2E})^{1/2} = z \alpha \qty(\frac{-\mu c^2}{2E})^{1/2} \\
     \qty[\dv{^2}{\rho^2} - \frac{\ell(\ell + 1)}{\rho^2} + \frac{\lambda}{\rho} - \frac{1}{4}] u(\rho) &= 0
 \end{align*}
 
-We will consider $\rho \to \infty$ and consider $\rho \to 0$.
+We will consider $\rho \to \infty$ and consider $\rho \to 0$ next lecture.
 
 The steps we ended up following were:
 \begin{enumerate}
