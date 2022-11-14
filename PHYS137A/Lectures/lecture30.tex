@@ -1,0 +1,48 @@
+\section{Lecture 30: The Hydrogen Atom, Continued 2}
+
+The Hamiltonian of the reduced mass is:
+\[ \hat{H} = \frac{\hat{p}^2}{2\mu} - \frac{ze^2}{4 \pi \epsilon_0 r} \]
+Its eigenvalues were $\frac{-13.6 eV}{n^2}$.
+
+We showed that the solution to this are called the Confluent Hypergeometric functions 
+\[ _1F_1(a, c, z) = \sum_{k = 0}^{\infty} \frac{(a)_k z^k}{(c)_k k!}\]
+Each one of the terms satisfies the differential equation (remember, it's linear). Let's see if
+we need to terminate the series. In the limit as $\rho \to \infty$, which means $z \to \infty$ in this representation.
+This is well known:
+\[ _1F_1(a, c, z) \to \frac{\Gamma{c}}{\Gamma(a)} e^z z^{a - c} \to \rho^{-\ell - 1 - \lambda} e^{\rho} \]
+This means $U(\rho) \sim \rho^{-\lambda} e^{\rho/2}$, which is not normalizable. Thus, we must terminate the series.
+
+Then, $_1F_1$ reduces to a polynomial of degree $n_r$. This is related to the ``Associate Laguerie'' polynomials.
+\[ L_{n + \ell}^{2\ell + 1}(\rho) = - \frac{\qty[(n + \ell)!]^2}{(n - \ell - 1)! (2\ell + 1)!} _1F_1(\ell + 1 - n, 2\ell + 2, \rho) \]
+We can generate (regular) Laguerie polynomials really nicely:
+\[ L_q(\rho) = e^{\rho} \dv{^q}{\rho^q} \qty(\rho^q e^{-\rho}) \]
+and then the Associated Laguerie polynomials look like:
+\[ L_q^p = \dv{^p}{\rho^p} L_q(\rho) \]
+All we need to know is that the associated laguerie polynomials are the solutions, with the eigenenergies we discussed above.
+Thus, the full radial functions are for some normalization constant $N$:
+\begin{align*}
+    R_{n \ell}(r) = N e^{-\rho/2} \rho^{\ell} L_{n + 1}^{2\ell + 1}(\rho)
+\end{align*}
+The normalization is actually recoverable analytically:
+\[ N = - \sqrt{\qty(\frac{2z}{n a_{\mu}})^3 \frac{(n - \ell - 1)!}{2n \qty[(n + \ell)!]^3}} \]
+Now recall $\Psi = RY$ for the spherical harmonics $Y$. 
+
+Consider $n = 1$. We know $\ell$ can only be between $0$ and $n - 1$ (inclusive). So in this case we must have $\ell = 0$.
+\[ R_{10}(r) = 2 \qty(\frac{z}{a_{\mu}})^{3/2} e^{-zr/{a_{\mu}}} \]
+
+Orbital has $a_{\mu}$ characteristic (think about $z = 1$), so that's the scale that the probability density decays over.
+
+\[ R_{20}(r) = 2 \qty(\frac{z}{2 a_{\mu}})^{3/2} (1 - \frac{zr}{2 a_{\mu}}) e^{-zr/2a_{\mu}} \]
+Now, the function starts off positive, but then goes negative (gaining a phase). The characteristic is now $2 a_{\mu}$.
+
+If we want radial probability density, we need to multiply by the area of a spherical shell. So we need $4 \pi r^2 R^2 \sim |U|^2$.
+
+From studying these solutions, 
+
+\begin{itemize}
+\item only $s$ states $\ell = 0$ have $R \neq 0$ at $r = 0$. The rest have a node at the origin.
+\[ |\Psi_{n 0 0}(0)|^2 = \frac{1}{4 \pi} |R_{n 0}(0)|^2 = \frac{z^3}{\pi a_{\mu}^3 n^3} \]
+\item $R_{n\ell}(r) \propto r^\ell$ as $r \to \infty$
+\item $r^2 |R(r)|^2$ has $n - \ell$ maxima. 
+\item For $\ell = n - 1$: $R_{n, n - 1}(r) \sim r^{n - 1} e^{-zr/na_{\mu}}$.
+\end{itemize}
