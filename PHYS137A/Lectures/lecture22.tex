@@ -72,7 +72,7 @@ Similarly $\langle L_y \rangle = 0$. But we think that the actual angular moment
 We check the expectation of its square:
 \begin{align*}
     \langle L_x^2 \rangle &= \langle L_y^2 \rangle = \frac{1}{2} \langle L^2 - L_z^2 \rangle \\
-    &= \frac{1}{2} \qty(\ell (\ell + 1) - m^2) \hbar^2
+    &= \frac{1}{2} \qty(\ell (\ell + 1) - m^2) \hbar^2 \\
     &\geq \frac{\ell \hbar^2}{2}
 \end{align*}
 Even when you have maximum $z$ component, $m^2 = \ell^2$, there is still a piece of the vector in other directions!
@@ -85,7 +85,7 @@ We can then plot different vectors for different values of $m$.
 
 Consider a particle of mass $\mu$. The kinetic energy is:
 \begin{align*}
-    \hat{T} = \frac{\hat{p}^2}{2 \mu} \\
+    \hat{T} &= \frac{\hat{p}^2}{2 \mu} \\
     &= -\frac{\hbar^2}{2\mu} \nabla^2 \\
     &= -\frac{\hbar^2}{2\mu} \qty(\frac{1}{r^2} \pdv{}{r} \qty(r^2 \pdv{}{r}) + \frac{1}{r^2 \sin \theta} \pdv{}{\theta} \qty(\sin \theta \pdv{}{\theta}) + \frac{1}{r^2 \sin^2 \theta} \pdv{}{\varphi^2}) \\
     &= -\frac{\hbar^2}{2\mu} \qty(\frac{1}{r^2} \pdv{}{r} \qty(r^2 \pdv{}{r}) - \frac{\hat{L}^2}{\hbar^2 r^2})
@@ -102,6 +102,6 @@ where $I$ is the moment of inertia. Thus:
 
 The simplest problem is that of the rigid rotor, when $\hat{V} = 0$.
 \begin{align*}
-    \hat{H} &= \frac{\hat{L}^2}{2I} \implies E_{\ell} = \frac{\hbar^2}{2\pi} \ell (\ell + 1)
+    \hat{H} &= \frac{\hat{L}^2}{2I} \implies E_{\ell} = \frac{\hbar^2}{2I} \ell (\ell + 1)
 \end{align*}
 This immediately gives you the rotation energy of diatomic molecules.

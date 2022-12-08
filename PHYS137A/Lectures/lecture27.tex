@@ -8,7 +8,7 @@ We saw in the 1D case that the eigenvalues are:
 \[ E_{n_x} = \qty(n_x + \frac{1}{2}) \hbar \omega_1, \omega_1 = \sqrt{\frac{k_1}{m}} \]
 and the eigenfunctions were:
 \[ \Psi_{n_x}(x) = \qty(\frac{\alpha_1}{\sqrt{\pi} 2^{n_x} (n_x)!})^{1/2} e^{-\frac{\alpha_1^2 x^2}{2}} H_{n_x}(\alpha_1 x)\]
-where $\alpha_1 = \qty(\frac{mk_1}{\hbar^2})^{1/4}$. The combined solution is:
+where $\alpha_1 = \qty(\frac{mk_1}{\hbar})^{1/2}$. The combined solution is:
 \[ \Psi_{n_x, n_y, n_z}(x, y, z) =  \qty(\frac{\alpha_1}{\sqrt{\pi} 2^{n_x} (n_x)!})^{1/2} \qty(\frac{\alpha_2}{\sqrt{\pi} 2^{n_y} (n_y)!})^{1/2} \qty(\frac{\alpha_3}{\sqrt{\pi} 2^{n_z} (n_z)!})^{1/2} e^{-\frac{1}{2}(\alpha_1^2 x^2 + \alpha_2 y^2 + \alpha_3 z^2)} H_{n_x}(\alpha_1 x) H_{n_y}(\alpha_2 y) H_{n_z}(\alpha_3 z) \]
 The energies are:
 \[ E_{n_x, n_y, n_z} = \qty(n_x + \frac{1}{2}) \hbar \omega_1 + \qty(n_y + \frac{1}{2}) \hbar \omega_2 + \qty(n_z + \frac{1}{2}) \hbar \omega_3  \]
@@ -25,15 +25,14 @@ Consider a potential $\hat{V}(\mbf{r}) = \hat{V}(r)$, i.e. independent of the an
 \end{align*}
 
 Recall that $[\mbf{L}, L^2] = \mbf{0}$. But also, $[V(r), L^2] = 0$ since the latter only has $\theta$ derivatives.
-$[V(r), \mbf{L}] = 0$ (TODO: why?)
+$[V(r), \mbf{L}] = 0$ as well.
 By the above, this means that $[H, \mbf{L}] = \mbf{0}$ 
-
-and $[H, L^2] = 0$ (TODO: why?)
+and $[H, L^2] = 0$
 
 We can seek simultaneous eigenfunctions of $\hat{H}, \hat{L}_z, \hat{L}^2$. We can clearly factor into two pieces:
 \[ \Psi(\mbf{r}) = R_{E\ell m}(r) Y_{\ell m}(\theta, \varphi) \]
 Substituting into the Schrodinger Equation, this yields the radial equation:
-\[ [-\frac{\hbar^2}{2m}(\dv{^2}{r^2} + \frac{2}{r} \dv{}{r}) + \frac{\ell(\ell + 1)\hbar^2}{2mr^2} + V(r)] R_{E\ell}(r) = ER_{E\ell}(r) \]
+\[ \qty[-\frac{\hbar^2}{2m}\qty(\dv{^2}{r^2} + \frac{2}{r} \dv{}{r}) + \frac{\ell(\ell + 1)\hbar^2}{2mr^2} + V(r)] R_{E\ell}(r) = ER_{E\ell}(r) \]
 Note that the angular momentum term acts kind of an effective potential $V_{eff}(r) = V(r) + \frac{\ell(\ell + 1)\hbar^2}{2mr^2}$! Let's normalize:
 \[ |\Psi_{E\ell m}(r, \theta, \varphi)|^2 = |R_{E \ell}(r)|^2 |Y_{\ell m}(\theta, \varphi)|^2 \]
 This means:
