@@ -1,0 +1,62 @@
+
+\section{Lecture 1}
+
+\subsection{Motivating Quantum Computing}
+The classical unit of computation is a \textbf{bit}. How small can we shrink bits? Let's conduct a thought experiment. Let's suppose we could shrink them down to the size of a Hydrogen atom. The ``state''
+of $\ket{0}$ being the ground state and $\ket{1}$ first excited state. However, electrons in general exist in superposition states! These states look like:
+\[ \{ \alpha \ket{0} + \beta \ket{1}: \alpha, \beta \in \C, |\alpha|^2 + |\beta|^2 = 1 \} \]
+But it gets weirder. According to quantum theory, when conducting a measurement on such a state, we end up getting:
+\[ M = \begin{cases}
+   0 & \text{wp } |\alpha|^2 \\
+    1 & \text{wp } |\beta|^2 \\
+\end{cases} \]
+Furthermore, the act of measurement ``collapses'' the wavefunction to a state $\ket{0}$ or $\ket{1}$. Subsequent measurements will give that pure state deterministically.
+
+Now, suppose we have a system of two such Hydrogen. There are now 4 basis states:
+\[ \ket{\psi} = \alpha_{00} \ket{00} + \alpha_{01} \ket{01} + \alpha_{10} \ket{10} + \alpha_{11} \ket{11} \]
+Effective computation now comes from extrapolating to $n$ such \textbf{qubits}. Now such a state would look like $\sum_{x \in \{0, 1\}} \alpha_x \ket{x}$.
+
+This is pretty profound. Classical computers were designed to use nature (through silicon) in order to work for humans. But with all
+this effective work that nature is doing behind the scenes, it seems that quantum computing is really the more powerful framework we should've asked for.
+
+\subsection{Measurement}
+Now suppose we do a ``partial'' measurement, e.g. only measuring the first bit. What will we get? It seems reasonable that the probability should be the sum of the probabilities of getting a 0 in the first qubit,
+e.g. we get a 0 w.p. $|\alpha_{00}|^2 + |\alpha_{01}|^2$. The state collapses, but it must be renormalized so the coefficients can still be probabilities!
+So the new state is actually \[\frac{\alpha_{00} \ket{00} + \alpha_{01} \ket{01}}{\sqrt{|\alpha_{00}|^2 + |\alpha_{01}|^2}}\]
+
+Now suppose we are given a qubit in the state
+\[ \ket{\psi} = \frac{1}{\sqrt{2}} \ket{0} + \frac{e^{i \theta}}{\sqrt{2}} \ket{1} \]
+How can we figure out $\theta$ (phase estimation)? Well if we measure this, we will get either $0$ or $1$ with probability $1/2$ each. This will
+tell us nothing about $\theta$. It turns out this is only a special case of measurement.
+
+To understand what general measurement is, we first go back to our state representation.
+What we really mean by a superposition is a linear combination of two vectors. We fix some basis $\ket{0}$ and $\ket{1}$, and a normalized state $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$
+is a unit vector in a 2-dimensional complex vector space. Now we can think about a measurement in the following way:
+
+\begin{definition}
+    A \textbf{measurement} of some state $\ket{\phi}$ in some basis $\mathcal{U}$ is a projection onto one of the basis vectors $\ket{u}$. The value of the measurement is:
+    $u$ with probability of the scalar projection squared, $\qty|\frac{\braket{u}{\psi}}{\braket{\psi}{\psi}}|^2$.
+\end{definition}
+
+So for example, let's stick to our 2-space and pick a new orthonormal basis $\{\ket{u}, \ket{u^{\perp}}\}$ and our state $\ket{\psi}$. Suppose $\ket{\psi}$ makes an angle of $\theta$ with the $\ket{0}$ axis and
+makes an angle of $\mu$ with the $\ket{u}$ axis. By a simple diagram, it's clear from $\psi$'s projections that measurement in the standard basis yields $0$ with probability $\cos^2 \theta$ and in our new basis it yields $u$ with probability $\cos^2{\mu}$.
+
+\begin{note}
+    There is a bit of a subtlety here. We assumed that the amplitudes we are working with are real, but in general they can be complex. It turns out, all
+of quantum computing can be formalized with only real amplitudes, but it gets more messy when interfacing with physics. For now,
+we will assume real amplitudes only, but most results generalize to complex amplitudes.
+\end{note}
+
+Another common example of a basis is:
+\[ \ket{+} = \ftwo \qty(\ket{0} + \ket{1}), \ket{-} = \ftwo \qty(\ket{0} - \ket{1}) \]
+
+Measuring our original phase estimation in this new basis is exactly what we need! We just need to write it in the new
+basis to figure out the amplitudes:
+\begin{align}
+    \ftwo \ket{0} + e^{i \theta} \ftwo \ket{1} &= \ftwo \qty(\ftwo \ket{+} + \ftwo \ket{-}) + e^{i\theta} \ftwo \qty(\ftwo \ket{+} - \ftwo \ket{-}) \\
+    &= \frac{1}{2} (1 + e^{i \theta}) \ket{+} + \frac{1}{2} (1 - e^{i \theta}) \ket{-} \\
+    &= \frac{1}{2} \qty(1 + \cos \theta + i \sin \theta) \ket{+} + \dots \\
+\end{align}
+so we get $\ket{+}$ from the measurement with probability
+\[ \frac{1}{2} |1 + \cos \theta + i \sin \theta|^2 = \cos^2 \qty(\theta/2) \]
+Now we can repeat the measurement (with other processed inputs) to get statistics and thus a good estimate on $\theta$.
