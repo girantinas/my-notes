@@ -1,0 +1,104 @@
+
+\section{Lecture 2}
+
+\subsection{Axioms of Quantum Mechanics}
+
+We list some axioms of Quantum Mechanics. Consider an electron with $k$ energy levels, $\ket{0}, \ket{1}, \dots, \ket{k - 1}$.
+
+\begin{note}[Superposition Principle]
+    If there are $k$ distinguishable (eigenstates) of a system, then the state of a system can be written as:
+    \[ \ket{\psi} = \sum_{j = 0}^{k - 1} \alpha_j \ket{j} \]
+    where $\alpha_j \in \C$ and $\sum_{j} |\alpha_j|^2 = 1$.
+\end{note}
+
+This forms a Hilbert space, i.e. a Complex inner product space (but we will often think of all amplitudes as real). The $\{ \ket{j} \}_{j = 0}^{k - 1}$ forms
+a basis for this state space. We can think of
+    \[ \ket{\psi} = \begin{pmatrix}
+        \alpha_0 \\ \alpha_1 \\ \vdots \\ \alpha_{k - 1}
+    \end{pmatrix}, \ket{0} = \begin{pmatrix}
+        1 \\ 0 \\ \vdots \\ 0
+    \end{pmatrix}, \ket{1} = \begin{pmatrix}
+        0 \\ 1 \\ \vdots \\ 0
+    \end{pmatrix}, \dots \]
+
+For inner products, we use Dirac's Bra-Ket notation. As we have already seen, the ``kets" are regular vectors and the
+``bras" $\bra{\psi} = \ket{\psi}^{\dagger}$ are elements of the dual vector space (which can be thought of as conjugate transposes). This means:
+\[ \bra{\psi} = \ket{\psi}^{\dagger} = \sum_j \qty(\alpha_j \ket{j})^{\dagger} =  \sum_j \alpha_j^* \bra{j} \]
+where $(\cdot)^*$ is the complex conjugate.
+
+Now define $\ket{\phi} = \sum_j \beta_j \ket{j}$. We can take inner products by using the following notation:
+\[ \langle \psi, \phi \rangle = \braket{\psi}{\phi} = \qty(\sum_{i} \alpha_i^* \bra{i})\qty(\sum_{j} \beta_j \ket{j}) = \sum_{i,j} \alpha_i^* \beta_j \braket{i}{j} = \sum_{j} \alpha_i^* \beta_j\]
+Because $\braket{i}{j} = 1$ if and only if $i = j$ (they form an orthonormal basis).
+
+We generally use $k = 2$, call the Hilbert space generated $\mathcal{H}$. We typically think about chaining together (tensor-producting)
+this Hilbert space with itself $n$ times. This is called a $n$-\textbf{qubit} state. A general state can then be written as:
+\[ \ket{\psi} = \sum_{x \in \{0, 1\}^n} \alpha_x \ket{x} \]
+with $\alpha_x \in \C$ and $\sum_{x} |\alpha_x|^2 = 1$.
+
+\begin{note}[Measurement Principle]
+    Pick an orthonormal basis $\mathcal{U} = \ket{u_0}, \ket{u_1}, \dots, \ket{u_{k - 1}}$. The outcome of a measurement is $j$ with
+    probability $\qty|\braket{u_j}{\psi}|^2$. In this process, the state is also perturbed and turned into the state $\ket{u_j}$
+\end{note}
+
+Look at last lecture for examples of measuring in different bases, with real amplitudes one can think about qubit states geometrically.
+The basis $\{ \ket{+}, \ket{-} \}$ serves us well.
+
+\subsection{Bell Inequalities}
+Let us look more closely at combining two qubits, each with states $\alpha_0 \ket{0} + \alpha_1 \ket{1}$, $\beta_0 \ket{0} + \beta_1 \ket{1}$.
+We (tensor) product them together, producing a state:
+\[ \ket{\psi} = \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_0 \ket{01} + \alpha_0 \beta_0 \ket{10} + \alpha_0 \beta_0 \ket{11} \]
+but most states are not a product of two states.
+
+The Bell basis states are a common example of states which are \textbf{entangled}, e.g. cannot be written as ``product states."
+\[ \ket{\Phi^{\pm}} = \ftwo \ket{00} \pm \ftwo \ket{11}, \ket{\Psi^{\pm}} = \ftwo \ket{01} \pm \ftwo \ket{10}  \]
+These four states form an orthonormal basis for two qubits.
+
+Suppose your system was in the state $\Phi^+$ and we did a partial measurement on the qubit
+Then with probability $1/2$ we collapse to $\ket{00}$ and with probability $1/2$ we collapse to $\ket{11}$. Note that we could achieve this
+in a classical sense too, with correlated (``glued'') coin flips.
+
+Furthermore, the Bell states are rotationally invariant. 
+\begin{theorem}
+    In any basis, we can write the Bell States as:
+    \[ \ket{\Phi^+} = \ftwo \ket{00} + \ftwo \ket{11} = \ftwo \ket{vv} + \ftwo \ket{v^{\perp} v^{\perp}} \]
+\end{theorem}
+
+Let's prove this. Suppose $v = \alpha \ket{0} + \beta \ket{1}$. Then without loss of generality, we can write $v^{\perp} = -\beta^* \ket{0} + \alpha^* \ket{1}$.
+This means that:
+\begin{align*}
+    \ket{vv} + \ket{v^{\perp} v^{\perp}} &= \qty(\alpha \ket{0} + \beta \ket{1})\qty(\alpha \ket{0} + \beta \ket{1}) + \qty(-\beta^* \ket{0} + \alpha^* \ket{1}) \qty(-\beta^* \ket{0} + \alpha^* \ket{1}) \\
+    &=  \ftwo \qty(\ket{00} + \ket{11})
+\end{align*}
+where some algebra is elided. Note that we could achieve this
+in a classical sense too, with correlated coin flips that are rotated.
+
+To go beyond classical computation, we consider two qubit measurements.
+The first player measures in the standard basis and the second player measures in a new basis, $\{ \ket{v}, \ket{v^{\perp}} \}$, rotated at an angle $\theta$ from the standard basis.
+The probability that these two measurements are inequal is $\sin^2 \theta$ (for example, if the first measurement is $0$, then the state $\ket{00}$, so the component of $\ket{v}$ in the $\ket{0}$ direction is $\cos \theta$).
+
+However, classically, the probability that one observes a different outcome is proportional to $\theta$.
+
+So John Bell's experiment is as follows. Alice is given a uniformly random bit $x$ and Bob is given a uniformly random bit $y$. They must each report back
+a bit $a$ and $b$ respectively.
+Alice and Bob ``win'' the game if $xy = a + b \pmod{2}$.
+
+They can play the game in two ways: either classically or quantumly. Classically, they cannot communicate (apart from maybe the ``glued'' coin).
+In the quantum setup, 
+Alice and Bob share a Bell state.
+If Alice chooses a bit $0$, they measure their qubit in the standard basis, otherwise they measure it in a basis rotated by $\pi/4$. If Bob
+chooses a bit $1$, they measure their qubit in a basis rotated by $\pi/8$, otherwise they measure in a basis rotated by $-\pi/8$. Call their measured
+bits $a$ and $b$ respectively.
+
+We then mention the following two facts:
+\begin{enumerate}
+\item No classical strategy can win with probability $> 75\%$. A randomized strategy can do no better than a deterministic strategy since the opponent's strategy is known.
+The best deterministic strategy is to report $a = 0$ and $b = 0$ (or $a = 1$ and $b = 1$), because $xy = 0$ with probability $75\%$ (if at least one of the bits is 0); trying to force the answer to be $1$ will give you a lower probability of success.
+You can do no better. The glued coin doesn't help you either; the best it could do is give you a shared source of randomness.
+\item In each of the 4 cases, the probability winning in a quantum setup is $\cos^2 \pi/8 \approx 85\%$. For example, take the case
+when $x$ and $y$ are both 0. Then they need to both measure a 1 or both measure a 0. The probability Alice measures a 0 is $1/2$ and then collapses the state to 
+a $\ket{00}$. The probability that Bob then sees a $0$ is $\cos^2 \frac{\pi}{8}$ because of the rotation, giving us $\frac{1}{2} \cos^2 \frac{\pi}{8}$. Likewise, the probability Alice measures a 1 is $1/2$ and then
+collapses the state to a $\ket{11}$. The probability that Bob then sees a $1$ is $\cos^2 \frac{\pi}{8}$, so overall the probability is $2 \cdot \frac{1}{2} \cdot \cos^2 \frac{\pi}{8} = \cos^2 \frac{\pi}{8}$.
+The other cases are similar.
+\end{enumerate}
+
+which clearly shows the quantum setup gives us something not present in the classical one.
