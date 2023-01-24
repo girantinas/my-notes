@@ -1,0 +1,201 @@
+
+\section{Lecture 3}
+
+Recall the superposition and measurement principles from last lecture. They tell us that quantum states inhabit a Hilbert space
+$\text{span}\{\ket{0}, \ket{1}, \dots, \ket{k - 1}\}$ and we can ``measure'' in orthonormal basis in this Hilbert space, randomly projecting it onto
+a basis vector. These were two axioms of quantum mechanics.
+
+\subsection{Unitary Evolution}
+A third axiom of quantum information is the ability to apply a unitary transform. These are ubiquitous in linear algebra,
+but nonetheless we give a quantum-tuned introduction here.
+
+For 1 qubit, we can think of a unitary transform as a ``rigid-body rotation'' (rotation/reflection), which preserves the orthogonality of vectors.
+\[ U = \begin{pmatrix}
+    a & c \\ b & d
+\end{pmatrix} \]
+With our canonical representation of $\ket{0} = \begin{pmatrix}
+    1 & 0
+\end{pmatrix}^T, \ket{1} = \begin{pmatrix}
+    1 & 1
+\end{pmatrix}^T$, this transform can equivalently be stated as:
+\[ \ket{0} \mapsto a\ket{0} + b \ket{1}, \ket{1} \mapsto c \ket{0} + d \ket{1} \]
+Define the adjoint of a matrix as its conjugate transpose, e.g.:
+\[ U^{\dagger} = \begin{pmatrix}
+    a^* & b^* \\ c^* & d^*
+\end{pmatrix} \]
+Now, we can interpret this in the 2-by-2 case as the following:
+\[ UU^{\dagger} = \begin{pmatrix}
+    a^* a + b^* b & a^* c + b^* d \\
+    c^* a + d^* b & c^* c + d^* d
+\end{pmatrix} = \begin{pmatrix}
+    1 & 0 \\ 0 & 1
+\end{pmatrix} \]
+The last equality is only true if the columns of $U$ are orthonormal, they are normalized (the top left and bottom right entries are just norms) and have inner product 0.
+
+In general, we have the following definition:
+\begin{definition}[Unitary]
+    A transform $U \in \C^{n \times n}$ is unitary if and only if $U U^{\dagger} = U^{\dagger} U = I$,
+    where $I$ is the $n$-by-$n$ identity.
+\end{definition}
+
+Another name for these unitary transform are ``quantum gates.'' We can draw such gates on one or two inputs as the following:
+
+\begin{quantikz}
+    & \gate{U} & \qw \\
+    & \gate[wires=2]{U} & \qw \\
+    & & \qw
+\end{quantikz}
+
+\subsection{The Fundamental Quantum Gates}
+Some simple 1-qubit gates are the following:
+\begin{definition}
+    \begin{enumerate}
+        \item The identity gate, which takes a state and does nothing:
+        \[ I = \begin{pmatrix}
+           1 & 0 \\ 0 & 1 
+        \end{pmatrix} \]
+        \item The rotation gate, which rotates a state by $\theta$:
+        \[ R_{\theta} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}\]
+        \item The inversion (NOT) gate, which flips a bit:
+        \[ X = \begin{pmatrix}
+            0 & 1 \\ 1 & 0
+        \end{pmatrix} \]
+        i.e., $a \ket{0} + b \ket{1} \mapsto b \ket{0} + a \ket{1}$.
+        \item The phase flip gate, which flips the phase of the second bit:
+        \[ Z = \begin{pmatrix}
+            1 & 0 \\ 0 & -1
+        \end{pmatrix} \]
+        i.e., $a \ket{0} + b \ket{1} \mapsto a \ket{0} - b\ket{1}$
+        \item The Hadamard gate, which converts to the $\{\ket{+}, \ket{-}\}$ basis.
+        \[ H = \begin{pmatrix}
+            \ftwo & \ftwo \\ \ftwo & -\ftwo
+        \end{pmatrix} \]
+        i.e. $a \ket{0} + b \ket{1} \mapsto a \ket{+} + b \ket{-}$.
+        One can view the Hadamard gate as a reflection over the line $\theta = \pi/8$. But hang on, we only allowed rotations, so what gives?
+        It turns out the Hadamard gate is a rotation in $\C^2$, but not in $\R^2$!
+    \end{enumerate}
+    Note that $X^2 = Z^2 = H^2 = I$, so they are involutions (and thus their own inverses). Furthermore $X$ and $Z$ are the same under a change of basis (note that $Z\ket{+} = \ket{-}$ and $Z \ket{-} = \ket{+}$).
+    \[ X = HZH, Z = HXH \]
+\end{definition}
+
+If you recall the Pauli spin matrices, you may remember $X, Z$ as two of them; however, they are not expressive enough to correspond to all unitaries!
+Using $H$ is computationally more interesting and is helpful for our analysis.
+
+Let us make a bit of a silly circuit:
+\begin{quantikz}
+    \lstick{$\ket{\phi}$} & \gate{U} & \qw & \gate{U^{\dagger}} & \qw\rstick{$\ket{\phi}$}
+\end{quantikz}
+
+We applied a gate and then applied its adjoint, which is its inverse since it is unitary.
+Thus, we can always ``undo/uncompute'' quantum circuits (before measurement).
+
+Now let us define a two-qubit gate, 
+\begin{definition}[Controlled NOT]
+    The CNOT gate is:
+\[ CNOT = \begin{pmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+\end{pmatrix} = \begin{pmatrix}
+    I & 0 \\ 0 & X
+\end{pmatrix} \]
+
+To draw a CNOT gate, we draw it as the following:
+\begin{quantikz}
+    \lstick{$a$} & \ctrl{1} & \qw \\
+    \lstick{$b$} & \targ & \qw & \qw
+\end{quantikz}
+
+$a$ is called the ``control bit'' and $b$ is called the ``target bit.''
+\end{definition}
+
+If $a$ and $b$ are pure bits, then we have the following truth table (the first bit controls whether a NOT gate is active, i.e. you XOR the two bits):
+
+\begin{center}
+\begin{tabular}{c c | c c}
+    \(a\) & \(b\) & \(a_o\) & \(b_{o}\) \\\hline
+    0 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    1 & 0 & 1 & 1 \\
+    1 & 1 & 1 & 0
+\end{tabular}
+\end{center}
+
+What if I did the following?
+
+\begin{quantikz}
+    \lstick{$\ket{+}$} & \ctrl{1} & \qw\rstick[wires=2]{$\ket{\Phi^+} = \ftwo\ket{00} + \ftwo\ket{11}$} \\
+    \lstick{$\ket{0}$} & \targ & \qw & \qw
+\end{quantikz}
+
+We created a Bell-state. Now to make it from two $\ket{0}$'s, we can add a Hadamard:
+
+\begin{quantikz}
+    \lstick{$\ket{0}$} & \gate{H} & \ctrl{1} & \qw\rstick[wires=2]{$\ket{\Phi^+}$} \\
+    \lstick{$\ket{0}$} & \qw & \targ & \qw &\qw
+\end{quantikz}
+
+Now consider applying this circuit to any two-qubit state. We can do something very similar (the reader can verify the details):
+
+\begin{center}
+    \begin{tabular}{c| c}
+       Input & Output \\\hline
+        $\ket{00}$ & $\ket{\Phi^+}$\\
+        $\ket{01}$ & $\ket{\Psi^+}$ \\
+        $\ket{10}$ & $\ket{\Phi^-}$\\
+        $\ket{11}$ & $\ket{\Psi^-}$
+    \end{tabular}
+\end{center}
+
+Now, consider turning the circuit backwards. Since both gates are their own inverses (CNOT is made up of a block diagonal of involutions so it is also an involution),
+this just inverts the circuit. Let us add a measurement apparatus:
+
+\begin{quantikz}
+    \lstick[wires=2]{Bell basis states} & \ctrl{1} & \gate{H} & \qw & \meter{} & \qw\rstick[wires=2]{Measuring in standard basis} \\
+    & \targ & \qw & \qw & \qw & \meter{} & \qw
+\end{quantikz}
+
+Now, we can measure in other basis, JUST using our module for measuring the standard basis. This means without loss of generality we can measure in any basis.
+
+\subsection{Intuition for Entanglement}
+We know that:
+
+\begin{quantikz}
+    \lstick{$\ket{+}$} & \gate{H} & \meter{} & \qw\rstick{$0$ wp $1$}
+\end{quantikz}
+
+But, now what if we entangle the state with a CNOT?
+
+\begin{quantikz}
+    \lstick{$\ket{+}$} & \ctrl{1} & \qw & \gate{H} & \meter{} & \qw\rstick{???} \\
+    \lstick{$\ket{0}$} & \targ & \qw & \qw
+\end{quantikz}
+
+Intuitively, we expected the measurement controlled bit to not get changed, so we should expect the same result as above.
+
+But let's analyze it formally. After the CNOT, the state is $\ket{\Phi^+} = \ftwo \ket{00} + \ftwo \ket{11}$. Then, the Hadamard
+doesn't act on the second bit, but the first bit is split, e.g. the final state is:
+\[ \ket{\psi} = \ftwo \qty(\ftwo \ket{00} + \ftwo{\ket{10}}) + \ftwo \qty(\ftwo \ket{01} - \ftwo\ket{11}) = \frac12 \ket{00} + \frac12 \ket{01} + \frac12 \ket{10} - \frac12 \ket{11}  \]
+Measuring only the first qubit actually makes it so that we actually have a $\qty(\frac12)^2 + \qty(\frac12)^2 = \frac12$ chance of measuring a 0.
+
+What happened here? In the first case, there is a cancellation of the probability amplitudes:
+\[ \ftwo \ket{0} + \ftwo \ket{1} \mapsto_{H} \frac{1}{2} \ket{0} + \frac{1}{2} \ket{1} + \frac12 \ket{0} - \frac12 \ket{1} = \ket{0} \]
+But in the second case, we have an entanglement which stops this cancellation (the product states cannot just be cancelled).
+
+This gives us a view into what entanglement really is. What if we entangle a bunch of bits:
+
+\begin{quantikz}
+    \lstick{$\alpha\ket{0} + \beta\ket{1}$} & \ctrl{1} & \ctrl{2} & \ctrl{3} & \ctrl{4} & \ctrl{5} & \ctrl{6} & \ctrl{7} & \qw\rstick[wires=8]{$\alpha \ket{00000000} + \beta \ket{11111111}$} \\
+    \lstick{$\ket{0}$} & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw \\
+    \lstick{$\ket{0}$} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw \\
+\end{quantikz}
+
+At some macro point, nature cannot support such a large entangled state and collapses it probabilistically into one of the two basis states. This
+is how measurement is done in practice.
+
