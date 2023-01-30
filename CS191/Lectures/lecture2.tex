@@ -27,7 +27,7 @@ For inner products, we use Dirac's Bra-Ket notation. As we have already seen, th
 where $(\cdot)^*$ is the complex conjugate.
 
 Now define $\ket{\phi} = \sum_j \beta_j \ket{j}$. We can take inner products by using the following notation:
-\[ \langle \psi, \phi \rangle = \braket{\psi}{\phi} = \qty(\sum_{i} \alpha_i^* \bra{i})\qty(\sum_{j} \beta_j \ket{j}) = \sum_{i,j} \alpha_i^* \beta_j \braket{i}{j} = \sum_{j} \alpha_i^* \beta_j\]
+\[ \langle \psi, \phi \rangle = \braket{\psi}{\phi} = \qty(\sum_{i} \alpha_i^* \bra{i})\qty(\sum_{j} \beta_j \ket{j}) = \sum_{i,j} \alpha_i^* \beta_j \braket{i}{j} = \sum_{j} \alpha_j^* \beta_j\]
 Because $\braket{i}{j} = 1$ if and only if $i = j$ (they form an orthonormal basis).
 
 We generally use $k = 2$, call the Hilbert space generated $\mathcal{H}$. We typically think about chaining together (tensor-producting)
@@ -53,7 +53,7 @@ The Bell basis states are a common example of states which are \textbf{entangled
 \[ \ket{\Phi^{\pm}} = \ftwo \ket{00} \pm \ftwo \ket{11}, \ket{\Psi^{\pm}} = \ftwo \ket{01} \pm \ftwo \ket{10}  \]
 These four states form an orthonormal basis for two qubits.
 
-Suppose your system was in the state $\Phi^+$ and we did a partial measurement on the qubit
+Suppose your system was in the state $\Phi^+$ and we did a partial measurement on the first qubit.
 Then with probability $1/2$ we collapse to $\ket{00}$ and with probability $1/2$ we collapse to $\ket{11}$. Note that we could achieve this
 in a classical sense too, with correlated (``glued'') coin flips.
 

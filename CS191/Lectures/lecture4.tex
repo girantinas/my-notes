@@ -91,7 +91,7 @@ that takes a LONG time to make. Unfortunately, she does not have access to an ap
 Furthermore, she shares a Bell state with Bob and can exchange (classical) information with him, who does have an apparatus.
 
 \begin{quantikz}
-    \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{H} & \meter{} & \qw\rstick{$b_1$}\\
+    \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{G'} & \meter{} & \qw\rstick{$b_1$}\\
     \lstick[wires=2]{$\ket{\Phi^+}$}\qw & & \meter{} & \qw\rstick{$b_2$} \\
     \qw & \gate[wires=1]{G(b_1, b_2)}  & \qw & \qw \rstick{$\alpha \ket{0} + \beta\ket{1}$} 
 \end{quantikz}
@@ -108,7 +108,7 @@ They can use the following circuit to solve this problem:
 
 The state becomes:
 \[ \frac{1}{\sqrt{2}} \qty(\alpha \ket{00} + \beta \ket{01}) + \frac{1}{\sqrt{2}} \qty(\alpha \ket{10} - \beta \ket{11}) \]
-Upon measurement, we get $0$ and the state is $\alpha \ket{0} + \beta \ket{1}$ or we get $1$ and the state is $\alpha \ket{0} + \beta \ket{1}$
+Upon measurement, we get $0$ and the state is $\alpha \ket{0} + \beta \ket{1}$ or we get $1$ and the state is $\alpha \ket{0} - \beta \ket{1}$.
 She tells Bob this one bit $b_2$. If it was 1, Bob applies a phase flip $Z$ to fix the quantum state.
 
 Now, to address the original problem, we can reduce to this case by just getting $\alpha \ket{00} + \beta\ket{11}$.
