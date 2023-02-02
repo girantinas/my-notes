@@ -1,0 +1,99 @@
+
+\section{Lecture 6}
+
+\subsection{Hadamard Transform (Continued)}
+Recall the Hadamard Transform from last lecture, made up of a bunch of 
+Hadamard gates tensored together.
+
+\begin{quantikz}
+    \lstick[wires = 3]{$\ket{\mathbf{u}}$} & \gate{H}\gategroup[3,steps=1,style={dashed,
+    rounded corners,fill=blue!20, inner xsep=2pt},
+    background,label style={label position=below,anchor=
+    north,yshift=-0.2cm}]{{\sc Had }} & \rstick[wires = 3]{$\sum_{\mathbf{y} \in \{0, 1\}^n} \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}} \ket{y}$} \\
+    \qw & \gate{\vdots} & \qw \\
+    \qw & \gate{H} & \qw 
+\end{quantikz}
+
+Recall that such a $\ket{u} \in \{0, 1\}^n$ is a computational basis vector. So in the standard basis,
+it has a 1 in some position, and a 0 everywhere else. We will call this position the $u$th position.
+Thus, this picks out the $u$th column. This means the $u$th column is just $\frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$ for all possible $y$.
+Therefore, $[H^{\otimes n}]_{y, u} = \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$. Again, these are just bitstrings,
+but when we use them as indices, convert them to their decimal counterparts (and use 0-indexing).
+
+One can view this as a Discrete Fourier Transform over $\Z_2^n$, which means it will be very nice for use later. Let's look at the special case of 2x2.
+
+% \begin{center} 
+% \begin{blockarray}{rcccc}
+%     & \thead{00} & \thead{01} & \thead{10} & \thead{11}\\
+% \begin{block}{>{\small}r[cccc]}
+%       00 & 1 & 1 & 1 & 1 \\
+%       01 & 1 & -1 & 1 & -1 \\
+%       10 & 1 & 1 & -1 & -1 \\
+%       11 & 1 & -1 & -1 & 1 \\
+%     \end{block}
+% \end{blockarray}
+% \end{center}
+
+Let's think about how to act on one of our favorite states, $\Phi^+ = \ftwo \ket{00} + \ftwo \ket{11}$.
+The $\ket{00}$ maps to the first column, $\frac12 \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11})$ and
+the $\ket{11}$ maps to the last column, $\frac12 \qty(\ket{00} - \ket{01} - \ket{10} + \ket{11})$.
+By linearity, this means:
+\[ H^{\otimes 2}\Phi^+ = \ftwo \frac12 \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11}) + \ftwo \frac12 \qty(\ket{00} - \ket{01} - \ket{10} + \ket{11}) = \ftwo \ket{00} + \ftwo \ket{11}   \]
+That means this Bell state through the Hadamard transform just returns the same thing.
+
+With some similar algebra, it turns out another Bell state can be mapped as:
+\[ H^{\otimes 2}\qty(\ftwo \ket{01} + \ftwo \ket{10}) = \ftwo \ket{00} - \ftwo \ket{11} \]
+
+We can use the Hadamard to do something interesting:
+\begin{quantikz}
+    \lstick{$\sum_{x} \alpha_x \ket{x}$} & \gate{Had} & \meter{}
+\end{quantikz}
+
+Suppose the state before measurement is $\sum_y \beta_y \ket{y}$, then measuring in the standard basis gives $y$ with probability $|\beta_y|^2$.
+The question is, what are some interesting states we can put into the Hadamard?
+
+\subsection{Building Blocks for Quantum Algorithms}
+Now how do we program a quantum computer? Let's again try to emulate a classical computer. We saw last lecture, we
+can emulate a classical circuit $C_f$ using $U_f$:
+
+\begin{quantikz}
+    \lstick{$\ket{x}$} & \gate[3]{U_f} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} & \\
+    \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qw\rstick{$\ket{f(x)}$} & \\
+    \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{0}$} &
+\end{quantikz}
+
+Suppose given a function $f: \{ 0,1\}^n \to \{0,1\}$, we want to make a circuit that produces:
+\[ \sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x} \]
+Our first attempt is:
+
+\begin{quantikz}
+    \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}} & \gate[3]{U_f} & \qwbundle[alternate]{} \rstick[wires=2]{$\sum_x \frac{1}{2^{n/2}} \ket{x} \ket{f(x)}$}   \\
+    & \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qw\\
+    & & & \qwbundle[alternate]{} \rstick{$\ket{0}$}
+\end{quantikz}
+
+But applying a phase flip $Z$ to the middle $\ket{f(x)}$ bit, well for every term, it picks up a minus sign if $f(x) = 1$, e.g.,
+it becomes:
+\[ \sum_x \frac{(-1)^{f(x)}}{2^{n/2}}\ket{x} \ket{f(x)} \]
+Now, to erase $\ket{f(x)}$, we can do the usual trick of running $U_f^{\dagger}$ on everything to undo the transform. This will yield our intended answer (since $\ket{x} \ket{f(x)} \mapsto \ket{x}$).
+
+Before building up quantum algorithms, we thought about the Extended Church-Turing Thesis, which roughly stated that any ``reasonable'' model of computation is
+polynomial-time simulable on a (probabilistic) Turing Machine. Clearly, simulating $n$ qubits with a classical computer requires tracking $2^n$ amplitudes,
+which is an exponential-time process. However, quantum computers violate this thesis and early quantum algorithms showcased this fact. Recently,
+Google performed a ``Quantum supremacy'' experiment, where they argued there was a \textbf{experimental} speedup from a classical computer running the same task.
+
+\subsection{Bernstein-Vazirani Algorithm}
+Suppose there is a secret function $f(x) = u \cdot x$ where we don't know $u$,
+but we have oracle access to it. The algorithm to solve this can be stated simply.
+
+\begin{enumerate}
+    \item Create a phase state $\sum_x \frac{(-1)^{f(x)}}{2^{n/2}} = \sum_x \frac{(-1)^{u \cdot x}}{2^{n/2}} \ket{x}$
+    \item Feed it through the Hadamard Transform (it is its own inverse). This will yield $u$.
+\end{enumerate}
+
+But how would you figure this out classically? To uniquely find $f$, you'll need to put in a full basis of $x$ elements.
+So you would need $n$ queries. But in the quantum setting, you only needed two query accesses (assuming you can invert $f$).
+
+You can make this algorithm recursive called Recursive Fourier Sampling. This is a similar algorithm that works on
+multi-dimensional vectors, allowing you to compute gradients (see that here we computed the gradient of $f$).
+

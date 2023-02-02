@@ -158,10 +158,12 @@ Thus, we can write:
     \lstick[wires = 3]{$\ket{\mathbf{u}}$} & \gate{H}\gategroup[3,steps=1,style={dashed,
     rounded corners,fill=blue!20, inner xsep=2pt},
     background,label style={label position=below,anchor=
-    north,yshift=-0.2cm}]{{\sc Had }} & \rstick[wires = 3]{$\sum_{\mathbf{y} \in \{0, 1\}^n} \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$} \\
+    north,yshift=-0.2cm}]{{\sc Had }} & \rstick[wires = 3]{$\sum_{\mathbf{y} \in \{0, 1\}^n} \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}} \ket{y}$} \\
     \qw & \gate{\vdots} & \qw \\
     \qw & \gate{H} & \qw 
 \end{quantikz}
+
+where $\mathbf{u} \cdot \mathbf{y} = \sum_{i = 1}^n u_i y_i \pmod{2}$ is the dot product of the two bitstrings.
 
 Lastly, one can compute the tensor product using the formula from last lecture:
 \[ H \otimes H = \frac12 \begin{bmatrix}
