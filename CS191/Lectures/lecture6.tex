@@ -20,19 +20,16 @@ Thus, this picks out the $u$th column. This means the $u$th column is just $\fra
 Therefore, $[H^{\otimes n}]_{y, u} = \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$. Again, these are just bitstrings,
 but when we use them as indices, convert them to their decimal counterparts (and use 0-indexing).
 
-One can view this as a Discrete Fourier Transform over $\Z_2^n$, which means it will be very nice for use later. Let's look at the special case of 2x2.
+One can view this as a Discrete Fourier Transform over $\Z_2^n$, which means it will be very nice for use later. Let's revisit the special case of 2x2.
 
-% \begin{center} 
-% \begin{blockarray}{rcccc}
-%     & \thead{00} & \thead{01} & \thead{10} & \thead{11}\\
-% \begin{block}{>{\small}r[cccc]}
-%       00 & 1 & 1 & 1 & 1 \\
-%       01 & 1 & -1 & 1 & -1 \\
-%       10 & 1 & 1 & -1 & -1 \\
-%       11 & 1 & -1 & -1 & 1 \\
-%     \end{block}
-% \end{blockarray}
-% \end{center}
+\[
+H^{\otimes 2} = \frac12 \begin{pmatrix}
+1 & 1 & 1 & 1 \\
+1 & -1 & 1 & -1 \\
+1 & 1 & -1 & -1 \\
+1 & -1 & -1 & 1 \\
+\end{pmatrix}
+\]
 
 Let's think about how to act on one of our favorite states, $\Phi^+ = \ftwo \ket{00} + \ftwo \ket{11}$.
 The $\ket{00}$ maps to the first column, $\frac12 \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11})$ and
