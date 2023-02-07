@@ -9,7 +9,7 @@ in this sense, we say $\C^2 \otimes \C^2 \cong \C^4$, the spaces are isomorphic.
 
 In a general setting, call $\mathcal{H}_1$ a system with $k$ levels and $\mathcal{H}_2$ a system with $\ell$ levels we say
 \[ \mathcal{H}_1 \otimes \mathcal{H}_2 \text{ is the vector space spanned by } \{ \ket{i}\ket{j}\}_{0\leq i \leq k, 0 \leq j \leq \ell}\]
-which is a vector space with dimension $\ell$.
+which is a vector space with dimension $k \cdot \ell$.
 
 We can also talk about the tensor product of operators. When you tensor product two operators, they act on their spaces separately.
 This is a circuit representation of $H \otimes Z$:
@@ -87,7 +87,8 @@ Now Bob can just measure the qubit in the Bell basis. But can we do better than 
 \subsection{Quantum Teleportion}
 Professor Vazirani assures us that Alice has been working hard in her lab and made a state $\alpha \ket{0} + \beta \ket{1}$
 that takes a LONG time to make. Unfortunately, she does not have access to an apparatus needed to process this qubit into cool things.
-Furthermore, she shares a Bell state with Bob and can exchange (classical) information with him, who does have an apparatus.
+Fortunately, she shares a Bell state with Bob and can exchange (classical) information with him, who does have such an apparatus.
+As we will see, the following circuit allows Alice to share her state with Bob:
 
 \begin{quantikz}
     \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{G'} & \meter{} & \qw\rstick{$b_1$}\\
@@ -112,17 +113,18 @@ She tells Bob this one bit $b_2$. If it was 1, Bob applies a phase flip $Z$ to f
 
 Now, to address the original problem, we can reduce to this case by just getting $\alpha \ket{00} + \beta\ket{11}$.
 The following subcircuit takes the two states and gives a $0$ if the state is $\alpha \ket{00} + \beta\ket{11}$ and a $1$
-if the state is $\alpha \ket{01} + \beta\ket{10}$.
+if the state is $\alpha \ket{01} + \beta\ket{10}$. In the second case, a bit flip on the second qubit gets us our target state.
 
 \begin{quantikz}
     \qw\lstick{$\alpha \ket{0} + \beta \ket{1}$} & \ctrl{1} & \qw & \qw \\
-    \qw & \targ & \qw & \meter{} & \qw\rstick{$b_1$}
+    \qw\lstick[wires=2]{$\sum_j \beta_j \ket{j, j}$} & \targ & \qw & \meter{} & \qw\rstick{$b_1$} \\
+    \qw & \qw & \qw & \qw
 \end{quantikz}
 
-Let's prove this claim, taking a general $k$-level state (e.g. $\alpha = \alpha_0$, $\alpha = \alpha_1$, etc) where
-the initial state of the (technically three) vectors is: $\sum_{i, j} \alpha_i \ket{i} \otimes \ket{j, j}$. Under CNOT:
+Let's prove this claim, using an index for brevity, where
+the initial state of the (technically three) qubits is: $\sum_{i, j} \alpha_i \ket{i} \otimes \ket{j, j}$. Under CNOT:
 \[ \text{CNOT} \sum_{i,j} \alpha_i \ket{i} \otimes \ket{j, j} = \sum_{i, j} \alpha_i \ket{i, i \oplus j, j}  \]
-But then after measurement of $\ell$, we have $i \oplus j = \ell \implies j = i \oplus \ell$ is the only term that survives:
+But then after measurement of $\ell$ in qubit 1, we have $i \oplus j = \ell \implies j = i \oplus \ell$ is the only term that survives:
 \[ \sum_i \alpha_i \ket{i, i \oplus \ell} \]
 But we want to end up with $\sum_i \alpha_i \ket{i, i}$. So we only have to do a bit flip on the third bit if $\ell = 1$.
 

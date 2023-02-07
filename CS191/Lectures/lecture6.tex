@@ -84,13 +84,13 @@ Suppose there is a secret function $f(x) = u \cdot x$ where we don't know $u$,
 but we have oracle access to it. The algorithm to solve this can be stated simply.
 
 \begin{enumerate}
-    \item Create a phase state $\sum_x \frac{(-1)^{f(x)}}{2^{n/2}} = \sum_x \frac{(-1)^{u \cdot x}}{2^{n/2}} \ket{x}$
+    \item Create a phase state $\sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x} = \sum_x \frac{(-1)^{u \cdot x}}{2^{n/2}} \ket{x}$
     \item Feed it through the Hadamard Transform (it is its own inverse). This will yield $u$.
 \end{enumerate}
 
 But how would you figure this out classically? To uniquely find $f$, you'll need to put in a full basis of $x$ elements.
 So you would need $n$ queries. But in the quantum setting, you only needed two query accesses (assuming you can invert $f$).
 
-You can make this algorithm recursive called Recursive Fourier Sampling. This is a similar algorithm that works on
+You can generalize this algorithm with one called Recursive Fourier Sampling. This is a similar algorithm that works on
 multi-dimensional vectors, allowing you to compute gradients (see that here we computed the gradient of $f$).
 
