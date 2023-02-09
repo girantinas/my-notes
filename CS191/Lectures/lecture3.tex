@@ -40,11 +40,13 @@ In general, we have the following definition:
 
 Another name for these unitary transform are ``quantum gates.'' We can draw such gates on one or two inputs as the following:
 
+\begin{center}
 \begin{quantikz}
     & \gate{U} & \qw \\
     & \gate[wires=2]{U} & \qw \\
     & & \qw
 \end{quantikz}
+\end{center}
 
 \subsection{The Fundamental Quantum Gates}
 Some simple 1-qubit gates are the following:
@@ -82,9 +84,12 @@ If you recall the Pauli spin matrices, you may remember $X, Z$ as two of them; h
 Using $H$ is computationally more interesting and is helpful for our analysis.
 
 Let us make a bit of a silly circuit:
+
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{\phi}$} & \gate{U} & \qw & \gate{U^{\dagger}} & \qw\rstick{$\ket{\phi}$}
 \end{quantikz}
+\end{center}
 
 We applied a gate and then applied its adjoint, which is its inverse since it is unitary.
 Thus, we can always ``undo/uncompute'' quantum circuits (before measurement).
@@ -124,17 +129,21 @@ If $a$ and $b$ are pure bits, then we have the following truth table (the first 
 
 What if I did the following? I will input $\ket{+} \ket{0} = \ftwo \ket{00} + \ftwo \ket{10}$.
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{+}$} & \ctrl{1} & \qw\rstick[wires=2]{$\ket{\Phi^+} = \ftwo\ket{00} + \ftwo\ket{11}$} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw
 \end{quantikz}
+\end{center}
 
 We created a Bell-state. Now to make it from two $\ket{0}$'s, we can add a Hadamard:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{0}$} & \gate{H} & \ctrl{1} & \qw\rstick[wires=2]{$\ket{\Phi^+}$} \\
     \lstick{$\ket{0}$} & \qw & \targ & \qw &\qw
 \end{quantikz}
+\end{center}
 
 Now consider applying this circuit to any two-qubit state. We can do something very similar (the reader can verify the details):
 
@@ -151,26 +160,32 @@ Now consider applying this circuit to any two-qubit state. We can do something v
 Now, consider turning the circuit backwards. Since both gates are their own inverses (CNOT is made up of a block diagonal of involutions so it is also an involution),
 this just inverts the circuit. Let us add a measurement apparatus:
 
+\begin{center}
 \begin{quantikz}
     \lstick[wires=2]{Bell basis states} & \ctrl{1} & \gate{H} & \qw & \meter{} & \qw\rstick[wires=2]{Measuring in standard basis} \\
     & \targ & \qw & \qw & \qw & \meter{} & \qw
 \end{quantikz}
+\end{center}
 
 Now, we can measure in other basis, JUST using our module for measuring the standard basis. This means without loss of generality we can measure in any basis.
 
 \subsection{Intuition for Entanglement}
 We know that:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{+}$} & \gate{H} & \meter{} & \qw\rstick{$0$ wp $1$}
 \end{quantikz}
+\end{center}
 
 But, now what if we entangle the state with a CNOT?
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{+}$} & \ctrl{1} & \qw & \gate{H} & \meter{} & \qw\rstick{???} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw
 \end{quantikz}
+\end{center}
 
 Intuitively, we expected the measurement controlled bit to not get changed, so we should expect the same result as above.
 
@@ -185,6 +200,7 @@ But in the second case, we have an entanglement which stops this cancellation (t
 
 This gives us a view into what measurement really is. What if we entangle a bunch of bits:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\alpha\ket{0} + \beta\ket{1}$} & \ctrl{1} & \ctrl{2} & \ctrl{3} & \ctrl{4} & \ctrl{5} & \ctrl{6} & \ctrl{7} & \qw\rstick[wires=8]{$\alpha \ket{00000000} + \beta \ket{11111111}$} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw \\
@@ -195,6 +211,7 @@ This gives us a view into what measurement really is. What if we entangle a bunc
     \lstick{$\ket{0}$} & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw \\
     \lstick{$\ket{0}$} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw \\
 \end{quantikz}
+\end{center}
 
 At some macro point, nature cannot support such a large entangled state and collapses it probabilistically into one of the two basis states. This
 is how measurement is done in practice.

@@ -5,6 +5,7 @@
 Recall the Hadamard Transform from last lecture, made up of a bunch of 
 Hadamard gates tensored together.
 
+\begin{center}
 \begin{quantikz}
     \lstick[wires = 3]{$\ket{\mathbf{u}}$} & \gate{H}\gategroup[3,steps=1,style={dashed,
     rounded corners,fill=blue!20, inner xsep=2pt},
@@ -13,6 +14,7 @@ Hadamard gates tensored together.
     \qw & \gate{\vdots} & \qw \\
     \qw & \gate{H} & \qw 
 \end{quantikz}
+\end{center}
 
 Recall that such a $\ket{u} \in \{0, 1\}^n$ is a computational basis vector. So in the standard basis,
 it has a 1 in some position, and a 0 everywhere else. We will call this position the $u$th position.
@@ -53,21 +55,25 @@ The question is, what are some interesting states we can put into the Hadamard?
 Now how do we program a quantum computer? Let's again try to emulate a classical computer. We saw last lecture, we
 can emulate a classical circuit $C_f$ using $U_f$:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{x}$} & \gate[3]{U_f} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qw\rstick{$\ket{f(x)}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{0}$} &
 \end{quantikz}
+\end{center}
 
 Suppose given a function $f: \{ 0,1\}^n \to \{0,1\}$, we want to make a circuit that produces:
 \[ \sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x} \]
 Our first attempt is:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}} & \gate[3]{U_f} & \qwbundle[alternate]{} \rstick[wires=2]{$\sum_x \frac{1}{2^{n/2}} \ket{x} \ket{f(x)}$}   \\
     & \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qw\\
     & & & \qwbundle[alternate]{} \rstick{$\ket{0}$}
 \end{quantikz}
+\end{center}
 
 But applying a phase flip $Z$ to the middle $\ket{f(x)}$ bit, well for every term, it picks up a minus sign if $f(x) = 1$, e.g.,
 it becomes:

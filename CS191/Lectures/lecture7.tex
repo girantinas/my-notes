@@ -1,0 +1,120 @@
+
+\section{Lecture 7}
+
+\subsection{Simon's Algorithm}
+We discuss Simon's algorithm: another quantum protocol that solves a toy problem. The setup is as follows.
+Suppose there is a black-box $f: \{0, 1\}^n \to S \subseteq \{0, 1\}^n$ that is two to one in a specific way: for a fixed string $s$, $f(x) = f(x \oplus s)$,
+where the $\oplus$ is vector addition mod 2. Our challenge is to find $s$.
+
+Classically, there are $2^n$ possibilities for $s$, so if we query $x \neq x'$ and get $f(x) \neq x'$ we can only
+cross out one possibility for $s$ ($x \oplus x'$). So in the worst case, it takes $2^n$ tries. On average, due to the Birthday paradox,
+the runtime is actually the square root of this, $2^{n/2}$.
+
+Here is a quantum algorithm that solves the same problem (with some randomness tossed in as well). Let $a \in_R A$ denote that $a$ is uniformly chosen
+from $A$. Here is a brief roadmap of the steps we will take.
+\begin{enumerate}
+    \item Set up superposition:
+    \[ r \in_R \{0, 1\}^n, \ket{\psi} = \ftwo \ket{r} + \ftwo \ket{r \oplus s} \]
+    \item Perform Fourier sampling on $\ket{\psi}$, i.e. apply $H^{\otimes n}$, and measure. We claim that this yields uniformly random $a \in \{0, 1\}^n$ such that $a \cdot s = 0$.
+    \item Wait until we get $n - 1$ equations. Solve the linear equations for $s$. This takes time polynomial in $n$, classically.
+    \item Check if the solution you got to the system is correct by checking if $f(0) = f(s)$. Repeat the algorithm if not.
+\end{enumerate}
+In the last step, the reason we use $n - 1$ equations is that we will always have at least two solutions, $0$ and $s$, so no $n$ equations can all be independent.
+
+Let's figure out how to set up a suitable superposition for step 1. Let's first apply a Hadamard to $\ket{0}$
+to make $\frac{1}{\sqrt{2^n}}\sum_x \ket{x}$. Then, if we apply the function, we recall this just tensor products with the function output. Upon measurement on those function qubits
+as $f(r)$:
+\[ \frac{1}{\sqrt{2^n}} \sum_x \ket{x} \ket{f(x)} \mapsto \ftwo \ket{r} + \ftwo \ket{r \oplus s}  \]
+This makes the circuit altogether:
+
+\begin{center}
+\begin{quantikz}
+    \lstick{$\ket{0^n}$} & \gate{H^{\otimes n}} & \gate[wires=2]{U_f} & \gate{H^{\otimes n}} & \meter{} & \gate{\text{Gaussian Elim.}}\\
+    \lstick{$\ket{0^n}$} & \qw & & \qw \meter{}
+\end{quantikz}
+\end{center}
+
+Now, let's make sure the claim in step 2 is correct. The Hadamard transforms:
+\begin{align*}
+    H^{\otimes n} \qty(\ftwo \ket{r} + \ftwo \ket{r \oplus s}) &= \frac{1}{\sqrt{2^{n + 1}}} \sum_a \qty((-1)^{a \cdot r} + (-1)^{a \cdot (r \oplus s)}) \ket{a} \\
+    &= \frac{1}{\sqrt{2^{n + 1}}} \sum_a (-1)^{a \cdot r} \qty(1 + (-1)^{a \cdot s}) \ket{a}
+\end{align*}
+However, note that:
+\[  \qty(1 + (-1)^{a \cdot s}) = \begin{cases}
+    0 & \text{if $a \cdot s = 1$} \\
+    2 & \text{if $a \cdot s = 0$}
+\end{cases} \]
+So we finally get the state as:
+\[ \frac{1}{\sqrt{2^{n - 1}}} \sum_{a : a \cdot s = 0} (-1)^{a \cdot r} \ket{a}  \]
+Measuring ignores the phase, so we thus have a uniform distribution over all the $2^{n - 1}$ vectors orthogonal to $s$.
+
+Finally, note that the measurement made the math a lot easier, but by the principle of deferred measurement the measurement on the second $n$ qubits is not strictly necessary.
+
+\subsection{Quantum Fourier Transform}
+Recall the roots of unity over $\C$.
+\begin{note}[Roots of unity]
+    An $M$th root of unity is a complex number $z$ such that $z^M = 1$.
+    The primitive $M$th root of unity $\omega$ is
+    \[ \omega = e^{2\pi i/M} = \cos \frac{2\pi}{M} + i \sin \frac{2\pi}{M} \]
+    Furthermore, any $M$th root of unity can be written as $\omega^k$ for $1 \leq k \leq M$.
+\end{note}
+
+The Fourier transform is just the act of applying a polynomial on roots of unity.
+Suppose you have a polynomial $\alpha(x) = \sum_{j = 0}^{M - 1} \alpha_j x^j$. Then we can
+write $\beta_k = \alpha(\omega_k)$, which can be expanded and written as multiplication
+by a special Vandemonde matrix, called the Discrete Fourier Transform (DFT).
+\[ \begin{pmatrix}
+    \beta_0 \\ \beta_1 \\ \vdots \\ \beta_{M - 1}
+\end{pmatrix} = \begin{pmatrix}
+    1 & 1 & \dots & 1 \\
+    1 & \omega & \omega^2 & \dots & \omega^{M - 1} \\
+    \vdots & \vdots & \vdots & \vdots \\
+    1 & \omega^{M - 1} & \dots & \omega^{(M - 1)(M - 1)}
+\end{pmatrix} \]
+We added a normalizing factor because we want to 
+use quantum bases, so we'll work with this slightly different definition:
+\[ \begin{pmatrix}
+    \beta_0 \\ \beta_1 \\ \vdots \\ \beta_{M - 1}
+\end{pmatrix} = \frac{1}{\sqrt{M}} \begin{pmatrix}
+    1 & 1 & \dots & 1 \\
+    1 & \omega & \omega^2 & \dots & \omega^{M - 1} \\
+    \vdots & \vdots & \vdots & \vdots \\
+    1 & \omega^{M - 1} & \dots & \omega^{(M - 1)(M - 1)}
+\end{pmatrix} \]
+The naive algorithm to do this matrix-vector multiplication is $O(M^2)$, but there is a
+divide-and-conquer algorithm (the FFT) that can do this much faster, in $O(M \log M)$ time.
+The Quantum Fourier Transform can do this in $\tilde{O}(\log M)$,
+where $\tilde{O}$ hides poly-log factors. We will show a simple way to $O(\log^2 M)$. However,
+there is a big caveat, we know the answer takes $M$ time to even write down.
+The reason QFT can go faster is that since the QFT gives you a quantum state,
+you only get a single index $j$ upon any actual measurement; the FFT gives you the entire answer!
+
+Now we discuss the implementation of the QFT, which will be surprisingly similar to the FFT. Without loss of generality,
+assume $M$ is a power of two and $m = \log_2 M$. By the matrix multiplication above, it's clear that:
+\[\ket{k} \mapsto_{QFT} \frac{1}{\sqrt{M}} \sum_{j = 0}^{M - 1} \omega^{jk} \ket{j} =: \ket{\chi_k} \]
+Suppose inductively that we knew how to apply the $QFT_{M/2}$. Then to apply $QFT_M$ we can implement it as:
+
+\begin{center}
+\begin{quantikz}
+    \lstick[wires=3]{qubit $1 \dots m - 1$} & \gate[3]{QFT_{M/2}} & \phase{\omega^0} & \qw & \qw  \\ 
+    & & \qw & \phase{\omega^j} & \qw & \qw  \\
+    & & \qw & \qw & \phase{\omega^{m - 1}}\qw & \qw & \qw \\
+    \lstick{qubit $m$} & \qw & \ctrl{-3} & \ctrl{-2} & \ctrl{-1}& \gate{H} 
+\end{quantikz}
+\end{center}
+
+Note that 
+Unrolling the recursion, and calling $QFT_0$ the identity, it's clear that the runtime is:
+\[ 1 + 2 + \dots + (m - 1) + m = O(m^2) \]
+Now to prove correctness, consider the FT matrix. We reorder the columns so the first $M/2$
+columns are the even-indexed columns (0-indexing) and the rest are odd-indexed columns. Then
+\[ FT_M = \begin{pmatrix}
+    FT_{M/2} & \omega^j FT_{M/2} \\
+    FT_{M/2} & -\omega^j FT_{M/2}
+\end{pmatrix} \]
+where $\alpha^j A$ means to multiply the $j$ row of $A$ by $\alpha^j$. To show this, let's consider the four quadrants.
+Call $j$ the row, $\ell$ the column, and $k$ some integer satisfying $0 \leq k < M/2$. We will only do two cases for simplicity,
+the rest are similar.
+If you're in the top left, e.g. if $0 \leq j < M/2$ and $\ell = 2k$, then the entry is $\omega_M^{2jk} = \omega_{M/2}^{jk}$, i.e. the correct entry in the top left.
+If you're in the bottom right, e.g. if $M/2 \leq j < M$ and $\ell = 2k + 1$. Let $j' = j - M/2$, then
+the entry is $\omega^{(2k + 1) (j' + M/2)} = \omega^{2kj' + 2k + kM + M/2} = \omega_{M/2}^{kj'} \omega^{M/2 + 2k}$

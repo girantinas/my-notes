@@ -14,10 +14,12 @@ which is a vector space with dimension $k \cdot \ell$.
 We can also talk about the tensor product of operators. When you tensor product two operators, they act on their spaces separately.
 This is a circuit representation of $H \otimes Z$:
 
+\begin{center}
 \begin{quantikz}
     \lstick{} & \gate{H} & \qw \\
     \lstick{} & \gate{Z} & \qw
 \end{quantikz}
+\end{center}
 
 In this circuit, $\ket{00} \mapsto H\ket{0} \otimes Z\ket{0} = \ket{+}\ket{0}$, keeping the tensor products separately.
 On the other hand, note that the operator can be equivalently written as an element of $\C^{4\times 4}$.
@@ -60,10 +62,12 @@ The no cloning theorem states that you cannot create a copy of a qubit. Formally
 
 But hang on, didn't we see a copying circuit before? Recall the following circuit:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\alpha \ket{0} + \beta \ket{0}$} & \ctrl{1} & \qw \rstick{$\alpha \ket{00} + \beta \ket{11}$} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw
 \end{quantikz}
+\end{center}
 
 It sent $\ket{0} \mapsto \ket{00}$ and $\ket{1} \mapsto \ket{11}$, which uniquely defines
 the transformation. But it doesn't work on a general state!
@@ -90,21 +94,25 @@ that takes a LONG time to make. Unfortunately, she does not have access to an ap
 Fortunately, she shares a Bell state with Bob and can exchange (classical) information with him, who does have such an apparatus.
 As we will see, the following circuit allows Alice to share her state with Bob:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{G'} & \meter{} & \qw\rstick{$b_1$}\\
     \lstick[wires=2]{$\ket{\Phi^+}$}\qw & & \meter{} & \qw\rstick{$b_2$} \\
     \qw & \gate[wires=1]{G(b_1, b_2)}  & \qw & \qw \rstick{$\alpha \ket{0} + \beta\ket{1}$} 
 \end{quantikz}
+\end{center}
 
 $b_1$ tells you whether to do a bit flip and $b_2$ tells you whether to do a phase flip in $G$.
 
 Let's consider a simpler problem, Alice and Bob have two entangled bits $\alpha \ket{00} + \beta \ket{11}$ and they want Bob to create $\alpha \ket{0} + \beta \ket{1}$.
 They can use the following circuit to solve this problem:
 
+\begin{center}
 \begin{quantikz}
     \lstick[wires=2]{$\alpha \ket{00} + \beta\ket{11}$}\qw & \gate{H} & \qw & \meter{} & \qw\rstick{$b_2$}\\
     \qw & \gate{ b_2 \text{ ? } Z \text{ : } I  } & \qw & \qw\rstick{$\alpha \ket{0} + \beta \ket{1}$} \\
 \end{quantikz}
+\end{center}
 
 The state becomes:
 \[ \frac{1}{\sqrt{2}} \qty(\alpha \ket{00} + \beta \ket{01}) + \frac{1}{\sqrt{2}} \qty(\alpha \ket{10} - \beta \ket{11}) \]
@@ -115,11 +123,13 @@ Now, to address the original problem, we can reduce to this case by just getting
 The following subcircuit takes the two states and gives a $0$ if the state is $\alpha \ket{00} + \beta\ket{11}$ and a $1$
 if the state is $\alpha \ket{01} + \beta\ket{10}$. In the second case, a bit flip on the second qubit gets us our target state.
 
+\begin{center}
 \begin{quantikz}
     \qw\lstick{$\alpha \ket{0} + \beta \ket{1}$} & \ctrl{1} & \qw & \qw \\
     \qw\lstick[wires=2]{$\sum_j \beta_j \ket{j, j}$} & \targ & \qw & \meter{} & \qw\rstick{$b_1$} \\
     \qw & \qw & \qw & \qw
 \end{quantikz}
+\end{center}
 
 Let's prove this claim, using an index for brevity, where
 the initial state of the (technically three) qubits is: $\sum_{i, j} \alpha_i \ket{i} \otimes \ket{j, j}$. Under CNOT:

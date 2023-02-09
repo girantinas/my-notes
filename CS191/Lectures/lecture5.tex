@@ -10,6 +10,7 @@ We will now begin quantum computer science in an algorithmic sense.
 \begin{definition}[Quantum Circuit]
     A quantum circuit on $n$ qubits is a collection of $m$ gates (unitary transforms), with measurement at the end.
 
+    \begin{center}
         \begin{quantikz}
             \lstick[wires=2]{$n$ qubits}& \qwbundle[
                 alternate]{}& \gate[swap]{}\gategroup[2,steps=3,style={dashed,
@@ -23,6 +24,7 @@ We will now begin quantum computer science in an algorithmic sense.
             & \qwbundle[
                 alternate]{} & \qwbundle[alternate]{} & \gate{}\qwbundle[alternate]{} & \gate{}\qwbundle[alternate]{} & \qwbundle[alternate]{} & \meter{}
         \end{quantikz}
+    \end{center}
 
     The depth $d$ of a quantum circuit is the maximum amount of gates any one qubit is passed through.
     At the end of it, we measure in the standard basis in some qubits.
@@ -35,17 +37,21 @@ we want $m = O(\text{poly}(n))$, i.e. on the order of some polynomial of the num
 
 Suppose we had a (classical) circuit that could compute a Boolean function $f: \{0, 1\}^n \to \{0, 1\}^k$:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$x$} & \gate{C_f} \qwbundle[
     alternate]{}& \qwbundle[alternate]{}\rstick{$f(x)$} &
 \end{quantikz}
+\end{center}
 
 How can we create such a circuit in the quantum world? Well first, we'd like:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{x}$} & \gate{U_f} \qwbundle[
     alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{f(x)}$} &
 \end{quantikz}
+\end{center}
 
 So by linearity, \[U_f\qty(\sum_x \alpha_x \ket{x}) \to \sum_x \alpha_x \ket{f(x)}\]
 
@@ -53,19 +59,23 @@ Remember that in our analysis here, since $f$ is a Boolean function,
 we assume that $x$ is a classical state, i.e. $\ket{x_1, x_2, \dots, x_n}$ with $x_i \in \{0, 1\}$.
 Furthermore, such a circuit is always invertible (since it's always unitary!):
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{f(x)}$} & \gate{U_f^{\dagger}} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} &
 \end{quantikz}
+\end{center}
 
 But this is clearly a problem! Suppose $f(x)$ was not injective, i.e. there existed two inputs $x \neq x'$
 such that $f(x) = f(x')$. Clearly you cannot ``go backwards.'' This makes us think that maybe all Boolean functions
 are not representable as quantum circuits. Thus we can only do it for $f$ that are bijections! If we put the input included with the output,
 then we can go ahead and do this. Note that this does not break no-cloning because we are only cloning a pure binary state $x \in \{0, 1\}^n$.
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{x}$} & \gate[2]{U_f} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{f(x)}$} &
 \end{quantikz}
+\end{center}
 
 But note that all gates we use must also be reversible in the same. Recall
 that any classical circuit can be produced from AND and NOT gates. The NOT gate is invertible, and has
@@ -74,6 +84,7 @@ quantum analogue $X$. But the AND gate is obviously not reversible.
 However, it's very easy to make a reversible AND gate, we just use the same trick:
 just keep the inputs at the output. However, in practice, the more elegant way to do this is the CSWAP gate.
 
+\begin{center}
 \begin{quantikz}
     \lstick{$a$} & \qw\gategroup[3,steps=1,style={dashed,
     rounded corners,fill=blue!20, inner xsep=2pt},
@@ -82,6 +93,7 @@ just keep the inputs at the output. However, in practice, the more elegant way t
     \lstick{$b$} & \gate[swap]{} & \qw\rstick{$b'$} \\
     \lstick{$c$} & & \qw\rstick{$c'$}
 \end{quantikz}
+\end{center}
 
 If $a = 0$, then $b' = b$ and $c' = c$, but if $a = 1$, $b' = c$ and $c' = b$. We claim this implements
 and AND gate if we set $c = 0$. Then, $c' = 0$ if $a = 0$ and $c' = b$ if $a = 1$, i.e. $c' = a \land b$.
@@ -90,11 +102,14 @@ One can see through a calculation that if $b = 1, c = 0$, then $a' = a, b' = \ba
 
 Note that we do not want a lot of these bits to actual AND them, they are useless to us. So we can add some ``garbage'' bits
 to the output:
+
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{x}$} & \gate[3]{U_f} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{f(x)}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{g(x)}$} &
 \end{quantikz}
+\end{center}
 
 But this is a disaster! Why? We shall explain soon. First, let's discuss how to fix it.
 To fix this, we can just copy $\ket{f(x)}$, and then run $U_f^{\dagger}$ on everything else (including the original $\ket{f(x)}$).
@@ -103,19 +118,23 @@ This eliminates the garbage $g(x)$ (the output of the $U_f^{\dagger}$ is the jus
 \subsection{Principle of Deferred Measurement}
 Let's go back to a basic quantum circuit.
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{+}$} & \gate{H} & \meter{} & \qw\rstick{$0 \text{ w.p. } 1$}
 \end{quantikz}
+\end{center}
 
 This is because:
 \[ \ftwo \ket{0} + \ftwo \ket{1} \mapsto_H \ftwo\qty(\ftwo \ket{0} + \ftwo \ket{1}) + \ftwo\qty(\ftwo \ket{0} - \ftwo \ket{1}) = \ket{0} \]
 
 Now, let's go to a more complicated circuit:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\ket{+}$} & \ctrl{1} & \gate{H} & \meter{} & \qw\rstick{$0 \text{ w.p. } ???$} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw
 \end{quantikz}
+\end{center}
 
 The output of the CNOT is fed into the $H$:
 \begin{align*}
@@ -129,16 +148,19 @@ Let's generalize this.
 \begin{theorem}[Principle of Deferred Measurement]
 After qubits stop interacting, the state is the same as if you measured them instead. E.g., the following two circuits will conduct equivalent measurements on the beginning bits:
 
+\begin{center}
 \begin{quantikz}
     \qwbundle[alternate]{} & \gate[2]{U} \qwbundle[alternate]{}& \gate{U'}\qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} \\
     \qwbundle[alternate]{} & \qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} &
 \end{quantikz}
+\end{center}
 
-
+\begin{center}
 \begin{quantikz}
     \qwbundle[alternate]{} & \gate[2]{U} \qwbundle[alternate]{}& \gate{U'}\qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} \\
     \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{}
 \end{quantikz}
+\end{center}
 
 \end{theorem}
 
@@ -154,6 +176,7 @@ which can clearly be seen by the definition (we only have a negative sign if bot
 
 Thus, we can write:
 
+\begin{center}
 \begin{quantikz}
     \lstick[wires = 3]{$\ket{\mathbf{u}}$} & \gate{H}\gategroup[3,steps=1,style={dashed,
     rounded corners,fill=blue!20, inner xsep=2pt},
@@ -162,6 +185,7 @@ Thus, we can write:
     \qw & \gate{\vdots} & \qw \\
     \qw & \gate{H} & \qw 
 \end{quantikz}
+\end{center}
 
 where $\mathbf{u} \cdot \mathbf{y} = \sum_{i = 1}^n u_i y_i \pmod{2}$ is the dot product of the two bitstrings.
 
