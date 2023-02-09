@@ -90,6 +90,7 @@ One can see through a calculation that if $b = 1, c = 0$, then $a' = a, b' = \ba
 
 Note that we do not want a lot of these bits to actual AND them, they are useless to us. So we can add some ``garbage'' bits
 to the output:
+
 \begin{quantikz}
     \lstick{$\ket{x}$} & \gate[3]{U_f} \qwbundle[alternate]{}& \qwbundle[alternate]{}\rstick{$\ket{x}$} & \\
     \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{f(x)}$} & \\
@@ -108,7 +109,7 @@ Let's go back to a basic quantum circuit.
 \end{quantikz}
 
 This is because:
-\[ \ftwo \ket{0} + \ftwo \ket{1} \mapsto_H \ftwo\qty(\ftwo \ket{0} + \ftwo \ket{1}) + \ftwo\qty(\ftwo \ket{0} - \ftwo \ket{1}) = \ket{0} \]
+\[ \ftwo \ket{0} + \ftwo \ket{1} \overset{H}{\mapsto} \ftwo\qty(\ftwo \ket{0} + \ftwo \ket{1}) + \ftwo\qty(\ftwo \ket{0} - \ftwo \ket{1}) = \ket{0} \]
 
 Now, let's go to a more complicated circuit:
 
@@ -119,37 +120,38 @@ Now, let's go to a more complicated circuit:
 
 The output of the CNOT is fed into the $H$:
 \begin{align*}
-    \ftwo \ket{00} + \ftwo \ket{11} &\mapsto_H \ftwo \qty(\ftwo \ket{00} + \ftwo \ket{10}) + \ftwo \qty(\ftwo \ket{01} - \ftwo \ket{11} ) \\
-    &= \frac12 \ket{00} + \frac12 \ket{10} + \frac12 \ket{01} - \frac12 \ket{11}
+    \ftwo \ket{00} + \ftwo \ket{11} &\overset{H}{\mapsto} \ftwo \qty(\ftwo \ket{00} + \ftwo \ket{10}) + \ftwo \qty(\ftwo \ket{01} - \ftwo \ket{11} ) \\
+    &\quad \ \ = \frac12 \ket{00} + \frac12 \ket{10} + \frac12 \ket{01} - \frac12 \ket{11}
 \end{align*}
-Now we don't have the interference that happened before of the $\ket{1}$ cancelling out. So now, we see 0 and 1 with equal probability.
+Now we don't have the interference that happened before where the $\ket{1}$ cancelled out. So now, upon measurement we see 0 and 1 with equal probability.
 
 Let's generalize this.
 
 \begin{theorem}[Principle of Deferred Measurement]
-After qubits stop interacting, the state is the same as if you measured them instead. E.g., the following two circuits will conduct equivalent measurements on the beginning bits:
+After qubits stop interacting, the state is the same as if you measured them instead. For instance, the following two circuits will conduct equivalent measurements on the beginning bits:
 
+\begin{center}
 \begin{quantikz}
     \qwbundle[alternate]{} & \gate[2]{U} \qwbundle[alternate]{}& \gate{U'}\qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} \\
     \qwbundle[alternate]{} & \qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} &
 \end{quantikz}
-
-
+\hspace{2.5cm}
 \begin{quantikz}
     \qwbundle[alternate]{} & \gate[2]{U} \qwbundle[alternate]{}& \gate{U'}\qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} \\
     \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{}
 \end{quantikz}
+\end{center}
 
 \end{theorem}
 
-So now, going back to the garbage bits, we cannot just ``throw them away'' or measure them. This will mean you can no longer use those bits for computation!
+So now, going back to the garbage bits, we now see why we cannot just ``throw them away'' or measure them. This will mean you can no longer use those bits for computation!
 As quantum information scientists, we have to keep our workspace ``clean,'' so to speak.
 
 \subsection{Hadamard Transform}
-Let's send a $n$-bit classical bit state $\ket{u}$ into a bunch of Hadamards tensored together. Call $H^{\otimes n} = H \otimes H \otimes \dots \otimes H$ (n times).
-At the level of a singular qubit:
+Let's send a $n$-bit classical bit state $\ket{u}$ into a bunch of Hadamards tensored together. Call $H^{\otimes n} = \underbrace{H \otimes H \otimes \dots \otimes H}_{n \text{ times}}$.
+At the level of a singular qubit, we have:
 \[ H\ket{u_1} = \sum_{y \in \{0, 1\}} \frac{(-1)^{u_1 \cdot y}}{\sqrt{2}} \ket{y} \]
-which can clearly be seen by the definition (we only have a negative sign if both $u$ and $y$ are 1). Similarly, by nearly ``squaring'' the above expression:
+which can clearly be seen by the definition (we only have a negative sign if both $u$ and $y$ are 1). Similarly, by nearly ``squaring'' the above expression, we have:
 \[ (H \otimes H)(\ket{u_1, u_2}) = \sum_{\mathbf{y} \in \{0, 1\}^2} \frac{(-1)^{u_1 y_1} (-1)^{u_2 y_2}}{\qty(\sqrt{2})^2} \ket{y}\]
 
 Thus, we can write:
@@ -170,7 +172,7 @@ Lastly, one can compute the tensor product using the formula from last lecture:
     1 & 1 & 1 & 1 \\ 1 & -1 & 1 & -1 \\ 1 & 1 & -1 & -1 \\ 1 & -1 & -1 & 1
 \end{bmatrix}\]
 
-One can continue this with higher order products.
+One can continue this with higher order products in a similar fashion.
 
 
 

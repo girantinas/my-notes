@@ -16,9 +16,10 @@ Hadamard gates tensored together.
 
 Recall that such a $\ket{u} \in \{0, 1\}^n$ is a computational basis vector. So in the standard basis,
 it has a 1 in some position, and a 0 everywhere else. We will call this position the $u$th position.
-Thus, this picks out the $u$th column. This means the $u$th column is just $\frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$ for all possible $y$.
-Therefore, $[H^{\otimes n}]_{y, u} = \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$. Again, these are just bitstrings,
-but when we use them as indices, convert them to their decimal counterparts (and use 0-indexing).
+Thus, this picks out the $u$th column of $H^{\otimes n}$. This means the $u$th column is just $\frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}$ for all possible $y$.
+Therefore, we have
+\[[H^{\otimes n}]_{y, u} = \frac{(-1)^{\mathbf{u} \cdot \mathbf{y}}}{2^{n/2}}.\]
+Note that these are just bitstrings, but when we use them as indices, we convert them to their decimal counterparts (and use 0-indexing).
 
 One can view this as a Discrete Fourier Transform over $\Z_2^n$, which means it will be very nice for use later. Let's revisit the special case of 2x2.
 

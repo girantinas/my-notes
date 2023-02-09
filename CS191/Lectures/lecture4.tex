@@ -2,24 +2,26 @@
 \section{Lecture 4}
 
 \subsection{The Tensor Product}
-Remember that we ``multiplied'' two states $\ket{0} \ket{0} = \ket{00}$. This made two two-state systems into a four-state system.
-But what is this mystical multiplication? The answer is the tensor product. Really, it would be proper to say $\ket{0} \otimes \ket{0} = \ket{00}$,
-we ``call'' the tensor product this nickname. We also saw we could identify $\ket{00}, \ket{01}, \ket{10}, \ket{11}$ with vectors in $\C^4$,
-in this sense, we say $\C^2 \otimes \C^2 \cong \C^4$, the spaces are isomorphic.
+Remember that we ``multiplied'' two states $\ket{0} \ket{0} = \ket{00}$. This combined two 2-state systems into a 4-state system.
+But what is this mystical multiplication? The answer is the \textbf{tensor product}, denoted by the symbol $\otimes$. Really, it would be proper to say $\ket{0} \otimes \ket{0} = \ket{00}$,
+in which we ``call'' the tensor product this nickname. We also that saw we could identify $\ket{00}, \ket{01}, \ket{10}, \ket{11}$ with vectors in $\C^4$,
+in this sense, we say $\C^2 \otimes \C^2 \cong \C^4$, i.e. the spaces are isomorphic.
 
-In a general setting, call $\mathcal{H}_1$ a system with $k$ levels and $\mathcal{H}_2$ a system with $\ell$ levels we say
+In a general setting, letting $\mathcal{H}_1$ be a system with $k$ levels and $\mathcal{H}_2$ be a system with $\ell$ levels, we say
 \[ \mathcal{H}_1 \otimes \mathcal{H}_2 \text{ is the vector space spanned by } \{ \ket{i}\ket{j}\}_{0\leq i \leq k, 0 \leq j \leq \ell}\]
 which is a vector space with dimension $k \cdot \ell$.
 
 We can also talk about the tensor product of operators. When you tensor product two operators, they act on their spaces separately.
 This is a circuit representation of $H \otimes Z$:
 
+\begin{center}
 \begin{quantikz}
     \lstick{} & \gate{H} & \qw \\
     \lstick{} & \gate{Z} & \qw
 \end{quantikz}
+\end{center}
 
-In this circuit, $\ket{00} \mapsto H\ket{0} \otimes Z\ket{0} = \ket{+}\ket{0}$, keeping the tensor products separately.
+In this circuit, $\ket{00} \mapsto H\ket{0} \otimes Z\ket{0} = \ket{+}\ket{0}$, keeping the tensor products separate.
 On the other hand, note that the operator can be equivalently written as an element of $\C^{4\times 4}$.
 \[ H \otimes Z = \begin{pmatrix}
     \ket{0 \cdot} \to \ket{0 \cdot} & \ket{1 \cdot} \to \ket{0 \cdot} \\
@@ -56,14 +58,17 @@ The no cloning theorem states that you cannot create a copy of a qubit. Formally
 \begin{theorem}[No Cloning]
     There is no unitary transform (quantum circuit) $U$ such that
     \[ U \ket{0} \ket{\psi} = \ket{\psi} \ket{\psi} \]
+    for all possible states that $\ket{\psi}$ could take on.
 \end{theorem}
 
 But hang on, didn't we see a copying circuit before? Recall the following circuit:
 
+\begin{center}
 \begin{quantikz}
     \lstick{$\alpha \ket{0} + \beta \ket{0}$} & \ctrl{1} & \qw \rstick{$\alpha \ket{00} + \beta \ket{11}$} \\
     \lstick{$\ket{0}$} & \targ & \qw & \qw
 \end{quantikz}
+\end{center}
 
 It sent $\ket{0} \mapsto \ket{00}$ and $\ket{1} \mapsto \ket{11}$, which uniquely defines
 the transformation. But it doesn't work on a general state!
@@ -84,42 +89,48 @@ that she wants to send to Bob. Classically she can send this information in exac
 can do it with just one qubit. Based on the bits, she turns the state into one of the Bell states based on the bits. Alice then sends Bob her qubit.
 Now Bob can just measure the qubit in the Bell basis. But can we do better than rate 2? It turns out we can't.
 
-\subsection{Quantum Teleportion}
+\subsection{Quantum Teleportation}
 Professor Vazirani assures us that Alice has been working hard in her lab and made a state $\alpha \ket{0} + \beta \ket{1}$
 that takes a LONG time to make. Unfortunately, she does not have access to an apparatus needed to process this qubit into cool things.
 Fortunately, she shares a Bell state with Bob and can exchange (classical) information with him, who does have such an apparatus.
 As we will see, the following circuit allows Alice to share her state with Bob:
 
+\begin{center}
 \begin{quantikz}
-    \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{G'} & \meter{} & \qw\rstick{$b_1$}\\
-    \lstick[wires=2]{$\ket{\Phi^+}$}\qw & & \meter{} & \qw\rstick{$b_2$} \\
+    \lstick{$\alpha \ket{0} + \beta\ket{1}$}\qw & \gate[wires=2]{G'} & \meter{} & \qw\rstick{$b_2$}\\
+    \lstick[wires=2]{$\ket{\Phi^+}$}\qw & & \meter{} & \qw\rstick{$b_1$} \\
     \qw & \gate[wires=1]{G(b_1, b_2)}  & \qw & \qw \rstick{$\alpha \ket{0} + \beta\ket{1}$} 
 \end{quantikz}
+\end{center}
 
-$b_1$ tells you whether to do a bit flip and $b_2$ tells you whether to do a phase flip in $G$.
+where $b_1$ tells you whether to do a bit flip and $b_2$ tells you whether to do a phase flip in $G$.
 
 Let's consider a simpler problem, Alice and Bob have two entangled bits $\alpha \ket{00} + \beta \ket{11}$ and they want Bob to create $\alpha \ket{0} + \beta \ket{1}$.
 They can use the following circuit to solve this problem:
 
+\begin{center}
 \begin{quantikz}
     \lstick[wires=2]{$\alpha \ket{00} + \beta\ket{11}$}\qw & \gate{H} & \qw & \meter{} & \qw\rstick{$b_2$}\\
     \qw & \gate{ b_2 \text{ ? } Z \text{ : } I  } & \qw & \qw\rstick{$\alpha \ket{0} + \beta \ket{1}$} \\
 \end{quantikz}
+\end{center}
 
 The state becomes:
 \[ \frac{1}{\sqrt{2}} \qty(\alpha \ket{00} + \beta \ket{01}) + \frac{1}{\sqrt{2}} \qty(\alpha \ket{10} - \beta \ket{11}) \]
-Upon measurement, we get $0$ and the state is $\alpha \ket{0} + \beta \ket{1}$ or we get $1$ and the state is $\alpha \ket{0} - \beta \ket{1}$.
-She tells Bob this one bit $b_2$. If it was 1, Bob applies a phase flip $Z$ to fix the quantum state.
+Upon measurement, we get $0$ and the state is $\alpha \ket{0} + \beta \ket{1}$, or we get $1$ and the state is $\alpha \ket{0} - \beta \ket{1}$.
+She tells Bob this one bit $b_2$. If it were 1, Alice would tell Bob to apply a phase flip $Z$ to fix the quantum state.
 
 Now, to address the original problem, we can reduce to this case by just getting $\alpha \ket{00} + \beta\ket{11}$.
 The following subcircuit takes the two states and gives a $0$ if the state is $\alpha \ket{00} + \beta\ket{11}$ and a $1$
 if the state is $\alpha \ket{01} + \beta\ket{10}$. In the second case, a bit flip on the second qubit gets us our target state.
 
+\begin{center}
 \begin{quantikz}
     \qw\lstick{$\alpha \ket{0} + \beta \ket{1}$} & \ctrl{1} & \qw & \qw \\
     \qw\lstick[wires=2]{$\sum_j \beta_j \ket{j, j}$} & \targ & \qw & \meter{} & \qw\rstick{$b_1$} \\
     \qw & \qw & \qw & \qw
 \end{quantikz}
+\end{center}
 
 Let's prove this claim, using an index for brevity, where
 the initial state of the (technically three) qubits is: $\sum_{i, j} \alpha_i \ket{i} \otimes \ket{j, j}$. Under CNOT:
@@ -128,4 +139,24 @@ But then after measurement of $\ell$ in qubit 1, we have $i \oplus j = \ell \imp
 \[ \sum_i \alpha_i \ket{i, i \oplus \ell} \]
 But we want to end up with $\sum_i \alpha_i \ket{i, i}$. So we only have to do a bit flip on the third bit if $\ell = 1$.
 
-Combining all the circuits together gives the result.
+Combining all these subcircuits together gives us the following circuit
+
+\begin{center}
+\begin{quantikz}
+    \lstick{Alice sends $\ket{\psi} = \alpha \ket{0} + \beta\ket{1}$}\qw & \ctrl{1} & \gate{H} & \qw & \meter{} & \cwbend{2} & \rstick{$b_2$}\\
+    \lstick[wires=2]{$\ket{\Phi^+}$}\qw & \targ & \qw & \qw & \meter{} & \cwbend{1} &  & \rstick{$b_1$} \\
+    \qw & \qw & \qw & \qw & \gate{X} & \gate{Z} & \qw \rstick{Bob receives $\ket{\psi}$} 
+\end{quantikz}
+\end{center}
+
+which allows Bob to successfully receive Alice's qubit. Using this circuit, we can teleport Alice's qubit anywhere!
+
+Note that due to the principle of deferred measurement (covered in the next lecture), this circuit is equivalent to
+
+\begin{center}
+\begin{quantikz}
+    \lstick{$\ket{\psi}$}\qw & \ctrl{1} & \gate{H} & \qw & \ctrl{2} & \qw\rstick{$b_2$}\\
+    \lstick[wires=2]{$\ket{\Phi^+}$}\qw & \targ & \qw & \qw & \ctrl{1} & \qw & \qw\rstick{$b_1$} \\
+    \qw & \qw & \qw & \targ & \qw & \gate{Z} & \qw \rstick{$\ket{\psi}$} 
+\end{quantikz}
+\end{center}
