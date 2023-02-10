@@ -1,0 +1,69 @@
+\section{Lecture 1}
+We have seen a limit before in Calculus. Intuitively, when we say $\lim_{x \to c} f(x) = L$, this means that
+$f(x) \approx L$ for $x$'s close to $c$, but NOT at $c$ (there can be a hole at $c$). To rigorize this:
+\begin{definition}[Limit]
+    For a function $f: [a, b] \to \R$, $c \in (a, b)$ and $L \in \R$
+
+    If for every $\epsilon > 0$ we have some $\delta > 0$ such that
+    \[ 0 < |x - c| < \delta \implies |f(x) - L| < \epsilon \]
+    then the limit as $x$ approaches $c$ of $f(x)$ is $L$.
+
+    We denote this by
+    \[ \lim_{x \to c} f(x) = L \]
+\end{definition}
+The upper bound in this definition gives a window between $c - \delta$ and $c + \delta$ (but not including $c$), and we guarantee that the function lies within $\epsilon$ of the limiting value in this windowl.
+
+For example, we know that
+\[ \lim_{x \to 0} \frac{\sin(x)} {x} = 1\]
+This means for small $x$, $\frac{\sin x}{x} \approx 1$. Or one could say $\sin(x) \approx x$.
+
+\begin{definition}[Continuity]
+    A function $f$ is continuous at a point $c$ if
+    \[ \lim_{x \to c} f(x) = f(c) \]
+\end{definition}
+
+Continuity gives us some nice properties.
+\begin{theorem}[Intermediate Value Theorem]
+    Let $f: [a, b] \to \R$ be continuous on $[a, b]$.
+
+    If $L$ is some value between $f(a)$ and $f(b)$ then there exists some $c \in (a, b)$ such that
+    \[ f(c) = L \]
+
+    That is, $f$ takes on every value between $f(a)$ and $f(b)$ at least once over the interval $[a, b]$.
+\end{theorem}
+As a corollary, if a continuous function $f$ changes sign in an interval, it must have a zero in that interval.
+
+Now, let's think about tangent lines. As usual, we can form the slope of a secant line between two points $x$ and $c$ as $\frac{f(x) - f(x)}{x - c}$.
+\begin{definition}[Differentiability]
+    A function $f: [a, b] \to \R$ is differentiable at $c$ if:
+    \[ f'(c) = \lim_{x \to c} \frac{f(x) - f(c)}{x - c} \]
+    The function $f'$ is termed the \textbf{derivative} of $f$.
+\end{definition}
+
+This gives us a natural way to approximate $f$ as a line:
+\[ f(x) \approx f'(c) (x - c) + f(c) \]
+We have a nice theorem, namely that on a closed interval $[a, b]$, there is a tangent line with the same slope as the secant line between $a$
+and $b$.
+\begin{theorem}[Mean Value Theorem]
+    Let $f: [a, b] \to \R$ be continuous on $[a, b]$ and differentiable on $(a, b)$. Then there exists $\xi \in (a, b)$ such that
+    \[ f'(\epsilon) = \frac{f(b) - f(a)}{b - a} \]
+\end{theorem}
+The closed part of the interval only really enforces continuity at the endpoints, since:
+\begin{theorem}
+    If $f$ is differentiable at $c$, then $f$ is continuous at $c$.
+\end{theorem}
+We also define the following sets:
+\begin{definition}
+    \begin{align*}
+        C(\R) &= \{ f: f \text{ is continuous} \} \\
+        C^1(\R) &= \{ f: f' \text{ exists}, f' \in C(\R) \}\\
+        C^n(\R) &= \{ f: f', f'', \dots, f^{(n)} \text{ exists}, f', f'', \dots, f^{(n)} \in C(\R) \}\\
+        C^{\infty}(\R) &= \{ f: f^{(n)} \text{ exists} \}\\
+    \end{align*}
+    Where clearly for $m > n$
+    \[ C^m \subset C^n \subset C \]
+\end{definition}
+Let's look at some counter-examples:
+\[ \derivative{x^{1/2}}{x} = \frac{1}{2} x^{-1/2} \]
+This derivative is not continuous at $x = 0$, but the original function is continuous at $x = 0$. We can atttempt to get rid of this by restricting the domain,
+but we have to now introduce the GSI team.

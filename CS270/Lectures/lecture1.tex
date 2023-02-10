@@ -36,7 +36,7 @@ The first person to use this technique was [G '75]. He showed the following resu
 when $w(e) \geq -1$, then you can solve the general case of $|w| \leq W$ in time $O(T(m) \log W)$.
 
 \begin{proof*}
-    Round $W$ up to the nearest power of 2, $W = 2^k$. We proceed by induction on $k$. If $k = 0$, all the edge weights are already bigger than $-1$, so we're finished.
+    Round $W$ up to the nearest power of 2, $W = 2^k$. We proceed by induction on $k$. If $k = 0$, all the edge weights are already at least than $-1$, so we're finished.
 
     For an inductive case, we use the following algorithm, using solve as as our subroutine:
     \begin{algorithmic}
@@ -90,10 +90,10 @@ Let's put them all together.
         \State $\bar{w} \gets B w$
         \State $\phi_0 \gets 0$
         \For {$i = 1$ to $\log_2 B$}
-            \State $\psi_i \gets$ ScaleDown$(G_{\phi_{i - 1}}, \Delta = n, \frac{B}{2^i})$
+            \State $\psi_i \gets$ ScaleDown$((V, E, \bar{w}_{\phi_{i - 1}}), \Delta = n, \frac{B}{2^i})$
             \State $\phi_i \gets \phi_{i - 1} + \psi_i$
         \EndFor
-        \State $w^* \gets \bar{w}_{\phi_{\log B}} + 1$
+        \State $w^* \gets \frac{\bar{w}_{\phi_{\log B}}}{B} + \frac{1}{B}$
     \EndFunction
     \end{algorithmic}
 \end{algothm}
