@@ -1,0 +1,70 @@
+\section{Lecture 8}
+
+\subsection{Factoring}
+We discuss the classic factoring problem. Given a number $N$, we wish to find its prime factorization
+\[ N = p_1^{e_1} p_2^{e_2} \dots p_k^{e_k} \]
+The simplest algorithm is to try dividing $N$ by every number up to its square root (its biggest factor). This will take $O(\sqrt{N})$ time.
+But if you call $n$ the number of bits to write $N$, e.g. about $\log N$, then $\sqrt{N} = 2^{n/2}$. So
+this algorithm is still exponential in $n$. If we are in a cryptographic setting, where $n$ is a 1024-bit or 2048-bit number, $\sqrt{N}$ is gigantic.
+The best known classial algorithm is the Quadratic Number Sieve, which runs in $\textrm{exp}(O(\sqrt[3]{n}))$. We would prefer a $\textrm{poly}(n)$
+algorithm (or prefer to disprove its existence to protect cryptography). It turns out we can do better with a quantum computer.
+
+If we could just factor a composite $N$ into two non-unit factors, $N = N_1 \cdot N_2$, then we could easily factor it by repeated calling this algorithm
+(the divide and conquer perhaps gaining an extra polylogarithmic factor). Thus, the hardest case is really when $N = P \cdot Q$ for two primes of roughly equal size.
+
+Here is a circuit we claim splits $N$ into such factors. Fix $M > N$ and pick $x$ at random satisfying $0 < x < N$.
+\begin{center}
+\begin{quantikz}
+    \lstick{$\ket{0^n}$} & \gate[1]{QFT_M} & \gate[2]{f(a) = x^{a} \pmod{N}} & \gate[1]{QFT_M} & \meter{} \\
+    \lstick{$\ket{0^n}$} & \qw & \qw
+\end{quantikz}
+\end{center}
+Then from the measurement, we do a little bit of classical postprocessing.
+
+Let's work with an example to motivate how this circuit works. We have $N = 15, M = 16$, then for chosen $x = 2$:
+\[ x^0 \equiv x^4 \equiv x^8 \equiv x^{12} \equiv 1 \pmod{15} \]
+Furthermore
+\[  x^1 \equiv x^5 \equiv x^9 \equiv x^{13} \equiv 2 \pmod{15} \]
+If $\gcd(x, N) = 1$, then there exists a smallest $r > 0$ such that $x^r \equiv 1 \pmod{N}$. We call $r$ the order of $x$.
+If we picked an $x$ that isn't relatively prime, we could use the Euclidean algorithm to find a common factor of $x$ and $N$ and thus
+a factor of $N$.
+
+Suppose we knew the order of $x$ mod 15
+was 4 beforehand. Since $r$ is even, let's trying halving it (if it wasn't, we'd need a different $x$).
+So, define $y \equiv x^{r/2} \pmod{15}$. This means that it's a second root of unity, e.g. $y^2 \equiv 1 \pmod{15}$.
+In the special case when $N$ is a product of two primes, there are four roots of unity. In this case we have $y = 2^2 = 4$,
+which is not trivially plus or minus 1 (if it was, we'd need a different $x$). Now, this means
+\[ y^2 - 1 \equiv 0 \pmod{15} \implies 15 \mid (y + 1)(y - 1) \]
+But we know that 15 cannot divide either thing individually, since $y \not\equiv \pm 1 \pmod{15}$.
+Thus, now we can just compute $\gcd(15, y + 1)$ and $\gcd(15, y - 1)$; this gives us our two factors. In our example this is $\gcd(15, 5) = 5$ and
+$\gcd(15, 3) = 3$. We claim that our circuit above will find the order of $x$.
+
+\subsection{Period Finding}
+How do we extract the order of $x$ (e.g. the period)?
+Now let's think about what we could get out of the circuit right before the second QFT based on different measurements of $f(a)$ (which
+we can consider by the principle of deferred measurement).
+
+\begin{center}
+\begin{tabular}[center]{c|c}
+    $f(a)$ & State of first register \\ \hline
+    0 & Not possible \\
+    1 & $\ket{0} + \ket{4} + \ket{8} + \ket{12}$ \\
+    2 & $\ket{1} + \ket{5} + \ket{9} + \ket{13}$ \\
+    3 & Not possible \\
+    4 & $\ket{2} + \ket{6} + \ket{10} + \ket{14}$
+\end{tabular}
+\end{center}
+
+Suppose $r$ divides $M$ for now. Then, the superposition we get (up to normalization) is
+\[ \ket{\psi} = \sum_{j = 0}^{\frac{M}{r} - 1} \sqrt{\frac{r}{M}}\ket{jr} \mapsto_{QFT_M} \sum_{\ell = 0}^{M - 1} \sum_{j = 0}^{\frac{M}{r} - 1} \frac{\sqrt{r}}{M} \omega^{jr\ell} \ket{\ell} \]
+For $\ell = \frac{k M}{r}$, we get a constructive interference of $M/r$ terms, with each amplitude $\frac{\sqrt{r}}{M}$, which gives amplitude
+$\frac{1}{\sqrt{r}}$. But now notice that there are $r$ such terms, which means the superposition is normalized by these; the other amplitudes must be zero.
+This means that 
+\[ \ket{\psi} \mapsto_{QFT_M} \frac{1}{\sqrt{r}} \sum_{\ell = 0}^{r - 1} \ket{\ell \frac{M}{r}}\]
+Now, if we continually measure, we can get the period with high probability, just by finding $\frac{M}{r}$ with the gcd of the measurements (which will be $\frac{k_1 M}{r}, \frac{k_2 M}{r}$, etc).
+One can view this as time-frequency uncertainty principle--increasing the period $r$ in the original domain decreases the period $M/r$ in the new domain.
+
+In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ such that $|\ell r \mod M| \leq r/2$.
+In other words,
+\[ \qty|\frac{\ell}{M} - \frac{k}{r}| \leq \frac{1}{2M} \]
+If you choose $M \approx N^2$, then one can figure out $r$ by tightening this bound. The continued fractions algorithm does the job.
