@@ -1,0 +1,82 @@
+\section{Lecture 9}
+
+\subsection{Grover's Algorithm}
+We investigate the unstructured search problem. Suppose you have a Boolean function $f: \{0, 1\}^n \to \{0, 1\}$. That
+is guaranteed to not be the 0 function. We wish to find an $a$ such that $f(a) = 1$. Call $N = 2^n$.
+One can think of a Boolean function as a table, mapping numbers from $0$ to $N - 1$. Deterministically you must brute force all entries in the worst case, so it takes $N$,
+but with a randomized algorithm, on average you must look through half of them $N/2$. This problem is hard (in $NP-Complete$), as it's easy to
+check given an $a$ that $f(a) = 1$, but it's hard to find that $a$. We discuss the hardest version of the problem, where $f$ is only 1 at a single point.
+
+In the quantum world, we can prepare the following superposition:
+\[ \frac{1}{\sqrt{N}} \sum_x \ket{x} \ket{f(x)} \]
+However, when we measure, we only get $1$ with probability $\frac{1}{N}$, and we're no better than classical.
+In fact, the best we can do is still exponential.
+\begin{theorem}[BBBV Lowerbound]
+    Any quantum algorithm for the unstructured search problem must take $\gtrsim \sqrt{N}$ time.
+\end{theorem}
+
+Grover's algorithm saturates this lower bound of $O(\sqrt{N})$. Recall that one thing we can do with quantum computation is
+create a phase state: $\frac{1}{2^{n/2}} \sum_{x} (-1)^{f(x)} \ket{x}$. Consider the bit flip operator $X$;
+its eigenvectors are $\ket{\pm}$ with eigenvalues $\pm 1$. Consider the following circuit: which computes $f(x)$
+and applies a CNOT to $\ket{f(x)}$ and $\ket{b}$.
+
+\begin{center}
+\begin{quantikz}
+    \lstick{$\ket{x}$} & \gate[2]{U_f} & \qw\rstick{$\ket{x}$} \\
+    \lstick{$\ket{b}$} & & \qw\rstick{$\ket{b \oplus f(x)}$}
+\end{quantikz}
+\end{center}
+
+Now imagine if $\ket{b}$ is $\ket{-}$. Then, we get on the right $(-1)^{f(x)} \ket{-}$ by linearity. This creates the phase state we want (we can throw away $\ket{-}$ since it's in tensor product).
+This leads to the following circuit, where $D$ is called the diffusion operator.
+
+\begin{center}
+\begin{quantikz}
+    \lstick{$\ket{0^n}$} & \gate{H^{\otimes n}} & \gate[2]{U_f} & \gate{H^{\otimes n}}\gategroup[2,steps=3,style={dashed,
+    rounded corners,fill=green!20, inner xsep=2pt},
+    background,label style={label position=below,anchor=
+    north,yshift=-0.2cm}]{{\sc D }} & \ctrl{1} & \gate{H^{\otimes n}} & \qw & \dots \\
+    \lstick{$\ket{-}$} & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \dots
+\end{quantikz}
+\end{center}
+
+What does it mean to control on a bunch of bits? In this case, this means that if all of the bits are 0, then leave it alone, otherwise, we flip.
+Everything after the first Hadamard is considered ``one iteration" of Grover's algorithm.
+We run this for $O(\sqrt{N})$ iterations, and we measure at the end. We claim that $a$ pops out with constant probability (with respect to $N$).
+
+\begin{note}
+    It can be shown that
+    \[ D = \frac{2}{N}J - I \]
+    where $J$ is the all 1's matrix.
+\end{note}
+We consider $\beta = D \alpha$. The entry $\beta_i = -\alpha_i + \frac{2}{N} \sum_{j} \alpha_j$.
+Note that the mean is $\mu = \frac{1}{N} \sum_j \alpha_j$. This means that each $\beta_i = 2\mu - \alpha_i = \mu - (\alpha_i - \mu)$,
+i.e. we are inverting every element about the mean. What does this mean about algorithm correctness.
+At step 0, all the amplitudes are evenly $\frac{1}{\sqrt{N}}$. Calling $U_f$, we end up with the phase state,
+which is $-1$ at $a$ and 0 everywhere else. What happens to the mean? The mean of the amplitudes decreases ever so slightly,
+so after a $D$, the rest of the amplitudes shirt a small amount, and $a$'s amplitude goes up to nearly $\frac{3}{\sqrt{N}}$.
+After another iteration, it goes up to $\frac{5}{\sqrt{N}}$ and it increases by about $\frac{2}{\sqrt{N}}$
+as long everything is close to $\frac{1}{\sqrt{N}}$. In fact, we get at least a $\frac{1}{\sqrt{N}}$
+increase as long as the other amplitudes are above $\frac{1}{2\sqrt{N}}$. So after $O(\sqrt{N})$
+steps, it takes up a constant fraction of the norm (in specific, the rest take up 
+probability mass $\qty(\frac{1}{2\sqrt{N}})^2 \cdot (N - 1) \leq \frac{1}{4N} \cdot N = \frac{1}{4}$).
+This means that we can measure it with constant probability, and thus we have solved the problem.
+
+Here is a geometric way to view what Grover's algorithm does. Consider the two-dimensional subspace spanned by
+$\ket{a}$ and $\ket{u} = \sum_x \frac{1}{\sqrt{N}} \ket{x}$. These two vectors are not orthogonal. Call an orthogonal
+vector to $\ket{a}$ in this plane $\ket{e}$. We start in the $\ket{u}$,
+the $U_f$ flipping step reflects about $\ket{e}$. Then, we only institute what is essentially a phase flip about $\ket{u}$. One
+can think of these two steps walking $\ket{u}$ towards $\ket{a}$. The angle between $\ket{u}$ and $\ket{e}$ is $\theta = \sin^{-1} \frac{1}{\sqrt{N}} \approx \frac{1}{\sqrt{N}}$.
+After one iteration, the new angle is $\theta + 2 \theta = 3 \theta$, and the angle increases by $2\theta$ every time. It's clear that it will take
+$\frac{\pi}{4\theta} = O\qty(\sqrt{N})$ iterations.
+
+\section{Vaidman's Bomb}
+Suppose there is a quantum-superposition of bomb. If we look inside and there is a bomb, then it will blow up,
+but if it's safe, then we want to open it. Consider sending a photon through it with state $\ket{\psi} = \cos k\theta \ket{0} + \sin k\theta \ket{1}$,
+where the $\ket{0}$ state is a photon that passes through without looking at the bomb and $\ket{1}$ state is a photon that passes through while checking for the bomb.
+You send this state through the box. If we measure the photon on the outside and there is a bomb,
+the probability of an explosion is $\sin^2 \theta$. If there isn't a bomb, then for sure we will not explode. We repeat this $N$ times by rotating by $\theta$ such that $N \theta = \frac{\pi}{2}$.
+Then the $N$th measurement is definite and tells you there is no bomb. The probability that we explode every time is at most $\theta^2$; taking a union
+bound makes it at most $N \theta^2 = O(1/N)$.
+
+This means intuitively, we make $1/N$ progress towards the probability 1 every time.
