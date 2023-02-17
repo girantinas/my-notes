@@ -118,7 +118,7 @@ The quantum circuit that performs this algorithm is depicted as follows:
 
 where the $\ket -$ control performs the same operation as the $Z$ gate described previously (i.e. generates the $(-1)^{f(x)}$).
 
-But how would you figure this out classically? To uniquely find $f$, you'd need to put in a full basis of $x$, which necessitates at least $n$ queries to uniquely determine $u$. On the other hand, in the quantum setting, Bernstein-Vazirani requires only two query accesses (assuming you can invert $f$). This is a substantial speedup.
+But how would you figure this out classically? To uniquely find $f$, you'd need to put in a full basis of $x$, which necessitates at least $n$ queries. On the other hand, in the quantum setting, Bernstein-Vazirani requires only two query accesses (assuming you can invert $f$). This is a substantial speedup.
 
 You can generalize this algorithm with one called \textbf{Recursive Fourier Sampling (RFS)}. This is a similar algorithm that works on
 multi-dimensional vectors, allowing you to compute gradients (see that here we computed the gradient of $f$). For the problem that RFS solves, the comparison of runtimes between classical algorithms and quantum algorithms is shown below:
