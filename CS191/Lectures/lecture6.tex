@@ -45,15 +45,17 @@ With some similar algebra, it turns out another Bell state can be mapped as:
 \[ H^{\otimes 2}\qty(\ftwo \ket{01} + \ftwo \ket{10}) = \ftwo \ket{00} - \ftwo \ket{11} \]
 
 We can use the Hadamard to do something interesting:
+\begin{center}
 \begin{quantikz}
     \lstick{$\sum_{x} \alpha_x \ket{x}$} & \gate{Had} & \meter{}
 \end{quantikz}
+\end{center}
 
-Suppose the state before measurement is $\sum_y \beta_y \ket{y}$, then measuring in the standard basis gives $y$ with probability $|\beta_y|^2$.
-The question is, what are some interesting states we can put into the Hadamard?
+Suppose the state before measurement is $\sum_y \beta_y \ket{y}$. Then measuring in the standard basis gives $y$ with probability $|\beta_y|^2$.
+The question is, what are some interesting input states we can put into the Hadamard? Thinking about this question lays the groundwork for quantum algorithms.
 
 \subsection{Building Blocks for Quantum Algorithms}
-Now how do we program a quantum computer? Let's again try to emulate a classical computer. We saw last lecture, we
+How do we program a quantum computer? Let's again try to emulate a classical computer. We saw last lecture, we
 can emulate a classical circuit $C_f$ using $U_f$:
 
 \begin{center}
@@ -64,22 +66,32 @@ can emulate a classical circuit $C_f$ using $U_f$:
 \end{quantikz}
 \end{center}
 
-Suppose given a function $f: \{ 0,1\}^n \to \{0,1\}$, we want to make a circuit that produces:
+Now, suppose given a function $f: \{ 0,1\}^n \to \{0,1\}$, we want to make a circuit that produces:
 \[ \sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x} \]
 Our first attempt is:
 
 \begin{center}
 \begin{quantikz}
-    \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}} & \gate[3]{U_f} & \qwbundle[alternate]{} \rstick[wires=2]{$\sum_x \frac{1}{2^{n/2}} \ket{x} \ket{f(x)}$}   \\
-    & \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qw\\
-    & & & \qwbundle[alternate]{} \rstick{$\ket{0}$}
+    \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}}\qwbundle[alternate]{} & \gate[3]{U_f}\qwbundle[alternate]{} & \qwbundle[alternate]{} \rstick[wires=2]{$\sum_x \frac{1}{2^{n/2}} \ket{x} \ket{f(x)}$}   \\
+    \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qw\\
+    \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{} \rstick{$\ket{0}$}
 \end{quantikz}
 \end{center}
 
-But applying a phase flip $Z$ to the middle $\ket{f(x)}$ bit, well for every term, it picks up a minus sign if $f(x) = 1$, e.g.,
-it becomes:
+We're close, but we need to somehow obtain the $(-1)^{f(x)}$. We can do this by applying a phase flip $Z$ to the middle $\ket{f(x)}$ bit, which negates every term where $f(x) = 1$, i.e.,
+the desired output becomes:
 \[ \sum_x \frac{(-1)^{f(x)}}{2^{n/2}}\ket{x} \ket{f(x)} \]
-Now, to erase $\ket{f(x)}$, we can do the usual trick of running $U_f^{\dagger}$ on everything to undo the transform. This will yield our intended answer (since $\ket{x} \ket{f(x)} \mapsto \ket{x}$).
+Now, to erase $\ket{f(x)}$, we can do the usual trick of running $U_f^{\dagger}$ on everything to undo the transform. Then, we measure to yield our intended answer (as $U_f^{\dagger} \ket x \ket{f(x)} = \ket x$). The circuit that puts this all together is depicted below:
+
+\begin{center}
+    \begin{quantikz}
+        \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}}\qwbundle[alternate]{} & \gate[3]{U_f}\qwbundle[alternate]{} & \qwbundle[alternate]{} & \gate[3]{U_f^{\dagger}}\qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick[2]{$\sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x}$}  \\
+        \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \gate{Z} & \qw & \qw\\
+        \lstick{$\ket{0}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket{0}$}
+    \end{quantikz}
+\end{center}
+
+\subsection{Motivation for Quantum Algorithms}
 
 Before building up quantum algorithms, we thought about the Extended Church-Turing Thesis, which roughly stated that any ``reasonable'' model of computation is
 polynomial-time simulable on a (probabilistic) Turing Machine. Clearly, simulating $n$ qubits with a classical computer requires tracking $2^n$ amplitudes,
@@ -92,12 +104,32 @@ but we have oracle access to it. The algorithm to solve this can be stated simpl
 
 \begin{enumerate}
     \item Create a phase state $\sum_x \frac{(-1)^{f(x)}}{2^{n/2}} \ket{x} = \sum_x \frac{(-1)^{u \cdot x}}{2^{n/2}} \ket{x}$
-    \item Feed it through the Hadamard Transform (it is its own inverse). This will yield $u$.
+    \item Feed it through the Hadamard Transform (it is its own inverse), and then measure. This will yield $u$.
 \end{enumerate}
 
-But how would you figure this out classically? To uniquely find $f$, you'll need to put in a full basis of $x$ elements.
-So you would need $n$ queries. But in the quantum setting, you only needed two query accesses (assuming you can invert $f$).
+The quantum circuit that performs this algorithm is depicted as follows:
 
-You can generalize this algorithm with one called Recursive Fourier Sampling. This is a similar algorithm that works on
-multi-dimensional vectors, allowing you to compute gradients (see that here we computed the gradient of $f$).
+\begin{center}
+    \begin{quantikz}
+        \lstick{$\ket{0^n}$}\qwbundle[alternate]{} & \gate{H^{\otimes n}}\qwbundle[alternate]{} & \gate{U_f}\qwbundle[alternate]{}\ctrl{1} & \gate{H^{\otimes n}}\qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\ket u$} \\
+        \lstick{$\ket{-}$} & \qw & \targ & \qw & \qw & \qw\rstick{$\ket -$}
+    \end{quantikz}
+\end{center}
+
+where the $\ket -$ control performs the same operation as the $Z$ gate described previously (i.e. generates the $(-1)^{f(x)}$).
+
+But how would you figure this out classically? To uniquely find $f$, you'd need to put in a full basis of $x$, which necessitates at least $n$ queries. On the other hand, in the quantum setting, Bernstein-Vazirani requires only two query accesses (assuming you can invert $f$). This is a substantial speedup.
+
+You can generalize this algorithm with one called \textbf{Recursive Fourier Sampling (RFS)}. This is a similar algorithm that works on
+multi-dimensional vectors, allowing you to compute gradients (see that here we computed the gradient of $f$). For the problem that RFS solves, the comparison of runtimes between classical algorithms and quantum algorithms is shown below:
+\begin{itemize}
+    \item Classical Algorithms satisfy the recursion $T(n) > nT\left(\frac{n}{2}\right) + n$. Solving this recurrence yields a runtime of 
+    \[T(n) = \Omega(n^{\log n}),\]
+    which is \emph{superpolynomial}.
+
+    \item Our Quantum Algorithm (i.e. RFS) satisfies the recursion $T(n) = 2T\left(\frac{n}{2}\right) + O(n)$. Solving this recurrence yields a runtime of 
+    \[T(n) = O(n \log n),\]
+    which is \emph{polynomial}.
+\end{itemize}
+Here, we can see the power of quantum algorithms for computational optimization.
 
