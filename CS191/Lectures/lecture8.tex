@@ -66,6 +66,6 @@ In other words, we can find the period by solving
 \[T = \mathrm{gcd}\left(\ell_1, \ell_2, \dots\right) = \mathrm{gcd} \left(\frac{k_1 M}{R}, \frac{k_2 M}{R}, \dots\right) = \frac{M}{r}.\]
 One can view this as time-frequency uncertainty principle: increasing the period $r$ in the original domain decreases the period $T$ in the new domain.
 
-Note that everything we've discussed so far holds when $r$ divides $M$. In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ that satisfies $|\ell r \mod M| \leq r/2$, i.e.,
+Note that everything we've discussed so far holds only when $r$ divides $M$. In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ that satisfies $|\ell r \mod M| \leq r/2$, i.e.,
 \[ \qty|\frac{\ell}{M} - \frac{k}{r}| \leq \frac{1}{2M} \]
-If we choose $M \approx N^2$, then one can figure out $r$ by tightening this bound. The continued fractions algorithm does the job.
+If we choose $M \approx N^2$, then we can figure out $r$ by tightening this bound. The continued fractions algorithm does the job.

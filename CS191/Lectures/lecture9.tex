@@ -1,10 +1,10 @@
 \section{Lecture 9}
 
 \subsection{Grover's Algorithm}
-We investigate the unstructured search problem. Suppose you have a Boolean function $f: \{0, 1\}^n \to \{0, 1\}$. That
+We investigate the unstructured search problem. Suppose we have a boolean function $f: \{0, 1\}^n \to \{0, 1\}$, which
 is guaranteed to not be the 0 function. We wish to find an $a$ such that $f(a) = 1$. Call $N = 2^n$.
-One can think of a Boolean function as a table, mapping numbers from $0$ to $N - 1$. Deterministically you must brute force all entries in the worst case, so it takes $N$,
-but with a randomized algorithm, on average you must look through half of them $N/2$. This problem is hard (in $NP-Complete$), as it's easy to
+One can think of a Boolean function as a table, mapping numbers from $0$ to $N - 1$. Deterministically you must brute force all entries in the worst case, so it takes $N$; 
+with a randomized algorithm, on average you must look through half of them $N/2$, which is still exponential in $n$. This problem is hard (in \emph{NP-Complete}), as it's easy to
 check given an $a$ that $f(a) = 1$, but it's hard to find that $a$. We discuss the hardest version of the problem, where $f$ is only 1 at a single point.
 
 In the quantum world, we can prepare the following superposition:
@@ -17,8 +17,8 @@ In fact, the best we can do is still exponential.
 
 Grover's algorithm saturates this lower bound of $O(\sqrt{N})$. Recall that one thing we can do with quantum computation is
 create a phase state: $\frac{1}{2^{n/2}} \sum_{x} (-1)^{f(x)} \ket{x}$. Consider the bit flip operator $X$;
-its eigenvectors are $\ket{\pm}$ with eigenvalues $\pm 1$. Consider the following circuit: which computes $f(x)$
-and applies a CNOT to $\ket{f(x)}$ and $\ket{b}$.
+its eigenvectors are $\ket{\pm}$ with eigenvalues $\pm 1$. Consider the following circuit which computes $f(x)$
+and applies a CNOT to $\ket{f(x)}$ and $\ket{b}$:
 
 \begin{center}
 \begin{quantikz}
@@ -27,7 +27,7 @@ and applies a CNOT to $\ket{f(x)}$ and $\ket{b}$.
 \end{quantikz}
 \end{center}
 
-Now imagine if $\ket{b}$ is $\ket{-}$. Then, we get on the right $(-1)^{f(x)} \ket{-}$ by linearity. This creates the phase state we want (we can throw away $\ket{-}$ since it's in tensor product).
+Now imagine if $\ket{b}$ is $\ket{-}$. Then, our output on the right is $(-1)^{f(x)} \ket{-}$ by linearity. This creates the phase state we want (we can throw away $\ket{-}$ since it's in a tensor product).
 This leads to the following circuit, where $D$ is called the diffusion operator.
 
 \begin{center}
@@ -35,7 +35,7 @@ This leads to the following circuit, where $D$ is called the diffusion operator.
     \lstick{$\ket{0^n}$} & \gate{H^{\otimes n}} & \gate[2]{U_f} & \gate{H^{\otimes n}}\gategroup[2,steps=3,style={dashed,
     rounded corners,fill=green!20, inner xsep=2pt},
     background,label style={label position=below,anchor=
-    north,yshift=-0.2cm}]{{\sc D }} & \ctrl{1} & \gate{H^{\otimes n}} & \qw & \dots \\
+    north,yshift=-0.2cm}]{{$D$}} & \ctrl{1} & \gate{H^{\otimes n}} & \qw & \dots \\
     \lstick{$\ket{-}$} & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \dots
 \end{quantikz}
 \end{center}
@@ -45,32 +45,63 @@ Everything after the first Hadamard is considered ``one iteration" of Grover's a
 We run this for $O(\sqrt{N})$ iterations, and we measure at the end. We claim that $a$ pops out with constant probability (with respect to $N$).
 
 \begin{note}
-    It can be shown that
-    \[ D = \frac{2}{N}J - I \]
+    The diffusion operator $D$ can be expressed as follows:
+    \[ D = \frac{2}{N}J - I = \begin{pmatrix}
+        \frac{2}{N} - 1 & \frac{2}{N} & \cdots & \frac{2}{N} \\
+        \frac{2}{N} & \frac{2}{N} - 1 & \cdots & \frac{2}{N} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \frac{2}{N} & \frac{2}{N} & \cdots & \frac{2}{N} - 1
+    \end{pmatrix}\]
     where $J$ is the all 1's matrix.
 \end{note}
-We consider $\beta = D \alpha$. The entry $\beta_i = -\alpha_i + \frac{2}{N} \sum_{j} \alpha_j$.
-Note that the mean is $\mu = \frac{1}{N} \sum_j \alpha_j$. This means that each $\beta_i = 2\mu - \alpha_i = \mu - (\alpha_i - \mu)$,
-i.e. we are inverting every element about the mean. What does this mean about algorithm correctness.
-At step 0, all the amplitudes are evenly $\frac{1}{\sqrt{N}}$. Calling $U_f$, we end up with the phase state,
-which is $-1$ at $a$ and 0 everywhere else. What happens to the mean? The mean of the amplitudes decreases ever so slightly,
-so after a $D$, the rest of the amplitudes shirt a small amount, and $a$'s amplitude goes up to nearly $\frac{3}{\sqrt{N}}$.
-After another iteration, it goes up to $\frac{5}{\sqrt{N}}$ and it increases by about $\frac{2}{\sqrt{N}}$
-as long everything is close to $\frac{1}{\sqrt{N}}$. In fact, we get at least a $\frac{1}{\sqrt{N}}$
-increase as long as the other amplitudes are above $\frac{1}{2\sqrt{N}}$. So after $O(\sqrt{N})$
-steps, it takes up a constant fraction of the norm (in specific, the rest take up 
+
+Let's look at what the diffusion operator actually does. Consider 
+
+\[\beta = \begin{pmatrix}
+    \beta_0 \\
+    \vdots \\
+    \beta_{N-1}
+\end{pmatrix} = D\alpha = D \begin{pmatrix}
+    \alpha_0 \\
+    \vdots \\
+    \alpha_{N-1}
+\end{pmatrix},\]
+
+where each entry of $\beta$ is $\beta_i = -\alpha_i + \frac{2}{N} \sum_{j} \alpha_j$.
+Then, noting that the mean is $\mu = \frac{1}{N} \sum_j \alpha_j$, we can express each of these entries as 
+\[\beta_i = 2\mu - \alpha_i = \mu - (\alpha_i - \mu).\]
+Now, we see that applying $D$ inverts every element about the mean. Let's use this property of $D$ to analyze the correctness of Grover's algorithm.
+
+\subsubsection{Analysis of Grover's Algorithm}
+
+At step 0, all the amplitudes are evenly distributed as $\frac{1}{\sqrt{N}}$. Applying $U_f$, we end up with the phase state,
+which is $-1$ at $a$ and 0 everywhere else. This causes the mean of the amplitudes to decrease ever so slightly, so that after applying $D$, the rest of the amplitudes shirt a small amount, and $a$'s amplitude goes up to nearly $\frac{3}{\sqrt{N}}$.
+After another iteration, it goes up to $\frac{5}{\sqrt{N}}$, and it keeps on increasing by about $\frac{2}{\sqrt{N}}$
+as long all the amplitudes are close to $\frac{1}{\sqrt{N}}$. In fact, we get an increase of at least $\frac{1}{\sqrt{N}}$ as long as the other amplitudes are above $\frac{1}{2\sqrt{N}}$. 
+
+Thus, after $O(\sqrt{N})$
+steps, the amplitude of $a$ takes up a constant fraction of the norm (in particular, the rest take up 
 probability mass $\qty(\frac{1}{2\sqrt{N}})^2 \cdot (N - 1) \leq \frac{1}{4N} \cdot N = \frac{1}{4}$).
-This means that we can measure it with constant probability, and thus we have solved the problem.
+This means that we can measure $a$ with constant probability (at least $\frac{3}{4}$), as desired.
 
+\subsubsection{Geometric Interpretation of Grover's Algorithm}
 Here is a geometric way to view what Grover's algorithm does. Consider the two-dimensional subspace spanned by
-$\ket{a}$ and $\ket{u} = \sum_x \frac{1}{\sqrt{N}} \ket{x}$. These two vectors are not orthogonal. Call an orthogonal
-vector to $\ket{a}$ in this plane $\ket{e}$. We start in the $\ket{u}$,
-the $U_f$ flipping step reflects about $\ket{e}$. Then, we only institute what is essentially a phase flip about $\ket{u}$. One
-can think of these two steps walking $\ket{u}$ towards $\ket{a}$. The angle between $\ket{u}$ and $\ket{e}$ is $\theta = \sin^{-1} \frac{1}{\sqrt{N}} \approx \frac{1}{\sqrt{N}}$.
-After one iteration, the new angle is $\theta + 2 \theta = 3 \theta$, and the angle increases by $2\theta$ every time. It's clear that it will take
-$\frac{\pi}{4\theta} = O\qty(\sqrt{N})$ iterations.
+$\ket{a}$ and $\ket{u} = \sum_x \frac{1}{\sqrt{N}} \ket{x}$. Note that these two vectors are not orthogonal, so we introduce $\ket e$, which is an orthogonal
+vector to $\ket{a}$ in this plane. Now, geometrically, this is what Grover's does on this plane:
+\begin{enumerate}
+    \item Start in the state $\ket u$.
+    \item Reflect about $\ket e$ (i.e. applying $U_f$).
+    \item Reflect about $\ket u$ (i.e. applying $D$).
+    \item Repeat steps 2-3 for each subsequent iteration.
+\end{enumerate}
+% We start in the state $\ket{u}$,
+% and the $U_f$ flipping step reflects about $\ket{e}$. Then, we only institute what is essentially a phase flip about $\ket{u}$. 
+One can think of steps 2-3 as walking $\ket{u}$ towards $\ket{a}$. The angle between $\ket{u}$ and $\ket{e}$ is $\theta = \sin^{-1} \frac{1}{\sqrt{N}} \approx \frac{1}{\sqrt{N}}$.
+After one iteration, the new angle becomes $\theta + 2 \theta = 3 \theta$, and the angle increases by $2\theta$ every time. Then, in order to get to $\theta^{\prime} = \frac{\pi}{2}$ (which corresponds to $\ket a$), it takes approximately
+\[\frac{\pi /2}{2 \theta} \approx \frac{\pi / 2}{2 / \sqrt{N}} = \frac{\pi}{4} \sqrt{N} = O(\sqrt{N})\]
+iterations. 
 
-\section{Vaidman's Bomb}
+\subsection{Vaidman's Bomb}
 Suppose there is a quantum-superposition of bomb. If we look inside and there is a bomb, then it will blow up,
 but if it's safe, then we want to open it. Consider sending a photon through it with state $\ket{\psi} = \cos k\theta \ket{0} + \sin k\theta \ket{1}$,
 where the $\ket{0}$ state is a photon that passes through without looking at the bomb and $\ket{1}$ state is a photon that passes through while checking for the bomb.
