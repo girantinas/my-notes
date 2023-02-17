@@ -6,20 +6,20 @@ We discuss the classic factoring problem. Given a number $N$, we wish to find it
 The simplest algorithm is to try dividing $N$ by every number up to its square root (its biggest factor). This will take $O(\sqrt{N})$ time.
 But if you call $n$ the number of bits to write $N$, e.g. about $\log N$, then $\sqrt{N} = 2^{n/2}$. So
 this algorithm is still exponential in $n$. If we are in a cryptographic setting, where $n$ is a 1024-bit or 2048-bit number, $\sqrt{N}$ is gigantic.
-The best known classial algorithm is the Quadratic Number Sieve, which runs in $\textrm{exp}(O(\sqrt[3]{n}))$. We would prefer a $\textrm{poly}(n)$
-algorithm (or prefer to disprove its existence to protect cryptography). It turns out we can do better with a quantum computer.
+The best known classical algorithm is the Quadratic Number Sieve, which runs in $O(\exp(\sqrt[3]{n}))$. We would prefer a $\textrm{poly}(n)$
+algorithm (or even better to disprove its existence to protect cryptography). It turns out we can do better with a quantum computer.
 
 If we could just factor a composite $N$ into two non-unit factors, $N = N_1 \cdot N_2$, then we could easily factor it by repeated calling this algorithm
-(the divide and conquer perhaps gaining an extra polylogarithmic factor). Thus, the hardest case is really when $N = P \cdot Q$ for two primes of roughly equal size.
+(the divide and conquer perhaps gaining an extra poly-logarithmic factor). Then, the hardest case is really when $N = P \cdot Q$ for two primes of roughly equal size.
 
 Here is a circuit we claim splits $N$ into such factors. Fix $M > N$ and pick $x$ at random satisfying $0 < x < N$.
 \begin{center}
 \begin{quantikz}
-    \lstick{$\ket{0^n}$} & \gate[1]{QFT_M} & \gate[2]{f(a) = x^{a} \pmod{N}} & \gate[1]{QFT_M} & \meter{} \\
-    \lstick{$\ket{0^n}$} & \qw & \qw
+    \lstick{$\ket{0^n}$} & \gate[1]{QFT_M}\qwbundle[alternate]{} & \gate[2]{f(a) = x^{a} \pmod{N}}\qwbundle[alternate]{} & \gate[1]{QFT_M}\qwbundle[alternate]{} & \meter{}\qwbundle[alternate]{} \\
+    \lstick{$\ket{0^n}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\sum_a \beta_a \ket{f(a)}$}
 \end{quantikz}
 \end{center}
-Then from the measurement, we do a little bit of classical postprocessing.
+Then from the measurement, we do a little bit of classical postprocessing to yield our two factor.
 
 Let's work with an example to motivate how this circuit works. We have $N = 15, M = 16$, then for chosen $x = 2$:
 \[ x^0 \equiv x^4 \equiv x^8 \equiv x^{12} \equiv 1 \pmod{15} \]
@@ -30,7 +30,7 @@ If we picked an $x$ that isn't relatively prime, we could use the Euclidean algo
 a factor of $N$.
 
 Suppose we knew the order of $x$ mod 15
-was 4 beforehand. Since $r$ is even, let's trying halving it (if it wasn't, we'd need a different $x$).
+was 4 beforehand. Since $r$ is even, let's try halving it (if it wasn't, we'd need a different $x$).
 So, define $y \equiv x^{r/2} \pmod{15}$. This means that it's a second root of unity, e.g. $y^2 \equiv 1 \pmod{15}$.
 In the special case when $N$ is a product of two primes, there are four roots of unity. In this case we have $y = 2^2 = 4$,
 which is not trivially plus or minus 1 (if it was, we'd need a different $x$). Now, this means
@@ -56,15 +56,16 @@ we can consider by the principle of deferred measurement).
 \end{center}
 
 Suppose $r$ divides $M$ for now. Then, the superposition we get (up to normalization) is
-\[ \ket{\psi} = \sum_{j = 0}^{\frac{M}{r} - 1} \sqrt{\frac{r}{M}}\ket{jr} \mapsto_{QFT_M} \sum_{\ell = 0}^{M - 1} \sum_{j = 0}^{\frac{M}{r} - 1} \frac{\sqrt{r}}{M} \omega^{jr\ell} \ket{\ell} \]
-For $\ell = \frac{k M}{r}$, we get a constructive interference of $M/r$ terms, with each amplitude $\frac{\sqrt{r}}{M}$, which gives amplitude
+\[ \ket{\psi} = \sum_{j = 0}^{\frac{M}{r} - 1} \sqrt{\frac{r}{M}}\ket{jr} \overset{QFT_M}{\mapsto} \sum_{\ell = 0}^{M - 1} \sum_{j = 0}^{\frac{M}{r} - 1} \frac{\sqrt{r}}{M} \omega^{jr\ell} \ket{\ell} \]
+For $\ell = \frac{k M}{r}$, we get a constructive interference of $M/r$ terms, each with amplitude $\frac{\sqrt{r}}{M}$, which gives overall amplitude
 $\frac{1}{\sqrt{r}}$. But now notice that there are $r$ such terms, which means the superposition is normalized by these; the other amplitudes must be zero.
 This means that 
-\[ \ket{\psi} \mapsto_{QFT_M} \frac{1}{\sqrt{r}} \sum_{\ell = 0}^{r - 1} \ket{\ell \frac{M}{r}}\]
-Now, if we continually measure, we can get the period with high probability, just by finding $\frac{M}{r}$ with the gcd of the measurements (which will be $\frac{k_1 M}{r}, \frac{k_2 M}{r}$, etc).
-One can view this as time-frequency uncertainty principle--increasing the period $r$ in the original domain decreases the period $M/r$ in the new domain.
+\[ \ket{\psi} \overset{QFT_M}{\mapsto} \frac{1}{\sqrt{r}} \sum_{\ell = 0}^{r - 1} \ket{\frac{M}{r}\ell}\]
+Now, if we continually measure, we can get the period with high probability, simply by finding $\frac{M}{r}$ via the gcd of the measurements. %(which will be $\frac{k_1 M}{r}, \frac{k_2 M}{r}$, etc).
+In other words, we can find the period by solving
+\[T = \mathrm{gcd}\left(\ell_1, \ell_2, \dots\right) = \mathrm{gcd} \left(\frac{k_1 M}{R}, \frac{k_2 M}{R}, \dots\right) = \frac{M}{r}.\]
+One can view this as time-frequency uncertainty principle: increasing the period $r$ in the original domain decreases the period $T$ in the new domain.
 
-In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ such that $|\ell r \mod M| \leq r/2$.
-In other words,
+Note that everything we've discussed so far holds when $r$ divides $M$. In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ that satisfies $|\ell r \mod M| \leq r/2$, i.e.,
 \[ \qty|\frac{\ell}{M} - \frac{k}{r}| \leq \frac{1}{2M} \]
-If you choose $M \approx N^2$, then one can figure out $r$ by tightening this bound. The continued fractions algorithm does the job.
+If we choose $M \approx N^2$, then one can figure out $r$ by tightening this bound. The continued fractions algorithm does the job.
