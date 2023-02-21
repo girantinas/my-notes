@@ -86,8 +86,8 @@ This means that we can measure $a$ with constant probability (at least $\frac{3}
 
 \subsubsection{Geometric Interpretation of Grover's Algorithm}
 Here is a geometric way to view what Grover's algorithm does. Consider the two-dimensional subspace spanned by
-$\ket{a}$ and $\ket{u} = \sum_x \frac{1}{\sqrt{N}} \ket{x}$. Note that these two vectors are not orthogonal, so we introduce $\ket e$, which is an orthogonal
-vector to $\ket{a}$ in this plane. Now, geometrically, this is what Grover's does on this plane:
+$\ket{a}$ and $\ket{u} = \sum_x \frac{1}{\sqrt{N}} \ket{x}$. Note that these two vectors are not orthogonal, so we introduce $\ket e$, which is a vector orthogonal to $\ket{a}$ in this plane. 
+Now, we can interpret this plane to have basis $\{\ket e, \ket a\}$ (i.e. the $x, y$ axes), and $\ket u$ is a vector lying within this 2D coordinate system. Then, geometrically, this is what Grover's does:
 \begin{enumerate}
     \item Start in the state $\ket u$.
     \item Reflect about $\ket e$ (i.e. applying $U_f$).
@@ -96,8 +96,8 @@ vector to $\ket{a}$ in this plane. Now, geometrically, this is what Grover's doe
 \end{enumerate}
 % We start in the state $\ket{u}$,
 % and the $U_f$ flipping step reflects about $\ket{e}$. Then, we only institute what is essentially a phase flip about $\ket{u}$. 
-One can think of steps 2-3 as walking $\ket{u}$ towards $\ket{a}$. The angle between $\ket{u}$ and $\ket{e}$ is $\theta = \sin^{-1} \frac{1}{\sqrt{N}} \approx \frac{1}{\sqrt{N}}$.
-After one iteration, the new angle becomes $\theta + 2 \theta = 3 \theta$, and the angle increases by $2\theta$ every time. Thus, in order to get to $\theta^{\prime} = \frac{\pi}{2}$ (which corresponds to $\ket a$), it takes approximately
+One can think of steps 2-3 as walking $\ket{u}$ towards $\ket{a}$. Initially, the angle between $\ket{u}$ and $\ket{e}$ is $\theta = \sin^{-1} \frac{1}{\sqrt{N}} \approx \frac{1}{\sqrt{N}}$.
+After one iteration, the new angle becomes $\theta + 2 \theta = 3 \theta$, and each subsequent iteration increases the angle by $2\theta$. Thus, in order to get to $\theta^{\prime} = \frac{\pi}{2}$ (which corresponds to $\ket a$), it takes approximately
 \[\frac{\pi /2}{2 \theta} \approx \frac{\pi / 2}{2 / \sqrt{N}} = \frac{\pi}{4} \sqrt{N} = O(\sqrt{N})\]
 iterations. 
 

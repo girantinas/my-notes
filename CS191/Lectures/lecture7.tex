@@ -25,7 +25,7 @@ Let's figure out how to set up a suitable superposition for step 1. We first app
 to make $\frac{1}{\sqrt{2^n}}\sum_x \ket{x}$. Then, if we apply the function $f$, we recall this just tensor products with the function output. Upon measurement on those function qubits
 as $f(r)$, we get the desired output in the 1st register (i.e. first part of the output):
 \[ \frac{1}{\sqrt{2^n}} \sum_x \ket{x} \ket{f(x)} \mapsto \ftwo \ket{r} + \ftwo \ket{r \oplus s}  \]
-as upon measuring $f(r)$, the value in the 1st register is $\ket{r}$ or $\ket{r \oplus s}$ with equal probability.
+This because upon measuring $f(r)$, the value in the 1st register is $\ket{r}$ or $\ket{r \oplus s}$ with equal probability.
 
 Thus, the circuit looks as follows:
 
@@ -36,7 +36,7 @@ Thus, the circuit looks as follows:
 \end{quantikz}
 \end{center}
 
-Now, let's make sure the claim in step 2 is correct. The Hadamard transforms:
+Now, let's make sure the claim in step 2 is correct. Applying the Hadamard transform yields the following:
 \begin{align*}
     H^{\otimes n} \qty(\ftwo \ket{r} + \ftwo \ket{r \oplus s}) &= \frac{1}{\sqrt{2^{n + 1}}} \sum_a \qty((-1)^{a \cdot r} + (-1)^{a \cdot (r \oplus s)}) \ket{a} \\
     &= \frac{1}{\sqrt{2^{n + 1}}} \sum_a (-1)^{a \cdot r} \qty(1 + (-1)^{a \cdot s}) \ket{a}
@@ -86,14 +86,14 @@ use quantum bases, so we'll work with a slightly different definition:
 The naive algorithm to do this matrix-vector multiplication is $O(M^2)$, but there is a
 divide-and-conquer algorithm called the \textbf{Fast Fourier Transform (FFT)} that can do this much faster—in $O(M \log M)$ time.
 The \textbf{Quantum Fourier Transform (QFT)} can do this in $\tilde{O}(\log M)$,
-where $\tilde{O}$ hides poly-log factors. We will show a simple way to $O(\log^2 M)$. However,
+where $\tilde{O}$ hides poly-log factors. We will show a simple way to achieve $O(\log^2 M)$. However,
 there is a big caveat: we know the answer takes $M$ time to even write down.
 The reason QFT can go faster is that since the QFT gives you a quantum state,
 you only get a single index $j$ upon any actual measurement; the FFT gives you the entire answer!
 
 Now we discuss the implementation of the QFT, which will be surprisingly similar to the FFT. Without loss of generality,
 assume $M$ is a power of two and $m = \log_2 M$. By the matrix multiplication above, it's clear that:
-\[\ket{k} \mapsto_{QFT} \frac{1}{\sqrt{M}} \sum_{j = 0}^{M - 1} \omega^{jk} \ket{j} =: \ket{\chi_k} \]
+\[\ket{k} \overset{QFT}{\mapsto} \frac{1}{\sqrt{M}} \sum_{j = 0}^{M - 1} \omega^{jk} \ket{j} =: \ket{\chi_k} \]
 Suppose inductively that we knew how to apply the $QFT_{M/2}$. Then to apply $QFT_M$ we can implement it as:
 
 \begin{center}
@@ -122,4 +122,4 @@ If you're in the top left, e.g. if $0 \leq j < M/2$ and $\ell = 2k$, then the en
 If you're in the bottom right, e.g. if $M/2 \leq j < M$ and $\ell = 2k + 1$. Let $j' = j - M/2$, then
 the entry is
 \[ \omega^{(2k + 1) (j' + M/2)} = \omega^{2kj' + kM + j' + M/2} = \omega^{kM} \omega_{M/2}^{kj'} \omega^{M/2 + j'} = -\omega^{j'} \omega_{M/2}^{kj'}\]
-This proves the claim.
+This proves the claim, allowing us to use divide-and-conquer to compute the full FT efficiently.
