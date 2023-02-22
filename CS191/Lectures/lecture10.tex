@@ -1,0 +1,107 @@
+\part{Harnessing Quantum Systems}
+
+\section{Lecture 10}
+
+The previous lectures assumed that quantum systems were under our total control,
+which is completely unrealistic.
+For the next 50 years or so, there will likely be no meaningful systems that are completely within our control. Thus,
+we turn our attention to figuring out how quantum systems act on their own, describing quantum noise and quantum error correction,
+which has far-reaching consequences beyond just computing.
+In our next chapter, we will discuss real-life experimental implementations of quantum computers in labs.
+
+\subsection{Schrodinger's Equation}
+As we claimed earlier, the (time) evolution of a quantum system is unitary.
+\[ \ket{\psi(t_2)} = U(t_2, t_1) \ket{\psi(t_1)} \]
+Furthermore, we should be able to compose these operators:
+\[ \ket{\psi(t_3)} = U(t_3, t_2) U(t_2, t_1) \ket{\psi(t_1)} \implies U(t_3, t_1) = U(t_3, t_2) U(t_2, t_1) \]
+Namely, we must have consistency of the quantum circuit. Thus, to know the evolution of our system, it is sufficient to know
+how to take small steps of $\epsilon$, i.e. we only need $U(t + \epsilon, t)$. Intuitively, we should expect that the dynamics are small, i.e.
+Taylor expandable as:
+\[ U(t + \epsilon, t) = I - i\epsilon H(t) + O\qty(\epsilon^2) \]
+But we know this matrix is unitary, so:
+\[ I = U^{\dagger} U = \qty(I + i\epsilon H^{\dagger} + O\qty(\epsilon^2))\qty(I - i \epsilon H + O\qty(\epsilon^2)) = I + i \epsilon (H^{\dagger} - H) + O\qty(\epsilon^2) \]
+For the left and right hand sides to agree, we must have $ i \epsilon \qty(H - H^{\dagger}) = 0$, or $H = H^{\dagger}$. This means $H$ is a \textbf{Hermitian matrix}, which
+we can think of as a generalization of a symmetric matrix to the complex case. This means we can write our evolution as approximately:
+\begin{align*}
+    \ket{\psi(t + \epsilon)} &= (I + i\epsilon H(t)) \ket{\psi(t)} \\
+    \frac{\ket{\psi(t + \epsilon)} - \ket{\psi(t)}}{\epsilon} &= - i H(t) \ket{\psi(t)} \\
+    i \pdv{}{t} \ket{\psi(t)} &= H(t) \ket{\psi(t)}
+\end{align*}
+where we took a limit as $\epsilon \to 0$. This equation is referred to as \textbf{Schrodinger's Equation}. We are often
+interested in the special case where $H$ is a constant, i.e. the dynamics are time-homogenous with $U(t_2, t_1) = U(t_2 - t_1, 0)$.
+This operator $H$ has a special name, the $\textbf{Hamiltonian}$ of the system. In fact, it is the measurement operator associated to the energy of the system.
+\begin{definition}
+    A measurement operator is a Hermitian operator $A$ for an observable $O$ is an operator
+    with (orthonormal) eigenstates $\ket{\psi_n}$ and eigenvalues $A_n$, where the former are states of definite $O$ value and $A_n$ are the values
+    of $O$ you can observe.
+\end{definition}
+We are guaranteed the eigenstates of the Hermitian operator are orthonormal by the Spectral theorem, so this works with our idea of measurement before.
+For the Hamiltonian, this means, calling the $E_n$ the energy levels possible:
+\[ H \ket{\psi_n} = E_n \ket{\psi_n} \]
+This is often called the time-independent Schrodinger equation. With this substitution,
+\[ i \pdv{}{t} \ket{\psi(t)} = E_n \ket{\psi(t)} \implies \ket{\psi(t)} = e^{-i E_n t} \ket{\psi(0)} = e^{-i E_n t} \ket{\psi_n} \]
+
+\subsection{Bloch Sphere}
+Recall we tried to visualize $\alpha\ket{0} + \beta\ket{1}$ as living in a 2d Hilbert space. However, in general, the amplitudes are
+complex, so such a picture is incomplete.
+
+For the special case of a two-state system (e.g. a qubit), there exists a different visualization technique. Note that even though there are 2 complex numbers and thus 4 real
+numbers of information, scaling by phase and magnitude does not change the state, i.e. $\ket{\psi} \equiv \lambda \ket{\psi}$ for any $\lambda \in \C$. Thus,
+there are only $4 - 2 = 2$ real degrees of freedom. We normalize the state, taking the norm to be 1, and guess the following form:
+\[ \ket{\psi} = \cos \frac{\theta}{2} e^{i \chi} \ket{0} + \sin \frac{\theta}{2} e^{i \chi + i \phi} \ket{1} \]
+Now we can remove the phase of $e^{i \chi}$ from each, so get the state as 
+\[ \ket{\psi} = \cos \frac{\theta}{2} \ket{0} + \sin \frac{\theta}{2} e^{i \phi} \ket{1} \]
+where $\phi \in [0, 2\pi]$ and $\theta \in [0, \pi]$ (one period of all of these functions). If $\theta = 0$, then clearly $\phi$ is irrelevant because the second term is 0.
+Similarly, if $\theta = \pi$, then clearly there is only a $\ket{1}$ term, which means that $\phi$ only creates a global phase, which doesn't change the state.
+This is called the \textbf{Bloch sphere} representation of the state $\ket{\psi}$. This is because it naturally maps to points on a sphere,
+with $\theta$ as the polar angle and $\phi$ as the azimuthal angle in a normal spherical coordinate setup. The special cases above are the north ($\ket{0}$) and south pole ($\ket{1}$) separately, where at a pole your azimuthal angle doesn't matter.
+
+The poles we marked aren't special. 
+\begin{note}
+    Orthogonal states always occur at antipodal (opposite) points on the Bloch sphere.
+\end{note}
+One can also observe $\ket{\pm}$ and $\ket{\pm i} = \ftwo \qty(\ket{0} \pm i \ket{1})$ all live on the equator, with $\theta = \frac{\pi}{2}$,
+with $\ket{\pm}$ pointing in the direction of $\pm x$ and $\ket{\pm i}$ pointing in the direction of $\pm y$.
+
+\subsection{Electron Spins}
+One can think of electron spins as a two state system with basis $\ket{\uparrow} = \ket{0}$ and $\ket{\downarrow} = \ket{1}$
+which correspond (roughly) to the direction an electron can spin (anglular momentum in the $\pm z$ axis). You can also pick any direction $\mathbf{n}$
+and find the component of the angular momentum in that direction. Classically, the spin will just $\mathbf{n} \cdot \mathbf{z}$ and it will be some definite value.
+However, in the world of quantum mechanics, by measuring in this direction, we can only get two answer: the spin being either parallel or antiparallel with $\mathbf{n}$.
+One can use the Bloch sphere to understand this; associate $\ket{\mathbf{n}}$ with the representation of it on the Bloch sphere.
+The state $\ket{\mathbf{n}}$ has definite angular momentum $L_{\mathbf{n}} = + \frac{1}{2}$ in the $\mathbf{n}$-direction, so it and its antipodal point $\ket{- \mathbf{n}}$ also form a basis for two state systems!
+
+We can think of the operator for the measurement of momentum in the $z$ direction (i.e. the ``observable'')
+\[ L_{\mathbf{z}} = \frac{1}{2} \ket{0} \bra{0} - \frac{1}{2} \ket{1} \bra{1} = \frac{1}{2} \begin{pmatrix}
+    1 & 0 \\ 0 & -1
+ \end{pmatrix} = \frac{1}{2} Z \]
+Similarly, for measuring the $x$ momentum
+\[ L_{\mathbf{x}} = \frac{1}{2} \ket{+} \bra{+} - \frac{1}{2} \ket{-} \bra{-} = \frac{1}{2} \begin{pmatrix}
+    0 & 1 \\ 1 & 0
+ \end{pmatrix} = \frac{1}{2} X \]
+We know from physics that a magnetic field assigns a vector $\mathbf{B}$ to every point in space. Then, we can write the Hamiltonian (total energy) as:
+\[ H = \frac{e}{m_e} \mathbf{L} \cdot \mathbf{B} \]
+For simplicity, we will say the magnetic field is constant and only in the $x$ direction: $\mathbf{B} = (B, 0, 0)$,
+which means $H = \frac{e}{m_e} BL_x = \frac{eB}{2m_e} X$. Now that we know the Hamiltonian, we can figure out how such a system evolves in time. For our
+initial condition, we set $\ket{\psi(0)} = \ket{\uparrow} = \ket{0}$. We write the general state as $\ket{\psi(t)} = \alpha(t) \ket{0} + \beta(t) \ket{1}$.
+Rewriting the equation
+\begin{align*}
+    i \dv{}{t} \ket{\psi(t)} &= H \ket{\psi(t)} \\
+    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{0} &= \frac{eB}{2m_e} \qty(\alpha(t) X \ket{0} + \beta(t) X \ket{1}) \\
+    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{0} &= \frac{eB}{2m_e} \qty(\beta(t) \ket{0} + \alpha(t) \ket{1})
+\end{align*}
+This gives us a differential equation for each component:
+\[ \begin{cases} \dot{\alpha} = \frac{eB}{2m_e i} \beta \\ \dot{\beta} = \frac{eB}{2m_e i} \alpha \end{cases} \]
+Taking the derivative with respect to $t$ in the first equation, we get that
+\begin{align*}
+    \ddot{\alpha} &= \frac{eB}{2m_e i} \dot{\beta} \\
+    \ddot{\alpha} &= - \qty(\frac{eB}{2m_e})^2 \alpha
+\end{align*}
+This is a well-known ODE with solutions as $\sin$ and $\cos$. Note that $\alpha$ must be a cosine because it is initially $1$, so working it out gives us:
+\[ \alpha(t) = \cos\qty(\frac{eB}{2m_e} t) \implies \beta(t) = \frac{2m_e}{eB} i \dot{\alpha} = - i \sin\qty(\frac{eB}{2m_e} t) \]
+We can think of this as rotating around the bloch sphere, as the relative phase, i.e. $\phi$ stays fixed at $\pi$ (or flips as we go back around) and $\theta$ moves at the angular velocity
+in the argument of the trig function $\omega = \frac{eB}{2m_e}$, so the period is $\frac{\pi m_e}{eB}$.
+The electron rotates down to $\ket{+i}$, then $\ket{1}$ and finally $\ket{-i}$. This is a rotation about the $x$-axis, where we put the magnetic field! This is known as spin precession.
+
+How does enable quantum computing? We somehow have to change the Hamiltonian throughout time. To implement a NOT gate, for example, we leave magnetic field on for some
+multiple of the period (plus one half phase) to make the spin process until it hits the opposite pole, then switch off the magnetic field.
