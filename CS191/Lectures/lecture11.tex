@@ -115,7 +115,7 @@ Pick some orthonormal bases $\ket{i}_A, \ket{j}_B$ for the two spaces. the trace
 \begin{align*}
     \Pr{m} &= \sum_{i, j} \bra{i}_A \bra{j}_B P_m^A \otimes I^B \ketbra{\psi}{\psi} \ket{i}_A \ket{j}_B \\
     &= \sum_{i} \bra{i}_A P_m^A \qty(\sum_j \bra{j}_B\ket{\psi} \bra{\psi} \ket{j}_B) \ket{i}_A \\
-    &= \sum_{i} \bra{i}_A P_m^A \Tr_B(\ketbra{\psi}{\psi}) \ket{i}_A \\
+    &= \sum_{i} \bra{i}_A P_m^A \Tr_B(\ketbra{\psi}{\psi}) \ket{i}_A
 \end{align*}
 Here we define 
 \[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B \]
@@ -124,16 +124,24 @@ Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\p
 This is exactly our old measurement rule!
 
 Finally, let's think about the relationship between $\rho_A$.
-\[ \rho_A = \sum_i \lambda_i \braket{\psi_i}{\psi_i} \]
+\[ \rho_A = \sum_i \lambda_i \ketbra{\psi_i}{\psi_i} \]
 However, $\psi_i$ are orthogonal and form a basis, so we can combine the terms by $\ket{\psi_i}_A$:
 \[ \ket{\psi} = \sum_i c_i \ket{\psi_i}_{A} \ket{\phi_i}_B \]
 In general, the $\ket{\phi_i}$ are not orthogonal, but we can take out the $c$'s to normalize $\braket{\phi_i}{\phi_i} = 1$.
 But on the other hand, by definition,
-\[ \rho_A = \Tr_B(\ketbra{\psi}{\psi}) = \sum_{i, j}  c_i c_j \ket{\psi_i}\ket{\psi_j} \braket{\phi_j}{\phi_i} \]
+\begin{align*}
+    \rho_A &= \Tr_B(\ketbra{\psi}{\psi}) \\
+    &= \sum_k \bra{k}_B \qty(\sum_{i,j} c_i c_j \ket{\psi_i} \ket{\phi_i} \bra{\psi_j} \bra{\phi_j}) \ket{k}_B \\
+    &= \sum_{i,j} c_i c_j \ket{\psi_i} \bra{\psi_j} \qty(\sum_k  \braket{k}{\phi_i}_B \braket{\phi_j}{k}_B)
+\end{align*}
+But note that the $k$ summation is just taking the inner product $\braket{\phi_j}{\phi_i}$.
+\begin{align*}
+    \rho_A &= \sum_{i, j}  c_i c_j \ket{\psi_i}\bra{\psi_j} \braket{\phi_j}{\phi_i}
+\end{align*}
 But by comparing by the spectral decomposition, we must have the terms vanish if $i \neq j$, meaning:
-
-Then the \textbf{Schmidt Decomposition} is
+\[ \braket{\phi_j}{\phi_i} = \delta_{ij} \]
+Thus the $\phi$'s are orthonormal. In general, the \textbf{Schmidt Decomposition} is
 \[ \ket{\psi} = \sum_i \sqrt{\lambda_i} \ket{\psi_i}_A \ket{\phi_i}_B \]
 where $\psi_i$ and $\phi_i$ are both simultaneously orthonormal. Thus, we must have:
-\[ \rho_B = \sum_i \lambda \ket{\phi_i}\bra{\phi_i} \]
+\[ \rho_B = \sum_i \lambda_i \ket{\phi_i}\bra{\phi_i} \]
 Thus they both have the same eigenvalues.
