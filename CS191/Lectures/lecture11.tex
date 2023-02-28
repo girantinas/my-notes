@@ -2,15 +2,15 @@
 
 \subsection{Describing Noisy Quantum States}
 Recall that in a (noisy) classical system, we define a probability distribution over $N$ states
-$\{p_i\}_{i = 1}^N$ where each $p_i$ tells you the probability of being in state $i$. Similarly,
+$\{p_i\}_{i = 1}^N$ where each $p_i$ tells you the probability of being in state $i$. Similarly, in a quantum system,
 we can define probabilities $p_i$ of being in a state $\ket{\psi_i}$. Suppose we measure in the $\ket{m}$
 basis, so the probability of measuring $m$ is
-\[ \Pr{m} = \sum_i p_i \Pr{m \mid i} = \sum_i p_i \qty|\braket*{m}{\psi_i}|^2 \]
+\[ \Pr{m} = \sum_i p_i \Pr{m \mid \psi_i} = \sum_i p_i \qty|\braket*{m}{\psi_i}|^2 \]
 But, we can rewrite this quadratic term as a trace:
-\[ \braket*{\psi_i}{m}\braket*{m}{\psi_i} = \Tr\qty(\ket{m}\ketbra*{m}{\psi_i} \bra{\psi_i}) \]
+\[ \abs{\braket{m}{\psi_i}}^2 = \braket*{\psi_i}{m}\braket*{m}{\psi_i} = \Tr\left(\ket{m}\ketbra*{m}{\psi_i} \bra{\psi_i}\right) \]
 Using the fact that trace is linear, we can see:
 \[ \Pr{m} = \Tr\qty(\qty(\sum_i p_i \braket{\psi_i}{\psi_i}) \ketbra{m}{m}) = \Tr(\rho \ketbra{m}{m})\]
-Where we wrote the \textbf{density operator} as:
+where we define the \textbf{density operator} as:
 \[ \rho = \sum_i p_i \ketbra{\psi_i}{\psi_i} \]
 Note that $\rho$ consists of $d^2$ matrix elements, where $d$ is the dimension of the Hilbert space.
 However, the space of ensembles is infinite-dimensional, because there are an infinite amount of states
@@ -20,32 +20,31 @@ The reason for this is becuase different ensembles can have the same $\rho$ oepr
 \begin{example}
     Take the probability distribution $p(\ket{0}) = 0.5$, $p(\ket{1}) = 0.5$, which gives us density
     \[ \rho = \frac{1}{2} \ketbra{0}{0} + \frac{1}{2} \ketbra{1}{1} = \frac{1}{2} I \]
-    But now take the distribution $p(\ket{+}) = 0.5$, $p(\ket{-}) = 0.5$, which gives us density
+    But now take the distribution $p(\ket{+}) = 0.5$, $p(\ket{-}) = 0.5$, which gives us the same density
     \[ \rho = \frac{1}{2} \ketbra{+}{+} + \frac{1}{2} \ketbra{-}{-} = \frac{1}{2} I \]
 \end{example}
 
 Seeing this, it is natural to say that a density matrix $\rho$ defines a noisy quantum state; if $p_i \neq 0$ for more than one $i$, then
 this is
-called a \textbf{mixed states}. If you have two systems
-with the same density matrix, they are indistinguishable. A state $\ket{\psi} \in \mathcal{H}$ is called a \textbf{pure state}.
-Its density matrix is $\rho = \ketbra{\psi}{\psi}$. One may note that this is a \textbf{projector}, or
-orthogonal projector which takes a state and projects it onto its component in the $\psi$ direction. Formally:
+called a \textbf{mixed state}. If you have two systems
+with the same density matrix, they are indistinguishable. A state $\ket{\psi} \in \mathcal{H}$ is called a \textbf{pure state}, with density matrix $\rho = \ketbra{\psi}{\psi}$. One may note that this is a \textbf{projector}, i.e. an orthogonal projection matrix which takes a state and projects it onto its component in the $\psi$ direction. Formally:
 
-\begin{definition}
+\begin{definition}[Projector]
     A projector $P$ is a Hermitian matrix with only two eigenvalues, $0$ and $1$, i.e.
     \[ P = P^{\dagger} = P^2 \]
 \end{definition}
 
 The nice thing
-about this is that we don't need to worry about the global phase indistinguishability, as that will cancel in the
-projector expression.
+about this matrix is that we don't need to worry about the global phase indistinguishability, as that will cancel in the
+projector expression. Similarly, the projector $\rho$ has some nice properties.
 
-Let's look at a few properties of 
-$\rho$.
-\[ \rho^{\dagger} = \sum_i \qty(\ketbra{\psi_i}{\psi_i})^{\dagger} = \sum_i p_i \ketbra{\psi_i}{\psi_i} = \rho \]
+\subsection{Properties of the Density Operator}
+
+We have that
+\[ \rho^{\dagger} = \sum_i p_i \qty(\ketbra{\psi_i}{\psi_i})^{\dagger} = \sum_i p_i \ketbra{\psi_i}{\psi_i} = \rho \]
 Thus, $\rho$ is Hermitian. Furthermore, it is actually positive semi-definite:
 \[ \bra{\psi} \rho \ket{\psi} = \sum_i p_i \qty|\braket{\psi_i}{\psi_i}|^2 \geq 0 \]
-Thus, its eigenvalues are all nonnegative. Finally
+Thus, its eigenvalues are all nonnegative. Finally, we have that
 \[ \Tr(\rho) = \sum_i p_i = 1 \]
 
 \begin{theorem}
@@ -57,7 +56,7 @@ By the spectral theorem, we can write
 such a matrix as
 \[ \rho = \sum_j \lambda_j \braket{\psi_j}{\psi_j} \]
 Since $\rho$ is PSD, then $\lambda_j \geq 0$ and since it has trace 1, $\sum_{i} \lambda_i = 1$.
-Thus, this is the density operator for the ensemble $\{(\lambda_j, \ket{\psi_j})\}$.
+Thus, this is the density operator for the ensemble $\{(\lambda_j, \ket*{\psi_j})\}$.
 
 By uniqueness of eigendecomposition, this is in fact the unique ensemble in which all the states
 are orthonormal.
@@ -71,19 +70,20 @@ Now, let's visit the postulates of Quantum Mechanics in terms of density matrice
     we'd say that a state is described as a PSD trace-one matrix $\rho$ acting on $\mathcal{H}$.
     \item \textbf{Measurement}: For pure states, recall that we measure in an orthonormal basis $\{\ket{m}\}$ such that
     $\Pr{m} = \qty|\braket{\psi}{m}|^2$ and $\ket{\psi}$ collapses to $\ket{m}$. But to deal with more general measurements,
-    e.g. measuring on a certain qubit, we have a projection-valued measure (PVM). We say we have a set of projectors
-    $P_m$ such that $\sum P_m = I$. For a measurement on a one-qubit state, $P_m = \ketbra{m}{m}$ and for a measurement on the first qubit but not the second,
-    $P_m = \braket{m}{m} \otimes I$, wherein measurement has
-    \[ \Pr{m} = \mel{\psi}{P_m}{\psi}, \ket{\psi} \to \frac{P_m \ket{\psi}}{\sqrt{\mel{\psi}{P_m}{\psi}}} \]
-    Now for density operators, this turns into
+    e.g. measuring on a certain qubit, we use a \textbf{projection-valued measurement (PVM)}. We say we have a set of projectors
+    $P_m$ such that $\sum P_m = I$. For a measurement on a one-qubit state, we use $P_m = \ketbra{m}{m}$; and for a measurement on the first qubit but not the second,
+    we use $P_m = \braket{m}{m} \otimes I$, wherein measurement yields
+    \[ \Pr{m} = \mel{\psi}{P_m}{\psi}, \text{ and we update } \ket{\psi} \to \frac{P_m \ket{\psi}}{\sqrt{\mel{\psi}{P_m}{\psi}}} \]
+    Now for density operators, measurement turns into
     \[ \Pr{m} = \sum_i p_i \mel{\psi_i}{P_m}{\psi_i} = \Tr\qty(\rho P_m) \]
-    The update rule is a bit harder. Measuring $m$ gives information about which $\ket{\psi_i}$ we were in.
-    \[ \rho \to \sum_i \Pr{\ket{\psi_i} \mid m} \frac{P_m \bra{\psi_i} \ket{\psi_i} P_m}{\mel{\psi_i}{P_m}{\psi_i}} \]
-    We need to find the conditional probability that we were in state $\psi_i$ given a measurement of $m$. This yields:
-    \[ \Pr{\ket{\psi_i} \mid m} = \frac{p_i \Pr{m \mid \ket{i}}}{\Pr{m}} = \frac{\mel{\psi_i}{P_m}{\psi_i}}{\Tr(\rho P_m)} \]
+    The update rule is a bit harder. Measuring $m$ gives information about which $\ket{\psi_i}$ we were in, so we have 
+    \[ \rho \to \sum_i \Pr{\ket{\psi_i} \mid m} \frac{P_m \ket{\psi_i} \bra{\psi_i} P_m}{\mel{\psi_i}{P_m}{\psi_i}} \]
+    To find the conditional probability that we were in state $\psi_i$ given a measurement of $m$, we compute 
+    \[ \Pr{\ket{\psi_i} \mid m} = \frac{p_i \Pr{m \mid \ket{\psi_i}}}{\Pr{m}} = \frac{p_i\mel{\psi_i}{P_m}{\psi_i}}{\Tr(\rho P_m)} \]
     This means the final update is:
     \begin{align*}
-        \rho &\to \sum_{i} \frac{p_i}{\Tr(\rho P_m)} P_m \ket{\psi_i} \bra{\psi_i} P_m \\
+        \rho &\to \sum_i \left[\frac{p_i\mel{\psi_i}{P_m}{\psi_i}}{\Tr(\rho P_m)} \cdot \frac{P_m \ket{\psi_i} \bra{\psi_i} P_m}{\bra{\psi_i} P_m \ket{\psi_i}}\right] \\
+        &= \frac{P_m \left(\sum_i p_i \ketbra{\psi_i}{\psi_i}\right) P_m}{\Tr(\rho P_m)}\\
         &= \frac{P_m \rho P_m}{\Tr(\rho P_m)}
     \end{align*}
     One can think about this as follows: project the operator $\rho$ into the subspace spanned by $P_m$,
@@ -94,8 +94,8 @@ Now, let's visit the postulates of Quantum Mechanics in terms of density matrice
 \end{theorem}
 
 With that formal stuff out of the way, let's think about a two state system. The spectral decomposition
-of such an operator must have only two eigenvectors and with the trace 1 condition we have:
-\[ \rho = \lambda \ketbra{\psi}{\psi} + (1 - \lambda)(I - \braket{\psi}{\psi}) \]
+of such an operator must have only two eigenvectors and with the trace-one condition we have:
+\[ \rho = \lambda \ketbra{\psi}{\psi} + (1 - \lambda)(I - \ketbra{\psi}{\psi}) \]
 Without loss of generality, we can take $\lambda \geq \frac{1}{2}$ because we can just pick the biggest
 we can parametrize $\lambda = \frac{1}{2} \qty(1 + r)$ where $0 \leq r \leq 1$ and we can think of
 mixed states geometrically. Recall our parametrization of the Bloch sphere last lecture in terms of $\theta$ and $\phi$;
@@ -107,41 +107,42 @@ regardless of the $\ket{\psi}$ we choose. Other mixed states lie in the inside o
 Suppose you have two coupled systems $\mathcal{H} = \mathcal{H}_A \otimes \mathcal{H}_B$. One can think
 of $\mathcal{H}_A$ as a quantum computer or some other quantum system we wish to control; $\mathcal{H}_B$ is any other
 noise/system that $\mathcal{H}_A$ can potentially interact with. Given some $\ket{\psi} \in \mathcal{H}_A \otimes \mathcal{H}_B$
-we wish to only study its state on $\mathcal{H}_A$. But maybe $\ket{\psi} = \ket{\psi_A} \ket{\psi_B}$, then we'd be very lucky.
+we wish to only study its state on $\mathcal{H}_A$. But maybe we can write $\ket{\psi} = \ket{\psi_A} \ket{\psi_B}$—then we'd be very lucky.
 
 What do measurements on $A$ look like? They look like $P_m^{A} \otimes I^B$. The probability of observing $m$ is:
-\[ \Pr{m} = \mel{\psi}{P_m^A \otimes I^B}{\psi} = \Tr\qty[(P_m^A \otimes I^B) \ketbra{\psi}{\psi}] \]
-Pick some orthonormal bases $\ket{i}_A, \ket{j}_B$ for the two spaces. the trace is:
+\[ \Pr{m} = \mel{\psi}{P_m^A \otimes I^B}{\psi} = \Tr\qty[\qty(P_m^A \otimes I^B) \ketbra{\psi}{\psi}] \]
+Pick some orthonormal bases $\ket{i}_A, \ket{j}_B$ for the two spaces. We then have:
 \begin{align*}
     \Pr{m} &= \sum_{i, j} \bra{i}_A \bra{j}_B P_m^A \otimes I^B \ketbra{\psi}{\psi} \ket{i}_A \ket{j}_B \\
     &= \sum_{i} \bra{i}_A P_m^A \qty(\sum_j \bra{j}_B\ket{\psi} \bra{\psi} \ket{j}_B) \ket{i}_A \\
     &= \sum_{i} \bra{i}_A P_m^A \Tr_B(\ketbra{\psi}{\psi}) \ket{i}_A
 \end{align*}
-Here we define 
-\[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B \]
-Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$. Then:
-\[ \Pr{m} = \sum_i \bra{i}_A P_m^A \rho_A \ket{i} = \Tr(P_m^A \rho_A) \]
+where we define
+\[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B. \]
+Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$. Then, we have
+\[ \Pr{m} = \sum_i \bra{i}_A P_m^A \rho_A \ket{i}_A = \Tr(P_m^A \rho_A) \]
 This is exactly our old measurement rule!
 
-Finally, let's think about the relationship between $\rho_A$.
+\subsubsection{Relationship between Reduced Density Matrices}
+Finally, let's think about the relationship between $\rho_A$ and $\rho_B$.
 \[ \rho_A = \sum_i \lambda_i \ketbra{\psi_i}{\psi_i} \]
 However, $\psi_i$ are orthogonal and form a basis, so we can combine the terms by $\ket{\psi_i}_A$:
 \[ \ket{\psi} = \sum_i c_i \ket{\psi_i}_{A} \ket{\phi_i}_B \]
-In general, the $\ket{\phi_i}$ are not orthogonal, but we can take out the $c$'s to normalize $\braket{\phi_i}{\phi_i} = 1$.
-But on the other hand, by definition,
+where in general, the $\ket{\phi_i}_B$ are not orthogonal. However, we show that in this construction, they actually are (and we can normalize to make them orthonormal)! %First, we can take out the $c_i$'s to normalize $\braket{\phi_i}{\phi_i} = 1$.
+By definition,
 \begin{align*}
     \rho_A &= \Tr_B(\ketbra{\psi}{\psi}) \\
-    &= \sum_k \bra{k}_B \qty(\sum_{i,j} c_i c_j \ket{\psi_i} \ket{\phi_i} \bra{\psi_j} \bra{\phi_j}) \ket{k}_B \\
-    &= \sum_{i,j} c_i c_j \ket{\psi_i} \bra{\psi_j} \qty(\sum_k  \braket{k}{\phi_i}_B \braket{\phi_j}{k}_B)
+    &= \sum_k \bra{k}_B \qty(\sum_{i,j} c_i c_j \ket{\psi_i}_A \ket{\phi_i}_B \bra{\psi_j}_A \bra{\phi_j}_B) \ket{k}_B \\
+    &= \sum_{i,j} c_i c_j \ket{\psi_i}_A \bra{\psi_j}_A \qty(\sum_k  \braket{k}{\phi_i}_B \braket{\phi_j}{k}_B)
 \end{align*}
-But note that the $k$ summation is just taking the inner product $\braket{\phi_j}{\phi_i}$.
+Note that the $k$ summation is just taking the inner product $\braket{\phi_j}{\phi_i}_B$.
 \begin{align*}
-    \rho_A &= \sum_{i, j}  c_i c_j \ket{\psi_i}\bra{\psi_j} \braket{\phi_j}{\phi_i}
+    \rho_A &= \sum_{i, j}  c_i c_j \ketbra{\psi_i}{\psi_j}_A \braket{\phi_j}{\phi_i}_B
 \end{align*}
-But by comparing by the spectral decomposition, we must have the terms vanish if $i \neq j$, meaning:
-\[ \braket{\phi_j}{\phi_i} = \delta_{ij} \]
-Thus the $\phi$'s are orthonormal. In general, the \textbf{Schmidt Decomposition} is
+Via the Spectral decomposition, we must have the terms vanish if $i \neq j$, yielding
+\[ \braket{\phi_j}{\phi_i}_B = \delta_{ij} \]
+Thus the $\phi_i$'s are orthonormal. In general, the \textbf{Schmidt Decomposition} of a state is
 \[ \ket{\psi} = \sum_i \sqrt{\lambda_i} \ket{\psi_i}_A \ket{\phi_i}_B \]
-where $\psi_i$ and $\phi_i$ are both simultaneously orthonormal. Thus, we must have:
+where $\psi_i$ and $\phi_i$ are both simultaneously orthonormal. Thus, we must also have:
 \[ \rho_B = \sum_i \lambda_i \ket{\phi_i}\bra{\phi_i} \]
-Thus they both have the same eigenvalues.
+meaning $\rho_A$ and $\rho_B$ have the same eigenvalues!
