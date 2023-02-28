@@ -5,7 +5,7 @@ Recall that in a (noisy) classical system, we define a probability distribution 
 $\{p_i\}_{i = 1}^N$ where each $p_i$ tells you the probability of being in state $i$. Similarly, in a quantum system,
 we can define probabilities $p_i$ of being in a state $\ket{\psi_i}$. Suppose we measure in the $\ket{m}$
 basis, so the probability of measuring $m$ is
-\[ \Pr{m} = \sum_i p_i \Pr{m \mid \psi_i} = \sum_i p_i \qty|\braket*{m}{\psi_i}|^2 \]
+\[ \Pr{m} = \sum_i p_i \Pr{m \mid \ket{\psi_i}} = \sum_i p_i \qty|\braket*{m}{\psi_i}|^2 \]
 But, we can rewrite this quadratic term as a trace:
 \[ \abs{\braket{m}{\psi_i}}^2 = \braket*{\psi_i}{m}\braket*{m}{\psi_i} = \Tr\left(\ket{m}\ketbra*{m}{\psi_i} \bra{\psi_i}\right) \]
 Using the fact that trace is linear, we can see:
@@ -117,10 +117,10 @@ Pick some orthonormal bases $\ket{i}_A, \ket{j}_B$ for the two spaces. We then h
     &= \sum_{i} \bra{i}_A P_m^A \qty(\sum_j \bra{j}_B\ket{\psi} \bra{\psi} \ket{j}_B) \ket{i}_A \\
     &= \sum_{i} \bra{i}_A P_m^A \Tr_B(\ketbra{\psi}{\psi}) \ket{i}_A
 \end{align*}
-where we define
-\[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B. \]
-Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$. Then, we have
-\[ \Pr{m} = \sum_i \bra{i}_A P_m^A \rho_A \ket{i}_A = \Tr(P_m^A \rho_A) \]
+where we define 
+\[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B \]
+Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$ (in general $\rho_A = \Tr_B \rho_{AB}$). Then:
+\[ \Pr{m} = \sum_i \bra{i}_A P_m^A \rho_A \ket{i} = \Tr(P_m^A \rho_A) \]
 This is exactly our old measurement rule!
 
 \subsubsection{Relationship between Reduced Density Matrices}
