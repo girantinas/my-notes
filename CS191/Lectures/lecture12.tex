@@ -1,0 +1,106 @@
+\section{Lecture 12}
+
+\subsection{Measuring Devices}
+What is so mysterious about quantum measurements? Well first off, it's weird that the measurement and unitary transformations
+form two distinct quantum postulates, when they both describe physical processes. Well, we can actually try to describe measurement using unitaries.
+In fact, any measurement device is itself a quantum system $\mathcal{H}_M$, and a measurement is just an interaction between this device
+and our measured system $\mathcal{H}_A$. There should be some unitary $U_{meas}$ that describes the measurement.
+What does this unitary look like? Well, we can see how this acts on basis elements and then on $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$,
+denoting $\ket{??}$ as the state of the device before it's read anything.
+         %dial sitting in the middle
+\begin{align*}
+    U_{meas} \ket{0} \ket{??} &= \ket{0} \ket{\text{meas. } 0} \\
+    U_{meas} \ket{1} \ket{??} &= \ket{1} \ket{\text{meas. } 1} \\
+    U_{meas} \ket{\psi} \ket{??} &= \alpha \ket{0} \ket{\text{meas. } 0} + \beta  \ket{1} \ket{\text{meas. } 1}
+\end{align*}
+Thus, the measurement device has gotten entangled with the state it's measuring. But,
+we have a formalism with partial trace for figuring out what state the device is in:
+\begin{align*}
+    \rho_M &= \Tr_A \qty[U_{meas} \ket{\psi} \ketbra{??} \bra{\psi} U_{meas}^{\dagger}] \\
+    &=\qty|\alpha|^2 \ketbra{\text{meas. } 0} + \qty|\beta|^2 \ketbra{\text{meas. } 1}
+\end{align*}
+But note, this is the same as an ensemble with $\Pr{\text{meas. } 0} = |\alpha|^2$ and $\Pr{\text{meas. } 1} = |\beta|^2$. However,
+we used the measurement postulate last lecture to get the connection between density matrices and quantum systems.
+This is not a derivation of the measurement postulate, but it is a nice way of looking at what quantum measurement is. Similarly,
+we find for $A$
+\[ \rho_A = \qty|\alpha|^2 \ketbra{0} + \qty|\beta|^2 \ketbra{1} \implies \Pr{\ket{0}} = |\alpha|^2, \Pr{\ket{1}} = |\beta|^2 \]
+This means that any future measurements on $\mathcal{H}_A$ that ignore $\mathcal{H}_M$ will agree with this ensemble. Thus, the idea
+that the wavefunction ``collapses'' can be explained as unitary evolution with a measurement device.
+
+But what if you don't throw away the measurement device?
+\begin{align*}
+    U_{meas} \ket{+} \ket{??} &= \ftwo \ket{0} \ket{\text{meas. } 0} + \ftwo \ket{1} \ket{\text{meas. } 1} \\
+    U_{meas}^{\dagger} U_{meas} \ket{+} \ket{??} &= \ket{+} \ket{??}
+\end{align*}
+So, measurement IS reversible! The global state is not an ensemble, but actually a superposition, and thus reversible.
+
+This may seem like it breaks the uncertainty principle,
+but note that reversing the measurement requires erasing all trace of the outcome of the measurement from the rest of the universe
+(all entanglements with other systems). So we can't look at it (or if we do, we have to erase our memory).
+
+\subsection{Decoherence}
+In a real setup, very quickly a measurement gets copied (really, entangled) into large quantum systems. For example, if your measurement device has an LED screen,
+large number of photons have a different state depending on if the measurement device shows a 0 or 1.
+So, one can think roughly as $\ket{\text{meas. } 0} = \ket{0}\ket{0}\dots \ket{0} = \ket{0^N}$. In practice $N \in [10^{20}, 10^{30}]$. But, if some ``qubit'' photon $\gamma$ leaves our lab,
+we need to trace over it to figure out our state. This yields:
+\[ \rho_{S\setminus \{ \gamma\}} = \qty|\alpha|^2 \ketbra{0^{N - 1}} + \qty|\beta|^2 \ketbra{1^{N - 1}} \]
+This is a mixed state. We cannot use $U_{meas}^{\dagger}$ to undo things.
+This phenomenon is known as \textbf{decoherence}.
+
+\subsection{Us: Interpretations of Quantum Mechanics}
+In our class, we distinguish between a measurement and an observation. A measurement is what we just described, a unitary interaction between a system and a measuring device.
+An observation is a person actually looking at a measurement outcome. Let's try to discuss this as a unitary transform:
+
+\[ U_{obs} \qty(\alpha \ket{0} \ket{\text{meas. } 0} + \beta\ket{1} \ket{\text{meas. } 1}) \ket{hmm} =  \alpha \ket{0} \ket{\text{meas. } 0} \ket{\text{sad}} + \beta\ket{1} \ket{\text{meas. } 1} \ket{\text{happy}}  \]
+It's not obvious what it means for my brain to be in a superposition state. Thus, we still need a measurement postulate that superposition is experienced as a probabilistic process weighted by norm squared.
+
+This relates to the interpretations of quantum mechanics. There are two main ones:
+\begin{enumerate}
+    \item $\ket{\Psi}$ is epistemic. This means it's always fundamentally a quantum version of Bayesian probabilities, meaning that when I see a measurement, I have more information and thus only see one of the terms in my $\ket{\Psi}$.
+    This one is closest to ``Copenhagen Interpretation" from 100 years.
+    \item $\ket{\Psi}$ is ontic. $\ket{\Psi}$ is physically real and is everything. This is often considered the many-world interpretation. The probabilities observed in the lab are not accounted for in this model.
+\end{enumerate}
+
+\subsection{POVM Measurements}
+If measurements are really interactions with a device, why restrict $U_{meas}$ to only give us $\ket{\text{meas. } 0}$ or $\ket{\text{meas. } 1}$?
+Let's let it be any unitary. Let's initialize the measurement device in the state $\ket{0}$.
+\[ U_{meas} \ket{\psi} \ket{0} = \sum_{m} \ket{\psi_m} \ket{m} \]
+where the $\ket{\psi_m}$ are not normalized. We can rewrite that since this is a linear map, its action on $\psi$ can be seen to be linear:
+\[ \ket{\psi_m} = K_m \ket{\psi} \]
+By unitarity,
+\begin{align*}
+    \bra{\phi} \bra{0} U_{meas}^{\dagger} U_{meas} \ket{\psi} \ket{0} &= \sum_{m_1, m_2} \bra{m_1} \bra{\phi} K_{m_1}^{\dagger} K_{m_2} \ket{\psi} \ket{m_2} \\
+    &= \sum_{m_1, m_2} \bra{\phi} K_{m_1}^{\dagger} K_{m_2} \ket{\psi} \braket{m_1}{m_2} \\
+    &= \sum_m \bra{\phi} K_m^{\dagger} K_m \ket{\psi}  \\
+    \braket{\phi}{\psi} &= \bra{\phi} \qty(\sum_m K_m^{\dagger} K_m) \ket{\psi}
+\end{align*}
+For this to be true for any $\ket{\phi}$ and $\ket{\psi}$, we must have
+\[ \sum_m K_m^{\dagger} K_m = I \]
+The $K_m$'s are usually known as Kraus operators. Now to get a measurement, we just find the probability
+according to the measurement postulate
+\begin{align*}
+    \Pr{m} &=  \qty|\bra{m} U_{meas} \ket{\psi} \ket{0}|^2 \\
+    &= \sum_{m_1, m_2} \bra{m_1} \bra{\psi} K_{m_1}^{\dagger} \ket{m} \bra{m} K_{m_2} \ket{\psi} \ket{m_2}\\
+    &= \sum_{m_1, m_2} \bra{\psi} K_{m_1}^{\dagger}  \braket{m_1}{m} \braket{m}{m_2} K_{m_2} \ket{\psi} \\
+    &= \mel**{\psi}{K_m^{\dagger} K_m}{\psi} = \langle K_m^{\dagger} K_m \rangle
+\end{align*}
+So note, that $\Pi_m := K_m^{\dagger} K_m$ is all the matters. An operator is in the form $A^{\dagger} A$ if and only if it is positive semi-definite.
+Thus we have:
+\[ \sum_m \Pi_m = I, \Pi_m \geq 0\]
+
+Thus, there is no reason that these $\Pi_m$'s need to be projection operators at all. They just need to be positive. If they were,
+we'd get the PVM (projection-valued measure) from last time. Instead these are \textbf{positive-operator-valued measure} (POVM). It turns out,
+this lets you learn about weak or noisy measurements. Consider the two operators
+\[ \Pi_0 = \frac{3}{4} \ketbra{0} + \frac{1}{4} \ketbra{1}, \Pi_1 = \frac{1}{4} \ketbra{0} + \frac{3}{4} \ketbra{1} \]
+These clearly add up to the identity. Then for the original state $\ket{0}$, the device enters a state where:
+\[ \Pr{0} = \mel{0}{\Pi_0}{0} = 3/4, \Pr{1} = 1/4 \]
+and if we instead started with a $\ket{1}$,
+\[ \Pr{0} = \mel{0}{\Pi_1}{0} = 1/4, \Pr{1} = 3/4 \]
+This is a noisy measurement because $3/4$ of the time, we get the correct answer and $1/4$ of the time, we get something completely wrong.
+
+Remember, $\ket{\psi} \to K_m \ket{\psi}$ when $K_m^{\dagger} K_m = \Pi_m$; a particularly nice Kraus operator
+is $\Pi_m^{1/2}$. Taking our previous example:
+\begin{align*}
+    &K_0 = \frac{\sqrt{3}}{2} \ketbra{0}{0} + \frac{1}{2} \ketbra{1}{1}, &K_1 = \frac{1}{2} \ketbra{0}{0} + \frac{\sqrt{3}}{2} \ketbra{1}{1}  \\
+    &K_0 \ket{+} = \frac{\sqrt{3}}{2} \ket{0} + \frac{1}{2} \ket{1}, &K_1 \ket{+} = \ftwo \ket{0} + \frac{\sqrt{3}}{2} \ket{1}
+\end{align*}

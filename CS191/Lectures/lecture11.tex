@@ -119,7 +119,7 @@ Pick some orthonormal bases $\ket{i}_A, \ket{j}_B$ for the two spaces. the trace
 \end{align*}
 Here we define 
 \[ \Tr_B(X) = \sum_j \bra{j}_B X \ket{j}_B \]
-Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$. Then:
+Now, define the \textbf{reduced density matrix} $\rho_A = \Tr_B(\ketbra{\psi}{\psi})$ (in general $\rho_A = \Tr_B \rho_{AB}$). Then:
 \[ \Pr{m} = \sum_i \bra{i}_A P_m^A \rho_A \ket{i} = \Tr(P_m^A \rho_A) \]
 This is exactly our old measurement rule!
 
@@ -145,3 +145,4 @@ Thus the $\phi$'s are orthonormal. In general, the \textbf{Schmidt Decomposition
 where $\psi_i$ and $\phi_i$ are both simultaneously orthonormal. Thus, we must have:
 \[ \rho_B = \sum_i \lambda_i \ket{\phi_i}\bra{\phi_i} \]
 Thus they both have the same eigenvalues.
+
