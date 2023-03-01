@@ -19,7 +19,7 @@ Here is a circuit we claim splits $N$ into such factors. Fix $M > N$ and pick $x
     \lstick{$\ket{0^n}$} & \qwbundle[alternate]{} & \qwbundle[alternate]{} & \qwbundle[alternate]{}\rstick{$\sum_a \beta_a \ket{f(a)}$}
 \end{quantikz}
 \end{center}
-Then from the measurement, we do a little bit of classical postprocessing to yield our two factor.
+Then from the measurement, we do a little bit of classical postprocessing to yield our two factors.
 
 Let's work with an example to motivate how this circuit works. We have $N = 15, M = 16$, then for chosen $x = 2$:
 \[ x^0 \equiv x^4 \equiv x^8 \equiv x^{12} \equiv 1 \pmod{15} \]
@@ -64,7 +64,7 @@ This means that
 Now, if we continually measure, we can get the period with high probability, simply by finding $\frac{M}{r}$ via the gcd of the measurements. %(which will be $\frac{k_1 M}{r}, \frac{k_2 M}{r}$, etc).
 In other words, we can find the period by solving
 \[T = \mathrm{gcd}\left(\ell_1, \ell_2, \dots\right) = \mathrm{gcd} \left(\frac{k_1 M}{R}, \frac{k_2 M}{R}, \dots\right) = \frac{M}{r}.\]
-One can view this as time-frequency uncertainty principle: increasing the period $r$ in the original domain decreases the period $T$ in the new domain.
+One can view this as the time-frequency uncertainty principle: increasing the period $r$ in the original domain decreases the period $T$ in the new domain.
 
 Note that everything we've discussed so far holds only when $r$ divides $M$. In the general case, $r$ does not divide $M$. But with constant probability, we see $\ell$ that satisfies $|\ell r \mod M| \leq r/2$, i.e.,
 \[ \qty|\frac{\ell}{M} - \frac{k}{r}| \leq \frac{1}{2M} \]
