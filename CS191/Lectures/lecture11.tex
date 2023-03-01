@@ -70,7 +70,7 @@ Now, let's visit the postulates of Quantum Mechanics in terms of density matrice
     we'd say that a state is described as a PSD trace-one matrix $\rho$ acting on $\mathcal{H}$.
     \item \textbf{Measurement}: For pure states, recall that we measure in an orthonormal basis $\{\ket{m}\}$ such that
     $\Pr{m} = \qty|\braket{\psi}{m}|^2$ and $\ket{\psi}$ collapses to $\ket{m}$. But to deal with more general measurements,
-    e.g. measuring on a certain qubit, we use a \textbf{projection-valued measurement (PVM)}. We say we have a set of projectors
+    e.g. measuring on a certain qubit, we use a \textbf{projection-valued measure (PVM)}. We say we have a set of projectors
     $P_m$ such that $\sum P_m = I$. For a measurement on a one-qubit state, we use $P_m = \ketbra{m}{m}$; and for a measurement on the first qubit but not the second,
     we use $P_m = \braket{m}{m} \otimes I$, wherein measurement yields
     \[ \Pr{m} = \mel{\psi}{P_m}{\psi}, \text{ and we update } \ket{\psi} \to \frac{P_m \ket{\psi}}{\sqrt{\mel{\psi}{P_m}{\psi}}} \]
