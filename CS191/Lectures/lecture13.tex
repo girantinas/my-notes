@@ -1,0 +1,149 @@
+\section{Lecture 13}
+
+\subsection{Shannon Entropy}
+Suppose we have some (discrete) classical probability distribution $\{p_i\}_{i = 1}^n$. We'd like to somehow
+characterize the amount of uncertainty in this distribution. One natural notion would be to count the number of outcomes which
+have probability that is nonzero. However, this notion does not acknowledge a difference between all the $p_i$'s being equal
+and the case where $p_1 > 0.99$ and the rest are tiny. The former definitely has more uncertainty than the latter.
+The better notion is \textbf{Shannon Entropy}, which we will motivate before introducing.
+
+One should take $N$ independent samples and take the limit as $N \to \infty$. By the (weak) law of large numbers
+with probability tends to 1, the fraction of outcome $i$, $N_i/N \to p_i$. We define a ``typical outcome'' to be a sample where
+this fraction is true (up to some $\epsilon$ wiggle room). The number of typical outcomes, by combinatorics:
+\begin{align*}
+    N_{typical} = \sum_{\text{typical } \{N_i\}}\frac{N!}{\prod_{i} N_i!}
+\end{align*}
+The number of typical $\{N_i\}$ grows at most polynomially with $N$, because for a typical $N_i$,
+$N_i/N \in p_i \pm \epsilon$, so $N_i \in Np_i \pm N \epsilon$, so there are roughly $(2N \epsilon)^n$ choices,
+which is still polynomial ($n$ is the number of possible outcomes, remember). However, the probability of the factorials is
+going to turn out to be exponential, so we will ignore the summation.
+\begin{align*}
+    \log N_{typ} &\approx \log N! - \sum_i \log N_i! \\
+    &\approx N \log N - \sum_i N_i \log N_i \\
+    &= \sum_i N_i \log N - \sum_i N_i \log N_i \\
+    &= - \sum_i N_i \frac{N_i}{N} \\
+    &= - N \sum_i p_i \log p_i
+\end{align*}
+This motivates the following definition.
+
+\begin{definition}
+    The Shannon Entropy of a probability distribution $\mathbf{p} = \{p_i\}_{i = 1}^N$ is
+    \[ H(\mathbf{p}) = -\sum_i p_i \log p_i \] 
+\end{definition}
+
+Intuitively, the Shannon entropy denotes how many bits are required to communicate a typical sample from the distribution.
+From another direction, we can think of the probability of getting a typical outcome.
+\begin{align*}
+    p_{typ} &= \prod_i p_i^{N_i} \\
+    \log p_{typ} &= \sum_i N_i \log p_i \\
+    &\approx -N H(\mathbf{p})
+\end{align*}
+But then, we take
+\begin{align*}
+    \log p_{typ} N_{typ} &= \log p_{typ} + \log N_{typ} \\
+    &\approx -N H(\mathbf{p}) + N H(\mathbf{p}) = 0 \\
+    p_{typ} N_{typ} &\approx 1
+\end{align*}
+So as a sanity check, this makes sense because the sum of the probabilities of all of the typical outcomes should be 1. This gives us the sketch of the Shannon source-coding theorem.
+
+\begin{theorem}[Source-coding]
+   It requires $N H(\mathbf{p}) + o(N)$ bits to communicate a typical outcome of $N$ samples from $\{p_i\}$. 
+\end{theorem}
+
+Thus, one can say that it takes amortized $H(\mathbf{p})$ bits of information per sample to communicate a typical string.
+
+\subsection{Entanglement Entropy}
+Let's extend our anaylsis to quantum. Take $\ket{\Psi} \in \mathcal{H}_A \otimes \mathcal{H}_B$ and suppose Alice and Bob share a state
+$\ket{\Psi}^{\otimes N}$ and Alice wants to send her part of $\ket{\Psi}^{\otimes N}$ to Charlie
+so that with high probability a state shared by Charlie and Bob becomes $\tilde{\ket{\Psi}}_{(N)} \approx \ket{\Psi}^{\otimes N}$.
+
+If the initial state is a product state $\ket{\Psi} = \ket{\psi}_A \ket{\phi}_B$,
+then 0 qubits are needed. Charlie can prepare $\ket{\psi}^{\otimes N}$ in his lab and Bob can contribute his state.
+
+Recall that we derived
+\[ \ket{\Psi} = \sum_i \sqrt{\lambda_i} \ket{\psi_i}_A \ket{\phi_i}_B, \rho_A = \sum_i \lambda_i \ketbra{\psi_i}, \rho_B = \sum_i \lambda_i \ketbra{\phi_i} \]
+We define the typical subspace $\mathcal{H}_{typ} \subseteq \mathcal{H}_A$ as
+\[ \mathcal{H}_{typ} = \textrm{span}\left\{ \ket{\psi_{i_1}} \ket{\psi_{i_2}} \dots  \ket{\psi_{i_N}} : \frac{N_i}{N} \approx \lambda_i \right\} \]
+We define $P_{typ}$ as the projector onto $\mathcal{H}_{typ}$. Applying the projector,
+\[ \bra{\Psi}^{\otimes N} P_{typ} \ket{\Psi}^{\otimes N} = \sum_{\text{typical } \{i_j\} }  \prod_{j = 1}^N \lambda_{i_j} = \sum_{ i} p_i \approx 1 \]
+The dimension of the typical subspace can be recovered by noting that it's just the number of typical strings, which we already found was:
+\[ \log \dim(\mathcal{H}_{typ}) \approx N H(\mathbf{\lambda}) \]
+Now we can define the protocol. Alice measures whether $\ket{\Psi}^{\otimes N}$ are in $\mathcal{H}_{typ}$ The new state becomes:
+\[ \ket{\tilde{\Psi}_{(N)}} = \frac{P_{typ} \ket{\Psi}^{\otimes N}}{\sqrt{\bra{\Psi}^{\otimes N} P_{typ} \ket{\Psi}^{\otimes N} }} \approx \ket{\Psi}^{\otimes N}\]
+We can now send this to Charlie using $N H(\mathbf{\lambda})$ qubits and we're done describing the state.
+This motivates the following quantum entropy definition (taking operator $\log$ by its infinite series):
+\begin{definition}
+    The Von Neumann Entropy of a density matrix $\rho$ is:
+    \[ S(\rho) = -Tr(\rho \log \rho) = - \sum_i \lambda \log \lambda_i\]
+\end{definition}
+If we have a pure state $\ket{\Psi} \in \mathcal{H}_A \otimes \mathcal{H}_B$, then $S(\rho_A) = S(\rho_B) = H(\mathbf{\lambda})$, and we term this
+the entanglement entropy.
+
+\subsection{Quantum Channels}
+We've already talked about noisy states and noisy measurement. How can we define a noisy quantum evolution? It turns out it can be described by a few things. Start with
+some state $\rho_A \in \mathcal{H}$.
+\begin{enumerate}
+    \item Take a fixed state $\ket{0} \in \mathcal{H}_A$ and give new state $\rho_A \otimes \ket{0}\bra{0}_X$
+    \item Take an arbitrary unitary evolution $U_{AX}$ and give new state $U_{AX}\qty(\rho_A \otimes \ketbra{0}) U_{AX}^{\dagger}$.
+    \item Write the entire Hilbert space as $\H \simeq \H_A \otimes \H_X \simeq \H_B \otimes \H_E$. Then throw away $\H_E$, yielding
+    \[ \rho_B = \tr_E\qty[U_{AX} (\rho_A \otimes \ketbra{0}_X) U_{AX}^{\dagger}] = \mathcal{N}(\rho_A) \]
+    We call $\mathcal{N}$, which takes an operator and spits out an operator, a \textbf{superoperator}.
+\end{enumerate}
+We can also the first two steps as $V = U_{AX} \ket{0}_X$, where $V: \H_A \to \H$ and is almost unitary, namely:
+\[ V^{\dagger} V = I_A, VV^{\dagger} \neq I_B \otimes I_E \]
+So, the map $V$ preserves inner product and is termed an $\textbf{isometry}$. Our channel thus becomes:
+\[ \mathcal{N}(\rho) = \tr_E(V \rho V^{\dagger}) \]
+In particular, this is called the \textbf{Stinespring representation} of the channel. We can also write with Kraus operators:
+\[ V \ket{\Psi}  = \sum_i K_i \ket{\Psi} \ket{i}_E \]
+where $V^{dagger}V = I$ implies $\sum_i K_i^{\dagger} K_i = I$. The channel then becomes
+\[ \mathcal{N}(\rho) = \tr_E\qty(\sum_{i, j} K_i \rho K_j^{\dagger} \otimes \ket{i}\bra{j}) = \sum_i K_i \rho K_i^{\dagger} \]
+This is called the \textbf{Kraus representation} of the channel.
+
+Let's consider a few examples of channels.
+\begin{example}
+    \begin{enumerate}
+        \item The Dephasing Channel.
+        \[ K_0 = \sqrt{1 - p/2} I, K_1 = \sqrt{p/2} Z \]
+        Then the channel is \[\mathcal{N}(\rho) = \qty(1 - \frac{p}{2}) \rho + \frac{p}{2} Z \rho Z^{\dagger}\]
+        This means that with probaiblity $p/2$, the phase gets flipped, else we do not.
+        \[ \rho = \begin{pmatrix}
+            a & b \\ c & d
+        \end{pmatrix} \implies \mathcal{N}(\rho) = \begin{pmatrix}
+            a & (1 - p) b \\ (1 - p) c & d
+        \end{pmatrix} \]
+        If $p = 1$, then 
+        \[ \mathcal{N}(\rho) = \begin{pmatrix}
+            a & 0 \\ 0 & d
+        \end{pmatrix} \]
+        Then, we get a mixture of $\ket{0}$ and $\ket{1}$; all phase information is lost.
+        \item The Depolarizing Channel.
+        \[ K_0 = \sqrt{1 - \frac{3p}{4}} I, K_1 = \sqrt{\frac{p}{4}} X, K_2 = \sqrt{\frac{p}{4}} Y, K_3 = \sqrt{\frac{p}{4}} Z \]
+        Then the channel is 
+        \[ \mathcal{N}(\rho) = \qty(1 - \frac{3p}{4}) \rho + \frac{p}{4} X \rho X + \frac{p}{4} Y \rho Y + \frac{p}{4} Z \rho Z\]
+        which can be rewritten as
+        \[ \mathcal{N}(\rho) = (1 - p) \rho + \frac{p}{2} I  \]
+        which means as $p \to 1$, the state is less like $\rho$ and becomes closer to maximally mixed.
+    \end{enumerate}
+\end{example}
+
+It turns out quantum channels are really pretty general objects. Here are some properties they satisfy:
+\begin{enumerate}
+    \item A quantum channel is linear.
+    \[ \mathcal{N}\qty(\alpha \rho + \alpha \sigma) = \alpha \mathcal{N}(\rho) + \beta \mathcal{N}(\sigma) \]
+    \item A quantum channel is trace-preserving.
+    \[ \tr \mathcal{N}(\rho) = \tr \rho \]
+    \item A quantum channel is positive. If $\rho \geq 0$, then
+    \[ \mathcal{N}(\rho) = \sum_i K_i \rho K_i^{\dagger} \geq 0 \]
+\end{enumerate}
+2 and 3 combined say that $\mathcal{N}$ maps density matrices to density matrices. Is any superoperator satifying
+these properties a quantum channel? The answer is no. The counterexample is the map that takes $\rho \mapsto \rho^T$.
+Consider a state $\ket{\Phi^+} \in \H_A \otimes \H_B$. The density matrix of this state is:
+\[ \rho_{AB} = \ketbra{\Phi^+} = \frac{1}{2} \qty(\ketbra{00} + \ketbra{00}{11} + \ketbra{11}{00} + \ketbra{11}) \]
+We will apply the transpose to the first qubit.
+\[ \rho_{AB}^{T_A} = \frac{1}{2} \qty(\ketbra{00} + \ketbra{10}{01} + \ketbra{01}{10} + \ketbra{11}) \]
+But this is not a density matrix at all. The state $\ket{01} - \ket{10}$ has eigenvalue $-1/2$. So we need a fourth condition.
+
+4. Completely positive. 
+\[ \rho_{AR} \geq 0 \implies \mathcal{N} \otimes \textrm{Id}_R(\rho_{AB}) \geq 0\]
+Note that 4 implies 3. In fact, we will see that next lecture, any completely positive, trace-preserving,
+linear superoperator is a quantum channel.
