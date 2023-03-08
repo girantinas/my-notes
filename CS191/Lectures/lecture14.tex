@@ -137,14 +137,15 @@ The last two terms preserve the normalization of $\rho$ overall. This was a lot 
     \end{align*}
     Now, the other terms:
     \[ L_1 \rho L_1^{\dagger} = \Gamma \ketbra{0}{1} \rho \ketbra{1}{0} = \Gamma \rho_{11} \ketbra{0}{0} \]
-    \[ -\frac{1}{2} L_1^{\dagger} L_1 \rho = -\frac{\Gamma}{2} \ketbra{0}{0} \rho = -\frac{\Gamma}{2} \qty(\rho_{00} \ketbra{0}{0} + \rho_{01} \ketbra{0}{1}) \]
+    \[ -\frac{1}{2} L_1^{\dagger} L_1 \rho = -\frac{\Gamma}{2} \ketbra{1}{1} \rho = -\frac{\Gamma}{2} \qty(\rho_{10} \ketbra{1}{0} + \rho_{11} \ketbra{1}{1}) \]
     \[ -\frac{1}{2} \rho L_1^{\dagger} L_1 = -\frac{\Gamma}{2} \rho \ketbra{1}{1} = -\frac{\Gamma}{2} \qty(\rho_{11} \ketbra{1} + \rho_{01} \ketbra{0}{1})\]
     Putting it together,
     \[ \dv{\rho}{t} = \begin{pmatrix}
-        \Gamma \rho_{11} - \frac{1}{2} \Gamma \rho_{00} & iE\rho_{01} - \frac{1}{2} \Gamma \rho_{01} \\
-        -iE \rho_{10} & - \frac{1}{2} \Gamma \rho_{11}
+        \Gamma \rho_{11} & iE\rho_{01} - \frac{1}{2} \Gamma \rho_{01} \\
+        -iE \rho_{10} - \frac{1}{2} \Gamma \rho_{10} & - \Gamma \rho_{11}
     \end{pmatrix} \implies \rho(t) = \begin{pmatrix}
-        TODO
+        \rho_{00}(0) + \qty(1 - e^{-\Gamma t})\rho_{11}(0) & e^{\qty(iE - \frac{\Gamma}{2})t }\rho_{01} (0) \\
+        e^{\qty(-iE - \frac{\Gamma}{2})t }\rho_{10} (0) &  e^{- \Gamma t} \rho_{11}(0)\\
     \end{pmatrix} \]
     At any time, it can drop down, so as $t \to \infty$, the density approaches $\ketbra{0}$. The cross-terms gain a phase based on the eigenenergy,
     which is what that Hamiltonian would do on its own.
