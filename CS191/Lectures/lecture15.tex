@@ -128,13 +128,13 @@ Just because of how we correct errors one at a time.
 It turns out the Shor code can error-correct any general error introduced by a quantum channel.
 Recall the Kraus operator representation
 \begin{align*}
-    \mathcal{N}(\rho) &= \sum_i K_i \rho K_i^{\dagger} \\
+    \mathcal{N}(\rho) &= \sum_i K_i \rho K_i^{\dagger}
 \end{align*}
 We will consider only a single state, because if we can correct a single state, we can correct an ensemble.
 \[ \mathcal{N}\qty(\ketbra{\tilde{\tilde{\psi}}}) = \sum_i K_i \ketbra{\tilde{\tilde{\psi}}} K_i^{\dagger} \]
-We will take $K_i$ acting on only one qubit $i$; but since it is a 2x2 matrix, it can be written
+We will take $K_j$ acting on only one qubit $j$; but since it is a 2x2 matrix, it can be written
 as a linear combination of the Pauli basis:
-\[ K_i \ket{\tilde{\tilde{\psi}}} = \alpha I \ket{\tilde{\tilde{\psi}}} + \beta X_i \ket{\tilde{\tilde{\psi}}} + \gamma Y_i \ket{\tilde{\tilde{\psi}}} + \delta Z_i \ket{\tilde{\tilde{\psi}}} \]
+\[ K_j \ket{\tilde{\tilde{\psi_j}}} = \alpha I \ket{\tilde{\tilde{\psi_j}}} + \beta X_j \ket{\tilde{\tilde{\psi_j}}} + \gamma Y_j \ket{\tilde{\tilde{\psi_j}}} + \delta Z_j \ket{\tilde{\tilde{\psi_j}}} \]
 So, any error can be thought of as a superposition of Pauli errors.
 But syndrome measurement gives a different outcome for all the errors $I, X_i, Y_i, Z_i$.
 Doing this measurement destroys the superposition and reduces it to one of the Pauli matrices. But, we know how to deal with an error pattern of one of any of these.
