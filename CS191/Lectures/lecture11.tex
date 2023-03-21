@@ -36,7 +36,7 @@ with the same density matrix, they are indistinguishable. A state $\ket{\psi} \i
 
 The nice thing
 about this matrix is that we don't need to worry about the global phase indistinguishability, as that will cancel in the
-projector expression. Similarly, the projector $\rho$ has some nice properties.
+projector expression. 
 
 \subsection{Properties of the Density Operator}
 
@@ -48,13 +48,13 @@ Thus, its eigenvalues are all nonnegative. Finally, we have that
 \[ \Tr(\rho) = \sum_i p_i = 1 \]
 
 \begin{theorem}
-It turns out, any trace-1 PSD matrix $\rho$ is the density matrix of infinitely many
+Any trace-1 PSD matrix $\rho$ is the density matrix of infinitely many
 ensembles $\{(p_i, \ket{\psi_i})\}$.
 
 \begin{proof*}
 By the spectral theorem, we can write
 such a matrix as
-\[ \rho = \sum_j \lambda_j \braket{\psi_j}{\psi_j} \]
+\[ \rho = \sum_j \lambda_j \ketbra{\psi_j}{\psi_j} \]
 Since $\rho$ is PSD, then $\lambda_j \geq 0$ and since it has trace 1, $\sum_{i} \lambda_i = 1$.
 Thus, this is the density operator for the ensemble $\{(\lambda_j, \ket*{\psi_j})\}$.
 
@@ -72,7 +72,7 @@ Now, let's visit the postulates of Quantum Mechanics in terms of density matrice
     $\Pr{m} = \qty|\braket{\psi}{m}|^2$ and $\ket{\psi}$ collapses to $\ket{m}$. But to deal with more general measurements,
     e.g. measuring on a certain qubit, we use a \textbf{projection-valued measure (PVM)}. We say we have a set of projectors
     $P_m$ such that $\sum P_m = I$. For a measurement on a one-qubit state, we use $P_m = \ketbra{m}{m}$; and for a measurement on the first qubit but not the second,
-    we use $P_m = \braket{m}{m} \otimes I$, wherein measurement yields
+    we use $P_m = \ketbra{m}{m} \otimes I$, wherein measurement yields
     \[ \Pr{m} = \mel{\psi}{P_m}{\psi}, \text{ and we update } \ket{\psi} \to \frac{P_m \ket{\psi}}{\sqrt{\mel{\psi}{P_m}{\psi}}} \]
     Now for density operators, measurement turns into
     \[ \Pr{m} = \sum_i p_i \mel{\psi_i}{P_m}{\psi_i} = \Tr\qty(\rho P_m) \]

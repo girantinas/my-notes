@@ -11,7 +11,7 @@ One should take $N$ independent samples and take the limit as $N \to \infty$. By
 with probability tends to 1, the fraction of outcome $i$, $N_i/N \to p_i$. We define a ``typical outcome'' to be a sample where
 this fraction is true (up to some $\epsilon$ wiggle room). The number of typical outcomes, by combinatorics:
 \begin{align*}
-    N_{typical} = \sum_{\text{typical } \{N_i\}}\frac{N!}{\prod_{i} N_i!}
+    N_{typ} = \sum_{\text{typical } \{N_i\}}\frac{N!}{\prod_{i} N_i!}
 \end{align*}
 The number of typical $\{N_i\}$ grows at most polynomially with $N$, because for a typical $N_i$,
 $N_i/N \in p_i \pm \epsilon$, so $N_i \in Np_i \pm N \epsilon$, so there are roughly $(2N \epsilon)^n$ choices,
@@ -21,7 +21,7 @@ going to turn out to be exponential, so we will ignore the summation.
     \log N_{typ} &\approx \log N! - \sum_i \log N_i! \\
     &\approx N \log N - \sum_i N_i \log N_i \\
     &= \sum_i N_i \log N - \sum_i N_i \log N_i \\
-    &= - \sum_i N_i \frac{N_i}{N} \\
+    &= - \sum_i N_i \log \qty(\frac{N_i}{N}) \\
     &= - N \sum_i p_i \log p_i
 \end{align*}
 This motivates the following definition.

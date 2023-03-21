@@ -35,11 +35,11 @@ then we could measure in computational basis and be done. The problem is we cann
 So instead, we build the following circuit, calling our noisy codeword $\ket{x}$
 \begin{center}
 \begin{quantikz}
-   \lstick[wires=3]{$\ket{x}$} & \ctrl{2} & & & \\ 
-                      & & \ctrl{1} & \ctrl{2} & & \\ 
-                      & &          & \ctrl{1} & \\
-   \lstick{$\ket{0}$} & \targ & \targ & & &  \\ 
-   \lstick{$\ket{0}$} & & & \targ & \targ & \\ 
+   \lstick[wires=3]{$\ket{x}$} & \ctrl{3}\qw & \qw & \qw & \qw & \qw\\ 
+                      & \qw & \ctrl{2}\qw & \ctrl{3}\qw & \qw & \qw \\ 
+                      & \qw & \qw         & \qw & \ctrl{2}\qw & \qw \\
+   \lstick{$\ket{0}$} & \targ\qw & \targ\qw & \qw & \qw & \qw \\ 
+   \lstick{$\ket{0}$} & \qw &      \qw &    \targ\qw & \targ\qw & \qw \\ 
 \end{quantikz}
 \end{center}
 This maps a computational basis state

@@ -112,7 +112,7 @@ to the output:
 \end{center}
 
 But this is a disaster! Why? We shall explain soon. First, let's discuss how to fix it.
-To fix this, we can just copy $\ket{f(x)}$, and then run $U_f^{\dagger}$ on everything else (including the original $\ket{f(x)}$).
+To fix this, we can just copy $\ket{f(x)}$ (using a bunch of CNOTs), and then run $U_f^{\dagger}$ on everything else (including the original $\ket{f(x)}$).
 This eliminates the garbage $g(x)$ (the output of the $U_f^{\dagger}$ is the just input padded with 0's), while preserving $\ket{f(x)}$.
 
 \subsection{Principle of Deferred Measurement}
@@ -190,9 +190,9 @@ Thus, we can write:
 where $\mathbf{u} \cdot \mathbf{y} = \sum_{i = 1}^n u_i y_i \pmod{2}$ is the dot product of the two bitstrings.
 
 Lastly, one can compute the tensor product using the formula from last lecture:
-\[ H \otimes H = \frac12 \begin{bmatrix}
+\[ H \otimes H = \frac12 \begin{pmatrix}
     1 & 1 & 1 & 1 \\ 1 & -1 & 1 & -1 \\ 1 & 1 & -1 & -1 \\ 1 & -1 & -1 & 1
-\end{bmatrix}\]
+\end{pmatrix}\]
 
 One can continue this with higher order products in a similar fashion.
 

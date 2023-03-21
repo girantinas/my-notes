@@ -75,8 +75,7 @@ in a classical sense too, with correlated coin flips that are rotated.
 To go beyond classical computation, we consider two qubit measurements.
 The first player measures in the standard basis and the second player measures in a new basis, $\{ \ket{v}, \ket{v^{\perp}} \}$, rotated at an angle $\theta$ from the standard basis.
 The probability that these two measurements are unequal is $\sin^2 \theta$ (for example, if the first measurement is $0$, then the state is $\ket{00}$, so the component of $\ket{v}$ in the $\ket{0}$ direction is $\cos \theta$).
-
-However, classically, the probability that one observes a different outcome is proportional to $\theta$.
+However, classically, the probability that one observes a different outcome is in a sense proportional to $\theta$.
 
 So John Bell's experiment is as follows. Alice is given a uniformly random bit $x$ and Bob is given a uniformly random bit $y$. They must each report back
 a bit $a$ and $b$ respectively.
@@ -84,9 +83,9 @@ Alice and Bob ``win'' the game if $xy = a + b \pmod{2}$.
 
 They can play the game in two ways: either classically or quantumly. Classically, they cannot communicate (apart from maybe the ``glued'' coin).
 In the quantum setup, 
-Alice and Bob share a Bell state.
-If Alice chooses a bit $0$, they measure their qubit in the standard basis, otherwise they measure it in a basis rotated by $\pi/4$. If Bob
-chooses a bit $1$, they measure their qubit in a basis rotated by $\pi/8$, otherwise they measure in a basis rotated by $-\pi/8$. Call their measured
+Alice and Bob share a Bell state. They both pick a uniformly random bit $x_a, x_b$ respectively.
+If Alice is given $0$, they measure their qubit in the standard basis, otherwise they measure it in a basis rotated by $\pi/4$. If Bob
+is given $1$, they measure their qubit in a basis rotated by $\pi/8$, otherwise they measure in a basis rotated by $-\pi/8$. Call their measured
 bits $a$ and $b$ respectively.
 
 We then mention the following two facts:
