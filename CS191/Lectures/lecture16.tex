@@ -1,33 +1,35 @@
 \section{Lecture 16}
 
-\subsection{General Conditions for Quantum Error Correction}
-We start with a $\mathcal{H}_{code}$. This is the set of the actual quantum information
-we want to protect. It is spanned by logical qubits $\{\ket{\tilde{i}}\}$ and we wish to embed this
+\subsection{General Conditions for Quantum Error Correction (QEC)}
+We start with the subspace $\mathcal{H}_{code}$, the set of the actual quantum information
+we want to protect. It is spanned by logical qubits $\left\{\ket{\tilde{i}}\right\}$ and we wish to embed this
 Hilbert space into the physical qubits space $\H_{phys}$. Then we have an alphabet of errors:
-$\Sigma = \{ I, E_1, E_2, E_3, \dots \}$, which we can think of as unitaries in the non-noisy setting or Kraus operators
+\[\Sigma = \{ I, E_1, E_2, E_3, \dots \}\]
+ which we can think of as unitaries in the non-noisy setting or Kraus operators
 in the quantum channel setting. For the Shor code, the $E_i$ were the 1-qubit Pauli operators. We
 want to correct any error $E = \sum_i \alpha_i E_i$. When can we correct these errors?
 
 For error correction to be able to happen,
 we must have for all $L, K$ that if $\braket{\tilde{i}}{\tilde{j}} = 0$
-then $\mel{\tilde{i}}{E_K^{\dagger} E_L}{\tilde{j}} = 0$. But this is not a sufficient condition. Namely
+then $\mel{\tilde{i}}{E_K^{\dagger} E_L}{\tilde{j}} = 0$. This is a necessary condition, but by itself is not a sufficient condition. Namely
 take the set of errors where:
-\[ E_1 \ket{\tilde{0}} = E_2 \ket{\tilde{0}}, E_1 \ket{\tilde{1}} \perp E_2 \ket{\tilde{1}} \]
+\[ E_1 \ket{\tilde{0}} = E_2 \ket{\tilde{0}}, \quad E_1 \ket{\tilde{1}} \perp E_2 \ket{\tilde{1}} \]
 To recover $\ket{\tilde{1}}$ we need to do a syndrome measurement to see whether $E_1$ or $E_2$ occurred.
 But because $E_1 \ket{\tilde{0}} = E_2 \ket{\tilde{0}}$, intuitively any measurement that does so will affect superpositions
 $E_i\qty(\alpha \ket{\tilde{0}} + \beta \ket{\tilde{1}})$.
 
 A stronger condition would be $ \mel{\tilde{i}}{E_K^{\dagger} E_L}{\tilde{j}} = \delta_{ij} \delta_{KL}$.
-This is sufficient because we can measure perfectly which error $E_K$ actually occurred without affecting the logical state.
-The projector would be onto the subspace $\textrm{span}\{E_K \ket{\tilde{i}}\}$. Any code that does this is called a 
+Now, this is sufficient because we can perfectly measure which error $E_K$ actually occurred without affecting the logical state.
+The projector would be onto the subspace $\textrm{span}\left\{E_K \ket{\tilde{i}}\right\}$. Any code that does this is called a 
 \textbf{Nondegenerate code}.
-But this is not necessary,
-the Shor code doesn't follow this. For example, $Z_1 \ket{\tilde{\tilde{0}}} = Z_2 \ket{\tilde{\tilde{0}}}$. 
+Note that this condition is not necessary for a code to work, as the Shor code doesn't follow this. For example, $Z_1 \ket{\tilde{\tilde{0}}} = Z_2 \ket{\tilde{\tilde{0}}}$, so the Shor code is degenerate because different errors behave the same way. 
+
+We now define the general conditions for error correction:
 
 \begin{theorem}[Knill-Laflamme Conditions]
-    Quantum error-correction is possible if and only if:
+    Quantum error correction is possible if and only if:
     \[ \mel{\tilde{i}}{E_K^{\dagger} E_L}{\tilde{j}} = \delta_{ij} M_{KL} \]
-    in particular, the indices $i$ and $j$ must not affect $M_{KL}$.
+    for any matrix $M_{KL}$ that is independent of the indices $i, j$.
 
     % average over all results of the measurement? what does this mean?
     \begin{proof*}
@@ -36,7 +38,7 @@ the Shor code doesn't follow this. For example, $Z_1 \ket{\tilde{\tilde{0}}} = Z
         which has a uniform distribution over all errors. Recall the Stinespring representation,
         which wrote $\mathcal{N}(\rho) = \tr_E(V \rho V^{\dagger})$ where
         \[ V \ket{\tilde{i}} = \frac{1}{\sqrt{|\Sigma|}} \sum_k E_k \ket{\tilde{i}} \ket{k}_E \]
-        Consider $\mathcal{R}$ be the recovery channel, which is both the syndrome measurement and the
+        Consider $\mathcal{R}$ be the recovery channel, which is the entire process containing both the syndrome measurement and the
         error-correcting step. We describe it with some Kraus operators $\sum_\mu R_{\mu}^{\dagger} R_{\mu} = I$.
         We can now give another isometry for the $\mathcal{R}$ channel as $V_R$ with environment $E'$:
         \[ V_R V \ket{\tilde{i}} = \frac{1}{\sqrt{\Sigma}} \sum_{k, \mu} R_\mu E_k \ket{\tilde{i}} \ket{k}_E \ket{\mu}_{E'}\]
@@ -46,75 +48,76 @@ the Shor code doesn't follow this. For example, $Z_1 \ket{\tilde{\tilde{0}}} = Z
         \end{align*}
         If we succeeded, the final state of the system must be $\ket{\tilde{i}}$.
         \begin{align*}
-            \sum_{k, \mu} R_\mu E_k \ket{\tilde{i}} \ket{k}_E \ket{\mu}_{E'} &= \ket{\tilde{i}} \ket{\chi}_{E \otimes E'} \\
-            &= \ket{\tilde{i}} \sum_{k, \mu} \lambda_{k, \mu} \ket{k} \ket{\mu} \\
+            \sum_{k, \mu} R_\mu E_k \ket{\tilde{i}} \ket{k}_E \ket{\mu}_{E'} &= \ket{\tilde{i}} \ket{\chi}_{E \otimes E'}
+            = \ket{\tilde{i}} \underbrace{\sum_{k, \mu} \lambda_{k, \mu} \ket{k} \ket{\mu}}_{\text{independent of }\ket{\tilde{i}}} \\
             R_{\mu} E_k \ket{\tilde{i}} &= \lambda_{k, \mu} \ket{\tilde{i}} 
         \end{align*}
-        Now taking an inner product,
+        Now taking an inner product between $R_\mu E_k \ket{\tilde{i}}$ and $R_\mu E_k \ket{\tilde{j}}$, and then summing over the $\mu$'s, we have
         \[ \sum_{\mu} \mel{\tilde{j}}{E_K^{\dagger} R_{\mu}^{\dagger} R_{\mu} E_L}{\tilde{i}} = \delta_{ij} \sum_{\mu} \lambda_{K, \mu}^* \lambda_{L,\mu}  = \delta_{ij} M_{KL}\]
-        But the sum can be brought inside and the $R_{\mu}$ are normalized, the LHS is also $\mel{\tilde{j}}{E_K^{\dagger} E_L}{\tilde{i}}$.
-        This proves that it's necessary.
+        But the sum can be brought inside and the $R_{\mu}$ are normalized, so the LHS is also $\mel{\tilde{j}}{E_K^{\dagger} E_L}{\tilde{i}}$.
+        This proves that it's necessary for this condition to hold.\\
         
-        \textbf{If.} We will prove this by explicit construction of $R_{\mu}$, the recovery operator. Consider the matrix $M_{K, L}$.
-        Let $\hat{e}_{\mu} = \sum_K e_{\mu, K} \hat{f}_K$, where the latter are the basis for the error space and the former
-        are the eigenvectors of $M_{K, L}$. Further, let $c_{\mu}$ be the corresponding eigenvalues. Now, define $M_{\mu} = \sum_k e_{\mu, k} E_k$.
-        Writing the result in terms of $M_{\mu}$:
+        \textbf{If.} We will prove sufficiency via explicit construction of $R_{\mu}$, the recovery operator. Consider the matrix $M_{K, L}$.
+        Let $\hat{e}_{\mu} = \sum_K e_{\mu, K} \hat{e}_K$, where the $\hat{e}_{\mu}$'s are the eigenvectors of $M_{K, L}$ with corresponding eigenvalues $c_{\mu}$. Now, define $M_{\mu} = \sum_k e_{\mu, k} E_k$.
+        Writing the Knill-Laflamme conditions in terms of $M_{\mu}$, we have
         \begin{align*}
             \mel{\tilde{i}}{M_{\mu}^{\dagger} M_{\nu}}{\tilde{j}} = \delta_{ij} \delta_{\mu \nu} c_{\mu}
         \end{align*}
-        Now, define
+        Now, define our recovery operator as follows:
         \[ R_{\mu}  = \frac{1}{\sqrt{c_{\mu}}} \sum_i \ketbra{\tilde{i}} M_{\mu}^{\dagger} \]
         Suppose some error happened. Now the state is some superposition of errors $E_k$, which
         is also a superposition of $M_{\mu}$. The state then becomes:
         \[ \sum_{\mu} M_{\mu} \ket{\tilde{i}} \ket{\phi_{\mu}} \]
-        which upon recovery becomes
+        with no assumptions on the $\ket{\phi_\mu}$'s. Upon recovery, this becomes
         \begin{align*}
-            &\sum_{\nu, \mu} R_{\nu} M_{\mu} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\nu} \\
-            &= \sum_{\nu, \mu, j} \frac{1}{c_{\nu}} \ketbra{\tilde{j}} M_{\nu}^{\dagger} M_{\mu} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\nu} \\
-            &= \sum_{\nu, \mu, j} TODO \\
-            &= \sum_{\mu} \sqrt{c_{\mu}} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\mu}
+            \sum_{\nu, \mu} R_{\nu} M_{\mu} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\nu}
+            &= \sum_{\nu, \mu, j} \frac{1}{\sqrt{c_{\nu}}} \ketbra{\tilde{j}} M_{\nu}^{\dagger} M_{\mu} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\nu} \\
+            &= \sum_{\nu, \mu, j} \delta_{\nu \mu} \delta_{ij} \frac{c_{\mu}}{\sqrt{c_{\nu}}} \ket{\tilde{j}} \ket{\phi_{\mu}} \ket{\nu} \\
+            &= \sum_{\mu} \sqrt{c_{\mu}} \ket{\tilde{i}} \ket{\phi_{\mu}} \ket{\nu}
         \end{align*}
-        Now, we just need to show that this is actually a channel.
+        Now, we just need to show that this is actually a channel. We show that $\sum_{\mu} R_{\mu}^{\dagger} R_{\mu} = I$ as follows:
         \begin{align*}
-            &\sum_{\mu} R_{\mu}^{\dagger} R_{\mu}= \sum_{\mu, i, j} \frac{1}{c_{\mu}} M_\mu \ketbra{\tilde{i}} \ketbra{\tilde{j}} M_{\mu}^{\dagger} \\
+            \sum_{\mu} R_{\mu}^{\dagger} R_{\mu} &= \sum_{\mu, i, j} \frac{1}{c_{\mu}} M_\mu \ketbra{\tilde{i}} \ketbra{\tilde{j}} M_{\mu}^{\dagger} \\
             &= \sum_{\mu, i} \frac{1}{c_{\mu}} M_{\mu} \ketbra{\tilde{i}} M_{\mu}^{\dagger} \\
-            &= \textrm{Proj}(\textrm{span}\{ M_{\mu} \ket{\tilde{i}}\})
+            &= \textrm{Proj}\left(\textrm{span}_{i, \mu}\left\{ M_{\mu} \ket{\tilde{i}}\right\}\right)
         \end{align*}
-        We can pad this with the identity by doing $R_0 = I - \sum_{\mu \geq 1} R_{\mu}^{\dagger} R_{\mu}$.
+        Finally, we can pad this to the identity by letting $R_0 = I - \sum_{\mu \geq 1} R_{\mu}^{\dagger} R_{\mu}$.
         Note that this operator does not affect states that we care about, since they live in that subspace spanned by the
-        other $R_{\mu}$.
+        other $R_{\mu}$. Thus, the condition is sufficient.
     \end{proof*}
 \end{theorem}
 
 \subsection{Stabilizer Codes}
-Stabilizer codes are a very general way to come up with quantum error-correcting codes. We will first introduce the Pauli group.
-\begin{definition}
-    The Pauli group on one qubit is defined as $\mathcal{G}= \pm \{I, X, iY, Z\}$.
+\textbf{Stabilizer codes} are a very general way to come up with quantum error-correcting codes. We will first introduce the \textbf{Pauli group}.
+\begin{definition}[Pauli group]
+    The Pauli group on 1 qubit is defined as $\mathcal{G}= \pm \{I, X, iY, Z\}$. This is an 8-element non-Abelian group under matrix multiplication.
 
-    The Pauli group on $n$ qubits is defined as $\mathcal{G}_n = \pm \{I, X, iY, Z\}^{\otimes n}$. There are $2^{2n + 1}$ elements (the plus and minus are at the end).
+    The Pauli group on $n$ qubits is defined as $\mathcal{G}_n = \pm \{I, X, iY, Z\}^{\otimes n}$. It contains $2^{2n + 1}$ elements (the plus and minus are applied at the end).
 \end{definition}
-These properties can be proven simply using casework.
-\begin{theorem}
+Pauli groups have some nice properties that can be proven simply using casework.
+\begin{theorem}[Properties of Pauli groups]
     The Pauli group $\mathcal{G}_n$ on $n$ qubits satisfies the following properties:
     \begin{enumerate}
     \item The Pauli group is indeed a group under matrix multiplication.
     \item For $M, N \in \mathcal{G}_n$, either $[M, N] := MN - NM = 0$,
-    or $\{M, N\} := MN + NM = 0$. They either commute or anti-commute.
-    \item For $M \in \mathcal{G}_n$, either $M^2 = I$ and $M = M^{\dagger}$, or $M^2 = I$ and $M = -M^{\dagger}$.
+    or $\{M, N\} := MN + NM = 0$. In other words, they either commute or anti-commute.
+    \item For $M \in \mathcal{G}_n$, either $M^2 = I$ and $M = M^{\dagger}$, or $M^2 = -I$ and $M = -M^{\dagger}$.
     \end{enumerate}
 \end{theorem}
 Now we are ready to define stabilizer codes. Choose a set $\{ M_i \} \subseteq \mathcal{G}_n$. For all $i, j$,
-we want $[M_i, M_j] = 0$ and $M_i = M_i^{\dagger}$. This means the eigenvalues must be all $\pm 1$ and
-there exists a simultaneous set of eigenstates that diagonalize them. These will generate a subgroup $\langle M_i \rangle = S \subset \mathcal{G}_n$
-which is Abelian. For $M \in S$, Unless we take $M = I$, half of the eigenvalues of $M$ are 0 and half of them are 1 (they must have trace 0).
-We will define $\H_{code} = \{ \ket{\psi} : \forall i M_i \ket{\psi} = \ket{\psi} \}$. The dimension of the
-entire space $\H_{phys}$ is $2^n$. One can show each condition in $\mathcal{H}_{code}$ halves the dimension, giving
-$2^{n - k}$, where $k = |\{M_i\}|$ is the number of generators. Now, as syndrome measurements,
-we measure all the $M_i$. When we measure a $-1$, we have to correct that error, otherwise we do not.
+we want $[M_i, M_j] = 0$ and $M_i = M_i^{\dagger}$. This means the eigenvalues must all be $\pm 1$ and
+there exists a simultaneous set of eigenstates that diagonalize them. These operators will generate a subgroup $\langle M_i \rangle = S \subset \mathcal{G}_n$
+which is Abelian. 
+
+For any operator $M \in S$, unless we take $M = I$, half of the eigenvalues of $M$ are 0 and half of them are 1 (they must have trace 0).
+We then define $\H_{code} = \{ \ket{\psi} : \forall i,  M_i \ket{\psi} = \ket{\psi} \}$. Note that the dimension of the
+entire space $\H_{phys}$ is $2^n$, so one can show that each condition in $\mathcal{H}_{code}$ halves the dimension. This gives the size of $H_{code}$ to be
+$2^{n - k}$, where $k = |\{M_i\}|$ is the number of generators. Now, via syndrome measurements,
+we measure all the $M_i$. Whenever we measure a $-1$, we have to correct that error, otherwise we do not.
 \begin{example}
     The Shor code is actually an example of a stabilizer code. The syndrome measurements were 
     \[ \{ Z_1 Z_2, Z_2 Z_3, Z_4 Z_5, Z_5 Z_6, Z_7 Z_8, Z_8 Z_9, X_1 X_2 X_3 X_4 X_5 X_6, X_4 X_5 X_6 X_7 X_8 X_9 \}\]
     Note that all of these are members of the Pauli group and they all commute (all even numbers of $X$ and $Z$).
 
-    \textbf{Exercise:} Show that $\ket{\tilde{\tilde{0}}}, \ket{\tilde{\tilde{1}}}$ are the only +1 eigenstates of this snydrome measurement.
+    \textbf{Exercise:} Show that $\ket{\tilde{\tilde{0}}}, \ket{\tilde{\tilde{1}}}$ are the only +1 eigenstates of this syndrome measurement.
 \end{example}
