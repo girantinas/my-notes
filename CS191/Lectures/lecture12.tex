@@ -21,7 +21,7 @@ we have a formalism with partial trace for figuring out what state the device is
 \end{align*}
 But note, this is the same as an ensemble with $\Pr{\text{meas. } 0} = |\alpha|^2$ and $\Pr{\text{meas. } 1} = |\beta|^2$. However,
 we used the measurement postulate last lecture to get the connection between density matrices and quantum systems.
-This is not a derivation of the measurement postulate, but it is a nice way of looking at what quantum measurement is. Similarly,
+Note that what we've done here is not a derivation of the measurement postulate, but it is a nice way of looking at what quantum measurement is. Similarly,
 we find for $A$
 \[ \rho_A = \qty|\alpha|^2 \ketbra{0} + \qty|\beta|^2 \ketbra{1} \implies \Pr{\ket{0}} = |\alpha|^2, \Pr{\ket{1}} = |\beta|^2 \]
 This means that any future measurements on $\mathcal{H}_A$ that ignore $\mathcal{H}_M$ will agree with this ensemble. Thus, the idea
@@ -48,7 +48,7 @@ This is a mixed state. We cannot use $U_{meas}^{\dagger}$ to undo things.
 This phenomenon is known as \textbf{decoherence}.
 
 \subsection{Us: Interpretations of Quantum Mechanics}
-In our class, we distinguish between a measurement and an observation. A measurement is what we just described, a unitary interaction between a system and a measuring device.
+In our class, we distinguish between a \emph{measurement} and an \emph{observation}. A measurement is what we just described: a unitary interaction between a system and a measuring device.
 An observation is a person actually looking at a measurement outcome. Let's try to discuss this as a unitary transform:
 
 \[ U_{obs} \qty(\alpha \ket{0} \ket{\text{meas. } 0} + \beta\ket{1} \ket{\text{meas. } 1}) \ket{hmm} =  \alpha \ket{0} \ket{\text{meas. } 0} \ket{\text{sad}} + \beta\ket{1} \ket{\text{meas. } 1} \ket{\text{happy}}  \]
@@ -56,9 +56,9 @@ It's not obvious what it means for my brain to be in a superposition state. Thus
 
 This relates to the interpretations of quantum mechanics. There are two main ones:
 \begin{enumerate}
-    \item $\ket{\Psi}$ is epistemic. This means it's always fundamentally a quantum version of Bayesian probabilities, meaning that when I see a measurement, I have more information and thus only see one of the terms in my $\ket{\Psi}$.
+    \item $\ket{\Psi}$ is \emph{epistemic}. This means it's always fundamentally a quantum version of Bayesian probabilities, meaning that when I see a measurement, I have more information and thus only see one of the terms in my $\ket{\Psi}$.
     This one is closest to ``Copenhagen Interpretation" from 100 years.
-    \item $\ket{\Psi}$ is ontic. $\ket{\Psi}$ is physically real and is everything. This is often considered the many-world interpretation. The probabilities observed in the lab are not accounted for in this model.
+    \item $\ket{\Psi}$ is \emph{ontic}. $\ket{\Psi}$ is physically real and is everything. This is often considered the many-world interpretation. The probabilities observed in the lab are not accounted for in this model.
 \end{enumerate}
 
 \subsection{POVM Measurements}
@@ -69,14 +69,14 @@ where the $\ket{\psi_m}$ are not normalized. We can rewrite that since this is a
 \[ \ket{\psi_m} = K_m \ket{\psi} \]
 By unitarity,
 \begin{align*}
-    \bra{\phi} \bra{0} U_{meas}^{\dagger} U_{meas} \ket{\psi} \ket{0} &= \sum_{m_1, m_2} \bra{m_1} \bra{\phi} K_{m_1}^{\dagger} K_{m_2} \ket{\psi} \ket{m_2} \\
+    \bra{0} \bra{\phi} U_{meas}^{\dagger} U_{meas} \ket{\psi} \ket{0} &= \sum_{m_1, m_2} \bra{m_1} \bra{\phi} K_{m_1}^{\dagger} K_{m_2} \ket{\psi} \ket{m_2} \\
     &= \sum_{m_1, m_2} \bra{\phi} K_{m_1}^{\dagger} K_{m_2} \ket{\psi} \braket{m_1}{m_2} \\
     &= \sum_m \bra{\phi} K_m^{\dagger} K_m \ket{\psi}  \\
     \braket{\phi}{\psi} &= \bra{\phi} \qty(\sum_m K_m^{\dagger} K_m) \ket{\psi}
 \end{align*}
 For this to be true for any $\ket{\phi}$ and $\ket{\psi}$, we must have
 \[ \sum_m K_m^{\dagger} K_m = I \]
-The $K_m$'s are usually known as Kraus operators. Now to get a measurement, we just find the probability
+The $K_m$'s are usually known as \textbf{Kraus operators}. Now to get a measurement, we just find the probability
 according to the measurement postulate
 \begin{align*}
     \Pr{m} &=  \qty|\bra{m} U_{meas} \ket{\psi} \ket{0}|^2 \\
@@ -84,12 +84,12 @@ according to the measurement postulate
     &= \sum_{m_1, m_2} \bra{\psi} K_{m_1}^{\dagger}  \braket{m_1}{m} \braket{m}{m_2} K_{m_2} \ket{\psi} \\
     &= \mel**{\psi}{K_m^{\dagger} K_m}{\psi} = \langle K_m^{\dagger} K_m \rangle
 \end{align*}
-So note, that $\Pi_m := K_m^{\dagger} K_m$ is all the matters. An operator is in the form $A^{\dagger} A$ if and only if it is positive semi-definite.
+So note, that $\Pi_m := K_m^{\dagger} K_m$ is all the matters. Note that an operator is in the form $A^{\dagger} A$ if and only if it is positive semi-definite.
 Thus we have:
 \[ \sum_m \Pi_m = I, \Pi_m \geq 0\]
 
-Thus, there is no reason that these $\Pi_m$'s need to be projection operators at all. They just need to be positive. If they were,
-we'd get the PVM (projection-valued measure) from last time. Instead these are \textbf{positive-operator-valued measure} (POVM). It turns out,
+Thus, there is no reason that these $\Pi_m$'s need to be projection operators at all. They just need to be PSD. If they were projection operators,
+we'd get the \textbf{projection-valued measure (PVM)} from last time. Instead these are the \textbf{positive-operator-valued measure (POVM)}. It turns out,
 this lets you learn about weak or noisy measurements. Consider the two operators
 \[ \Pi_0 = \frac{3}{4} \ketbra{0} + \frac{1}{4} \ketbra{1}, \Pi_1 = \frac{1}{4} \ketbra{0} + \frac{3}{4} \ketbra{1} \]
 These clearly add up to the identity. Then for the original state $\ket{0}$, the device enters a state where:
@@ -98,8 +98,8 @@ and if we instead started with a $\ket{1}$,
 \[ \Pr{0} = \mel{0}{\Pi_1}{0} = 1/4, \Pr{1} = 3/4 \]
 This is a noisy measurement because $3/4$ of the time, we get the correct answer and $1/4$ of the time, we get something completely wrong.
 
-Remember, $\ket{\psi} \to K_m \ket{\psi}$ when $K_m^{\dagger} K_m = \Pi_m$; a particularly nice Kraus operator
-is $\Pi_m^{1/2}$. Taking our previous example:
+Remember, $\ket{\psi} \to K_m \ket{\psi}$ when $K_m^{\dagger} K_m = \Pi_m$; so a particularly nice Kraus operator
+is $\Pi_m^{1/2}$. Taking our previous example, we have:
 \begin{align*}
     &K_0 = \frac{\sqrt{3}}{2} \ketbra{0}{0} + \frac{1}{2} \ketbra{1}{1}, &K_1 = \frac{1}{2} \ketbra{0}{0} + \frac{\sqrt{3}}{2} \ketbra{1}{1}  \\
     &K_0 \ket{+} = \frac{\sqrt{3}}{2} \ket{0} + \frac{1}{2} \ket{1}, &K_1 \ket{+} = \ftwo \ket{0} + \frac{\sqrt{3}}{2} \ket{1}

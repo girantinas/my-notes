@@ -6,21 +6,21 @@ We begin by recalling the quantum channels, and state that these are actually ve
 
 \begin{theorem}
     A superoperator $\mathcal{N}$
-    is a completely positive, trace-preserving linear superoperator if and only if it is a quantum channel.
+    is completely positive, trace-preserving, and linear \emph{if and only if} it is a quantum channel.
 
     \textbf{Proof} % To stop tcolorbox from shitting itself
 
     We have already shown the if step. To show the only if,
     consider $\mathcal{H}_R \cong \H_A$, where the $\H_R$ space is the one
     which will be acted on by the identity and $\H_A$ is the actual input space.
-    Consider $\{\ket{j}\}$ as the orthonormal basis for this space.
+    Consider $\{\ket{j}\}$ to be the orthonormal basis for this space.
 
     Consider $\ket{\Phi} = \sum_j \ket{j}_A \ket{j}_R$. Now, applying the superoperator tensored with the identity superoperator:
     \[ \qty(\mathcal{N} \otimes \textrm{Id}_R)\qty(\ketbra{\Phi}) = \sum_i p_i \ketbra{\Phi_i} \]
     for $\ket{\Phi_i} \in \H_B \otimes \H_R$. Because of positive semidefiniteness, we can take the square root of $p_i$
     and write $\ket{\Phi_i}$ as a linear combination of its basis elements:
     \[ \sqrt{p_i} \ket{\Phi_i} = \sum_{\alpha, j} K_i^{\alpha j} \ket{\alpha}_B \ket{j}_R \]
-    We define the map
+    Now, we define the map
     \[ K_i = \sum_{\alpha, j} K_i^{\alpha j} \ketbra{\alpha}{j} \]
     Then, this means $\sqrt{p_i} \ket{\Phi_i} = K_i \ket{\Phi}$ (we contract over exactly the coefficients of $\ket{\Phi_i}$),
     so the output of the channel tensored with the identity yields
@@ -29,7 +29,7 @@ We begin by recalling the quantum channels, and state that these are actually ve
     Now consider another state $\ket{\psi} = \sum_j c_j \ket{j} \in \H_A$ and
     define $\ket{\overline{\psi}} = \sum_j c_j^* \ket{j} \in \H_R$. Then:
     \[ \bra{\overline{\psi}}\ket{\Phi} = \sum_{j', j} c_j' \braket{j'}{j}_R \ket{j}_A = \sum_j c_j \ket{j} = \ket{\psi} \]
-    Now act
+    and thus we have
     \begin{align*}
         \bra{\overline{\psi}} \qty(\mathcal{N} \otimes \textrm{Id}_R)\qty(\ketbra{\Phi}) \ket{\overline{\psi}} &= \sum_i K_i \bra{\overline{\psi}} \ketbra{\Phi} \ket{\overline{\psi}} K_i^{\dagger} \\
         \mathcal{N}( \bra{\overline{\psi}} \ketbra{\Phi}  \ket{\overline{\psi}}) &= \sum_i K_i \ketbra{\psi} K_i^{\dagger} \\
@@ -39,18 +39,18 @@ We begin by recalling the quantum channels, and state that these are actually ve
     \begin{align*}
         \mathcal{N}(\rho) &= \sum_j \lambda_j \mathcal{N}(\ketbra{\psi_j}) \\
         &= \sum_{i, j} \lambda_j K_i \ketbra{\psi_j} K_i^{\dagger} \\
-        &= \sum_{i} K_i \qty(\sum_{j} \lambda_j\ketbra{\psi_j}) K_i^{\dagger} = \sum_i \lambda_i K_i \rho K_i^{\dagger}
+        &= \sum_{i} K_i \qty(\sum_{j} \lambda_j\ketbra{\psi_j}) K_i^{\dagger} \\
+        &= \sum_i \lambda_i K_i \rho K_i^{\dagger}
     \end{align*}
     Finally, we will show that the Kraus operators are properly normalized using the trace-preserving property of
-    the superoperator
-    
+    the superoperator:
     \begin{align*}
-        \tr \mathcal{N}(\rho) &= \sum_i \tr(K_i \rho K_i^{\dagger}) \\
-        \tr \rho &= \tr(\rho \qty(\sum_i K_i^{\dagger} K_i))
+        \Tr \mathcal{N}(\rho) &= \sum_i \Tr(K_i \rho K_i^{\dagger}) \\
+        \Tr \rho &= \Tr(\rho \qty(\sum_i K_i^{\dagger} K_i))
     \end{align*}
     Take $\rho = \ketbra{\psi}$. Then the above property implies
     \[ \mel**{\psi}{\sum_i K_i^{\dagger} K_i}{\psi} = \braket{\psi} \implies \sum_i K_i^{\dagger} K_i = I \]
-    Thus, this is a valid quantum channel (in Kraus representation).
+    Thus, $\mathcal{N}$ is a valid quantum channel (in Kraus representation).
 \end{theorem}
 
 \subsection{Master Equations}
@@ -65,14 +65,14 @@ Now, we expect some kind of open-system continuous evolution of the form $\dv{\r
 Unfortunately, this is not usually possible to do, because the evolution is not dependent on purely on initial condition;
 information can leave the $A$ system and then come back later. Call $\H_A \cong \H_E$, where the $E$ system
 is the environment. At $t = 0$, suppose the state is $\ket{\psi}_A \ket{0}_E$. We will write
-\[ U(t_0) = e^{-iHt_0} = SWAP, U(t_0) \ket{i} \ket{j} = \ket{j} \ket{i} \]
+\[ U(t_0) = e^{-iHt_0} = \textsc{SWAP}, \quad U(t_0) \ket{i} \ket{j} = \ket{j} \ket{i} \]
 So at $t = t_0$, $\rho_A(t_0) = \ketbra{0}$. All the information has escaped out of $A$. But afterwards,
 $\rho_A(2 t_0) = \ketbra{\psi}$. The information flowed back into $A$. At time $2t_0$ we needed the state at $0$,
 so the system is not memoryless and we cannot create an evolution law in the manner we described.
 
 However, if $|\H_E| \gg |\H_A|$ and the environment is evolving sufficiently ``fast,'' then information
 that escapes the system and doesn't immediately return is gone forever to the environment. To model this,
-we replace $\H_E$ by some ``clean copy'' in a fixed state after every $\Delta t_{forget} \ll 1$. If we are fine with coarse-grained evolution,
+we replace $\H_E$ by some ``clean copy'' in a fixed state after every $\Delta t_{forget} \ll 1$ timesteps. If we are fine with coarse-grained evolution,
 then we will look at updating the state in increments $\delta t$
 where $\Delta t_{forget} \ll \delta t \ll \Delta t_{system}$, where the last term is the time for the
 system to evolve significantly. We will figure this as
@@ -80,28 +80,29 @@ system to evolve significantly. We will figure this as
 By Taylor expansion:
 \[ \mathcal{N}_{\delta t} = \textrm{Id} + \delta t \mathcal{L} \]
 where the superoperator $\mathcal{L}$ is called the \textbf{Lindbladian} of the system. By
-rearranging and taking limits:
-\[ \dv{\rho}{t} = \mathcal{L}(\rho) \]
+rearranging $\rho(t + \delta t) = \rho(t) + \delta t \mathcal{L}(\rho)$ and taking limits, we have 
+\[ \implies \dv{\rho}{t} = \mathcal{L}(\rho) \]
 Assuming that $\mathcal{L}$ is independent of time, then the solution to the equation is
 \begin{align*}
-    \rho(t) &= \lim_{n \to \infty} \qty(Id + \frac{t}{n} \mathcal{L})^n \qty(\rho(0)) \\
+    \rho(t) &= \lim_{n \to \infty} \qty(\textrm{Id} + \frac{t}{n} \mathcal{L})^n \qty(\rho(0)) \\
     \rho(t) &= e^{t \mathcal{L}}(\rho(0))
 \end{align*}
 But what does the Lindbladian really look like? Note that $\mathcal{N}_{\delta t}$ is a quantum channel,
 so it has a Kraus representation:
 \[ \mathcal{N}(\rho(t)) = \sum_{i} K_i \rho K_i^{\dagger} = \rho + O(\delta t) \]
-The easiest way to write this is $K_0 = I + \delta t \qty(-iH + K)$ where $H$ and $K$ are Hermitian (this is the split into
-Hermitian and anti Hermitian parts). Furthermore, $K_i$ cannot have any constant terms: they're all accounted for.
+The easiest way to write this is $K_0 = I + \delta t \qty(-iH + K)$ where $H$ and $K$ are Hermitian, resulting in a split into anti-Hermitian ($-iH$) and Hermitian $(K)$ parts. Furthermore, $K_i$ cannot have any constant terms: they're all accounted for.
 To get a linear term in $K_i \rho K_i^{\dagger}$, we need order 1/2 terms for $i \neq 0$:
 $K_i = \sqrt{\delta t} L_i$. But by normalization:
 \begin{align*}
-    \sum_i K_i^{\dagger} K_i &= I \\
-    I &= I + \delta t(iH + K) + \delta t(-iH + K) + \sum_{i > 0} L_i^{\dagger} L_i \delta t \\
+    \sum_i K_i^{\dagger} K_i = I &= I + \delta t(iH + K) + \delta t(-iH + K) + \sum_{i > 0} L_i^{\dagger} L_i \delta t \\
     0 &= 2 \delta t K + \delta t \sum_{i > 0} L_i^{\dagger} L_i \\
-    K &= -\frac{1}{2} \sum_{i > 0} L_i^{\dagger} L_i \\
+    K &= -\frac{1}{2} \sum_{i > 0} L_i^{\dagger} L_i
+\end{align*}
+and thus, we have
+\begin{align*}
     \dv{\rho}{t} &= \frac{\mathcal{N}_{\delta t} (\rho) - \rho}{\delta t} \\
-    \dv{\rho}{t} &= \frac{1}{\delta t} \qty[\sum_i K_i \rho K_i^{\dagger} - \rho] \\
-    \dv{\rho}{t} &= (-iH - \frac{1}{2} \sum_{i > 0} L_i^{\dagger} L_i)\rho + \rho (iH - \frac{1}{2}\sum_{i > 0} L_i^{\dagger} L_i) + \sum_i L_i \rho L_i^{\dagger}
+     &= \frac{1}{\delta t} \qty[\sum_i K_i \rho K_i^{\dagger} - \rho] \\
+     &= \left(-iH - \frac{1}{2} \sum_{i > 0} L_i^{\dagger} L_i\right)\rho + \rho \left(iH - \frac{1}{2}\sum_{i > 0} L_i^{\dagger} L_i\right) + \sum_i L_i \rho L_i^{\dagger}
 \end{align*}
 Let's clean this up.
 \begin{theorem}
@@ -111,14 +112,18 @@ Let's clean this up.
 \end{theorem}
 The first term is what one gets from normal Unitary evolution from a Hamiltonian $H$. The second term
 $ \sum_{i > 0} \qty(L_i \rho L_i^{\dagger})$ is the effects of noise,
-where $L_i$ are considered quantum jump operators where the jump is described by $\ket{\psi} \mapsto L_i \ket{\psi}$.
-The last two terms preserve the normalization of $\rho$ overall. This was a lot of formalism, let's explore an example.
-\begin{example}
+where $L_i$ are considered ``quantum jump'' operators where the jump is described by $\ket{\psi} \mapsto L_i \ket{\psi}$.
+Finally, the last two terms $\sum_{i > 0} \frac{1}{2}L_i^{\dagger} L_i \rho$ and $\sum_{i > 0} \rho L_i^{\dagger} L_i$ preserve the normalization of $\rho$ overall. 
+
+This was a lot of formalism, let's explore an example.
+\begin{example}[Photon Emission by Excited Electron State]
     Consider a photon emission by an excited electron state. We will
     model our $A$ system as the electron and the photon as noise. We model $\ket{0}$ as the ground state of the electron
     and $\ket{1}$ as the excited state of the electron. We say the eigenvalue of the energy level $\ket{0}$ is $0$ and $\ket{1}$ is $E$,
     giving the Hamiltonian as $H = E \ketbra{1}$. We will model $L_1 = \sqrt{\Gamma} \ketbra{0}{1}$, where $\Gamma$ is the photon emission rate.
-    Now, let's try to solve the master equation. The initial state is:
+    Now, let's try to solve the master equation. 
+    
+    First, we express the state $\rho$ explicitly as follows:
     \[ \rho = \begin{pmatrix}
         \rho_{00} & \rho_{01} \\ \rho_{10} & \rho_{11}
     \end{pmatrix} = \rho_{00} \ketbra{0} + \rho_{01} \ketbra{0}{1} + \rho_{10} \ketbra{1}{0} + \rho_{11} \ketbra{1}{1} \]

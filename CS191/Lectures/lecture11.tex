@@ -46,6 +46,7 @@ Thus, $\rho$ is Hermitian. Furthermore, it is actually positive semi-definite:
 \[ \bra{\psi_i} \rho \ket{\psi_i} = \sum_i p_i \qty|\braket{\psi_i}{\psi_i}|^2 \geq 0 \]
 Thus, its eigenvalues are all nonnegative. Finally, we have that
 \[ \Tr(\rho) = \sum_i p_i = 1 \]
+because the $p_i$'s form a probability distribution.
 
 \begin{theorem}
 It turns out, any trace-1 PSD matrix $\rho$ is the density matrix of infinitely many
@@ -54,7 +55,7 @@ ensembles $\{(p_i, \ket{\psi_i})\}$.
 \begin{proof*}
 By the spectral theorem, we can write
 such a matrix as
-\[ \rho = \sum_j \lambda_j \braket{\psi_j}{\psi_j} \]
+\[ \rho = \sum_j \lambda_j \ketbra{\psi_j}{\psi_j} \]
 Since $\rho$ is PSD, then $\lambda_j \geq 0$ and since it has trace 1, $\sum_{i} \lambda_i = 1$.
 Thus, this is the density operator for the ensemble $\{(\lambda_j, \ket*{\psi_j})\}$.
 
@@ -62,6 +63,8 @@ By uniqueness of eigendecomposition, this is in fact the unique ensemble in whic
 are orthonormal.
 \end{proof*}
 \end{theorem}
+
+\subsection{QM Postulates in terms of Density Matrices}
 
 Now, let's visit the postulates of Quantum Mechanics in terms of density matrices.
 \begin{theorem}
@@ -93,14 +96,20 @@ Now, let's visit the postulates of Quantum Mechanics in terms of density matrice
     \end{enumerate}
 \end{theorem}
 
+\subsection{Geometric Interpretation of Density Matrices}
+
 With that formal stuff out of the way, let's think about a two state system. The spectral decomposition
 of such an operator must have only two eigenvectors and with the trace-one condition we have:
 \[ \rho = \lambda \ketbra{\psi}{\psi} + (1 - \lambda)(I - \ketbra{\psi}{\psi}) \]
-Without loss of generality, we can take $\lambda \geq \frac{1}{2}$ because we can just pick the biggest
+Without loss of generality, we can take $\frac{1}{2} \leq \lambda \leq 1$ because we can just pick the biggest
 we can parametrize $\lambda = \frac{1}{2} \qty(1 + r)$ where $0 \leq r \leq 1$ and we can think of
-mixed states geometrically. Recall our parametrization of the Bloch sphere last lecture in terms of $\theta$ and $\phi$;
-if $r = 1$ we get a pure state $\ketbra{\psi}{\psi}$, and if $r = 0$, then $\lambda = 1/2$ and the expression at the top is $\rho = \frac{1}{2} I$
-regardless of the $\ket{\psi}$ we choose. Other mixed states lie in the inside of the sphere. Any $\rho \propto I$ is called a
+mixed states geometrically. Recall our parametrization of the Bloch sphere last lecture in terms of $\theta$ and $\phi$:
+\begin{enumerate}
+    \item If $r = 1$, we get a pure state $\ketbra{\psi}{\psi}$.
+    \item If $r = 0$, then $\lambda = 1/2$ and the expression at the top is $\rho = \frac{1}{2} I$
+    regardless of the $\ket{\psi}$ we choose. 
+\end{enumerate}
+Other mixed states lie in the inside of the sphere; the closer you are to the center, the noisier your state. Hence, any $\rho \propto I$ (in the center of the sphere) is called a
 ``maximally mixed'' state.
 
 \subsection{Reduced Density Matrices}
@@ -126,7 +135,7 @@ This is exactly our old measurement rule!
 \subsubsection{Relationship between Reduced Density Matrices}
 Finally, let's think about the relationship between $\rho_A$ and $\rho_B$.
 \[ \rho_A = \sum_i \lambda_i \ketbra{\psi_i}{\psi_i} \]
-However, $\psi_i$ are orthogonal and form a basis, so we can combine the terms by $\ket{\psi_i}_A$:
+However, the $\psi_i$'s are orthogonal and form a basis, so we can combine the terms by $\ket{\psi_i}_A$:
 \[ \ket{\psi} = \sum_i c_i \ket{\psi_i}_{A} \ket{\phi_i}_B \]
 where in general, the $\ket{\phi_i}_B$ are not orthogonal. However, we show that in this construction, they actually are (and we can normalize to make them orthonormal)! %First, we can take out the $c_i$'s to normalize $\braket{\phi_i}{\phi_i} = 1$.
 By definition,
