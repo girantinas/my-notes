@@ -116,6 +116,7 @@
 \renewtheorem{example}{Example}[section]
 \renewtheorem{proof}{Proof}[section]
 \newtheorem{algothm}{Algorithm}[section]
+\newtheorem{ptheorem}{PseudoTheorem}[section]
 \renewtheorem*{proof*}{Proof}
 \newtheorem{note}{Note}[section]
 \tcolorboxenvironment{definition}{
@@ -129,6 +130,16 @@
     after skip=10pt
 }
 \tcolorboxenvironment{theorem}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=orange!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{ptheorem}{
     enhanced, 
     boxrule=0pt, 
     frame hidden, 

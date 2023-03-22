@@ -6,8 +6,8 @@ We discuss Simon's algorithm: another quantum protocol that solves a toy problem
 Suppose there is a black-box $f: \{0, 1\}^n \to S \subseteq \{0, 1\}^n$ that is two to one in a specific way: for a fixed string $s$, $f(x) = f(x \oplus s)$ for all $x \in \{0, 1\}^n$,
 where the $\oplus$ is vector addition mod 2. Our challenge is to find $s$.
 
-Classically, there are $2^n$ possibilities for $s$, so if we query $x \neq x'$ and get $f(x) \neq x'$ we can only
-cross out one possibility for $s$ ($x \oplus x'$). So in the worst case, it takes $2^n$ tries. On average, due to the Birthday paradox,
+Classically, there are $2^n$ possibilities for $s$, so if we query $x \neq x'$ and get $f(x) \neq f(x')$ we can only
+cross out one possibility for $s \neq x \oplus x'$. So in the worst case, it takes $2^n$ tries. On average, due to the Birthday paradox,
 the runtime is actually the square root of this, $2^{n/2}$. However, the runtime is still exponential. Let's switch over to the quantum world to see if we can speed things up.
 
 Here is a quantum algorithm that solves the same problem (with some randomness tossed in as well). Let $a \in_R A$ denote that $a$ is uniformly chosen
@@ -108,7 +108,7 @@ Suppose inductively that we knew how to apply the $QFT_{M/2}$. Then to apply $QF
 \end{center}
 
 Note that unrolling the recursion, and calling $QFT_0$ the identity, it's clear that the runtime is:
-\[ 1 + 2 + \dots + (m - 1) + m = O(m^2) \]
+\[ 1 + 2 + \dots + (m - 1) + m = O(m^2) = O(\log^2 M) \]
 Now to prove correctness, consider the FT matrix. We reorder the columns so the first $M/2$
 columns are the even-indexed columns (0-indexing) and the rest are odd-indexed columns. Then
 \[ FT_M = \begin{pmatrix}

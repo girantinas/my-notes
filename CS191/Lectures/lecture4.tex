@@ -80,14 +80,14 @@ To prove the no-cloning theorem another way, we then suppose for the sake of con
 \[ U \ket{\phi} \ket{0} = \ket{\phi}\ket{\phi}, U\ket{\psi}\ket{0} = \ket{\psi}\ket{\psi} \]
 But a unitary cannot change the angle between two vectors. To begin with and end with, the inner product was:
 \[ \braket{\psi}{\phi} \braket{0}{0} = \braket{\psi}{\phi} \braket{\psi}{\phi} \implies \braket{\psi}{\phi} = 0, 1 \]
-Any unitary can only clone only orthogonal states or the same state. In practice, you can only clone some orthonormal basis of your choosing,
-like $\ket{0}, \ket{1}$.
+Any unitary can only clone only orthogonal states or the same state. In general, you can only clone some orthonormal basis of your choosing,
+like $\{\ket{0}, \ket{1}\}$.
 
 \subsection{Superdense Coding}
 Let's say Alice and Bob share a Bell state $\ket{\Phi^+} = \ftwo \ket{00} + \ftwo \ket{11}$. Alice has two bits of information $b_1, b_2 \in \{0, 1\}$
 that she wants to send to Bob. Classically she can send this information in exactly two bits, no more, but with a quantum state, Alice
-can do it with just one qubit. Based on the bits, she turns the state into one of the Bell states based on the bits. Alice then sends Bob her qubit.
-Now Bob can just measure the qubit in the Bell basis. But can we do better than rate 2? It turns out we can't.
+can do it with just one qubit. Based on the bits, she turns the state into one of the Bell states. Alice then sends Bob her qubit.
+Now Bob can just measure the qubit in the Bell basis. But can we do better than a rate of 2 classical bits for one qubit? It turns out we can't.
 
 \subsection{Quantum Teleportation}
 Professor Vazirani assures us that Alice has been working hard in her lab and made a state $\alpha \ket{0} + \beta \ket{1}$

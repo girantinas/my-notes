@@ -34,12 +34,12 @@ H^{\otimes 2} = \frac12 \begin{pmatrix}
 \end{pmatrix}
 \]
 
-Let's think about how to act on one of our favorite states, $\Phi^+ = \ftwo \ket{00} + \ftwo \ket{11}$.
+Let's think about how to act on one of our favorite states, $\ket{\Phi^+} = \ftwo \ket{00} + \ftwo \ket{11}$.
 The $\ket{00}$ maps to the first column, $\frac12 \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11})$ and
 the $\ket{11}$ maps to the last column, $\frac12 \qty(\ket{00} - \ket{01} - \ket{10} + \ket{11})$.
 By linearity, this means:
-\[ H^{\otimes 2}\Phi^+ = \ftwo \frac12 \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11}) + \ftwo \frac12 \qty(\ket{00} - \ket{01} - \ket{10} + \ket{11}) = \ftwo \ket{00} + \ftwo \ket{11}   \]
-That means this Bell state through the Hadamard transform just returns the same thing.
+\[ H^{\otimes 2}\ket{\Phi^+} = \frac{1}{2\sqrt{2}} \qty(\ket{00} + \ket{01} + \ket{10} + \ket{11}) + \frac{1}{2\sqrt{2}} \qty(\ket{00} - \ket{01} - \ket{10} + \ket{11}) = \ftwo \ket{00} + \ftwo \ket{11}   \]
+That means this Bell state is an eigenvector of the Hadamard transform.
 
 With some similar algebra, it turns out another Bell state can be mapped as:
 \[ H^{\otimes 2}\qty(\ftwo \ket{01} + \ftwo \ket{10}) = \ftwo \ket{00} - \ftwo \ket{11} \]
@@ -47,7 +47,7 @@ With some similar algebra, it turns out another Bell state can be mapped as:
 We can use the Hadamard to do something interesting:
 \begin{center}
 \begin{quantikz}
-    \lstick{$\sum_{x} \alpha_x \ket{x}$} & \gate{Had} & \meter{}
+    \lstick{$\sum_{x} \alpha_x \ket{x}$} & \gate{\mathrm{HAD}} & \meter{}
 \end{quantikz}
 \end{center}
 

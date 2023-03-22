@@ -40,7 +40,7 @@ For the Hamiltonian, this means that we can refer to the eigenvectors $\ket{\psi
 \[ H \ket{\psi_n} = E_n \ket{\psi_n},\]
 which is often called the \textbf{time-independent Schrodinger equation}. With this substitution, we obtain
 \[ i \pdv{}{t} \ket{\psi(t)} = E_n \ket{\psi(t)} \implies \ket{\psi(t)} = e^{-i E_n t} \ket{\psi(0)} = e^{-i E_n t} \ket{\psi_n} \]
-So essentially, Schrodinger's Equation tells us that the behavior for a given quantum state $\ket{\phi(t)}$ is characterized by its component states $\ket{\psi_n}$ precessing at a rate proportional to its energy $E_n$. 
+So essentially, Schrodinger's Equation tells us that the behavior for a given quantum state $\ket{\psi(t)}$ is characterized by its component states $\ket{\psi_n}$ precessing at a rate proportional to its energy $E_n$. 
 
 \begin{example}
     Given initial state $\ket{\psi(0)} = \ket 0$ and operator $H = X = \begin{pmatrix}
@@ -48,7 +48,7 @@ So essentially, Schrodinger's Equation tells us that the behavior for a given qu
         1 & 0 
     \end{pmatrix}$, find the general state $\ket{\psi(t)}$.
 
-    \emph{Solution:} since the eigenvector-value pairs of $H$ are $(\ket+, 1)$ and $(\ket-, -1)$, we express $\ket{\psi(0)}$ in terms of the eigenvectors of $H$ as follows:
+    \emph{Solution:} Since the eigenvector-value pairs of $H$ are $(\ket+, 1)$ and $(\ket-, -1)$, we express $\ket{\psi(0)}$ in terms of the eigenvectors of $H$ as follows:
     \[\ket{\psi(0)} = \ket 0 = \sum_n \alpha_n \ket{\psi_n} = \frac{1}{\sqrt{2}} \ket{+} + \frac{1}{\sqrt{2}} \ket -\]
     Now, we can compute $\ket{\psi(t)}$ as such:
     \begin{align*}
@@ -57,7 +57,7 @@ So essentially, Schrodinger's Equation tells us that the behavior for a given qu
         &= \frac{1}{\sqrt{2}} e^{-i \cdot 1 \cdot t} \ket{+} + \frac{1}{\sqrt{2}}e^{-i \cdot (-1) \cdot t} \ket - \\
         &= \frac{1}{\sqrt{2}} e^{-it} \ket{+} + \frac{1}{\sqrt{2}}e^{it} \ket -
     \end{align*}
-    where we assume $\hbar = 1$.
+    where we choose units such that $\hbar = 1$.
 \end{example}
 \subsection{Bloch Sphere}
 Recall we tried to visualize $\alpha\ket{0} + \beta\ket{1}$ as living in a 2d Hilbert space. However, in general, the amplitudes are
@@ -107,8 +107,9 @@ Similarly, for measuring the $x$ momentum we have
 \[ L_{\mathbf{x}} = \frac{1}{2} \ket{+} \bra{+} - \frac{1}{2} \ket{-} \bra{-} = \frac{1}{2} \begin{pmatrix}
     0 & 1 \\ 1 & 0
  \end{pmatrix} = \frac{1}{2} X \]
-where $e$ and $m_e$ are the charge and mass of an electron, respectively. We know from physics that a magnetic field assigns a vector $\mathbf{B}$ to every point in space. Then, we can write the Hamiltonian (total energy) as:
+We know from physics that a magnetic field assigns a vector $\mathbf{B}$ to every point in space. Then, we can write the Hamiltonian (total energy) as:
 \[ H = \frac{e}{m_e} \mathbf{L} \cdot \mathbf{B} \]
+where $e$ and $m_e$ are the charge and mass of an electron, respectively.
 For simplicity, we will say the magnetic field is constant and only in the $x$ direction: $\mathbf{B} = (B, 0, 0)$,
 which means 
 \[H = \frac{e}{m_e} BL_x = \frac{eB}{2m_e} X.\] 
@@ -117,8 +118,8 @@ initial condition, we set $\ket{\psi(0)} = \ket{\uparrow} = \ket{0}$, and write 
 Rewriting Schrodinger's equation we get:
 \begin{align*}
     i \dv{}{t} \ket{\psi(t)} &= H \ket{\psi(t)} \\
-    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{0} &= \frac{eB}{2m_e} \qty(\alpha(t) X \ket{0} + \beta(t) X \ket{1}) \\
-    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{0} &= \frac{eB}{2m_e} \qty(\beta(t) \ket{0} + \alpha(t) \ket{1})
+    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{1} &= \frac{eB}{2m_e} \qty(\alpha(t) X \ket{0} + \beta(t) X \ket{1}) \\
+    i \dot{\alpha}(t) \ket{0} + i \dot{\beta}(t) \ket{1} &= \frac{eB}{2m_e} \qty(\beta(t) \ket{0} + \alpha(t) \ket{1})
 \end{align*}
 This gives us a differential equation for each component:
 \[ \begin{cases} \dot{\alpha} = \frac{eB}{2m_e i} \beta \\ \dot{\beta} = \frac{eB}{2m_e i} \alpha \end{cases} \]
@@ -135,4 +136,4 @@ The electron rotates down to $\ket{+i}$, then $\ket{1}$, and finally $\ket{-i}$.
 \subsubsection{Using Spin to Enable Quantum Computing}
 
 How does this idea enable quantum computing? We know that we have to somehow change the Hamiltonian throughout time. To do this, we implement quantum gates by switching the magnetic field on and off in certain directions to create desired electron motion. For example, to implement a NOT gate, we leave magnetic field on for some
-multiple of the period (plus one half phase) to make the spin process until it hits the opposite pole, then switch off the magnetic field. This way, we're able to manipulate the behavior of quantum states.
+multiple of the period (plus one half phase) to make the spin precess until it hits the opposite pole, then switch off the magnetic field. This way, we're able to manipulate the behavior of quantum states.
