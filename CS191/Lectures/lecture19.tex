@@ -1,0 +1,93 @@
+\part{Experimental Quantum Information Science}
+
+\section{Lecture 19}
+
+\subsection{Implementations of Quantum Gates}
+Now that we've seen how to do quantum computation, one has to ask how we could realize qubits.
+What we are after is a quantum two-level system (TLS) that can be represented as $\ket{\psi} = \alpha \ket{\uparrow} + \beta \ket{\downarrow}$.
+Some properties we'd like to have:
+\begin{enumerate}
+    \item Initializable (to $\ket{0}$)
+    \item Read-out measurements with high fidelity
+    \item Long coherence time (the so-called $T_2$ time)
+    \item Easily control
+    \item Able to implement 1 or 2 qubit gates (at least $10^4$ of them)
+\end{enumerate}
+Here are some common implementations we can map onto a TLS
+\begin{itemize}
+    \item Spins ($e^{-}$ or nuclear spins): examples of these include NV centers and phosphorus doped in silicon. These form a bunch of aligned spins
+    with some Hamiltonian between them, and map readily to the TLS. The coherence time of nucleus spins are longer than electron spins. One method for aligning nuclear spins is Nuclear Magnetic Resonance (NMR).
+    \item Josephsen Junctions/Superconducting qubits: This is an anharmonic oscillator. This means it's an oscillator with energy gaps that increase between level, in constrast with the quantum harmonic oscillator
+    which has uniform energy gaps. Then, you consider only the two bottom energy levels as your TLS.
+    \item Ion traps: these are charged atoms (ions) that you hold in an electromagnetic trap. For specifically a Paul trap, we can
+    think of the atoms being arranged linearly in a chain. The other degrees of freedom make up the qubit.
+    One common approach is Ytterbium-131 with nuclear spin $+1/2$. The Cirac-Zoller gate, the first proposal for physical qubit gates,
+    coupled two spins by considering the shared phonon mode the atoms in the trap have. In practice, one can prepare states with a laser.
+    \item Rydberg atoms: what you do is prepare an array of atoms and put them in the Rydberg state. We can also dynamically move around qubits to make them interact with each other.
+    The Rydberg interaction has a very large interaction radius instead of the dipole-based interaction in a traditional spin setup. This is useful because
+    we can optically measure them (fire photons at them) without affecting other qubits.
+\end{itemize}
+
+\subsection{Quantum Control}
+We consider the problem of quantum control. We ask how we can control quantum systems with control fields from the outside.
+Suppose you have a two-level system with an external magnetic field $B_0$ in the $+z$ direction. Then the Hamiltonian is:
+$\mathcal{H} = \mathbf{\mu} \cdot \mathbf{B} = \gamma S_z B_0$ where $\gamma$ is the gyromagnetic ratio (a fixed constant)
+$S_z = Z/2$ where $Z$ is the phase-flip gate. We take units where $\hbar = 1$. Then we define $\omega_0 = \gamma B_0$ to write $\mathcal{H}_0 = \omega_0 S_z$, which we call the \textbf{Zeeman Hamiltonian},
+so the eigenvalues of the operator are $\pm \frac{\omega_0}{2}$; these are the definite energy levels. The energy ``gap'' is $\omega_0$
+Suppose you start in initial state
+\[ \ket{\psi(0)} = \ftwo \qty(\ket{\uparrow} + \ket{\downarrow}) \]
+then the final state, by Schrodinger, is:
+\[ \ket{\psi(t)} = \ftwo \qty(e^{\frac{i \omega_0 t}{2}} \ket{\uparrow} + e^{\frac{-i \omega_0 t}{2}} \ket{\downarrow}) \equiv \ftwo \qty(\ket{\uparrow} + e^{-i \omega_0 t} \qty(\ket{\downarrow})) \]
+If you think about this on the Bloch sphere, we start on the positive $+x$ axis and rotate by an angle $\omega_0 t$ on the equation. This phenomenon is termed \textbf{Larmor precession}.
+\begin{align*}
+    \mel{\psi(t)}{S_x}{\psi(t)} &= \frac{1}{2} \qty(e^{-i\omega_0 t/2} \bra{\uparrow} + e^{i\omega_0 t/2} \bra{\downarrow}) S_x \qty(e^{i\omega_0 t/2} \ket{\uparrow} + e^{-i\omega_0 t/2} \ket{\downarrow}) \\
+    &= \frac{1}{2} \qty(e^{-i\omega_0 t/2} \bra{\uparrow} + e^{i\omega_0 t/2} \bra{\downarrow}) \qty(e^{i\omega_0 t/2} \ket{\downarrow} + e^{-i\omega_0 t/2} \ket{\uparrow}) \\
+    &= \frac{1}{2} \qty(e^{-i\omega_0 t} + e^{i \omega_0 t}) = \cos(\omega_0 t)
+\end{align*}
+Now, how can we prepare an arbitrary state? Suppose we have the qubit initialized in an eigenstate. To make a superposition state, we
+apply some coherent radiation (a time-varying magnetic field) with amplitude $\Omega$ and frequency $\omega_0$. 
+We will take $\mathcal{H}_{control} = \Omega \cos(\omega_0 t) S_x$. Taking
+a magnetic field of 1 T, for electron spins, $\omega_0 \approx \textrm{GHz}$ so they are microwave qubits. For nuclear spins, $\omega_0 \approx \textrm{MHz}$ so they are radio-frequency qubits.
+Then, the total Hamiltonian is (redefining $\Omega$ to make the constants nicer)
+\[ \mathcal{H} = \omega_0 S_z + 2 \Omega \cos(\omega_0 t) S_x \]
+Let's start the system as $\ket{\psi(0)} = \ket{\uparrow}$. The Hamiltonian is time-dependent, so we cannot
+just use our exponential solution.
+\subsection{Interaction Picture}
+Let's write our Hamiltonian as $\mathcal{H} = \mathcal{H}_0 + V$.
+Now define $\ket{\psi_I} = U_0^{\dagger} \ket{\psi} = e^{i \mathcal{H}_0 t} \ket{\psi}$. Let's
+see what the Schrodinger equation LHS looks like:
+\begin{align*}
+    i \pdv{\ket{\psi_I}}{t} &= i \pdv{U_0^{\dagger}}{t} \ket{\psi} + i U_0^{\dagger} \pdv{\ket{\psi}}{t} \\
+    &= - \H_0 U_0^{\dagger} \ket{\psi} + U_0^{\dagger}\qty(\H_0 + V) U_0 U_0^{\dagger} \ket{\psi} \\
+    &= U_0^{\dagger} V U_0 U_0^{\dagger} \ket{\psi} \\
+    &= U_0^{\dagger} V U_0 \ket{\psi_I}
+\end{align*}
+So now this state satisfies the Schrodinger equation with Hamiltonian $V_I = U_0^{\dagger} V U_0$. Let's return
+to our initial setup. $\ket{\psi_I} = U_0^{\dagger} \ket{\uparrow} = \ket{\uparrow}$. Then the reduced Hamiltonian is
+\begin{align*}
+    V_I &= 2 \Omega \cos(\omega_0 t) U_0^{\dagger} S_x U_0 \\
+    &=  2 \Omega \cos(\omega_0 t) e^{i \omega_0 t S_z} S_x e^{-i\omega_0 t S_z} \\
+    &=  \Omega \cos(\omega_0 t) \qty(\cos(\omega_0 t/2) I + i \sin(\omega_0 t/2) \sigma_z) \sigma_x \qty(\cos(\omega_0 t/2) I - i \sin(\omega_0 t/2) \sigma_z) \\
+    &= \Omega \cos(\omega_0 t) \qty(\cos^2(\omega_0 t/2) \sigma_x + \sin^2(\omega_0 t/2) \sigma_z \sigma_x \sigma_z + i \sin(\omega_0 t/2) \cos(\omega_0 t/2) [\sigma_z, \sigma_x]) \\
+    &=  \Omega \cos(\omega_0 t)\qty(\cos^2(\omega_0 t/2) \sigma_x - \sin^2(\omega_0 t/2) \sigma_x - 2 \sigma_y \sin(\omega_0 t/2) \cos(\omega_0 t/2)) \\
+    &= \Omega \cos(\omega_0 t) \qty(\cos(\omega_0 t) \sigma_x - \sin(\omega_0 t) \sigma_y) \\
+    &= 2 \Omega S_x \cos^2(\omega_0 t) - 2 \Omega S_y \sin(\omega_0 t) \cos(\omega_0 t) \\
+    &= \Omega S_x (1 + \cos(2 \omega_0 t)) - \Omega S_y \sin(2 \omega_0 t)
+\end{align*}
+We're going to assume that the $2 \omega_0$ terms, which oscillate at twice the frequency of the gap,
+have little effect. This is called the \textbf{rotating wave approximation}. This valid under the condition
+that $\Omega \ll \omega_0$.
+Thus, we can simplify $V_I = \Omega S_x$. 
+\[ \ket{\psi_I(t)} = e^{-iV_I t} \ket{\psi_I(0)} \]
+Then one can write:
+\begin{align*}
+    \ket{\psi_I(t)} &= e^{-i\Omega t S_x} \ket{\uparrow} \\
+    &= \qty(\cos \frac{\Omega t}{2} I + i \sin \frac{\Omega t}{2} \sigma_x) \ket{\uparrow} \\
+    &= \cos \frac{\Omega t}{2} \ket{\uparrow} + i \sin \frac{\Omega t}{2} \ket{\downarrow}
+\end{align*}
+At $t = 0$, then we have state $\ket{\uparrow}$. At a later time, we get $\ftwo\qty(\ket{\uparrow} + i \ket{\downarrow})$.
+So we can make a state along the $y$ axis. In the lab frame $\ket{\psi}$, then you will see the Larmor precession at a very fast frequency
+along with this rotation.
+
+Consider the points along the curve; we term this precession a \textbf{Rabi oscillation}. To get to the $\ket{\downarrow}$ state, we must wait $t_{\pi} = \frac{2\pi}{\Omega}$.
+Applying a control field for $t_{\pi}$ called a \textbf{pi pulse}. To make an equal superposition, we must apply a \textbf{half-pi pulse}.
