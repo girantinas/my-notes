@@ -1,0 +1,46 @@
+% !TEX root = lectures.tex
+\section{Lecture 3}
+\subsection{Weak Law of Large Numbers}
+Last time we discussed the weak law of large numbers, which states that for the experiment
+of flipping $\infty$ coins with the $i$th coin flip given as $B_i = \mathbf{1}\{i\text{th flip is H}\}$, that for all $\epsilon > 0$,
+\[ \lim_n \P{|\frac{1}{n} \sum_{i = 1}^n B_i - \frac12 | > \epsilon} = 0 \]
+This means that looking at the sum of the first $n$ terms, if we take big enough $n$, the sum of intervals
+that are bad (bijecting real binary sequences with a sequence of heads and tails) takes up an arbitrarily small portion of the real line.
+
+\subsection{Strong Law of Large Numbers}
+Now let us formulate the SLLN. Consider the sequence of functions $b_1 = \mathbf{1}_{[1/2, 1)}$, $b_2 = \mathbf{1}_{[1/4, 1/2)} + \mathbf{1}_{[3/4, 1)}$, $\dots$
+such that for $x \in [0, 1]$ we have $x = 0.b_1(x) b_2(x) \dots$.
+\begin{definition}
+Call the set $N$ of normal numbers is
+\[ N = \{x \in [0, 1] : \lim_n \frac{1}{n} \sum_{i = 1}^n b_i(x) = \frac12\} \]
+\end{definition}
+The informal strong law is thus if $U$ is picked uniformly at random from the interval $[0, 1]$,
+$\Pr{U \in N} = 1$, i.e. $m(N) = 1$ for a Lebesgue measure $m$ (not defined yet). For sets that have Lebesgue measure
+$0$ or $1$, we can go for a more direct formulation.
+\begin{definition}
+    $A \subseteq [0, 1]$ is negligible if for all $\epsilon > 0$, we can find open intervals $O_i \subseteq \R$ for $i \in \N$ such that they
+    form an open cover of $A$ ($A \subseteq \bigcup_{i = 1}^{\infty} O_i$) with $\sum_{i = 1}^{\infty} \ell(O_i) < \epsilon$.
+\end{definition}
+The negligible sets will be those with $m(A) = 0$. We claim $\Q \cap [0, 1)$. Then taking an open interval around each rational $\frac{p}{q}$
+of 
+$\epsilon e^{-q}$ suffices. Since the rationals are countable, this makes a countable open cover. In fact, any countable set
+is negligible; you can just order them as $a_1, a_2, \dots$ and we can pick $\ell(O_i) = \epsilon/2^i$ to surround $a_i$.
+\begin{theorem}
+    $N^c$ is negligible.
+\end{theorem}
+We can also write, calling $\beta_k(x) = \frac{1}{k} \sum_{i = 1}^k b_i(k)$:
+\[ N = \bigcap_{n = 1}^{\infty} \bigcup_{j = 1}^{\infty} \bigcap_{j}^{\infty} \{ x \in [0, 1] : |\beta_k(x) - \frac{1}{2}| < \frac{1}{n} \}\]
+quantifiers can instead be replaced by union and interaction. $\bigcap$ is roughly for all, and $\bigcup$ is there exists.
+\begin{theorem}
+    A countable union of negligible sets is negligible.
+    \begin{proof}
+        Consider negligible sets $N_i$. We wish to cover $N = \bigcup_i N_i$.
+        This means we can choose covers for any $\epsilon$ we want, in particular,
+        \[ \left\{ O_{n, i} : i \in C_n, N_n \subseteq \ bigcup_{i = 1}^{\infty} O_{n, i}, \sum_{i = 1}^{\infty} \ell(O_{n, i}) < \frac{\epsilon}{2^n} \right\} \]
+        But then $N \subseteq \bigcup_n \bigcup_i O_{n, i}$. But also $\sum_{n} \sum_{i} \ell(O_{n, i}) < \epsilon$.
+    \end{proof}
+\end{theorem}
+But is $N$ negligible? But this would imply $N \cup N^c = [0, 1]$ is negligible. This seems
+not possble. How do we prove it? Consider a finite number of intervals $O_i = (a_i, b_i)$ of length $d_i = b_i - a_i$.
+If $d = \sum d_i < \epsilon$, then clearly it should not be possible to cover the entire interval. But $\Q$ is dense in $[0, 1)$,
+yet we could still cover $\Q \subseteq [0, 1)$. The difference is $[0, 1)$ is compact.

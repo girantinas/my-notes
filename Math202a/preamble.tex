@@ -1,0 +1,323 @@
+% !TEX root = lectures.tex
+\documentclass[dvipsnames]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{anyfontsize}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\usepackage{mathrsfs}
+\usepackage[utf8]{inputenc} 
+\usepackage{bbm}
+% \usepackage{wasysym}
+\usepackage{array}
+\usepackage{tabstackengine}
+\usepackage{float}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} % Algorithms
+
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{icomma}
+\usepackage[standard, thmmarks]{ntheorem}
+\usepackage[most, listings]{tcolorbox}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning, graphs}
+\usetikzlibrary{quantikz}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{caption}
+\usepackage{tikz-qtree}
+\usepackage{tikz-cd}
+\graphicspath{ {./images/} }
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{lipsum}
+\usepackage{epigraph}
+\usepackage{xpatch}
+
+\usepackage{listings}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{mathtools}
+
+\def\coursenumber{Math202A}
+\def\class{Intro to Topology and Analysis}
+\def\semester{Fall 2023}
+\def\name{Rohit Agarwal}
+\def\title{Notes}
+
+\textheight=9in
+\textwidth=6.5in
+\addtolength{\voffset}{-1in} 
+\oddsidemargin=0in
+\parindent=0pt
+\parskip=5pt
+\itemsep=-1pt
+\floatsep 9pt plus 2pt minus 3pt
+\intextsep 9pt plus 2pt minus 3pt
+\textfloatsep=9pt plus 2pt minus 3pt
+
+%\makeatletter
+%\def\section{\@startsection{section}{1}{\z@}{-3.0ex plus -.6ex minus -.2ex}{1.3ex plus .1ex}{\dunha}}
+%\def\subsection{\@startsection{subsection}{2}{\z@}{-1.6ex plus -.5ex minus -.1ex}{0.9ex plus .1ex}{\dunha}}
+%\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-1.0ex plus -.4ex minus -.1ex}{0.5ex plus .1ex}{\dunha}}
+%\makeatother
+
+% Page heading
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{30pt}
+\lhead{\coursenumber, \semester}
+\chead{\title}
+\rhead{\name}
+\lfoot{\class}
+\rfoot{\thepage}
+
+% Table of contents hyperlinks
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% New command to make matrices using the tabstackengine
+\stackMath
+\setstackEOL{;}
+\setstackTAB{,}
+\setstacktabbedgap{1ex}
+\setstackgap{L}{1.25\normalbaselineskip}
+\fixTABwidth{T}
+\let\nmatrix\bracketMatrixstack
+
+% Match default array spacing with \nmatrix
+\renewcommand{\arraystretch}{1.25}
+
+% Modify matrix environments to accept augments
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+    \hskip -\arraycolsep
+    \let\@ifnextchar\new@ifnextchar
+\array{#1}}
+\makeatother
+
+% Make an environment for theorems and definitions
+\theorembodyfont{\normalfont}
+\theoremstyle{break} 
+\renewtheorem{definition}{Definition}[section]
+\renewtheorem{theorem}{Theorem}[section]
+\renewtheorem*{theorem*}{Theorem}
+\renewtheorem{example}{Example}[section]
+\renewtheorem{proof}{Proof}[section]
+\newtheorem{algothm}{Algorithm}[section]
+\newtheorem{ptheorem}{PseudoTheorem}[section]
+\renewtheorem*{proof*}{Proof}
+\newtheorem{note}{Note}[section]
+\tcolorboxenvironment{definition}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=blue!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{theorem}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=orange!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{ptheorem}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=orange!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{theorem*}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=orange!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{algothm}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=purple!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{proof}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=orange!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{example}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=green!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+\tcolorboxenvironment{note}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=purple!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
+
+% Fix the mathcal alphabet
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+% Set default enumerate labels
+\setlist[enumerate, 1]{label*=\arabic*.}
+\setlist[enumerate, 2]{label=(\roman*)}
+
+
+%%% Linear Algebra
+% Operators
+% \DeclareMathOperator{\proj}{proj}  % Projection
+\DeclareMathOperator{\Span}{span}  % Vector/Matrix Span
+\DeclareMathOperator{\range}{range}  % Range (span of columns)
+\DeclareMathOperator{\Null}{null }  % Null space
+\DeclareMathOperator{\Cols}{C}  % Col space
+\DeclareMathOperator{\corr}{corr}  % correlation
+%\DeclareMathOperator{\det}{det}
+% Commands
+\newcommand{\inner}[1]{\left\langle #1 \right\rangle}  % Inner product
+\renewcommand{\va}[1]{\vec{\bm{#1}}}  % Vector with italic bold
+\newcommand{\mat}[1]{\left[ #1 \right]}  % Matrix variable
+\newcommand{\linearcombination}{a_1v_1 + a_2v_2 + \cdots + a_nv_n}
+\newcommand{\listofvectors}{v_1, v_2, \ldots, v_n}
+\newcommand{\listofscalars}{a_1, a_2, \ldots, a_n}
+\newcommand{\setofvectors}{\set{\listofvectors}}
+\newcommand{\listofnames}[2]{#1_1, #1_2, \ldots, #1_{#2}}
+\newcommand{\spanof}{\operatorname{span}}
+\newcommand{\Lin}[1]{\mathcal{L} \left( #1 \right)}
+\newcommand{\Polys}[2]{\mathcal{P}_{#2}(#1)}
+\newcommand{\PolysAll}[1]{\mathcal{P}(#1)}
+\newcommand{\Matof}[1]{\mathcal{M}(#1)}
+
+%%% Probability Theory
+% Operators
+\DeclareMathOperator{\iid}{\sim_{IID}}
+% Commands
+\newcommand{\Bern}[2]{#1 \sim \text{Bernoulli}\left( #2 \right)}
+\newcommand{\Bin}[3]{#1 \sim \text{Binomial}\left( #2, #3 \right)}
+\newcommand{\Geo}[2]{#1 \sim \text{Geometric}\left( #2 \right)}
+\newcommand{\Pois}[2]{#1 \sim \text{Poisson}\left( #2 \right)}
+\newcommand{\PoisX}[2]{\dfrac{{#1}^{#2}}{#2 !} e^{- {#1}}}
+\newcommand{\Uniform}[3]{#1 \sim \text{Uniform}\left( #2, #3 \right)}
+\newcommand{\Expo}[2]{#1 \sim \text{Exp}\left( #2 \right)}
+\newcommand{\Normal}[3]{#1 \sim \mathcal{N}\left( #2, #3 \right)}
+\newcommand{\StdNormal}[1]{#1 \sim \mathcal{N}\left( 0, 1 \right)}
+\newcommand{\PP}[1]{\mathrm{PP}\left( #1 \right)}
+\renewcommand{\Pr}[1]{\mathbb{P}\left[ #1 \right]}
+\renewcommand{\P}[1]{\text{P}\left( #1 \right)}
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Var}[1]{\text{Var}\left( #1 \right)}
+\newcommand{\Cov}[1]{\text{Cov}\left( #1 \right)}
+\renewcommand{\L}[1]{\mathbb{L}\left[ #1 \right]}
+
+%%% Miscellaneous
+% Operators
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\Q}{\mathbb{Q}}
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\C}{\mathbb{C}}
+\DeclareMathOperator{\F}{\mathbb{F}}
+\let\O\relax
+\let\H\relax
+\DeclareMathOperator{\O}{\mathcal{O}}
+\DeclareMathOperator{\H}{\mathcal{H}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+% Commands
+\newcommand{\set}[1]{{\left\{#1\right\}}} % braces for set notation
+\newcommand{\powerset}[1]{\mathscr{P}\left( #1 \right)} % Power Set
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}  % Floor
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}  % Ceiling
+\newcommand{\conj}[1]{\bar{#1}}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\black}{\color{black}}
+\newcommand{\ftwo}{\frac{1}{\sqrt{2}}}
+\newcommand{\Question}[1]{\color{black}\section{ #1 }\color{blue}}
+
+%%% Title Page
+\renewcommand\epigraphflush{flushright}
+\renewcommand\epigraphsize{\Large}
+%\setlength\epigraphwidth{0.6\textwidth}
+
+\definecolor{titlepagecolor}{cmyk}{1,.60,0,.40}
+
+\DeclareFixedFont{\titlefont}{T1}{ppl}{b}{it}{0.5in}
+\DeclareFixedFont{\subtitlefont}{T1}{ppl}{b}{it}{0.3in}
+
+
+% *** quiver ***
+% A package for drawing commutative diagrams exported from https://q.uiver.app.
+%
+% This package is currently a wrapper around the `tikz-cd` package, importing necessary TikZ
+% libraries, and defining a new TikZ style for curves of a fixed height.
+%
+% Version: 1.2.0
+% Authors:
+% - varkor (https://github.com/varkor)
+% - AndréC (https://tex.stackexchange.com/users/138900/andr%C3%A9c)
+\NeedsTeXFormat{LaTeX2e}
+% `calc` is necessary to draw curved arrows.
+\usetikzlibrary{calc}
+% `pathmorphing` is necessary to draw squiggly arrows.
+\usetikzlibrary{decorations.pathmorphing}
+
+% A TikZ style for curved arrows of a fixed height, due to AndréC.
+\tikzset{curve/.style={settings={#1},to path={(\tikztostart)
+    .. controls ($(\tikztostart)!\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
+    and ($(\tikztostart)!1-\pv{pos}!(\tikztotarget)!\pv{height}!270:(\tikztotarget)$)
+    .. (\tikztotarget)\tikztonodes}},
+    settings/.code={\tikzset{quiver/.cd,#1}
+        \def\pv##1{\pgfkeysvalueof{/tikz/quiver/##1}}},
+    quiver/.cd,pos/.initial=0.35,height/.initial=0}
+
+% TikZ arrowhead/tail styles.
+\tikzset{tail reversed/.code={\pgfsetarrowsstart{tikzcd to}}}
+\tikzset{2tail/.code={\pgfsetarrowsstart{Implies[reversed]}}}
+\tikzset{2tail reversed/.code={\pgfsetarrowsstart{Implies}}}
+% TikZ arrow styles.
+\tikzset{no body/.style={/tikz/dash pattern=on 0 off 1mm}}

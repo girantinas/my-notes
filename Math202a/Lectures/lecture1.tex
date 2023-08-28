@@ -1,0 +1,38 @@
+% !TEX root = lectures.tex
+\section{Lecture 1}
+The notion of measure is going to generalize the real line's notion of \textbf{distance}. Recall that $\mathbb{Q}$ can be
+constructed from the integers as follows, defining $\mathbb{N}_{+} = \{1, 2, 3, \dots\}$ and $\Z = \{ \dots, -2, -1, 0, 1, 2, \dots \}$
+and we can write $\Q = \{ \frac{m}{n} : m \in \Z, n \in \N_{+} \}$. Recall also that $\Q$ is a countable set.
+
+Recall that $\Q$ is a dense subset of the real line, which we will revisit. First, we define the notion of a \textbf{distance} (or \textbf{metric}) between two rational numbers, a function $d: \Q \times \Q \to [0, \infty)$:
+\[ d\qty(\frac{m_1}{n_1}, \frac{m_2}{n_2}) = \frac{|m_1 n_2 - n_1 m_2|}{n_1 n_2} \]
+the distance is also a rational number. However, not all Cauchy sequences in the rationals \textbf{converge} to a rational number, the metric space is not complete.
+\begin{definition}
+    A \textbf{Cauchy sequence} is a sequence $\{x_n\}$ such that for all $\epsilon > 0$, there exists a threshold $n_0 \in \N$ such that 
+    if we have $n, m \geq n_0$, $d(x_n, x_m) < \epsilon$.
+\end{definition}
+We can construct the reals by filling in absences in the rationals. To see these holes, we will represent real numbers with their decimal representation. Now, everyone has a unique representation, except, $0.999\dots = 1.000\dots$.
+There are only countably many ``awkward'' points here (terminating decimals are a subset of the rationals), so it's not a big issue. We
+will just ban the $9$s version, i.e. $1/2 = 0.5000$. If I select values for the decimal places at random, then with probability 0 I get a repeating decimal (rational number). This means
+the rationals are very slim among the reals.
+
+Let's take $\pi$ and write it as a Cauchy sequence of rationals $(3, 3.1, 3.14, 3.141, \dots)$. Since $\pi$ is not rational,
+we have that the Cauchy sequence doesn't converge to a rational number. This seems to be a way to construct real numbers; why don't we identify $\pi$ with this Cauchy sequence?
+But this isn't the only Cauchy sequence that converges to $\pi$. Also from infinite series we know that $\frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \dots$;
+multiplying by 4 and taking partial sums forms another Cauchy sequences. However, defining the relation between two convergent Cauchy sequences (in the real numbers) $x$ and $y$
+that $x \sim y$ if $x$ and $y$ have the same limit. One can check this is an equivalence relation. This implies:
+
+\begin{definition}
+    The set of real numbers, $\R$ is the collection of equivalence classes of Cauchy sequences of rationals where for two sequences $x, y$, $x \sim y$ if $d(x_n, y_n) \to 0$.
+\end{definition}
+Thus, $\R$ is the \textbf{completion} of the rational numbers $\Q$. Let's look at its properties
+\begin{enumerate}
+    \item The distance function is as follows. Take $\qty(x_n) \in X$, $\qty(y_n) \in Y$
+    \begin{align*}
+        d&: \R \times \R \to [0, \infty) \\
+        d(X, Y) &= \lim_n d(x_n, y_n)
+    \end{align*}
+    This is also the distance function for any completion of a metric space (where on the right, the distance function is inherited from the original space).
+    It turns out it doesn't matter what representation we use (we are modding out by everything in the equivalence classes).
+\end{enumerate}
+
