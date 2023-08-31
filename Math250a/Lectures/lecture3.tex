@@ -1,0 +1,77 @@
+% !TEX root = lectures.tex
+\section{Lecture 3}
+
+\subsection{Classification of Finitely-Generated Modules}
+Recall that for a PID $R$ and a finitely generated $R$-module $M$ we showed that $M/M_{\text{tors}} = F = R^n$ is
+a free module. Suppose we have the exact sequence:
+\[ \dots \to M \to_{\phi} N \to 0 \]
+this means $M \cong N \oplus \ker \phi$. We claim this is true if and only if
+there exists $N' \subseteq M$ such that $\phi\Big|_{N'}: N' \to N$ is an isomorphism.
+
+Note that if $M \cong N \oplus \ker \phi$, it's clear that there exists an isomorphism that identifies a part of $M$ and $N$. To show that $M \equiv N' \oplus \ker \phi$ we need to show $N' \cap \ker \phi = \{0\}$ and $N' + \ker \phi = M$.
+The first statement follows because $N' \cap \ker \phi = \ker \phi \Big|_{N'} = \{0\}$ since it's an isomorphism.
+Furthermore, for some $m \in M$, take $\sigma = \phi|_{N'}^{-1}$ (the \textbf{section} or right-inverse of $\phi$) and $\sigma \circ \phi(m) = m' \in N'$. Then $\phi(m' - m) = \phi(m) - \phi(m) = 0$.
+Thus, $m' - m \in \ker \phi$, so $m = m' - k$ and we are done.
+
+Going back to $M$, we can pick a basis to write $R^n = \bigoplus_{i = 1}^n Rf_i$
+\[ \phi: M \to R^n, f_i' \mapsto f_i\]
+$\phi(f_i') = f_i$, then $\bigoplus_{i = 1}^n Rf_i' \cong R^n$ because the $f_i'$ are linearly independent. Thus $M \cong M_{\text{tors}} \oplus R^n$.
+
+Now, assume $M$ is a finitely generated torsion module over $R$ PID. Recall we defined
+\[ M(p) = \{ m \in M \mid p^k m = 0 \text{ for some $k$} \} \]
+\begin{theorem}
+    We can write such a module as a direct sum.
+    \[ M = \bigoplus_{p \text{ prime in } R, (p) \supset \text{ann}_R (M)} M(p) \]
+    \begin{proof}
+        Look at $M(p) \cap \bigoplus_{(q) \neq (p)} M(q)$. If $m \in M(p) \cap \bigoplus_{(q) \neq (p)} M(q)$,
+        then $p^k m = 0$ and $m = \sum_{i = 1}^s m_i$ where $q_i^{k_i} m_i = 0$. Then $m$ is annihilated by $Q := \prod_{i = 1}^s q_i^{k_i}$.
+        Note that $Q \notin (p)$ because none of the $q_i \in (q_i)$. Thus $(p^k, Q) = (1)$. So we can write $1 = ap^k + bQ$ and $m = ap^k m + bQm = 0$.
+        Thus, the disjointness condition is met.
+
+        Note that $\text{ann}_R M = (a)$, since if we multiply two annihilators, then we get another annihilator (and thus end up with an ideal).
+        Furthermore, it's not just $0$, because there are the annihilators of the $f_i$, which we can multiply together to get an annihilator (an infinite counter-example is $M = \oplus_{i = 1}^{\infty} \Z/(2^i)$)
+        Let's factorize $a = \prod p_i^{k_i}$.
+
+        Now consider a small case of two ideals $M = M(p) \oplus M(q)$. Then $\text{ann}(M(p) \oplus M(q)) = p^k q^{\ell}$ for some $k, \ell$.
+        Note that $p^k M \subseteq M(q)$ and $q^{\ell} M \subseteq M(p)$. Also, we can write $1 = bp^k + c q^{\ell}$, meaning
+        $m = bp^k m + c q^{\ell} m \in M(q) \oplus M(p)$.
+        
+        To do it in general, write $a = p^k \cdot Q$ where $p$ and $Q$ are coprime. Then $1 = p^k b + Qc$ and $m = b p^k m + c Qm$.
+        Note $b p^k m \in M(Q)$ and $Qcm \in M(p)$, so $m \in M(Q) \oplus M(p)$. By induction on the number of prime factors of $a$, we get the claim.
+    \end{proof}
+\end{theorem}
+
+Finally, suppose $M$ is a module with $\ann M = (p^a)$. $M = \sum_{i = 1}^n R f_i$. This means there exist some $j$
+such that $p^a f_j = 0$ but e.g. $p^{a - 1} f_j \neq 0$. Call this $f_j$ $f_1$.
+
+Note that we cannot just always take a submodule
+and say it's a summand. For example, $\Z/4\Z f_1 \oplus \Z/2\Z f_2$ has a summand which is $\Z/2\Z$, but also $(2 f_1, f_2) \cong \Z/2\Z$ is is a submodule;
+one can show however that this one is not a summand.
+
+We will proceed by induction on the number of generators of $M$.
+Note $R/(p^a) \cong Rf_1$ by the annihilation properties.
+Let's rewrite $M = R/p^a + \sum_{i = 2}^{n} R f_i = R/p^a + \bigoplus_{i = 1}^m Rg_i $ by the inductive hypothesis.
+\[ R/p^a \subset M \to_{\phi} M/Rf_1 \cong \bigoplus_{i = 2}^n R g_i \]
+By the result at the beginning of lecture, we need that there exists $ \sigma$ such that $\phi \sigma = \text{id}_{M/Rf_1}$.
+
+Choose representatives $f_i \in M$ such that $g_i = \phi(f_i)$. To any choice of $f_i$, we can add any multiple of $f_1$, which
+would still be a representative. Note that two cyclic modules
+are isomorphic if they have the same annihilator (at least in a PID). Thus,
+$\ann g_i = \ann(b_i f_1 + f_i)$ if and only if $Rg_i \cong R(f_i + b_i f_1)$.
+Then the map $g_i \mapsto f_i + b_i f_1$ is exactly a right inverse of $\phi$. (Note that $g_i \mapsto f_i$ is not even
+a homomorphism). 
+
+If $R/(p^a)$ has an ideal $I$, then $I = (p^c) / (p^a)$. So all these annhililators will purely be powers of $p$.
+Suppose $\ann f_i = (p^{k_i})$ and $\ann g_i = (p^{\ell_i})$. Furthermore, since $\phi$ is a homomorphism, if $a \in \ann f_i$, then $a \in \ann g_i$. So $\ell_i \le k_i$.
+We want to choose $b_i$ such that $\ann (b_i f_1 + f_i) = \ann g_i = (p^{\ell_i})$.
+To do this:
+\begin{align*}
+    p^{\ell_i} (b_i f_1 + f_i) &= b_i p^{\ell_i} f_1 + p^{\ell_i} f_i
+\end{align*}
+But $\phi(p^{\ell_i} f_i) = p^{\ell_i} \phi(f_i) = p^{\ell_i} g_i = 0 \pmod{Rf_1}$,
+i.e. $p^{\ell_i} f_i \in R f_1$. Thus $p^{\ell_i} f_i = u p^{m_i} f_1$ for $u \in R$ coprime to $p$ where we claim $m_i \ge \ell_i$, so picking
+$b_i = p^{m_i - \ell_i}$ is sufficient (the above expression evaluates to multiple of $f_1$). 
+To see why this inequality is true, note an annihilator of $p^{\ell_i} f_i$ is $p^{k_i - \ell_i}$.
+Furthermore, the smallest annihilator of $p^{m_i} f_1$ is $k_1 - m_i$. Thus $k_i - \ell_i \ge k_1 - m_i $. Finally,
+$ m_i \ge k_1 - k_i + \ell_i$
+and by definition of the first one, we had $k_1 \ge k_i$. Thus, we have $m_i \ge \ell_i$.

@@ -1,0 +1,48 @@
+% !TEX root = lectures.tex
+\section{Lecture 4}
+\subsection{Showing $[0,1]$ is not negligible}
+Recall that last time we made an incorrect stacking argument (e.g. to cover an interval $I$ with a bunch of open intervals, even if we stack them together we shouldn't be allowed to go further than the length). However, this stacking argument is indeed correct for
+a finite set of intervals:
+\begin{theorem}
+    Let $\{O_a: a \in A\}$ be a finite collection of open intervals such that for some closed, bounded interval of the real line
+    $I$, we have $I \subseteq \cup_{a \in A} O_a$. Then $\sum_{a \in A} \ell(O_a) > \ell(I)$.
+    \begin{proof}
+        By translating and stretching, we can without loss of generality we can just try to cover the unit interval $[0, 1]$.
+        Let $n = |A|$. We will induct on $n$. \begin{itemize}
+            \item If there is only 1 interval $(\lambda, \mu)$, we just need $\lambda < 0$ and $ \mu > 1$. Clearly $\mu - \lambda > 1 - 0$, so the base case works.
+            \item Suppose the theorem is true for $|A| = n$. Suppose now
+            you have a collection of $n + 1$ intervals that cover $[0, 1]$. At least one of the intervals contain $1$, call it $O_a = (\lambda, \mu)$.
+            Clearly $\mu > 1$, but if $\lambda \leq 0$, then $\ell((\lambda, \mu)) > 1$ and so the sum of the lengths of the intervals already exceeds 1.
+            Now, if $0 < \lambda < 1$, then consider the interval $[0,1] \setminus (\lambda, \mu) = [0, \lambda]$. Clearly the rest of the intervals cover this new interval,
+            and there are $n$ of them. By the inductive hypothesis, this means $\sum_{b \in A \setminus \{a\}} |O_b| > \lambda$.
+            Adding in our interval, 
+            \[ \sum_{a \in A} |O_a| > \lambda + (\mu - \lambda) = \mu > 1 \]
+            showing our claim.
+        \end{itemize}
+    \end{proof}
+\end{theorem}
+Now we will prove that $[0,1]$ is not negligible, i.e. there exists no arbitrarily small open covers of $[0, 1]$. In fact, for any cover $O$,
+$\sum_{\alpha \in \mathcal{A}} |O_{\alpha}| > 1$. The reason for this is because by compactness, from $O$ we can extract a finite open subcover $\mathcal{B}$.
+Thus, $\sum_{\alpha \in \mathcal{A}} |O_{\alpha}| \geq \sum_{\alpha \in \mathcal{B}} |O_{\alpha}| > 1$.
+\begin{corollary}
+    \([0,1]\) is uncountable.
+\end{corollary}
+This follows pretty fast from the above fact and the fact that any countable set is negligible (by a tight covering argument, similar to the rationals).
+\subsection{Constructing the Lebesgue Measure}
+To construct a general object, we often attempt to pick something which fits a few small examples we have. For example, let's
+take a sequence $(a_n: n \in \N)$. To develop a general notion of convergence, we
+want to be able to assign an extended real number ($\R \cup \{\pm\infty\}$) to each sequence. One way to do that is with
+\[ \limsup_n a_n = \lim_{n \to \infty} \sup_{m \geq n} a_m = \inf_n \sup_{m \geq n} a_m \]
+Since the sequence on the right is decreasing and bounded (or goes to $\pm \infty$ if unbounded), the limit converges. We could also pick
+\[ \liminf_n a_n = \lim_{n \to \infty} \inf_{m \geq n} a_m = \sup_n \inf_{m \geq n} a_m\]
+If we want to define the notion of a limit, we could just say if these two agree, then $\lim_n a_n = \limsup_n a_n = \liminf_n a_n$
+and that the limit does not exist otherwise. This extends the theory for monotone sequences to general sequences. What if we want a limit of
+intervals? Suppose we have a series of sets $A_i \subseteq [0, 1]$, $i \in \N$, we can define
+and inclusive limit
+\[ \limsup_n A_n = \{x : x \in A_i \text{ infinitely often}\} = \bigcap_{n = 1}^{\infty} \bigcup_{m = n}^{\infty} A_m\]
+or a more restrictive limit
+\[ \liminf_n A_n = \{x: x \notin A_i \text{ for finitely many $i$}\} = \bigcup_{n = 1}^{\infty} \bigcap_{m = n}^{\infty} A_m \]
+Similarly, we can define $\lim_n A_n = \liminf_n A_n = \limsup_n A_n$ if they share the same value, otherwise it doesn't exist.
+However, if the difference between the two is negligible we still want to say the limit is well-defined. We probably want to do
+some more business with equivalence classes, e.g. define $A \sim B \iff A \Delta B$ is negligible. The latter definition fits a bit better with the
+theory presented in this class.
