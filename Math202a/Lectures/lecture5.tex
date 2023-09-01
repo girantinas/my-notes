@@ -1,0 +1,60 @@
+% !TEX root = lectures.tex
+\newcommand*{\mca}{\mathcal{A}}
+
+\section{Lecture 5}
+In Billingsley, he proves for disjoint sets, if $[0, 1) = \bigcup_{i = 1}^{\infty} [a_i, b_i)$,
+then $\sum_{i = 1}^{\infty} d_i = 1$ where $d_i = b_i - a_i$. This result will be useful for us in the future.
+\subsection{Measure}
+For an open set (in universe $[0, 1]$) $O = \bigcup O_i$ where the $O_i$ are disjoint, define the measure $\ell(O) = \sum_{i = 1}^{\infty} \ell(O_i)$. If the universal
+set is $[0, 1]$, e.g. $(a, 1]$ is an open subset (we can only make small movemenets to the left).
+For a closed set $C$, $\ell(C) = 1 - \ell([0, 1]\setminus C)$. We want to now define the measure of a general set
+$A \subseteq [0, 1]$. For $A \subseteq B$, we want $\lambda(A) \leq \lambda(O)$. We define the outer measure 
+\[ \lambda^*(A)  = \inf_{O \text{ open}: A \subseteq O} \lambda(O)\]
+similarly, inner measure is:
+\[ \lambda_*(A) = 1 - \lambda^*(A^c) \]
+if we switched the open to a closed set, then $\Q \cap [0, 1]$ has outer measure $1$ when it really ought to be 0.
+We can equivalently write:
+\[ \lambda_*(A) = \sup_{C \text{ closed}: C \subseteq A} \lambda(C) \]
+Clearly $\lambda_*(A) \leq \lambda^*(A)$. For a ``good'' set $A$, these should be equal.
+\begin{definition}
+    Let $A \subseteq [0, 1]$. We say that $A$ is \textbf{Lebesgue-measurable} and write $A \in \mathcal{L}$ if $\lambda_*(A) = \lambda^*(A)$.
+\end{definition}
+\begin{definition}
+    Lebesgue measure is the function $\lambda: \mathcal{L} \to [0, 1]$ where $\lambda(A) = \lambda_*(A)$.
+\end{definition}
+\begin{definition}
+    Let $X$ be a set. An algebra $\mca$ is a collection of subsets of $X$.
+    \begin{enumerate}
+        \item $X \in \mathcal{A}$
+        \item if $A \in \mathcal{A}$, then $A \setminus X \in \mathcal{A}$
+        \item if $A_1, \dots, A_n \in \mca$ for finite $n$, then $\bigcup_{i = 1}^n A_i \in \mca$.
+    \end{enumerate}
+\end{definition}
+Note that $\emptyset \in \mca$.
+\begin{definition}
+    A $\sigma$-algebra $\mca$ is an algebra which is closed under countable union, so if we have for $i \in \N$ that $A_i \in \mca$, then
+    $\bigcup_{i = 1}^{\infty} A_i \in \mca$.
+\end{definition}
+By DeMorgan's laws, we could replace the unions with intersections. In fact, $\mathcal{L}$ is a sigma algebra of $[0, 1]$ (we will show this).
+\begin{definition}
+A set $X$ equipped with a $\sigma$-algebra $\mca$ is called a \textbf{measurable space}. The sets in $\mca$ are called \textbf{measurable}.
+A \textbf{measure} $\mu: \mca \to [0, \infty]$ following the following two properties:
+\begin{enumerate}
+    \item $\mu(\emptyset) = 0$
+    \item If for $i \in \N$ we have $A_i \in \mca$ and the $A_i$ are pairwise disjoint, then $\mu\qty(\bigcup_{i = 1}^{\infty} A_i) = \sum_{i = 1}^{\infty} \mu (A_i)$.
+\end{enumerate}
+\end{definition}
+\begin{definition}
+    A set $X$ with a $\sigma$-algebra $\mca$ and a measure $\mu$ is called a \textbf{measure space} (or probability space).
+\end{definition}
+To introduce some more vocabulary, if $\mu(X) < \infty$, then it's called a finite measure space. If there exists a countable
+collection of sets $A_i$ for $i \in \N$ with $\mu(A_i) < \infty$ and $X = \bigcup_{i = 1}^{\infty} A_i$, then $\mu$ is called a $\sigma$-finite measure.
+\begin{theorem}
+   $([0,1], \mathcal{L}, \lambda)$ is a measure space which contains all open intervals in $[0, 1]$. Furthermore, $\lambda$ is the unique measure which extends $\ell$ for open intervals.
+\end{theorem}
+Here's a proof sketch of this theorem. Call $O = (a, b)$. Then $\lambda_*((a, b)) = \lambda^*((a, b)) = b - a$ by a mix of definition and simple sequence arguments. Closure under complement
+just follows by definition. Finally, to prove the countable union property. Given a sequence of sets, we can ``disjointify'' them
+by working greedily, (the $n$th set is the leftover from the original $n$th set that hasn't been claimed yet). To cover $A_i$, we can cover it with an open set that can be
+arbitrarily small, e.g. $\lambda(A_i) \leq \lambda^*(O_i) + \frac{\epsilon}{2^i}$. Using these gives us the correct upper bound on $\lambda$.
+
+Take finite union of closed sets, we can apprxoimate the union up to arbitrary approximation.
