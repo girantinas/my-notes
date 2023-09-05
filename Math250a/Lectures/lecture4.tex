@@ -1,0 +1,114 @@
+% !TEX root = lectures.tex
+\section{Lecture 4}
+\subsection{Uniqueness of the Structure Theorem}
+Let's recap last time. Suppose $M$ is a torsion finitely-generated module over a PID $R$; we wish to show
+$M \cong \bigoplus_a R/(a)$ for some $a$.
+We saw last time that
+\[ M \cong \bigoplus_{p \text{prime}} M(p) \]
+where $M(p) = \{ m \in M \mid p^n m = 0 \text{some } n \}$. Thus, without loss of generality, we can just take
+$M = M(p)$ and decompose it. We will show that we can write
+\[ M = \bigoplus_{i = 1}^m R/(p^{a_i}) \]
+Suppose we have 2 generators and $\ann_R M = (p^a)$. That means there exists some element
+$g_0$ such that $\ann_R g_0 = p^a$. Without loss of generality,
+this is a generator; if both generators had a smaller annihilator, then so would $g_0$.
+We wish to look at $Rg_0 \subset M \to R/(p^b \overline{g}_1)$. Note that
+for the other generator, $\ann_R \overline{g_1} = (p^b)$ for some $b \le a$.
+Note that if there exists $h$ wherein $\phi(h) = g_1$ (under the canonical homomorphism)
+such that $p^b h = 0$, then $Rg_0$ and $Rh$ form that direct sum. Currently, we only have $\phi(p^b g_1) = 0$,
+so $u p^d g_0 = p^b g_1$ for some $d$. We claim that $d \ge b$, if not then
+$g_1$ is a multiple of $g_0$, which would contradict linear independence. This means that $p^b (u p^{d - b}) = p^b g_1$. Surbtracting these two, we define
+$h :=  g_1 - u p^{d - b} g_0$ and we want $p^b h = 0$. It's clear that $\phi(h) = g_1$. Now, let's induct on $n$.
+\begin{proof}
+    Let $p^a = \ann_R M$ and let $g_0$ be a generator such that $p^a = \ann_R g_0$. Then
+    consider the exact sequence.
+    \[ 0 \to Rg_0 \to M \xrightarrow{\phi} \overline{M} \to 0 \]
+    Then similarly under $\phi$, $h_i := g_i - p^{d_i} u_i g_0 \mapsto \overline{g_n}$. In addition, by the same argument,
+    there exists $b_i \le d_i$ such that $p^{b_i}(h_i)$. Our claim is then the splitting is
+    \[ M = Rg_0 \oplus \bigoplus_{i = 1}^{n - 1} R(g_i - p^{d_i} u_i g_0) \] 
+    First we shall show that
+    \[ M = Rg_0 + \sum_{i = 1}^{n - 1} R(g_i - p^{d_i} u_i g_0)\]
+    This is true just because 
+    Then, we want to show that
+    \[ \bigoplus_{i = 1}^{n - 1} R(g_i - p^{d_i} u_i g_0) \cong \overline{M} \]
+    We claim that $\phi$ is a valid map. Clearly it's surjective since we can produce the $\overline{g}_i$'s.
+    It's also an injection because we preserve orders, so the kernel can only be trivial.
+    Finally, we show that 
+    \[ Rg_0 \cup \bigoplus_{i = 1}^{n - 1} R(g_i - p^{d_i} u_i g_0) \]
+    But if this weren't the case, then $\phi$ has a nontrivial kernel (the elements of $Rg_0$ is the kernel)
+\end{proof}
+We could also carry out the proof with the splitting lemma.
+\begin{theorem}
+    Suppose we have exact sequence $M \xrightarrow{\phi} M' \to 0$
+    So having a submodule $M'' \subset M$, which is isomorphic to $M'$, then
+    the inverse of the isomorphism is $\sigma$ a splitting. So both of these conditions are equivalent.
+\end{theorem}
+We can refine this result further. We propose if $(q_1, q_2) = (1)$, then $R/q_1 \oplus R/q_2 \cong R/q_1 q_2$.
+\begin{proof}
+    Two generators we could pick are $(1, 0)$ and $(0, 1)$. We claim that $(1, 1)$ generates $M$.
+    Since 
+    \begin{align*}
+        1 &= r_1 q_1 + r_2 q_2 \\
+        (1, 1) &= (r_1 q_1 + r_2 q_2)(1, 1) \\
+        (1, 1) &= r_1 q_1 (0, 1) + r_2 q_2 (1, 0)
+    \end{align*}
+    Furthermore, by the above, $r_1 q_1(1, 1) = r_1^2 q_1^2 (0, 1)$.
+    But $r_1 q_1 (0, 1) = (0, 1)$, so we can make it; we can make $(1, 0)$ by symmetry.
+    We can see that we can generate any element.
+    If the annihilator of $(1, 1) = (a)$,
+    then $a \mid q_1 q_2$. Furthermore $a$ annihilates each one separately, so $q_1 \mid a$ and $q_2 \mid a$.
+    Thus we must have $a = u q_1 q_2$ for some unit $u$, we know that $R/(uq_1q_2) \cong R/(q_1 q_2)$, so we're done.
+\end{proof}
+Now for a torsion module $M$, we can decompose it into
+\[ M = M(p_1) \oplus \dots \oplus M(p_k) \]
+where:
+\[\begin{array}{c c c c}
+    M(p_1) &= R/p_1^{a_{11}} &\oplus R/p_1^{a_{12}} &\oplus \dots \\
+    \vdots & \vdots & \vdots & \dots \\
+    M(p_k) &= R/p_k^{a_{k1}} &\oplus R/p_k^{a_{k2}} &\oplus \dots \\
+\end{array}\]
+where $p_i^{a_{ij}} \mid p_i^{a_{ik}}$ for $j \le k$.
+We can instead sum the columns now
+\[ M \cong R/p_1^{a_{11}}\dots p_{k}^{a_{k1}} \oplus R/p_1^{a_{12}}\dots p_{k}^{a_{k2}} \oplus \dots \]
+The torsion free part is free, so we can just use $R/(0)$ for those (if you like $0$ to be prime). 
+\begin{theorem}
+    If we order the denominators in increasing order 
+    \begin{align*}
+        M \cong M/q_1 \oplus R/q_2 \oplus \dots
+    \end{align*}
+    with $q_1 \mid q_2 \mid \dots$, this decomposition is unique.
+\end{theorem}
+For $M/p_1 M$ for some prime $p$, we know it's isomorphic to a vector space $R/p^{n_1}$
+with dimension $n_1$. But under the theorem, then:
+\[ M/p_1 M = R/(q_1, p_1) \oplus R/(q_2, p_1) \oplus \dots \]
+When $(q_i, p_1) = (1)$, we get the $0$ module, otherwise we get a non-trivial module. Thus,
+$n_1$ is just the number of $q_i$ divisible by $p_1$. This means noting that $p_1 R/q_i \cong R/(q_i/p_1)$.
+\[ p_1 M = \bigoplus_{p_1 \mid q_i} p_1 R/q_i \]
+we make inductive progress because the sum of the powers of the prime factorizations of $q$ goes down.
+Thus, the number of $q$'s divisible by a certain prime is unique (due to the rank of the vector space).
+
+\subsection{Applications to Linear Algebra}
+Suppose we have a linear map $A: V \to V$ which is an endomorphism on finite-dimensional vector space $V$ over field $k$.
+Now, defining $R = k[x]$, we can define an $R$-module structure on $V$
+by extending with $x \cdot v = Av$. This is a principal ideal domain,
+(it's Euclidean by polynomial division). In this ring, prime elements are just irreducible polynomials.
+By the structure theorem
+\[ V \cong \bigoplus_{f_i \text{irreducible}} \frac{k[x]}{f_i(x)}^{a_i} \]
+Let's analyze the factor module
+$k[x]/f(x)$ where $f = x^d + a_1 x^{d - 1} + \dots + a_d$ has degree $d$. Then a basis for this module is $1, x, x^2, \dots, x^{d - 1}$.
+What does the matrix look like when using this basis?
+\[ \tilde{A} = \begin{pmatrix}
+    0 & 0 & \dots & -a_d\\
+    1 & 0 & \dots & -a_{d - 1} \\
+    0 & 1 & \dots & -a_{d - 2} \\
+    \vdots & \vdots &\ddots & \vdots \\
+    0 & \dots & \dots & -a_1
+\end{pmatrix} \]
+Now suppose $V \cong k[x]/f^2$. Then we can take a basis that looks like $1, x, \dots, x^{d - 1}, f, xf, \dots, x^{d - 1}f$.
+Now what does the matrix look like?
+\[ \tilde{B} = \begin{pmatrix}
+    \tilde{A} & \mathbf{0} \\
+    \mathbf{0'} & \tilde{A}
+\end{pmatrix}
+\]
+where the $\mathbf{0'}$ has a $1$ in the top right.
+Note that $\det(A - tI_d)$ is a polynomial in $t$ which annihilates this whole thing.
