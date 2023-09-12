@@ -112,15 +112,16 @@
 \theorembodyfont{\normalfont}
 \theoremstyle{break} 
 \renewtheorem{definition}{Definition}[section]
-\renewtheorem{theorem}{Theorem}[section]
+\renewtheorem{theorem}[definition]{Theorem}
 \renewtheorem*{theorem*}{Theorem}
-\renewtheorem{example}{Example}[section]
-\renewtheorem{proof}{Proof}[section]
-\renewtheorem{corollary}{Corollary}[section]
-\newtheorem{algothm}{Algorithm}[section]
-\newtheorem{ptheorem}{PseudoTheorem}[section]
+\renewtheorem{example}[definition]{Example}
+\renewtheorem{proof}[definition]{Proof}
+\renewtheorem{corollary}[definition]{Corollary}
+\renewtheorem{lemma}[definition]{Lemma}
+\newtheorem{algothm}[definition]{Algorithm}
+\newtheorem{ptheorem}[definition]{PseudoTheorem}
 \renewtheorem*{proof*}{Proof}
-\newtheorem{note}{Note}[section]
+\newtheorem{note}[definition]{Note}
 \tcolorboxenvironment{definition}{
     enhanced, 
     boxrule=0pt, 
@@ -201,6 +202,16 @@
     before skip=10pt, 
     after skip=10pt
 }
+\tcolorboxenvironment{lemma}{
+    enhanced, 
+    boxrule=0pt, 
+    frame hidden, 
+    breakable, 
+    sharp corners, 
+    colback=yellow!10, 
+    before skip=10pt, 
+    after skip=10pt
+}
 
 % Fix the mathcal alphabet
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
@@ -254,6 +265,9 @@
 \newcommand{\Var}[1]{\text{Var}\left( #1 \right)}
 \newcommand{\Cov}[1]{\text{Cov}\left( #1 \right)}
 \renewcommand{\L}[1]{\mathbb{L}\left[ #1 \right]}
+\newcommand*{\mca}{\mathcal{A}}
+\newcommand*{\mcc}{\mathcal{C}}
+\newcommand*{\sa}{$\sigma$-algebra}
 
 %%% Miscellaneous
 % Operators

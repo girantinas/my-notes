@@ -1,0 +1,130 @@
+% !TEX root = lectures.tex
+\section{Lecture 5}
+\subsection{Modules over Arbitrary Rings}
+For a ring $R$, a left-module is an abelian group $M$ with a pairing $R \times M \to M$
+which we will apply as multiplication.
+This action is associative and distributive, as usual.
+\begin{theorem}
+    If $0 \to M' \to M \xra{b} M'' \to 0$ is a short exact sequence and a map from a free module $c: F \to M''$,
+    then there exists a map $d : F \to M$ that makes the diagram commute.
+    \begin{proof}
+        Write $F \cong \bigoplus_i Re_i$. Then, $c(e_i) = m_i$ for some $m_i$.
+        Since the map $b$ is onto, there exists $n_i$ such that $b(n_i) = m_i$. Thus,
+        define $d$ as the map sending $e_i \to n_i$ and extending by linearity.
+    \end{proof}
+\end{theorem}
+As a special case, if $0 \to M' \to M \xra{b} F \to 0$ is exact, then we can take $c = \text{id}_F$,
+so there exists $d: F \to M$ where the composition of $b$ and $d$ yields identity; this is a section.
+So $M \cong F \oplus M'$.
+
+\begin{definition}
+    $P$ is projective if given $b: M \mono M''$
+    and a map $c: P \to M''$,
+    there exists $d: P \to M$ such that $bd = c$.
+\end{definition}
+
+\begin{example}
+    Consider the following polynomial ring:
+    \[ R = \frac{k[x_1, x_2, x_3, y_1, y_2, y_2]}{(\sum_{(y_1, y_2, y_3)} x_i y_i = 1)} \]
+    gives us exact sequence $0 \to R \to R^3 \to P \to 0$.
+\end{example}
+
+The nice thing about looking at things categorically is that we can turn around the arrows involved.
+    
+If $R$ is an \textbf{injective} $R$-module when considering $0 \to E \to M \to M'' \to 0$,
+the property from before holds with all the arrows reversed.
+
+For example we showed that for a PID $R$,
+if $M$ is a torsion module and $p \in R$ is a prime
+such that $p^a M = 0$, which is equivalent to $M$ is an $R/p^a$-module.
+We showed that then, $R' := R/p^a$ is a summand of $M$.
+
+\subsection{Groups}
+\begin{definition}
+    A \textbf{group} is a set with one operation $G \times G \to G: (a, b) \mapsto b$.
+    This operation is associative, has a unit, and has inverses.
+\end{definition}
+There's a school of thought that thinks this definition is not very good. How do they define a group?
+\begin{definition}
+    A \textbf{group} is a set of permutations (bijections) of a given set $S$.
+    This set should be closed under composition and inverses.
+\end{definition}
+To see that these notions are equivalent, we can take $S = G$; then group multiplication is a group
+action of $G$ on itself.
+Since these actions have inverses (multiplication by $g^{-1}$),
+all of them are permutations.
+
+Every permutation can be written as a product of unique disjoint cycles (up to order of factors).
+To see this, consider the following greedy algorithm:
+\begin{enumerate}
+    \item Take some element $a \in S$. See where it maps to in finite compositions of the permutation.
+    \item Whatever it doesn't ever lead to, create a new cycle starting with it.
+    \item Repeat this until you run out of elements.
+\end{enumerate}
+We will denote a cycle as $[a_1, \dots, a_r]$.
+\begin{definition}
+    A $G$-set $S$ is a set with action $A: G \times S \to S$ (a homomorphism
+    from $G \to \text{Perm}(S)$ where $(gh)(s) = g(h(s))$), where $(g, s) \to g(s)$ where the submap $s \to g(s) $ is a permutation.
+\end{definition}
+\begin{definition}
+    The action of $G$ on its $G$-set is \textbf{transitive} (or the set itself) if for any $s \in S$,
+    we have $Gs = S$.
+\end{definition}
+Not all actions are transitive. For example, take $G = \Z/2$ and act on the set $\{1, 2, 3\}$,
+which we denote as $\Z/2 \hookrightarrow \{1, 2, 3\}$. Consider the action sending $0 \to \text{id}$
+and $1 \to [1, 2]$.
+\begin{theorem}
+    Every $G$-set is the disjoint union of transitive $G$-sets.
+\end{theorem}
+To see this, just decompose $S$ into its orbits, for example, the orbit of $1$ and $2$ are $\{1, 2\}$
+and the orbit of $3$ is $\{3\}$.
+\begin{definition}
+    Consider $S$ is a $G$-set and $s \in S$. Then the \textbf{orbit} of $s$ is $Gs = \{ gs \mid g \in G \}$.
+\end{definition}
+Consider $G$ acting on $S$ transitively. What elements of $G$
+have an element $s \in S$ as a fixed point? 
+\begin{definition}
+    The \textbf{Stabilizer} of an element $s$ as
+    \[ \text{Stab}_G(s) = G_s = \{ g \in G \mid gs = s \} \]
+    This is a subgroup of $G$.
+\end{definition}
+It turns out, once you figure out what the stabilizer is for one element for a transitive
+action, you have uniquely determined the action.
+\begin{definition}
+    A \textbf{subgroup} $H \le G$ for group $G$ is a subset of $G$ which is itself a group.
+    For strict containment, we have $H < G$.
+\end{definition}
+\begin{definition}
+    A coset of $H \leq G$ is a $gH \subseteq G$, e.g. $gH = \{gh \mid h \in H\}$.
+    The set of cosets is denoted as $G/H$.
+\end{definition}
+Two cosets $gH$ and $kH$ for $g, k \in G$ are either equal or disjoint.
+If $gH \cap kH \neq \emptyset$, then for $h, h' \in H$
+\begin{align*}
+    gh &= kh' \\
+    ghH &= kh' H \\
+    gH &= kH
+\end{align*}
+As a corollary, we get that
+\begin{theorem}
+    If for finite $G$, $H \le G$, then $|H| \mid |G|$. 
+    \begin{proof}
+    $G = \bigcup_{g \in G} gH$, some set of which are disjoint,
+    and all of the cosets are the same size.
+    \end{proof}
+\end{theorem}
+Finally, it turns out we can identify these two things.
+\begin{theorem}
+The set of cosets of $H \le G$ is a $G$-set with action $g(g'H) = (gg')H$.
+If $G \hookrightarrow S$ is transitive and $G_s = H$,
+then there is a bijection from $S$ to the set of cosets of $H$ which preserves
+the action of $G$.
+\begin{proof}
+    Note that $\text{Stab}_G H \in G/H$ is exactly $H$.
+    $(g, s) \to gH$ is clearly a surjection, because the action is transitive.
+    Furthermore, $gs = g's$, then $g'^{-1}g s = s$, so $g'^{-1} g H = H$,
+    meaning that $gH = g' H$, so we get the same coset. So the map is an injection too.
+    We can also multiply by arbitrary group elements and get the exact same structure, proving the theorem.
+\end{proof}
+\end{theorem}
+
