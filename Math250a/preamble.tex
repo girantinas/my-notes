@@ -112,14 +112,14 @@
 \theorembodyfont{\normalfont}
 \theoremstyle{break} 
 \renewtheorem{definition}{Definition}[section]
-\renewtheorem{theorem}{Theorem}[section]
+\renewtheorem{theorem}[definition]{Theorem}
 \renewtheorem*{theorem*}{Theorem}
-\renewtheorem{example}{Example}[section]
-\renewtheorem{proof}{Proof}[section]
-\newtheorem{algothm}{Algorithm}[section]
-\newtheorem{ptheorem}{PseudoTheorem}[section]
+\renewtheorem{example}[definition]{Example}
+\renewtheorem*{proof}{Proof}
+\newtheorem{algothm}[definition]{Algorithm}
+\newtheorem{ptheorem}[definition]{PseudoTheorem}
 \renewtheorem*{proof*}{Proof}
-\newtheorem{note}{Note}[section]
+\newtheorem{note}[definition]{Note}
 \tcolorboxenvironment{definition}{
     enhanced, 
     boxrule=0pt, 
@@ -326,3 +326,4 @@
 \DeclareMathOperator{\ann}{ann}
 \newcommand{\xra}{\xrightarrow}
 \newcommand{\mono}{\twoheadrightarrow}
+\newcommand{\vp}{\varphi}

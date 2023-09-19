@@ -1,0 +1,87 @@
+% !TEX root = lectures.tex
+\section{Lecture 7}
+Recall that in the past we proved the following facts.
+\begin{enumerate}
+\item If $H \le G$ and $K \le N_{G} H$ then $H \triangleleft KH \le G$.
+In addition, $KH/H \cong K/(K \cap H)$. The isomorphism is taking an element from $K$ and mapping it to $k\cdot 1 \pmod{H}$.
+\item If $H \le G$ then $G$ acts on the set of cosets of $H$, $G/H$ (who divide up the space).
+The disjoint union $\bigcup_g gH = G$ and $|G| = |H| \cdot \text{\# of cosets of $H$}$.
+Then $\text{Stab}_G(gH) = gHg^{-1}$.
+\item Every $G$-set is a disjoint union of transitive $G$-sets. Each transitive $G$-set is isomorphic to $G/H$ where
+$H$ is the stabilizer of some element in each transitive class.
+\item A Sylow $p$-subgroup is a subgroup of order a power of $p$ where the power of $p$ is maximal.
+\item Recall $GL_n(\F_p)$ is the general linear group (group of invertible matrices) with elements in $\F_p$ for $p$ prime.
+Every finite group can be embedded in this group, i.e. there exist a homomorphism from $G \to GL_{|G|}(\F_p)$.
+To see this, take $\F_p[G] = \bigoplus_{g \in G} \F_p g$.
+This is a $G$ where multiplication by the element $g$ just acts on each component separately; this is an action on $g$.
+But, this is also representable by an invertible matrix (it's a linear transformation), so $G \subset GL(\F_p[G]) \cong GL_n(\F_p)$ (as vector spaces).
+\item Recall the unipotent subgroup of $GL_n(\F)$, as
+\[ U = \left\{ \begin{pmatrix} 1 & * & \dots & * \\
+0 & 1& \dots & * \\
+\vdots & \vdots & \vdots & \vdots \\
+0 & 0 & \dots & 1 \end{pmatrix} \right\} \]
+We showed last time through direct computation of the orders that $\F_p$ is a Sylow $p$-subgroup.
+\item The action of a a group on a set $S$ has orbits which sum to the set. But each orbit also divides the size of the group.
+\end{enumerate}
+We will use this to prove Sylow's theorems.
+\begin{lemma}
+    If $H < G$ and $G$ has a Sylow $p$-subgroup then so does $H$.
+    \begin{proof}
+        Let $P$ be a Sylow $p$-subgroup of $G$. Note that $p \not \mid G/P$. Then $\text{Stab}_G(g P) = gPg^{-1}$.
+        Now let $H$ act on the set of cosets of $P$ in $G$. Some coset $gP$ has an $H$-orbit
+        that has order coprime to $p$, because the number of cosets has no factors of $p$. But then $\text{Stab}_H(gP) = H \cap gPg^{-1}$
+        which means $|H(gP)| = |H|/|H \cap gPg^{-1}|$, which must only have a factor of $p$. So the $H \cap gPg^{-1}$ is a Sylow $p$-subgroup of $H$.
+    \end{proof}
+\end{lemma}
+
+\begin{theorem}
+Every $p$-subgroup of a finite group $G$ is contained in a Sylow $p$-subgroup.
+\begin{proof}
+    Let $H \le G$ be a $p$-subgroup and $P \le G$ is a Sylow-$p$ subgroup.
+    Then $[G: P]$ is coprime to $p$. But then consider $H$ acting on $G/P$ by conjugation.
+    Since $H$ is a $p$-group, every orbit has size $p^m$ for $m \ge 0$. But $|G/P|$
+    is coprime to $p$, so there must exist an orbit of size $p^0$ with element $gP$. So $H \subset \text{Stab}_H (gP) = gPg^{-1}$.
+    But this is also a Sylow $p$-subgroup, since conjugacy does not change the number of elements.
+\end{proof}
+\end{theorem}
+
+As a corollary, we immediately get that any two Sylow $p$-subgroups are conjugate. This is the second of Sylow's theorems:
+\begin{theorem}
+    Let $G$ be a finite group.
+    \begin{enumerate}
+        \item For all prime $p$ there exists $P < G$ which is a Sylow $p$-subgroup.
+        \item Any two Sylow $p$-subgroups are conjugate.
+        \item The number of Sylow $p$-subgroups is congruent to $1$ mod $p$.
+    \end{enumerate}
+\end{theorem}
+
+Let's prove 3. We know $G$ acts transitively on 
+the set of Sylow $p$-subgroups by conjugation (call this set $\mathcal{P}$).
+This means the number of such subgroups is 
+taking one of the subgroups $P$, $|G|/|\text{Stab}_G P| = |G|/|N_G(P)|$.
+But $P < N_G(P)$, which means that the 
+number of such subgroups is coprime with $p$. Imagine acting $P$
+on $\mathcal{P}$. Clearly $P^{-1} P P = P$, so 
+this orbit has size $1$. Do any other orbits have size $1$?
+This would mean $P^{-1} P' P = P'$ for $P' \neq P$ meaning that $P \le N_G(P')$. 
+By our previous theorem, this would mean $P P'$ is a
+group, but also a $p$-subgroup with order 
+strictly larger than $P$, which is a contradiction.
+But this means that the size of $\mathcal{P}$ must be $1 + \text{positive power of } p \equiv 1 \pmod{p}$.
+
+\subsection{Jordan-Holder Theorem}
+\begin{theorem}
+    If $G = H_0 \triangleright H_1 \triangleright H_2 \dots \triangleright H_n \triangleright 1$
+    and $G = H'_0 \triangleright H_1' \triangleright H_2' \dots \triangleright H_m \triangleright 1$
+    are both maximal chains of normal subgroups (there exist no refinements, e.g. each quotient $H_i/H_{i + 1}$ is simple),
+    then $m = n$ and $H_i/H_{i + 1} \cong H'_{\sigma(i)}/H'_{\sigma(i) + 1}$ for some permutation $\sigma$.
+    \begin{proof}
+        Suppose $n$ is minimal among all such chains. We will induct on $n$. $n = 1$ is just a simple group, which is trivial.
+        Suppose the theorem is true for $n - 1$. We provide a picture.
+
+        The left and middle chains and the right and middle chains are equal up to permutation by induction.
+        $G = H_1 H_1'$ because $H_1 H_1' \triangleright G$ and each of them are maximal (and different, lest the case is trivial),
+        so they must be the whole group. By the isomorphism theorem, $G/H_1' \cong H_1/H_1'\cap H_1$. The parallelogram congruent shows that the corresponding factor groups are isomorphic,
+        giving us the permutation.
+    \end{proof}
+\end{theorem}

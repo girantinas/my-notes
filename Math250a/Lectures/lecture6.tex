@@ -1,0 +1,83 @@
+% !TEX root = lectures.tex
+\section{Lecture 6}
+\begin{definition}
+    The symmetric group on a set $S$, $\Sigma_S$ is the set of all permutations of $S$.
+\end{definition}
+If we have $G$ acting on a set $S$, then there should be a homomorphism identifying
+$G \to \Sigma_S$. One would think that the stabilizer of some element would then be
+the kernel of this homomorphism. However, stabilizer group that we had before need not be normal.
+\begin{theorem}
+    A subgroup $N \le G$ is \textbf{normal} if $gN = Ng$ for all $g \in G$.
+\end{theorem}
+\begin{theorem}
+    If $\varphi: G \to H$ is a map between groups, then $\ker \varphi$ is a normal subgroup of $G$.
+    \begin{proof}
+        \[ h \in \ker \varphi \implies \varphi(ghg^{-1}) = \varphi(g) \varphi(h) \varphi(g^{-1}) = 1 \varphi(g) \varphi(g^{-1}) = 1 \]
+    \end{proof}
+\end{theorem}
+\begin{theorem}
+    If $N$ is normal, then the map $G \to G/N$ can be made a map of groups,
+    with $gN \cdot g'N = gg' NN = gg' N$.
+\end{theorem}
+\begin{theorem}
+    Given any map of groups $G \xra{\vp} H$ sending $N \to 1$ then there exists unique factor map $f$ such that
+    $\vp = f \circ \sigma$, where $\sigma$ is the canonical homomorphism $G \xra{\sigma} G/N$.
+\end{theorem}
+Now consider $G$ acting on $S$ transitively. Suppose for some $s \in S$, $H = \text{Stab}(s)$.
+We said last time that $S \cong G/H$. Then we wish to identify the kernel of the map
+$G \xra{\tau} \Sigma_{G/H}$. But now consider the stabilizer
+of $g'H$, e.g. $G_{g'H}$.
+Suppose $g \in G_{g'H}$. This means $g(g'H) = g'H$ so for all $h \in H$,
+$gg' h = g'h'$. But rearranging, this means that $g'^{-1} g g' \in H$. Thus $g \in g' H g'^{-1}$,
+
+Thus, we have that $\ker \tau = \bigcap_{g' \in G} G_{g'H} = \bigcap_{g' \in G} g' H g'^{-1}$. This is the biggest normal subgroup of $H$.
+
+\begin{theorem}
+    Consider $H < G$. $g \in G$ normalizes $H$ if $gHg^{-1} = H$. The normalizer $N_G(H)$ is the set of all $g$ that normalize $H$.
+\end{theorem}
+Notice that the act of conjugation by some element $g \in G$ is an automorphism from $G$ to itself,
+which induces a map $G \to \text{Aut} G$.
+\begin{theorem}
+    Let $H, K < G$.
+    $K \subseteq N_G(H) \implies KH = HK$
+    and furthermore, $KH < G$ (i.e. it's a group).
+\end{theorem}
+\begin{theorem}
+In this setting, $H$ is a normal subgroup of $HK$ and $K \cap H$ is normal in $K$, so $HK/H \cong K/(K\cap H)$.
+\begin{proof}
+    We have that $(HK)H = H(KH) = H(HK)$, which is what we needed to show.
+    Furthermore, we need $(H\cap K)K = K(H \cap K)$. But $KK = KK$ and $HK = KH$, so this is also true.
+    Finally, to see the isomorphism, use the map $\vp: k(H \cap K) \mapsto k H$ for some $k \in K$.
+    Note that if $k \in H \cap K$, then $k \in H$ so this maps $H \cap K$ to $H$. If not, then we get some other subgroup.
+    One can easily check that multiplication is preserved. Finally, note that $\vp$ is surjective, since all $k \in K$
+    end up multiplying $H$.
+    Now, $\ker \vp$ is precisely $\{H \cap K\}$, meaning we're done.
+\end{proof}
+\end{theorem}
+\begin{definition}
+    The \textbf{centralizer} of $H < G$ is $Z_G(H) = \{g \in G \mid gh = hg \text{ } \forall h \in H\}$.
+    The \textbf{center} of $Z(G)$ is the centralizer of $G$.
+\end{definition}
+Let's learn about a new group.
+\begin{definition}
+    $GL_n(F)$ over a field $F$ is the general linear group, composed of all invertible $n \times n$ matrices.
+\end{definition}
+How can we find $|GL_n(\F_p)|$? If I fix a basis $\F_p^n = \bigoplus_{i = 1}^n F_p e_i$,
+how can we send the basis vectors? $e_1$ has $p^n - 1$ choices (excluding $0$), $e_2$ has $p^n - p$ choices,
+$e_3$ has $p^n - p^2$ choices and so on. Thus
+\[ |GL_n(\F_p)| = \prod_{i = 1}^n p^n - p^{i - 1} \]
+What are the subgroups of this group? The upper triangular matrices with all $1$s on the diagonal, called the
+group of unipotent matrices $U$, forms a group. It also forms a $\F_p$-vector space. Namely, there
+are $p$ choices for each upper entry, giving
+\[ |U| = p^{\sum_{i = 1}^n i - 1} = p^{\binom{n}{2}} \]
+Note that this is the biggest power of $p$ that divides the group order.
+It turns out this is enough to show that every group has a subgroup of this kind.
+\begin{theorem}
+    Let $G$ be a finite group.
+    \begin{enumerate}
+        \item Every $p$-subgroup (i.e. a subgroup with order a power of $p$)
+        is contained in a Sylow $p$-subgroup (i.e. a subgroup with order the largest power of $p$).
+        \item Any 2 Sylow $p$-subgroups are conjugate, i.e. the conjugation action acts transitively on the set of Sylow $p$-subgroups.
+        \item The number of Sylow $p$-subgroups is congruent to $1 \pmod{p}$.
+    \end{enumerate}
+\end{theorem}
