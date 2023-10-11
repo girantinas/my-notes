@@ -1,0 +1,57 @@
+% !TEX root = lectures.tex
+
+\section{Lecture N (10/11)}
+We continue the proof of the following theorem:
+\begin{theorem}
+    Suppose $f_n$ is Cauchy in measure. $\exists f$ measurable such that $f_n \to f$ in measureand there exists
+    a subsequence $n(j)$ where $f_{n(j)} \to f$ a.e. If $f_n \to g$ in measure then $f = g$ a.e.
+\end{theorem}
+Here is where we began the proof. We found a subsequence $n(j)$ with $g_j := f_{n(j)}$ such that
+the ``bad sets''
+$E_j = \{x: |g_j(x) - g_{j + 1}(x)| \ge 2^{-j}\}$ has $\mu(E_j) \le 2^{-j}$
+then $F_j = \bigcup_{k \ge j} E_k$ has $\mu(F_j) \le 2^{1 - j}$. Define $F = \bigcup_{j = 1}^{\infty} F_j$. Clearly
+$\mu(F) = 0$, so we can define the limit as 
+\[ f(x) = \begin{cases}
+    \lim_j g_j(x) & \text{on $F^c$} \\
+    0 & \text{o/w}
+\end{cases} \]
+Then $f$ is measurable and $g_j \to f$ almost everywhere. Then since $\mu(F_k) \to 0$
+by definition, $g_j \to f$ in measure. To bring this back to $f_n$, note
+\[ \{ x: |f_n(x) - f(x)| > \epsilon \} \subseteq \{x: |f_n(x) - g_j(x)| \ge \frac{\epsilon}{2}\} \cup \{x: |g_j(x) - f(x)| \ge \frac{\epsilon}{2}\} \]
+Since $f_n$ is Cauchy in measure, the measure of the first set goes to $0$. The second set is $0$ in measure because $g_j \to f$ in measure.
+
+Finally, suppose $f_n \to g$ in measure. $\{x: |f(x) - g(x)| \ge \epsilon\} \subseteq \{ x: |f_n(x) - f(x)| \ge \frac{\epsilon}{2} \} \cup \{x: |f_n(x) - g(x)| > \frac{\epsilon}{2}\}$
+Since this is true for every $n$, we can show that $\mu(\{|f(x) - g(x)| \ge \epsilon\}) = 0$ for any $\epsilon > 0$,
+thus $\mu(\{|f(x) - g(x)| > 0\}) = 0$ and so $f = g$ almost everywhere. 
+
+\begin{theorem}
+    If $f_n \to f$ a.e. and $\mu(X) < \infty$, then $f_n \to f$ in measure.
+\end{theorem}
+Call $E_n(\epsilon) = \{x: |f_n(x) - f(x)| > \epsilon\}$ and $F_n(\epsilon) = \bigcup_{m = n}^{\infty} E_m(\epsilon)$.
+Since $f_n \to f$ almost everywhere, for $F = \bigcap_{n = 1}^{\infty} F_n(\epsilon)$, $\mu(F) = 0$.
+Since $\mu(X) < \infty$ (to make sure measure limits work), this means $\mu(F_n(\epsilon)) \to 0$ as $n \to \infty$.
+Now, $E_n(\epsilon) \subset F_n(\epsilon)$ so $0 \le \mu(E_n(\epsilon)) \le \mu(F_n(\epsilon)) \to 0$, so we've shown
+$f_n \to f$ in measure.
+
+Similarly, if $f_n \to f$ in $L^1$ then $f_n \to f$ in measure then $f_n$ is Cauchy in measure, so $f_{n(j)} \to f$ a.e..
+
+\subsection{Egorov's Theorem}
+\begin{theorem}
+    Suppose $\mu(X) < \infty$ and let $f_n: X \to \R$ and $f_n \to f$ a.e. Then for all $\epsilon > 0$,
+    there exist an ``error set'' $R$ with $\mu(E) < \epsilon$ then $f_n \to f$ uniformly on $E^c$.
+\end{theorem}
+Without loss of generality, $f_n \to f$ pointwise (we have issues on only a measure zero set,
+so we can union it with $E$ at the end). For $k, n \in \N$ consider $E_{n}(k) = \bigcup_{m = n}^{\infty} \{ x\in X : |f_m(x) - f(x)| \ge \frac{1}{k}\}$.
+as $n \to \infty$, $E_n(k)$ decrease to the empty set. Then since $\mu(X) < \infty$, $\mu(E_n(k)) \to 0$ as $n \to \infty$.
+There exists $n_k$ such that $\mu(E_{n_k}(k)) \le \frac{\epsilon}{2^k}$. Call $E = \bigcup_{k = 1}^{\infty} E_{n_k}(k)$,
+means $\mu(E) < \epsilon$. Now for $x \notin E$, then for all $k \ge 1$, for all $n \ge n_k$,
+then $|f_n(x) - f(x)| < \frac{1}{k}$. So $f_n \to f$ uniformly for all $x \notin E$, so we're finished.
+
+\subsection{Littlewood's three principles}
+Three principles from 1944 by Littlewood give us some intuition about real analysis.
+\begin{enumerate}
+    \item Every measurable set is ALMOST a finite union of open intervals. (Inner and outer measures coincide)
+    \item Every integrable/measurable function is ALMOST continuous. (Lusin, $L^1$ Approximation)
+    \item Every convergent sequence of functions is ALMOST uniformly convergent. (Egorov)
+\end{enumerate}
+All of these ALMOSTs mean throw away a measure-0 set.

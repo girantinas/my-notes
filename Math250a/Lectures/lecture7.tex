@@ -30,7 +30,7 @@ We will use this to prove Sylow's theorems.
         Let $P$ be a Sylow $p$-subgroup of $G$. Note that $p \not \mid G/P$. Then $\text{Stab}_G(g P) = gPg^{-1}$.
         Now let $H$ act on the set of cosets of $P$ in $G$. Some coset $gP$ has an $H$-orbit
         that has order coprime to $p$, because the number of cosets has no factors of $p$. But then $\text{Stab}_H(gP) = H \cap gPg^{-1}$
-        which means $|H(gP)| = |H|/|H \cap gPg^{-1}|$, which must only have a factor of $p$. So the $H \cap gPg^{-1}$ is a Sylow $p$-subgroup of $H$.
+        which means $|H(gP)| = |H|/|H \cap gPg^{-1}|$, which must not have any factor of $p$. So the $H \cap gPg^{-1}$ is a Sylow $p$-subgroup of $H$.
     \end{proof}
 \end{lemma}
 
@@ -78,7 +78,7 @@ But this means that the size of $\mathcal{P}$ must be $1 + \text{positive power 
     \begin{proof}
         Suppose $n$ is minimal among all such chains. We will induct on $n$. $n = 1$ is just a simple group, which is trivial.
         Suppose the theorem is true for $n - 1$. We provide a picture.
-
+        TODO: Add picture
         The left and middle chains and the right and middle chains are equal up to permutation by induction.
         $G = H_1 H_1'$ because $H_1 H_1' \triangleright G$ and each of them are maximal (and different, lest the case is trivial),
         so they must be the whole group. By the isomorphism theorem, $G/H_1' \cong H_1/H_1'\cap H_1$. The parallelogram congruent shows that the corresponding factor groups are isomorphic,

@@ -1,0 +1,132 @@
+% !TEX root = lectures.tex
+\section{Lecture 12}
+\subsection{Limits and Colimits}
+Suppose we have a diagram with lots of arrows. Then its limit $M$ is the universal object where this diagram commutes.
+% https://q.uiver.app/#q=WzAsMTYsWzMsMSwiQSJdLFs0LDAsIkIiXSxbNSwxLCJIIl0sWzQsMiwiRCJdLFszLDIsIkMiXSxbNywxXSxbNiwxXSxbOCwxLCJNIl0sWzEwLDEsIkEiXSxbMTEsMiwiRCJdLFsxMCwyLCJDIl0sWzExLDAsIkIiXSxbMTIsMSwiSCJdLFsxLDEsIlxcbGltIl0sWzIsMl0sWzAsMl0sWzAsMV0sWzEsMl0sWzAsM10sWzQsM10sWzYsNSwiPSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs3LDhdLFs3LDldLFs3LDEwXSxbMTAsOV0sWzgsOV0sWzgsMTFdLFs3LDExXSxbMTEsMTJdLFs3LDEyLCIiLDAseyJjdXJ2ZSI6LTF9XSxbMTQsMTUsIiIsMCx7Im9mZnNldCI6NSwic2hvcnRlbiI6eyJzb3VyY2UiOjMwLCJ0YXJnZXQiOjMwfX1dXQ==
+\[\begin{tikzcd}
+	&&&& B &&&&&&& B \\
+	& \lim && A && H & {} & {} & M && A && H \\
+	{} && {} & C & D &&&&&& C & D
+	\arrow[from=2-4, to=1-5]
+	\arrow[from=1-5, to=2-6]
+	\arrow[from=2-4, to=3-5]
+	\arrow[from=3-4, to=3-5]
+	\arrow["{=}", draw=none, from=2-7, to=2-8]
+	\arrow[from=2-9, to=2-11]
+	\arrow[from=2-9, to=3-12]
+	\arrow[from=2-9, to=3-11]
+	\arrow[from=3-11, to=3-12]
+	\arrow[from=2-11, to=3-12]
+	\arrow[from=2-11, to=1-12]
+	\arrow[from=2-9, to=1-12]
+	\arrow[from=1-12, to=2-13]
+	\arrow[curve={height=-6pt}, from=2-9, to=2-13]
+	\arrow[shift right=5, shorten <=14pt, shorten >=14pt, from=3-3, to=3-1]
+\end{tikzcd}\]
+\begin{definition}
+    The \textbf{limit} of a diagram (set of maps) is a set of maps from some other object $M$ to all the objects
+    such that the new and old maps together commute such that $M$ is universal; e.g. if there is a another object $N$
+    satisfying this, then there is a map $N \to M$ making all the maps commute.
+\end{definition}
+
+For example, if I have the diagram:
+% https://q.uiver.app/#q=WzAsMixbMCwwLCJBIl0sWzEsMCwiQiJdLFswLDEsIiIsMSx7ImN1cnZlIjotMX1dLFswLDEsIiIsMSx7ImN1cnZlIjoxfV1d
+\[\begin{tikzcd}
+	A & B
+	\arrow[curve={height=-6pt}, from=1-1, to=1-2]
+	\arrow[curve={height=6pt}, from=1-1, to=1-2]
+\end{tikzcd}\]
+Then its limit is exactly the equalizer.
+
+Suppose we work in the category of commutative rings. Let $(R, m)$ be a local ring, e.g. $m$ is the only maximal
+ideal. Then if we take a limit of the diagram $\dots \to R/m^2 \to R/m$, we call $\hat{R}_m$ the \textbf{completion} of the rings.
+If we use $\Z \supset (p)$, then if we have $\dots \to \Z/p^2 \to \Z/p$, the limit of this diagram is $\hat{Z}_p$, the $p$-adic numbers.
+
+If we have a diagram with no arrows, the limit is just the product. Similarly, if we have a diagram with arrows, the limit
+is just the co-product.
+
+\begin{definition}
+    Consider two categories $\mathcal{C}, \mathcal{D}$. Then $F: \mathcal{C} \to \mathcal{D}$ is left-adjoint to $G: \mathcal{D} \to \mathcal{C}$ (or $G$ is right adjoint to $F$)
+    if $(F(-), -) \cong_{\eta} (-, G)$, where we mean these two objects are naturally equivalent in the sense that
+    if there exists a map $\phi: B \to C$, then the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCIoRkEsIEIpIl0sWzIsMCwiKEEsR0IpIl0sWzAsMiwiKEZBLCBDKSJdLFsyLDIsIihBLCBHQykiXSxbMCwxLCJcXGV0YV97QUJ9Il0sWzIsMywiXFxldGFfe0FDfSJdLFswLDIsIihGQSwgXFxwaGkpIiwxXSxbMSwzLCIoQSwgR1xccGhpKSIsMV1d
+    \[\begin{tikzcd}
+        {(FA, B)} && {(A,GB)} \\
+        \\
+        {(FA, C)} && {(A, GC)}
+        \arrow["{\eta_{AB}}", from=1-1, to=1-3]
+        \arrow["{\eta_{AC}}", from=3-1, to=3-3]
+        \arrow["{(FA, \phi)}", from=1-1, to=3-1]
+        \arrow["{(A, G\phi)}", from=1-3, to=3-3]
+    \end{tikzcd}\]
+    AND if there exists a map $\psi: D \to A$, then the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCIoRkEsIEIpIl0sWzIsMCwiKEEsR0IpIl0sWzAsMiwiKEZELCBCKSJdLFsyLDIsIihBLCBHQikiXSxbMCwxLCJcXGV0YV97QUJ9Il0sWzIsMywiXFxldGFfe0RCfSJdLFswLDIsIihGXFxwc2ksIEIpIiwxXSxbMSwzLCIoXFxwc2ksIEdCKSIsMV1d
+    \[\begin{tikzcd}
+        {(FA, B)} && {(A,GB)} \\
+        \\
+        {(FD, B)} && {(A, GB)}
+        \arrow["{\eta_{AB}}", from=1-1, to=1-3]
+        \arrow["{\eta_{DB}}", from=3-1, to=3-3]
+        \arrow["{(F\psi, B)}", from=1-1, to=3-1]
+        \arrow["{(\psi, GB)}", from=1-3, to=3-3]
+    \end{tikzcd}\]
+    with all the $\eta$'s being isomorphisms.
+\end{definition}
+\begin{theorem}
+If $F: \mathcal{C} \to \mathcal{D}$ is left-adjoint to $G: \mathcal{D} \to \mathcal{C}$
+and $\mathcal{A} \subset \mathcal{C}$. If $\colim \mathcal{A}$ exists, then $F(\colim \mathcal{A}) = \colim F(\mathcal{A})$.
+\begin{proof}
+    We note the following. By definition, $(\textrm{colim } \mathcal{A}, B) = (\mathcal{A}, B)$
+    and 
+    \[(F(\colim \mathcal{A}), B) = (\colim \mathcal{A}, GB) = \lim (\mathcal{A}, GB) = (F (\mathcal{A}), B) = (\colim F(\mathcal{A}), B)\]
+\end{proof}
+\end{theorem}
+
+\subsection{(Covariant) Yoneda Lemma}
+\begin{theorem}
+    Consider a functor $F: \mathcal{C} \to \Set$ and let $P \in \mathcal{C}$. $((P, -), F(-)) \cong F(P)$ e.g. the natural transformations from $(P, -)$ to $F$ are naturally equivalent
+    to $F(P)$.
+    \begin{proof}
+        Let $\gamma_P: ((P, -), F(-)) \to F(P)$ be the map we want one way and $\eta_P: F(P) \to ((P, -), F)$.
+        Let $\alpha \in ((P, -), F(-))$ a natural transformation, where we write $\alpha_Q: (P, Q) \to F(Q)$. 
+        Then, define $\gamma(\alpha) = \alpha_P(\id_{P}) \in F(P)$. Now for $x \in F(P)$, $\eta(x)$ should give us back a map
+        $(P, Q) \to F(Q)$ for each $Q$. So, define $\eta(x)_Q(\phi) = F(\phi)(x)$ (since $F(\phi) \in (F(P), F(Q))$).
+        We will first show this is an isomorphism of sets. We want to show that $\gamma(\eta(x)) = x$. By definition:
+        \begin{align*}
+            \gamma(\eta(x)) &= (\eta(x))_P(1_P) \\
+            &= F(1_P)(x) = 1_{F(P)}(x) = x
+        \end{align*}
+        We also have to show the other way around $\eta(\gamma(\alpha)) = \alpha$.
+        It's suffices to prove that for any $Q$ and map $\phi: (P, Q) \to F(Q)$, $\eta(\gamma(\alpha))_Q(\phi) = \alpha_Q(\phi)$.
+        Then:
+        \begin{align*}
+            \eta(\gamma(\alpha))_Q(\phi) &= \eta(\alpha_P(1_P))_Q(\phi) \\
+            &= F(\phi)(\alpha_P(1_P)) \\
+        \end{align*}
+        But now we can use naturality. Note that the following diagram commutes.
+        % https://q.uiver.app/#q=WzAsNCxbMCwwLCIoUCxQKSJdLFsyLDAsIkYoUCkiXSxbMiwyLCJGKFEpIl0sWzAsMiwiKFAsUSkiXSxbMCwzLCIoUCwgXFxwaGkpIl0sWzAsMSwiXFxhbHBoYV9QIl0sWzEsMiwiRihcXHBoaSkiLDJdLFszLDIsIlxcYWxwaGFfUSIsMl1d
+        \[\begin{tikzcd}
+            {(P,P)} && {F(P)} \\
+            \\
+            {(P,Q)} && {F(Q)}
+            \arrow["{(P, \phi)}", from=1-1, to=3-1]
+            \arrow["{\alpha_P}", from=1-1, to=1-3]
+            \arrow["{F(\phi)}"', from=1-3, to=3-3]
+            \arrow["{\alpha_Q}"', from=3-1, to=3-3]
+        \end{tikzcd}\]
+        This means that $F \phi \alpha_P = \alpha_Q (P, \phi)$ and $\alpha_Q(P, \phi) 1_P = \alpha_Q(\phi)$,
+        so we're done.
+    \end{proof}
+\end{theorem}
+
+Consider a category with a single element, which is a ring $R$, where the hom set $(R, R) = R$,
+then there is a functor $\text{Ab} = FR = M$ acting on itself something about (TODO)
+
+\subsection{Sheaves and Pre-sheaves}
+\begin{definition}
+Let $X$ be a topological space. Then $\textrm{Cat } X$ can be viewed
+as a category whose objects which are open subsets of $X$ and an arrow between $U$ and $V$ if $U \subset V$.
+A presheaf of $X$ is a contravariant functor $\textrm{Cat } X \to \mathcal{D}$. For any covering $U_i \subset U$.
+Let $f$ be a presheaf. Then $f(U_i) \to f(U_j)$ whenever $U_j \subset U_i$.
+$f$ is a sheaf if $f(U) = \lim f(U_i)$.
+\end{definition}

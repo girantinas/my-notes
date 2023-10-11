@@ -1,0 +1,129 @@
+% !TEX root = lectures.tex
+\section{Lecture 9}
+\subsection{Category Theory}
+\begin{definition}
+    A \textbf{category} is a collection of objects $C$ with the following data
+    \begin{itemize}
+        \item For all $X, Y \in C$ there exists a set $\Hom(X, Y)$ of morphisms from $X$ to $Y$.
+        \item There are composition maps that let you compose morphisms,
+        e.g. $\mu: \Hom(Y, Z) \times \Hom(X, Y) \to \Hom(X, Z)$.
+    \end{itemize}
+    These data satisfy:
+    \begin{itemize}
+        \item \textbf{Compositional Identity.} There exists $\id_X \in \id(X, X)$
+        such that for any morphisms $f, g$ with the right domain/codomain,
+        $f \cdot \id_X = f$ and $\id_X \cdot g = g$ (which is necessarily unique).
+        \item \textbf{Associativity of Composition.}
+    \end{itemize}
+\end{definition}
+
+Some examples of categories:
+\begin{itemize}
+    \item The category $\Set$ consisting of sets as the objects and maps as morphisms.
+    \item The category $R-\textrm{Mod}$ consisting of $R$-modules as the objects and the maps as module homomorphisms.
+    \item The category $\Ring$ consisting of rings as the objects and the maps as ring homomorphisms.
+    \item Take a group $G$.
+    Then call the category $BG$ the category with one object $O$ and morphisms
+    that go $O \to O$ that are in one-to-one correspondence with the elements of $G$,
+    where composition is just group multiplication.
+    Then by the group axioms, the category axioms follow automatically.
+    \item Let $X$ be a space (say with a topology). Then there is a category $\textrm{open}(X)$
+    whose objects are open subsets of $X$ and the morphisms are inclusions.
+\end{itemize}
+
+\begin{definition}
+    A \textbf{functor} is a map between categories. That is, $F: C \to D$ is
+    \begin{itemize}
+        \item a map from objects of $C$ to objects of $D$.
+        \item For all $X, Y \in C$ there is a map $F_{X, Y}: \Hom_C(X, Y) \to \Hom_D(F(X), F(Y))$.
+    \end{itemize}
+    which has compatibility with $\id$ and composition.
+\end{definition}
+
+Some examples of functors:
+\begin{itemize}
+    \item Forgetful functors. There exists a functor $R-\textrm{Mod} \to \Set$ where we can just ``forget'' the structure
+    and just view all module homomorphisms as maps between sets.
+    \item Representable functors: If $C$ is a category and $X \in C$, we get a functor $\Hom(X, -): C \to \Set$. (Note that if there's map $m \in \Hom(Y, Y')$, then there's a map $\Hom(X, Y) \to \Hom(X, Y')$).
+    \item Presheaves. We make a functor $\textrm{Open}(X)^{op} \to \Set$ where $U \mapsto \text{functions on }U$
+    and $U \subset V \mapsto \text{restriction to } U$. We have to think of the opposite category (with the morphisms reversed) to the one above because a restriction of a function
+    can only map from a function with a wider domain to one with a narrower domain.
+\end{itemize}
+
+\begin{definition}
+    An isomorphism between two objects $X, Y \in C$ is a morphism $f: X \to Y$
+    such that there exists another morphism $f^{-1}: Y \to X$ such that $ff^{-1} = \id_Y$, $f^{-1} f = \id_X$.
+\end{definition}
+
+\begin{definition}
+Let $X_i$ for $i \in I$ be a collection of objects in a category $C$. The \textbf{product} of these objects (if it exists)
+is the unique object $\prod X_i$ with maps $\prod X_i \to X_i$
+such that for any $Y \in C$, $\Hom(Y, \prod X_i) \to \prod \Hom(Y, X_i)$ is an isomorphism in the category of sets (where a product
+in the category of sets is the usual Cartesian product).
+\end{definition}
+
+The main idea is that giving a map into $\prod X_i$ is equivalent to giving a collection of maps
+into each $X_i'$. Recall that in the category of $R$-modules and vector spaces,
+$\prod X_i$ is the set of tuples $(x_i)_{x_i \in X_i}$ where we could allow infinitely many $x_i \neq 0$. If we instead
+used the category of finitely generated $R$-modules, then the product might not exist; we can't take an infinite product and stay in
+the category.
+
+\begin{definition}
+    The \textbf{sum} of objects $X_i$ (if it exists) is the unique object $\bigoplus X_i$ with maps $X_i \to \bigoplus X_i$
+    such that for any $Y \in C$, $\Hom(\bigoplus X_i, Y) \to \prod \Hom(X_i, Y)$ is an isomorphism.
+\end{definition}
+Now, in the category of $R$-modules, $\bigoplus X_i$ is the set of tuples $(x_i)_{x_i \in X_i}$ where
+for only finitely many $i$, $x_i \neq 0$.
+
+\begin{definition}
+    Given $X, Y, Z \in C$ and maps $Z \to X$, $Z \to Y$, then
+    the \textbf{coproduct} (if it exists) is the unique object $Y \coprod_Z X$ such that it makes the square in the following diagram commute
+    and if there exists maps $Y \to W$ and $X \to W$ that all solid lines commute, then there exists unique $\mu: Y \coprod_Z X \to W$.
+
+    % https://q.uiver.app/#q=WzAsNyxbMCwwLCJaIl0sWzAsMSwiWSJdLFsxLDAsIlgiXSxbMSwxLCJZIFxcY29wcm9kX1ogWCJdLFsyLDMsIlciXSxbNCwxLCJcXGJ1bGxldCJdLFs1LDEsIlxcYnVsbGV0Il0sWzAsMV0sWzAsMl0sWzIsM10sWzEsM10sWzEsNCwiIiwwLHsiY3VydmUiOjJ9XSxbMiw0LCIiLDAseyJjdXJ2ZSI6LTR9XSxbMyw0LCJcXG11IiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzUsNl1d
+    \[\begin{tikzcd}
+        Z & X \\
+        Y & {Y \coprod_Z X} \\
+        \\
+        && W
+        \arrow[from=1-1, to=2-1]
+        \arrow[from=1-1, to=1-2]
+        \arrow[from=1-2, to=2-2]
+        \arrow[from=2-1, to=2-2]
+        \arrow[curve={height=12pt}, from=2-1, to=4-3]
+        \arrow[curve={height=-24pt}, from=1-2, to=4-3]
+        \arrow["\mu", dashed, from=2-2, to=4-3]
+    \end{tikzcd}\]
+\end{definition}
+
+For example, let $C = \Group$. Consider the diagram:
+% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXG1hdGhiYntafSJdLFswLDEsIlxcbWF0aGJie1p9Il0sWzEsMCwiXFxtYXRoYmJ7Wn0iXSxbMSwxLCJcXG1hdGhiYntafVxcY29wcm9kX3tcXG1hdGhiYntafX1cXG1hdGhiYntafSAiXSxbMSwyLCJHID0gXFxsYW5nbGUgYSwgYiBcXG1pZCBhXjIgPSBiXjMgXFxyYW5nbGUiXSxbMCwxLCJcXHRpbWVzIDIiXSxbMCwyLCJcXHRpbWVzIDMiLDJdLFsyLDNdLFsxLDNdXQ==
+\[\begin{tikzcd}
+	{\mathbb{Z}} & {\mathbb{Z}} \\
+	{\mathbb{Z}} & {\mathbb{Z}\coprod_{\mathbb{Z}}\mathbb{Z} } \\
+	& {G = \langle a, b \mid a^2 = b^3 \rangle}
+	\arrow["{\times 2}", from=1-1, to=2-1]
+	\arrow["{\times 3}"', from=1-1, to=1-2]
+	\arrow[from=1-2, to=2-2]
+	\arrow[from=2-1, to=2-2]
+\end{tikzcd}\]
+Let's understand some simple properties.
+We can show $G$ is non-abelian by showing that there is a surjection from $G$ to $S_3$.
+Define the map from the top, $1 \mapsto (1 2 3)$ and from the bottom $1 \mapsto (1 2)$.
+One can see this respects the diagram.
+
+In addition, we can also see that $G$ is infinite. Construct the following maps.
+% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXG1hdGhiYntafSJdLFswLDEsIlxcbWF0aGJie1p9Il0sWzEsMCwiXFxtYXRoYmJ7Wn0iXSxbMSwxLCJcXG1hdGhiYntafVxcY29wcm9kX3tcXG1hdGhiYntafX1cXG1hdGhiYntafSAiXSxbMiwyLCJcXFoiXSxbMCwxLCJcXHRpbWVzIDIiXSxbMCwyLCJcXHRpbWVzIDMiLDJdLFsyLDNdLFsxLDNdLFsyLDQsIlxcdGltZXMyIiwwLHsiY3VydmUiOi0yfV0sWzEsNCwiXFx0aW1lcyAzIiwwLHsiY3VydmUiOjJ9XSxbMyw0LCJcXHBoaSJdXQ==
+\[\begin{tikzcd}
+	{\mathbb{Z}} & {\mathbb{Z}} \\
+	{\mathbb{Z}} & {\mathbb{Z}\coprod_{\mathbb{Z}}\mathbb{Z} } \\
+	&& \Z
+	\arrow["{\times 2}", from=1-1, to=2-1]
+	\arrow["{\times 3}"', from=1-1, to=1-2]
+	\arrow[from=1-2, to=2-2]
+	\arrow[from=2-1, to=2-2]
+	\arrow["\times2", curve={height=-12pt}, from=1-2, to=3-3]
+	\arrow["{\times 3}", curve={height=12pt}, from=2-1, to=3-3]
+	\arrow["\phi", from=2-2, to=3-3]
+\end{tikzcd}\]
+We will show is $\phi$ is surjective. It's clear that $2$ and $3$ are in the image, and together they generate $\Z$.

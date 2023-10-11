@@ -1,0 +1,100 @@
+% !TEX root = lectures.tex
+\section{Lecture 10}
+\subsection{More Category Theory}
+Recall the definition of a category and functor from the previous lecture.
+\begin{definition}
+    Consider two functors $F, G$ that map
+    objects in a category $C$ to a category $D$.
+    A \textbf{natural transformation} $\eta: F \to G$ is a set of arrows, $\eta_O: F(O) \to G(O)$
+    one for each object in $O\in C$, such that for every arrow $h: A \to A'$, the following diagram commutes:
+    % https://q.uiver.app/#q=WzAsNCxbMCwwLCJGKEEpIl0sWzAsMSwiRihBJykiXSxbMSwwLCJHKEEpIl0sWzEsMSwiRyhBJykiXSxbMCwxLCJGKGgpIiwyXSxbMCwyLCJcXGV0YV9BIl0sWzEsMywiXFxldGFfe0EnfSIsMl0sWzIsMywiRyhoKSJdXQ==
+    \[\begin{tikzcd}
+        {F(A)} & {G(A)} \\
+        {F(A')} & {G(A')}
+        \arrow["{F(h)}"', from=1-1, to=2-1]
+        \arrow["{\eta_A}", from=1-1, to=1-2]
+        \arrow["{\eta_{A'}}"', from=2-1, to=2-2]
+        \arrow["{G(h)}", from=1-2, to=2-2]
+    \end{tikzcd}\]
+\end{definition}
+We have to be careful if we say two categories are isomorphic--their collections of objects may not even form a set (they may be ``too big'').
+Instead, we discuss categories being equivalent.
+\begin{definition}
+    Two categories $C$ and $D$ are \textbf{equivalent} if there exist two functors $F: C \to D$ and $G: D \to C$
+    such that $F \circ G \cong \textrm{id}_{D}$ (i.e. there exists a nautral transformation between)
+    and $G \circ F \cong \textrm{id}_{C}$.
+\end{definition}
+Recall the definitions of product and coproduct from the previous lecture. Note that
+if $A = \prod_i A_i$, then $(-, A) = \prod_i (-, A_i)$ (and vice-versa, because each map from something to $A$
+is made up of maps to each $A_i$). Recall that $(-,A): C \to \Set$ is a contravariant functor, because it takes a morphism
+between say two objects $B, B'$ called $f$ and can give you a morphism from $(B', A)$ to one from $(B, A)$ made by
+precomposing by $f$. Similarly,
+if $B = \coprod B_i$, then we could say that for another object $B'$, that $(B, B') = \prod_i (B_i, B')$,
+so $(B, -) = \prod (B_i, -)$. This one is a covariant (usual) functor.
+\begin{definition}
+    A morphism $h: A \to A'$ is a \textbf{monomorphism} if for all morphisms $f,g: B \to A$
+    if $hf = hg \implies f = g$.
+\end{definition}
+In the category of sets, this is an injection.
+\begin{definition}
+    A morphism $h: A' \to A$ is a \textbf{epimorphism} if it is a monomorphism in the opposite category. That is,
+    for all morphisms $f, g: A \to B$, that $fh =gh  \implies f = g$.
+\end{definition}
+In the category of sets this is a surjection.
+\begin{definition}
+    Consider the following diagram.
+    % https://q.uiver.app/#q=WzAsMyxbMCwwLCJBJyJdLFsxLDAsIkEiXSxbMiwwLCJCIl0sWzAsMSwiaCJdLFsxLDIsImYiLDAseyJjdXJ2ZSI6LTJ9XSxbMSwyLCJnIiwyLHsiY3VydmUiOjJ9XV0=
+    \[\begin{tikzcd}
+        {A'} & A & B
+        \arrow["h", from=1-1, to=1-2]
+        \arrow["f", curve={height=-12pt}, from=1-2, to=1-3]
+        \arrow["g"', curve={height=12pt}, from=1-2, to=1-3]
+    \end{tikzcd}\]
+    $h$ called the \textbf{equalizer} of morphisms $f$ and $g$
+    if it is thier ``difference kernel'' (in $R$ modules it's exactly $h = \text{ker}(f - g)$ as an inclusion). Specifically,
+    \begin{enumerate}
+        \item $h$ is a monomorphism.
+        \item $fh = gh$
+    \end{enumerate}
+    (Something about fiber products)
+\end{definition}
+
+\begin{definition}
+    A \textbf{zero} object (if it exists) is an object $0$ such that $\forall A \in \text{Obj}(C)$,
+    there exists a unique map $(0, A)$ and a unique map $(A, 0)$. It is always unique.
+\end{definition}
+
+\begin{definition}
+    Consider a map $f \in (A, B)$,
+    then the composition of the maps $(A, 0)$ and $(0, A)$, $\phi$. Then the difference kernel of $f$ and $\phi$ is the \textbf{kernel} of $f$.
+\end{definition}
+
+\subsection{Tensor Products}
+
+\begin{definition}
+    Consider $C = \text{Vect}/k$, the set of vector spaces over $k$.
+    Then $V \otimes_k W$ is called the \textbf{tensor product} of two such vector spaces
+    and it is another vector space over $k$ (it is universal). Its morphisms are exactly
+    the set of bilinear maps from $V \times W \to U$. That is, $\phi(\alpha v + s, w) = \alpha \phi(v, w) + \phi(s, w)$
+    and the same for the other coordinate. If one fixes a factor, then it's a homomorphism.
+\end{definition}
+
+For example, let us show $k^2 \otimes k^3 \cong k^6$. Let $e_1, e_2$ be a basis for the first vector space
+and $f_1, f_2, f_3$ be a basis for the vector space. We want $\phi(e_i, f_j)$ to map to a new basis element $g_{ij} = e_i \otimes f_j$.
+It's easy to check this map is bilinear and an isomorphism.
+
+\begin{theorem}
+    Consider three vector spaces $U, V, W$.
+    $(V \otimes W, U) \cong (V, (W, U))$
+
+    \begin{proof}
+        The left side is a bilinear map from $v, w \mapsto u$. But if one fixes $v$,
+        then this is just a linear map from $W$ to $U$, and it depends linearly in $v$.
+        The other direction is obvious by currying. Thus, the two sides are equivalent.
+    \end{proof}
+\end{theorem}
+
+\subsection{Adjoint Functor}
+Note that there is a forgetful functor $F: \Group \to \Set$ where we destroy the structure.
+Similarly, we can use $H: \Set \to \Group$ where we turn a set into a free groups.
+But note the morphisms $(H(S), G) \cong (S, F(G))$. We call such functors an \textbf{adjoint pair}.
