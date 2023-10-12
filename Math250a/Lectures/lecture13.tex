@@ -1,0 +1,116 @@
+% !TEX root = lectures.tex
+\section{Lecture 13}
+\section{Polynomials}
+\begin{theorem}
+If $k$ is a field, then $k[X]$ is a principal ideal domain (and hence a unique factorization domain).
+\end{theorem}
+This statement is clear with division with remainder making $k[X]$ a Euclidean domain.
+\begin{theorem}
+    If $f, g \in R[X]$ such that the leading coefficient of $g$ is a unit,
+    then there exist $q, r \in R[x]$ such that $f = qg + r$ where $\polydeg r < \polydeg g$.
+\end{theorem}
+
+We now wish to prove the following theorem.
+
+\begin{theorem}
+    If $R$ is a unique factorization domain, then $R[X]$ is also a unique factorization domain.
+\end{theorem}
+
+\begin{definition}
+    Let $R$ be a UFD, and $k$ is the field of fractions of $R$.
+    Then the \textbf{content} of a polynomial $f \in k[X]$, calling its coefficients $a_i$
+    \begin{align*}
+        \cont(f) = \prod_{\text{primes } p \in R} p^{\min_i \text{order}_p (a_i)}
+    \end{align*}
+    This is defined up to a unit.
+    If $R$ is a PID, then this is just the gcd of the coefficients of $f$.
+\end{definition}
+
+\begin{example}
+    \begin{itemize}
+    \item Pick $R = k[u, v]$. Note that this is NOT a PID, but it is a UFD.
+    Then take $f = uX + v \in R[X]$. We would define $\cont(f) = 1$, since there is no prime that divides everything.
+    \item Let $R = \Z$, so $k = \Q$. Then let's compute $\cont\qty(6x^2 + \frac{15}{4}x + \frac{12}{5})$.
+    Then $\text{order}_2(6) = 1$, $\text{order}_2\qty(\frac{15}{4}) = -2$, $\text{order}_2(\frac{12}{5}) = 2$,
+    so the minimum is $-2$. Likewise all the coefficients have order $1$ of three and the last one has order $-1$ of $5$. No other primes are relevant here.
+    Thus, $\cont\qty(6x^2 + \frac{15}{4}x + \frac{12}{5}) = \frac{1}{4} \cdot 3 \cdot \frac{1}{5}$.
+    \end{itemize}
+\end{example}
+
+The key lemma is Gauss' lemma.
+\begin{theorem}[Gauss' Lemma]
+    Let $R$ be a UFD and $f, g \in k[X]$ where $k = \Frac R$. Then $\cont(fg) = \cont(f) \cont(g)$.
+    \begin{proof}
+        If $c \in k$, then it's clear $\cont(cf) = c \cont(f)$ (you would bump up all the orders based on the primes within $c$).
+        Thus, it suffices to consider the case when $\cont(f) = \cont(g) = 1$ (these are called primitive polynomials,
+        and necessarily $f, g, fg \in R[X]$). 
+        Consider arbitrary prime $p \in R$. Let $f = \sum a_i X^i$ and $g = \sum b_i X^i$.
+        Let $a_r$ be the smallest coefficient of $f$ that $p$ does not divide (this must exist because if $p$
+        divided everything, the content wouldn't be $1$). Define $b_s$ similarly for $g$. Now,
+        let's look at the $X^{r+s}$ coefficient in $fg$.
+        \[ c_{r+s} = \dots + a_{r + 1} b_{s - 1} + a_r b_s + a_{r - 1} b_{s + 1} + \dots \]
+        Every term except $a_r b_s$ is divisible by $p$, since there's only one that $p$ doesn't divide, it doesn't divide the sum.
+        This means there's no prime that divides every single coefficient in $fg$, so $\cont(fg) = 1$.
+    \end{proof}
+\end{theorem}
+
+We have a nice corollary. If for a UFD $R$, $f \in R[X]$ is monic and $f = gh$ where $g, h \in k[X]$ and also monic,
+then actually $g, h \in R[X]$. To see this with Gauss' lemma just note that $\cont(f) = 1 = \cont(g) \cont(h)$. Since $g, h$
+are monic, $\cont(g) \notin (1), \cont(h) \notin (1)$. Thus, $\cont(g), \cont(h)$ are units.
+
+A common trick that's useful is if $f \in R[X]$ and $f =gh$ for $g, h \in k[X]$,
+then we can rescale $f = \cont f \frac{g}{\cont g} \frac{h}{\cont h}$. But $\frac{g}{\cont g} \in R[X]$ and same
+for $h$. This means any reducible $R$ polynomials over $\Frac R[X]$ are actually reducible over $R$. In other words,
+a polynomial irreducible over $R$ if and only if it is irreducible over $\Frac R$.
+
+\begin{theorem}
+    If $R$ is a UFD, then $R[X]$ is a UFD.
+    \begin{proof}
+        \textbf{Existence of a Factorization}
+
+        Let $f \in R[X]$ and let $k = \Frac R$. Since $k[X]$ is a UFD,
+        we know we can factor $f = p_1 \dots p_r$ where $p_i \in k[X]$. But by the above,
+        we can instead use polynomials in $R[X]$. The $p_i$ are still irreducible in $k[X]$, so dividing by their content
+        is will be irreducible in $R[X]$; the only threat is an $R$ factor coming out. But any $R$ factor shared between
+        the coefficients would've already been removed by dividing by the content.
+
+        \textbf{Uniqueness of Factorization}
+
+        Suppose $f = \cont(f) p_1 \dots p_r = \cont(f) q_1 \dots q_s$ are two prime factorizations in $R[X]$.
+        Recall all the primes are either constant polynomials which are prime in $R$, or content-1 higher degree polynomials.
+        We do not need to worry about the constant polynomials and the constant in front, as $R$ is a UFD and this can already be factored
+        uniquely. Thus, we can assume $\cont p_i = \cont q_i = 1$. We know that $k[X]$ being a UFD, so
+        we can factor $f$ in the field to show that $r = s$ and after recordering that $p_i = cq_i$ for $c \in k^*$. But
+        $c$ must be a unit in $R$ because $1 = \cont p_i = c \cont q_i = c$.
+    \end{proof}
+\end{theorem}
+
+\subsection{Integrally-Closed Domains}
+\begin{definition}
+    A domain $R$ is called \textbf{integrally closed} if for any $\alpha \in k = \Frac R$ that is a root
+    of a monic polynomial $f \in R[X]$ actually $\alpha \in R$.
+\end{definition}
+We see that this is also a common phenomenon--we often can see that roots of polynomials in $R[X]$ in the rationals
+were really integer roots all alone.
+\begin{theorem}
+    If $R$ is a UFD, then $R$ is integrally closed.
+    \begin{proof}
+        Suppose $f(\alpha) = 0$. Then we can factor $f = (X - \alpha) q + r$ for $q, r \in k[X]$. But $r \in K$ and
+        plugging in $X = \alpha$ implies that $r = 0$. Thus $f = (X - \alpha) q$,
+        where both factors are monic. But note that $\cont f = 1$ by it being monic
+        and $\frac{1}{\cont (X - \alpha)} \in R$ and same thing for $q$. But by Gauss' lemma, $1 = \frac{1}{\cont (X - \alpha)} \cdot \frac{1}{\cont q}$,
+        which means both things are units. This means $X-\alpha$ has unit content, so $\alpha \in R$.
+    \end{proof}
+\end{theorem}
+
+\begin{example}
+    Here are some non-examples:
+    \begin{itemize}
+        \item $R = \Z[\sqrt{-3}]$. Note that $X^2 + X + 1$ has a root $\omega = \frac{1 + \sqrt{-3}}{2} \in \Q[\sqrt{-3}]$
+        but $\omega \notin R$. This is thus not a UFD:
+        \[ 4 = 2 \cdot 2 = (1 + \sqrt{-3})(1 - \sqrt{-3}) \]
+        \item $R = k[u,v]/(u^2 = v^3)$. Look at $X^2 - v \in R[X]$. Then it has a root at $\frac{u}{v} \in k$
+        but it's not in $R$. To see this, $\qty(\frac{u}{v})^2 - v = \frac{v^3}{v^2} - v = 0$.
+    \end{itemize}
+    
+\end{example}
