@@ -1,0 +1,52 @@
+% !TEX root = lectures.tex
+
+\section{Lecture N+1 (10/13)}
+We discuss signed measures, where the measure can be negative.
+The prototypical such measure is $\nu(A) = \int_A f \dd{\lambda}$ where $\lambda$ is the Lebesgue
+measure on $\R$ (where $f$ is taken as measurable).
+\begin{definition}
+Consider a measurable space $(X, \mathcal{A})$.
+Then a function $\mu: \mathcal{A} \to (-\infty, \infty]$ is a \textbf{signed measure} if:
+\begin{itemize}
+    \item $\mu(\emptyset) = 0$.
+    \item For pairwise disjoint sets $A_i \in \mathcal{A}$, $\mu\qty(\bigcup_{i = 1}^{\infty} A_i) = \sum_{i = 1}^{\infty} \mu(A_i)$.
+\end{itemize}
+\end{definition}
+However, the order of terms in a divergent sum could change what the limit
+tends to. This happens exactly when the positive-measure sets diverge to $+\infty$ and the negative-measure sets
+diverte to $-\infty$. But that cannot happen, $-\infty$ is not in the range of $\mu$.
+\begin{definition}
+    A set $A \in \mathcal{A}$ is \textbf{positive} if for all subsets $B \in \mathcal{A}$,
+    $\mu(B) \ge 0$. A set is \textbf{negative} if for all subsets $B \in \mathcal{A}$, $\mu(B) \le 0$.
+    A set is $\textbf{null}$ if for all subsets $B \in \mathcal{A}$, $\mu(B) = 0$.
+\end{definition}
+Note that positive sets have monotonicity, and the negatives have monotonicity the other direction.
+In general, the measures are not monotone.
+\begin{theorem}
+    $\mu(\bigcup_{i = 1}^{\infty} A_i) = \lim_n \mu(\bigcup_{i = 1}^n A_i)$
+\end{theorem}
+
+\begin{theorem}[Hahn Decomposition]
+    Let $(X, \mca, \mu)$ be a signed measure space.
+    \begin{enumerate}
+        \item There exist $P$ positive and $N$ negative such that $P \cap N = \emptyset$ and $P \cup N = X$.
+        \item For another $P'$ positive and $N'$ negative and $P' \cap N' = \emptyset$ and $P' \cup N' = X$, then $P \Delta P' = N \Delta N'$ is a null set.
+        \item If $\mu$ is not a positive (usual) measure, then $\mu(N) < 0$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+    For all $E \in \mca$ with $\mu(E) < 0$,
+    there exists $F \in \mca$, $F \subseteq E$ with $\mu(F) < 0$
+    and $F$ negative.
+    \begin{proof}
+        If $E$ is not negative, there exists a subset of it which is positive.
+        Define $\rho_1 = \min\{\sup\{\mu(F): F \in \mca, F \subseteq E\}, 1\} > 0$
+        Then, take $F_1 \in \{\mu(F): F \in \mca, F \subseteq E\}$ such that $\mu(F_1) > \frac{1}{2} \rho_1$.
+        Then we remove $F_1$ and continue to iterate this. In countably many steps, $\rho_n \to 0$.
+        Then just pick $F = E \setminus \qty(\bigcup_{n} F_n)$. Note that
+        $\mu(F) + \sum_{n = 1}^{\infty} \mu(F_n) = \mu(E)$ so $\mu(F) < 0$. Also
+        Consider any subset $G \subseteq E$ that would be positive, then it would get caught by some $\rho_n$.
+    \end{proof}
+\end{theorem}
+
