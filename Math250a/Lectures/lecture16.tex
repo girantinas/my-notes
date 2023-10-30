@@ -1,0 +1,128 @@
+% !TEX root = lectures.tex
+\section{Lecture 16}
+Recall that if $R$ is Noetherian
+then $R[X]$ is Noetherian.
+\begin{theorem}
+    If $M$ is a finitely-generated module over $R$, Noetherian
+    and if $N \subset M$ is a submodule, then $N$ is finitely-generated.
+    \begin{proof}
+        We will use a trick called idealization,
+        which converts statements about ideals of $R$ into ones about $R$-modules.
+        Consider $S = R \oplus M$, made into a ring $R$ extended by $M$
+        by stating that $M^2 = 0$. I.e.,
+        \[ (r, m)(r', m') = (rr', rm' + r'm) \]
+        Then, any $N \subset M \subset S$
+        means $N$ is an ideal of $S$. The only thing to check is that $SN \subset N$,
+        which can be seen by considering cases of the direct sum. If $m_1, \dots, m_g$ generate
+        $M$ as a module, then consider the map $R[x_1, \dots, x_g] \to S$
+        such that $x_i \mapsto 0_R + m_i$,
+        which is clearly surjective. Since $R[x_1, \dots, x_g]$, this means that
+        $S$ is Noetherian (to see this, note that if there's any ascending chain of ideals in $R[x_1, \dots, x_g]$,
+        this maps to a chain of subideals in $S$). Thus, $N$ is finitely generated.
+    \end{proof}
+\end{theorem}
+\subsection{Tensor Products}
+Let $R$ be a commutative ring and $M, N$ be $R$-modules.
+The defining property of a tensor product is that ``maps from $M \otimes_R N$ are
+the same as $R$-bilinear maps from $M \times N$.'' That is,
+\begin{enumerate}
+    \item There exists a bilinear map $M \times N \xra{\pi} M \otimes_R N$, $(m, n) \mapsto m \otimes n$.
+    \item Such a map is universal, that is if $M \times N \xra{\varphi} P$ is any $R$-bilinear map,
+    then there exists a unique map such that $M \otimes N \xra{\alpha} P$
+    such that $\varphi = \alpha \pi$.
+\end{enumerate}
+But how do we know that such a map exists? The construction
+is to make the ``free-est'' possible module we can with these properties.
+\begin{enumerate}
+    \item Take $\tilde{M}$ as the free $R$-module with basis = $\{m \mid m \neq 0, m \in M\}$
+    and define $\tilde{N}$ the same.
+    \item Consider $M \otimes N = \frac{\tilde{M} \times \tilde{N}}{Q}$
+    where the submodule $Q$ is the relations,
+    \[ Q = ((m, n) + (m', n) - (m + m', n), (m, n)+(m, n') - (m, n + n'), (rm, n) - r(m, n), (m, rn) - r(m, n) )\]
+\end{enumerate}
+\begin{example}
+    \begin{itemize}
+    \item What is $M \otimes R$? Well,
+    if $\phi: M \times R \to N$ is bilinear,
+    so you need a module homomorphism from $M$ to $N$ and a linear map from $R$ to $N$,
+    which just involves sending $r \mapsto 1_N$. But $rm \otimes 1 = m \otimes r$ (TODO: Why?).
+    So the unique module homomorphism from $M$ to $N$ characterizes all the data, so
+    $M \otimes R = M$.
+    \item $M \otimes N = N \otimes M$ because $m \otimes n \mapsto n \otimes m$
+    is a bilinear isomorphism (it's clear all the generators look like this).
+    \item $M \otimes (N \otimes P) = (M \otimes N) \otimes P$.
+    To see this, note that $\Hom_R(M \otimes N, P)$
+    is naturally isomorphic to $\Hom_R(M, \Hom(N, P))$.
+    In particular,
+    the maps $\phi: m \otimes n \mapsto \psi(m)(n)$
+    and $\psi: \mapsto (n \mapsto \phi(m \otimes n))$
+    correspond with each other.
+    The tensor product preserve co-limits, because $- \otimes N$ is left adjoint to $\Hom(N, P)$.
+    Recall the notion of a limit. Consider a category $\mathcal{C}$ and let $D = \{ D_i, \varphi_{\alpha}\}$
+    be a diagram $\mathcal{C}$. We say $\colim D = B$ if
+    there exist a bunch of maps $\psi_i: D_i \to B$
+    such that all maps with the existing diagram commute.
+    So, for example, the tensor product preserves direct sums.
+    \end{itemize}
+\end{example}
+\begin{theorem}
+    The tensor product commutes with all co-limits.
+    \begin{proof}
+        Call $D$ a diagram in the category $R$-module. Call $M \otimes D$
+        the following diagram:
+        \begin{enumerate}
+            \item For object $N$, we have a new object $M \otimes N$.
+            \item For $\varphi: N \to N'$ $M \otimes \varphi: M \otimes N \xra{1 \otimes \varphi} M \otimes N'$.
+        \end{enumerate}
+        Suppose $D \xra{\varphi} B = \colim D$.
+        Then, for some object $C$,
+        \[ \Hom(M \otimes D, C) \cong \Hom(D, \Hom(M, C)) \cong \Hom(B, \Hom(M, C)) \cong \Hom(M \otimes B, C)\]
+        So $M \otimes B$ is the colimit of the diagram.
+    \end{proof}
+\end{theorem}
+\begin{example}
+    \begin{itemize}
+    \item We can now extend our previous claim.
+    \[ R^{\oplus n} \otimes_R M = (R \otimes M)^{\oplus n} = M^{\oplus n}\]
+    Furthermore, if we choose a basis for $R^{\oplus n} = \bigoplus_{i=1}^n Re_i$, every element of $R^n \otimes M$
+    can be written uniquely as $\sum_{i=1}^n e_i \otimes m_i$.
+    \item If $P \to Q$ is a surjection, then $M \otimes P \to M \otimes Q$ is a surjection.
+    \item If $N = \textrm{coker} \varphi$ where $R^n \xra{\varphi} R^p \to N \to 0$,
+    then $M \otimes N$ is cokernel of $M \otimes R^n \to M \otimes R^p \to M \otimes N \to 0$.
+    \item Let $I \subset R$ be an ideal. Then consider $M \otimes (R/I)$.
+    Let
+    \[ 0 \to I \to R \to R/I \to 0 \]
+    be exact
+    then
+    \[ I \otimes M \xra{\phi} M \to R/I \otimes M \to 0 \]
+    is also exact. But for $\phi: a \otimes m \mapsto am$
+    Thus, $R/I \otimes M = M/IM$
+    \end{itemize}
+    \item Call $M = \Z/4$ and $R = \Z/4$ as a ring.
+    Then $(2) \subset \Z/4$ where $R/2 \to R$ has $1 \mapsto 2$.
+    Thus, $R/2 \otimes_R R/2 = R/2$ and $R \otimes_R R/2 = R/2$.
+    So, $R/2 \otimes R/2 \xra{0} R \otimes R/2$, which makes a non-monomorphism.
+\end{example}
+Consider $R$ and $S \subset R$ be a multiplicatively closed set.
+We define
+\[ R[S^{-1}] = \left\{ \frac{r}{s} \mid r \in R, s \in S\right\}/\approx \]
+such that $\frac{r}{s} \approx \frac{r'}{s}$ if there exists $t \in S\setminus\{0\}$ such that
+$t(rs' - r's) = 0$. One can check that $R[S^{-1}]$ is a commutative ring.
+Then $R \to R[S^{-1}]$ is a universal map to a ring where elements of $S$ become units.
+This is called the \textbf{localization} of $R$ to $S$. One can define the same
+thing for modules, where the $\frac{m}{s} \approx \frac{m'}{s}$ if there exists $t \in S$
+such that $t(ms' - sm')$.
+\begin{theorem}
+    We have that $R[S^{-1}]\otimes_R M \cong M[S^{-1}]$.
+    \begin{proof}
+        Consider the map $\frac{r}{s} \otimes m \to \frac{rm}{s}$.
+        The localization map $M \to M[S^{-1}]$ is universal for maps of $M$
+        into an $R[S^{-1}]$-module. So then there's easy maps from $R \otimes M$ to $R[S^{-1}] \otimes M$
+        and to $M[S^{-1}]$.
+    \end{proof}
+\end{theorem}
+If $0 \to A \to B \to C$ is a short exact sequence,
+then $0 \to A[S^{-1}] \to B[S^{-1}] \to C[S^{-1}] \to 0$.
+Then, if $\frac{a}{s} \mapsto \frac{\varphi(a)}{s} = 0$, then this means $t \phi(a) \approx 0$
+for some $t \in S$. This means that $ta = 0$, meaning $\frac{a}{s} \approx 0$ to begin with.
+This is a property of modules called \textbf{flatness}.

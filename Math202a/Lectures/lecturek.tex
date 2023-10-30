@@ -1,0 +1,67 @@
+% !TEX root = lectures.tex
+
+\section{Lecture K (10/30)}
+We discuss Posets and Zorn's Lemma. A partial ordered set $X$ is a set equipped with a subset of $X \times X$,
+$x \le y$, which defines a relation. Namely, this relation is symmetric and transitive, but also antisymmetry,
+$x\le y$ and $y \le x$ implies $x = x$. A subset $Z \subset X$ is totally ordered (or a chain in $X$) if every pair of elements in $Z$ is comparable.
+An upper bound on $Y \subseteq X$ is an $x \in X$ 
+such that $y \le x$ for all $y \in Y$
+$z \in X$ is maximal if whenever $z \le y$, then $z = y$.
+
+\begin{theorem} [Zorn's Lemma]
+    Consider $X$ a poset. If every chain in $X$ has an upper bound, then $X$ has a maximal element.
+\end{theorem}
+This is logically equivalent to the axiom of choice. One has the following theorem.
+\begin{theorem}
+    Every vector space (over say, $\R$) has a basis.
+    \begin{proof}
+        Let $V$ be a vector space over $\R$. Start with an arbitrary vector $V \ni v \neq 0$. This will span an accompanying
+        subspace $\{\lambda v : \lambda \in \R\}$. If this is the entire space, we're done.
+        Otherwise, there exists $w \in V$ such that $w \notin \{\lambda v : \lambda \in \R\}$.
+        Then $\{v, w\}$ is linear independent. But if this isn't enough, we can continue carrying on this
+        construction on and on. We can continue this countably many times, creating a linearly independent
+        set $\{v_1, v_2, v_3, \dots\}$ and look at finite linear combinations. But this may still not be enough; future
+        countable inductions will only keep the linearly independent set countably sized.
+        
+        To invoke Zorn's lemma, we define a poset $X$. The elements of $X$ are linearly independent subsets of $V$.
+        We use the partial order $A \le B \iff A \subseteq B$. Consider a chain in $X$, $\{A_{\alpha}: \alpha \in \mathcal{A}\}$.
+        We choose $A = \bigcup_{\alpha \in \mathcal{A}} A_{\alpha}$ as the upper bound for this chain.
+        We will show that this is a linearly independent set. Then $v_i \in A_{\alpha_i}$ for $\alpha_i \in \mathcal{A}$.
+        Since exist comparisons between any two, there exists $j$ such that $\bigcup_{i = 1}^{n} A_{\alpha_i} \subseteq A_{\alpha_j}$ (by a simple induction).
+        Now, the $v_i \in A_{\alpha_j}$, so they must be linearly independent.
+
+        Now, applying Zorn's lemma, this means there exists a maximal linearly independent subset $B \in X$.
+        Now, we will show that $B$ spans $V$. Suppose that it didn't; then there would exist $v$ outside of $B$
+        that we could add to $B$, and $B \subseteq B \cup \{v\}$. If $B \cup \{v\}$ is linearly independent,
+        then $B \cup \{v\} \in X$, which would contradict maximality.
+        Suppose for some vectors $b_i \in B$,
+        \[ \sum_{i = 1}^n \lambda_i b_i + \lambda v = 0 \implies v = \sum_{i = 1}^n \frac{-\lambda_i}{\lambda} v_i \]
+        Then all coefficients would be $0$ by the linear independence of $B$, so $\lambda_i = 0$. Note that if $\lambda = 0$,
+        we can't do this, but it's ok because if that were the case, then $\sum_{i = 1}^n \lambda_i b_i = 0$, so the
+        $\lambda_i = 0$ anyways.
+    \end{proof}
+\end{theorem}
+
+\subsection{Topological Spaces}
+We abstract out our analytic notions by defining things not by their distance, but by their open sets.
+\begin{definition}
+    Let $X$ be a set. A \textbf{topology} on $X$ is a collection $\tau$ of subsets of $X$ such that
+    \begin{enumerate}
+        \item $\emptyset, X \in \tau$.
+        \item If $O_{\alpha} \in \tau$, then $\bigcup_{\alpha} O_{\alpha} \in \tau$.
+        \item For finitely many sets $O_1, \dots, O_n$, then $\bigcap_{i = 1}^n O_{\alpha} \in \tau$.
+    \end{enumerate}
+    Elements of $\tau$ are called ($\tau$-)\textbf{open}. $X \setminus O$ is \textbf{closed} if $O$ is open.
+\end{definition}
+\begin{example}
+    \begin{enumerate}
+        \item The biggest possible topology on $X$ is $\mathcal{P}(X)$. This is called the discrete topology.
+        \item The smallest possible topology on $X$ is $\{\emptyset, X\}$. This is called the indiscrete topology.
+        \item A more general topology is the collections of $d$-open sets on a metric space $(X, d)$.
+    \end{enumerate}
+\end{example}
+\begin{definition}
+    For $A \subseteq X$, the \textbf{interior} of $A$, $\inte(A) = \bigcup_\{O :O \subseteq A, O \in \tau\} O$.
+    The \textbf{closure} of $A$, $\overline{A} = \bigcap_\{C: A \subseteq C, X \setminus C \in \tau\} $.
+    $\overline{A} \setminus \inte(A) = \pdv{A}$ is called the boundary of $A$.
+\end{definition}
