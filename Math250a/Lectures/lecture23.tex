@@ -1,0 +1,105 @@
+% !TEX root = lectures.tex
+\section{Lecture 23}
+\subsection{Complex Numbers are Algebraically Closed}
+We shall prove that $\C$ is algebraically closed.
+\begin{proof}
+    Let $f(x) = x^n + \dots + a_n$ be monic with $a_n \neq 0$ (otherwise $f(0) = 0$ and we'd be done). Let $B \gg |a_1|, \dots, |a_n|$.
+    Look at the circle $|x| = B$. Then, the first term dominates the sum
+    so $f(x) \sim x^n$ on this circle.
+    So as $x$ traverses the circle, $x^n$ traverses the circle with radius $B^n$.
+    Now, we make $|x|$ smaller and smaller. The big circle $f(x)$ begins to contracts
+    to be centered around $a_n \neq 0$, so in that course, the curve must pass through the point $0$.
+\end{proof}
+Modulo the Jordan curve theorem, this is a complete proof.
+\begin{proof}
+    Let $f(x)$ be an odd-degree polynomial. We know it always has a root in $\R$
+    (by studying end behavior and the intermediate value theorem).
+    Suppose that the complex numbers are not algebraically closed.
+    Then $\R \subset \C \subset K$ is a Galois extension over $\R$.
+    Call $\gal K/\R = G$ and let
+    $H < G$ be a Sylow $2$-subgroup of $G$. Now, look at $\R \subset K^H \subset K$.
+    The degree $[K : K^H]$ is the biggest power of two dividing $|G|$ (it's exactly $|H|$). This means that $[K^H : \R]$
+    is odd. By the primitive element theorem, $K^H = \R(\alpha)$ for some $\alpha \in K$.
+    But then \text{irr}$(\alpha, \R, x)$ is odd degree
+    and thus has a root in $\R$, so it can only have degree $1$. Thus, $K^H = \R$.
+    Therefore, $|G| = 2^{\ell}$ for some $\ell$. So now there exists some $H_1$
+    such that $\C = K^{H_1}$ (by the
+    fundamental theorem of Galois groups), where in $|H_1| = 2^{\ell - 1}$.
+    Then, there exists $H_1 > H_2$ such that $|H_2| = 2^{\ell - 2}$. This means that
+    $[K^{H_2} : \C] = 2$. This means that $K^{H_2} = \C(\alpha)$ where $\alpha^2 = a \in \C$.
+    But any square root of a complex number is itself a complex number, so $K^{H_2} = \C$,
+    which is a contradiction unless $\ell = 1, K = \C$.
+\end{proof}
+
+\subsection{Solvability by Radicals}
+Take $f(x) \in k[x]$ irreducible with root $\alpha$,
+then \textbf{solvability of $f$ by radicals}
+means that $k(\alpha) \subset k(a_1^{1/n_1})(a_2^{1/n_2}) \dots$.
+By this statement, we mean $k(\alpha) \subset k(b_1)(b_2)\dots$
+and $b_1^{n_1} \in k, b_2^{n_2} \in k(b_1) \dots$.
+\begin{theorem}
+    Let $\alpha \in k^a$ and $f(x) = \text{irr}(\alpha, k, x)$.
+    Then $f$ is solvable by radicals if and only if $\alpha \in K$
+    for some $K/k$ Galois and $\gal K/k$ is solvable. (Recall that a group
+    is solvable means there's a sequence of subgroups $G > H_1 > H_2 \dots$
+    such that each $H_{i + 1}$ is normal over $H_{i}$
+    and $H_{i}/H_{i+1}$ is abelian; if make the quotients finer
+    they can be taken as cyclic).
+\end{theorem}
+To build this result, we take a more basic theorem.
+\begin{theorem}
+    If the characteristic of $k$ doesn't divide $n$ and $k$
+    contains the $n$th roots of unity,
+    then $K/k$ is cyclic, Galois, of degree $n$
+    if and only if $K = k(b)$ such that $b^n \in k$.
+    \begin{proof}
+        Let $\zeta \in k$ be the primitive $n$th root of unity.
+        \begin{itemize}
+            \item [($\Rightarrow$)] Suppose $K = k(b)$. Then $b$ is a root of $x^n - a$,
+            and the other roots are $\zeta^i b$ for $i = 0$ to $n - 1$. Then $K$ is the splitting
+            field of that polynomial and is thus normal. By the characteristic, the extension is separable. Thus, 
+            the extension is Galois. Now, let $\sigma \in \gal(K/k)$. Then 
+            $\sigma(b) = \zeta^{n_{\sigma}} b$. Then $\sigma \mapsto n_{\sigma}$
+            is a map from the Galois group to $\Z/n$. This is an injection, because if $n_{\sigma} = 0$,
+            then $b$ is fixed, but it generates the extension, so $\sigma$ must be the identity.
+            This means the Galois group is a subgroup of a cyclic group and is thus cyclic.
+            \item [($\Leftarrow$)] Suppose $K/k$ is cyclic Galois, e.g. $\gal K/k = \langle \sigma \rangle$.
+            We need to find an element $b$ such that $\sigma(b) = \zeta b$, because then $K = k(b)$.
+            To do this we need to write $\zeta = \frac{\sigma(b)}{b}$. We prove another theorem to do this.
+            \begin{theorem}[Hilbert 90, Zahl Bericht 1897]
+                Let $K/k$ be cyclic Galois.
+                $\beta \in K$ has $N(\beta) = \prod_{\sigma \in \gal K/k} \sigma(\beta) = 1$
+                if and only if $\beta = \frac{\sigma(\theta)}{\theta}$ for some $\theta \in K$.
+                \begin{proof}
+                    We write 
+                    \[ \beta = \gamma + \beta \sigma(\gamma) + \beta \sigma(\beta) \sigma^2(\gamma) + \dots + \beta \sigma(\beta) \dots \sigma^{n - 2}(\beta) \sigma^{n - 1}(\gamma)\]
+                    Then
+                    \[ \beta \sigma(\beta) = \beta \sigma(\gamma) + \beta \sigma(\beta) \sigma^2(\gamma) + \dots +\gamma\]
+                    Thus $\beta \sigma(\beta) = \beta$ (TODO: what?)
+                    Then, it's true that the automorphisms of $K$ are linearly independent over $K$ (thus the expression is not $0$ for some $\gamma$).
+                    In fact, in generaly, if $M$ is a monoid and there are distinct nonzero maps $\sigma_i$ such that $M \to K^{\times}$ then $\sigma_i$ are linearly independent.
+                    If $n = 1$, this is true by definition. Otherwise suppose $\sum_i a_i \sigma_i = 0$ is the shortest linear dependence relation.
+                    Then there exists $m \in M$ such that $\sigma_1(m) \neq \sigma_2(m)$ by distinctness
+                    and we can write
+                    \[ 0 = \sum_i a_i \sigma_1(m) \sigma_i(t) - \sum_i a_i \sigma_i(m) \sigma_i(t), \]
+                    which removes the first term.
+                    This is a shorter linear dependence relation, so we're done.
+                \end{proof}
+            \end{theorem}
+            Now, note that $\zeta \in k$, so $\sigma(\zeta) = \zeta$
+            and thus $N(\zeta) = \zeta^n = 1$, so we apply the theorem. Thus we're done.
+        \end{itemize}
+    \end{proof}
+\end{theorem}
+
+Now we can tackle the main theorem.
+\begin{proof}
+    If $f$ is solvable by radicals, this means that $\alpha \in K = k(b_1)(b_2)\dots$ such that $b_{i + 1}^{n_{i + 1}} \in k(b_1)\dots(b_i)$.
+    Without loss of generality the $k$ contains roots of unity (it adds only a few more radicals
+    and is a cyclic Galois extension).
+    Then each quotient group (Galois of a sub-extension) is a cyclic group, creating a tower of cyclic quotients in $\gal K/k$.
+
+    Suppose $G = \gal K/k$ is solvable and $\alpha \in K$. Then $K k(\zeta)/K$ 
+    Without loss of generality $\zeta \in k$. Then $K \supset K_1 \dots K_n = k$, thus $K_n/K_{n + 1}$ is Galois
+    and cyclic, so $K_i = K_{i + 1}(\beta)$, $\zeta \beta = \sigma \beta$, $\beta^n \in K_{i + 1}$
+\end{proof}

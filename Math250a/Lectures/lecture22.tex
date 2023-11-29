@@ -1,0 +1,65 @@
+% !TEX root = lectures.tex
+\section{Lecture 22}
+\subsection{Galois Theory}
+Note that due to the theorem we
+discussed last time, $\gal K/(K^H \cap K^{H'}) = \langle H, H' \rangle \subset G$.
+And further $H_F \cap H_{F'} = H_{FF'}$.
+
+Let $K = k(\alpha)$ be a Galois extension and $\text{irr}(\alpha, k, x) = f$.
+Then $\gal K/k \subset \Sigma_{\deg f}$ because, 
+it must permute the roots of $f$ (and the
+extension is separable). Let $k \subset F \cap F' \subset K$
+with $F \subset K$ and $F' \subset K$. Suppose $F/k$ is Galois.
+$F$ is the splitting field of some polynomial, then $FF'/F'$ is Galois.
+There exists a map from $\gal FF'/F'$ to $\gal F/F\cap F'$
+because TODO
+
+This implies $|\gal FF'/F'| = [FF' : F']$ divides $[F: (F\cap F')]$.
+
+\begin{theorem}
+    Let $F, F'$ be Galois over $k = F \cap F'$. Here, $\gal FF'/k = \gal F/k \times \gal F'/k$.
+    \begin{proof}
+        If we have a map $\sigma : F/k \to k^a$ fixing $k$, then
+        we can create a map $\overline{\sigma}: FF'/F' \to k^a$. But $\overline{\sigma}$ restricted to $F$
+        is exactly $\sigma$, so $(\sigma, 1)$ is in the image of the map  $\gal FF'/k \to \gal F/k$
+        which projects by restriction.
+    \end{proof}
+\end{theorem}
+
+Consider $k \subset F \subset K$ and $\sigma \in \gal K/k$ with $K/k$ Galois. Then what happens to $\sigma F$?
+Consider $\alpha \in \gal K/F$. Then $\sigma \alpha \sigma^{-1}$ fixes $\sigma F$. So
+as a corollary, $H_F$ is normal in $G = \gal K/k$ if and only $F/k$ is a normal field extension.
+
+As a special case, suppose $\gal K/k$ is abelian (called an abelian extension). Every subfield $K \supset F \supset k$ is normal over $k$.
+If we have two abelian extensions $K, K'$, then $KK'$ is abelian too.
+We will call $k^{\text{ab}}$ the biggest abelian extension of $k$.
+
+\begin{example}
+    \begin{itemize}
+        \item $k \subset k(\sqrt{\alpha})$ is always Galois if $a \in k^2$ (Assuming characteristic not $2$).
+        The automorphism group is trivial, only the identity on $\sqrt{a}$, or mapping to $-\sqrt{a}$.
+        \item Suppose $K = k(\alpha)$ and $[K: k] = 2$. Then $\text{irr}(\alpha, k, x) = x^2 + ax + b$.
+        By completing the square, one can rewrite this as $y^2 - c = 0$ wherein $k(\alpha) = k(\sqrt{c})$.
+        \item Degree 3 extensions where the characteristic is not $2$ or $3$.
+        \item Then let's say we take separable polynomial $x^3 + ax + b$.
+        By the degree, there exist $\alpha_1, \alpha_2, \alpha_3$ roots
+        such that $\sum_i \alpha_i = 0$. 
+        Define $\delta = (\alpha_1 - \alpha_2)(\alpha_1 - \alpha_3)(\alpha_2 - \alpha_3)$.
+        We have $k \subset k(\alpha_1) \subset k(\alpha_1, \alpha_2, \alpha_3)$.
+        $\Delta = \delta^2$ = ``discriminant'' is in the base field
+        as a symmetric function of the roots (as it's expressible in terms of coefficients $a$ and $b$, $\Delta = - a^3 - b^2$).
+        If $\delta$ is not in $k$, then $k(\delta)$ is a degree $2$ extension of $k$.
+        If $\Delta \notin k^2$ then the normal closure is $k(\alpha, \delta)$ of degree $6$,
+        with Galois group $\Sigma_3$. If $\delta \in k$, then the Galois group
+        cannot change $\delta$, so the group can only contain the the 3-cycles $\Z_3$.
+    \end{itemize}
+\end{example}
+
+Suppose $k \subset K = k(x_1, \dots, x_5)$. Consider $f(t) = \prod (t-x_i)$.
+Then the Galois group of $K/k = \Sigma_5$. Consider $g(x)= x^5 -4x + 2$,
+which has $3$ real roots and 2 imaginary roots. By Eisenstein's criterion, this
+is irreducible. Let $\alpha$ be some root,
+then clearly $\Q \subset \Q(\alpha) \subset K$ where $K$ is the splitting field of $g$.
+The Sylow $5$-subgroup has a $5$-cycle.
+Furthermore, using the operation of conjugation, there is a transposition of complex
+conjugates (two of the roots). These two generate the entire symmetric group.

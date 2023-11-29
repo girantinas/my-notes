@@ -1,0 +1,78 @@
+% !TEX root = lectures.tex
+
+
+\section{Lecture J (11/27)}
+\subsection{Arzela-Ascoli}
+
+We work towards the proof of the following theorem.
+Let $X$ be a topological space and define
+\[ \mcc(X, \R) = \{f: X \to \R \text{ continuous}\} \]
+given metric structure in $d_{\text{Sup}}(f, g) = \sup_{x \in X} |f(x) - g(x)|$.
+\begin{theorem}[Arzela-Ascoli]
+    Let $\mcf \subseteq \mcc(X, \R)$ where $X$ is compact Hausdorff.
+    Then $\mcf$ is compact if and only if
+    \begin{enumerate}
+        \item $\mcf$ is closed.
+        \item $\forall x \in X, \sup\{|f(x)| : f \in \mcf\} < \infty$
+        \item $\mcf$ is equicontinuous i.e. for all $x \in X, \epsilon > 0$,
+        then tehre exists an open set $O \ni x$ such that for any $f \in \mcf$,
+        $y \in O$ implies $|f(y) - f(x)| < \epsilon$.
+    \end{enumerate}
+\end{theorem}
+
+Here are some facts that will help with the proof.
+\begin{enumerate}
+    \item If $(X, d)$ is complete and $A \subseteq X$ is closed means $A$ is complete.
+    \item $\C(X, \R)$ is complete.
+    \item $X$ is Hausdorff, $A \subseteq X$ compact means $A$ is closed.
+    \item $A \subset X$ as a metric space, then $A$ is compact if and only if $A$ is complete and totally bounded.
+\end{enumerate}
+
+Now we start the proof.
+\begin{proof}
+    \textit{Closed, bounded distance from 0, and equicontinuous means $\mcf$ is compact.}
+    $\mcf$ is complete by facts (1) and (2). To show the space is totally bounded,
+    for any $\epsilon > 0$, there exist a finite set of points whose $\epsilon$ balls
+    cover $\mcf$. Let $x \in X$, by equicontinuity there exists $O_x$
+    such that $x \in O_x$ and $|f(y) - f(x) | < \epsilon/3$ for all $f \in \mcf, y \in O_x$.
+    Then $X = \bigcup_x O_x$, so we can write a finite collection of points $x_1, \dots, x_n \in X$
+    such that $X = \bigcup_{i = 1}^{n} O_{x_i}$. Clearly for any $f \in \mcf$, it is bounded (finitely many points $x_i$,
+    and we only deviate by $\epsilon/3$ from them and the 2nd assumption in the hypothesis) in between $[-M, M]$. Suppose we divide these $O(M)$ intervals into pieces
+    that are of size at most $\epsilon/3$. Then there are at most $r = O(M/\epsilon)$ values (inverval of values, really) we can pick
+    for a function to satisfy. For each of these, we choose $g \in \mcf$ that follows this choice (if it exists).
+    We claim $g$ form a finite $\epsilon$-net of $\mcf$.
+
+    Let $f \in \mcf$ and consider its values on the $x_i$. Then by the existence of $f$, there exists
+    a corresponding $g$, that agrees with $f$ around these values, that we chose for the net.
+    Now for a given $x$, choose an $x_i$ such that $x \in O_{x_i}$.
+    Then 
+    \[ |g(x) - f(x)| \le |g(x) - g(x_i)| + |g(x_i) - f(x_i)| + |f(x_i) - f(x) < \epsilon/3 + \epsilon/3 + \epsilon/3 = \epsilon \]
+
+    \textit{$\mcf$ is compact means closed.} $\mcf$ is a compact subset of a Haysdorff space, so $\mcf$ is closed.
+
+    \textit{$\mcf$ is compact means bounded distance from $0$}
+    Consider $\tau_x: \C(X, \to \R) \to \R$ such that $\tau_x(f) = f(x)$. This is a map that is clearly continuous.
+    Restricting $\tau_x: \mcf \to \R$, then since $\mcf$ is compact, that means $\tau_x(\mcf)$ is compact over $\R$.
+    This means it's bounded, e.g. $\{f(x) : f \in \mcf \}$ is bounded.
+
+    \textit{$\mcf$ is compact means equicontinuous} Let $\epsilon > 0$. Since $\mcf$ is compact, there exists
+    a finite $\epsilon/3$-net $g_1, \dots, g_n \in \mcf$. Now take a point $x \in X$. For each $i \in [1, n]$,
+    there exists an open set $G_i \ni x$ such that $|g_i(y) - g_i(x) | < \epsilon/3$ whenever $y \in G_i$.
+    Now, if we set $O = \bigcap_{i = 1}^n G_i$,
+    then for $f \in \mcf, y \in O$, $|f(y) - f(x)| < \epsilon/3 + \epsilon/3 + \epsilon/3 = \epsilon$.
+\end{proof}
+
+\subsection{Weierstrass Approximation Theorem}
+\begin{theorem}
+    The polynomials with real coefficients are dense in $\mathcal{C}([0, 1], \R)$
+    wit the supremum norm.
+\end{theorem}
+The Stone-Weierstrass theorem is a more general result of this phenomenon.
+Let's explore how to define these polyomials. Let $f : [0, 1] \to \R$ continuous.
+We claim that the sequence of polynomials (called the Bernstein polynomials)
+\[ P_n(f)(x) = \sum_{i = 0}^n f\qty(\frac{i}{n}) \binom{n}{i} x^i (1-x)^{n - i} \]
+satisfy $P_n(f) \to f$ in the supremum norm on $[0, 1]$.
+
+Let $x \in [0, 1]$ and $n \in \N$ be given. Imagine tossing a coin $n$ times
+independently where the individual heads probability is $x$. Then we pay $f(\frac{\text{number of heads}}{n})$.
+Then $P_n(f)(x)$ is the expected payment. Then by the law of large numbers, $P_n(f)(x) \to f(x)$ by continuity.

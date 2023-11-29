@@ -1,0 +1,159 @@
+% !TEX root = lectures.tex
+\section{Lecture 19}
+\subsection{Field Theory}
+A field is a ring where every element has a multiplicative inverse.
+Some familiar fields:
+\begin{enumerate}
+    \item $\Q \subset \R \subset \C$ are common fields.
+    \item If $k$ is a field, then $k(x_1, \dots, x_n)$,
+    the set of rational functions with coefficients in $k$,
+    is a field.
+    \item $k[[x]][x^{-1}]$ is the field of Laurent series.
+    \item $\Z/p$ is a field for prime $p$.
+\end{enumerate}
+
+\begin{definition}
+    Let $k$ be a field. Then
+    there is a ring homomorphism from $\Z \to k$
+    that sends $1 \mapsto 1_k, 2 \mapsto 1_k + 1_k, 3 \mapsto 1_k + 1_k + 1_k, \dots$.
+    The kernel of this ring homomorphism must be a prime ideal of $\Z$,
+    call it $(n)$. Then we define the \textbf{characteristic} as $\text{char} k = n$.
+\end{definition}
+
+Often we want to adjoint polynomials to our fields.
+If $p(x) \in k[x]$ is irreducible,
+there is a \textbf{field extension} $k(\alpha)$
+where $\alpha$ is a root of $p$. Namely,
+$k(\alpha) = k[x]/(p(x))$ is a field, because $p(x)$ is a maximal ideal.
+And this is exactly $k(\alpha)$ with isomorphism $x \mapsto \alpha$.
+\begin{definition}
+    Consider a field $F$ and an extension $F \subset E$. $[E : F] = \text{dim}_F(E)$.
+    If $k \subset F \subset E$, then $[E: F][F: k] = [E: k]$.
+\end{definition}
+
+\begin{theorem}
+    $[k[x]/(p) : k] = \text{deg} p$.
+\end{theorem}
+
+\begin{definition}
+    Let $k \subset F$ be a field extension.
+    We call $\alpha \in F$ \textbf{algebraic} over $k$ if it's the root of some polynomial in $k[x]$.
+    There is a unique lowest degree monic irreducible polynomial.  
+\end{definition}
+
+Note that $\Q \subset \Q(x)$ is not algebraic, because the indeterminate $x$ is not a root of any polynomial
+in $\Q[x]$.
+
+\begin{definition}
+    $k \subset F$ is \textbf{algebraic} if every element $\alpha \in F$ is
+    algebraic over $k$.    
+\end{definition}
+
+\begin{theorem}
+If $F$ is a finite extension ($\text{dim}_k F < \infty$) of $k$,
+then it's a algebraic over $k$.
+
+\begin{proof}    
+Then take $\alpha \in F$
+and consider powers $1, \alpha, \alpha^2, \dots$.
+These cannot all be linearly independent because the dimension as a
+vector space is finite. Thus, there is a linear combination $\sum_{i = 1}^{\dim F} c_i \alpha^i = 0$,
+thus $\alpha$ is a root of $p(x) = \sum c_i x^i$.
+\end{proof}
+\end{theorem}
+
+\begin{theorem}
+    If a field extension $F$ is algebraic and finitely-generated over $k$,
+    then it's finite over $k$.
+    \begin{proof}
+        Write $F = k(\alpha_1, \dots, \alpha_n)$.
+        Note that $k \subset k(\alpha_1) 
+        \subset k(\alpha_1, \alpha_2)
+        \subset \dots \subset F$.
+    \end{proof}
+\end{theorem}
+
+The set of finite extensions of $\C(x)$
+is exactly the set of Riemann surfaces.
+The set of finite extensions of $\Z/p$ are all the finite fields
+with the increasing powers of $p$.
+
+\begin{theorem}
+    Consider two extensions of $k$, $F$ and $E$ and
+    maps $\sigma: F \to E$ over $k$, e.g. $\sigma(a) = a$
+    for all $a \in k$. If $\alpha \in F$ is a root of $p(x) \in k[x]$,
+    then 
+    \[ 0 = \sigma(0) = \sigma(p(\alpha)) = \sigma(p)(\sigma(\alpha)) = p(\sigma(\alpha)),\]
+    so $\sigma(\alpha)$ is a root of $p$.
+\end{theorem}
+As a corollary, is $k \subset F$ is algebraic, then $\sigma: F \to F$ is
+always an isomorphism. To prove this, all nontrivial field homomorphisms are injective, because
+the kernel of a ring homomorphism is always an ideal, and fields have no nontrivial ideals.
+Furthermore, $\beta \in F$ satifies $\text{irr}(\beta, k, x) = p(x)$.
+Saying $\beta_1, \dots, \beta_s$ are roots of $p$ in $F$.
+But $\sigma$ doesn't change the degree of $p$,
+so $\sigma(\beta_i) = \beta_{\pi(i)}$ for some permutation $i$. Thus, $\beta \in \text{image} \sigma$,
+so the map is a surjection.
+
+\begin{theorem}
+    Given any field $k$,
+    there exists an algebraic extension $k \subset k^a$,
+    called the \textbf{algebraic closure}, 
+    such that $k^a$ is \textbf{algebraically closed},
+    which means there are no n
+    ontrivial algebraic extensions or equivalently,
+    every polynomial in $k^a[x]$ splits 
+    as a product of linear factors (or has $\deg$ roots in $k^a$).
+
+    \begin{proof}
+        Find all polynomials in $k[x]$, and look at
+        \[ \{ p_{\alpha}(x_{\alpha}) \text{ are the irreducible polynomials.} \}\]
+        Now $k \subset k_1 = k[\{x_{\alpha}\}]/(\{p_{\alpha}\}) \subset k_2 \subset \dots$.
+        If there are no more irreducible polynomials at some stage $j$, then $k^a = k_j$.
+        Otherwise, we set $k^a = \frac{k[x_{\alpha}, x_{\beta}, \dots]}{(p_{\alpha}, p_{\beta}, \dots)}$
+        to be the union.
+        As long as the ideal on the bottom doesn't have $1$,
+        we should be good; which it doesn't, otherwise we would've terminated at a finite stage.
+        Furthermore, $k^a$ is unique up to isomorphism because $F \cong E$ by just taking
+        a field homomorphism between them.
+    \end{proof}
+\end{theorem}
+We can write
+\[ \C[x]/(x^2 - 2) = \C[x]/(x-\sqrt{2}) \times \C[x]/(x + \sqrt{2}) = \C \times \C \]
+this is not a field! Algebraic closure really says that we cannot make a field any bigger.
+
+Furthermore, $\Z/p(s, t) \subset Z/p(s^{1/p}, t^{1/p})$
+cannot be generated by two elements.
+
+\begin{theorem}
+For a field of finite characteristic $k$ and
+$F = k(\alpha)$ algebraic, then there are at most finitely many fields
+in between $k$ and $F$.
+
+And conversely if there are at most finitely many fields, then
+there is a single generator.
+\end{theorem}
+
+\begin{theorem}
+Let $k \subset F$ be an algebraic field extension.
+Define $\Sigma = \{ \sigma: F \to k^a \text{ over } k \}$.
+Then $[F: k]_s := |\Sigma|$ is finite.
+\begin{proof}
+    First, it's clear that if $k \subset F \subset E$ algebraic,
+    then $[E: k]_s = [E: F]_s [F: k]_s$.
+    To specify a new map, the extra freedom we get is specified
+    by $[E: F]_s$.
+
+    $k(\alpha) = F$, then $\Sigma \leftrightarrow \{\text{roots in } k^a \text{ of } \text{irr}(\alpha, k, x)\}$,
+    then $[k(x) : k] \le \text{deg}(\text{irr}(\alpha, k, x))$.
+    TODO
+\end{proof}
+\end{theorem}
+
+\begin{definition}
+    $F$ as an algebraic extension over $k$ is separable if $[F:k] = [F:k]_s$.
+\end{definition}
+
+\begin{theorem}
+    $F$ over $k$ is separable if and only if $E/k$ and $F/E$ are separable.
+\end{theorem}
