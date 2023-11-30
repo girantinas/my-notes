@@ -1,0 +1,50 @@
+% !TEX root = lectures.tex
+\section{Lecture J+1 (11/29)}
+\subsection{Stone-Weierstrass Theorem}
+
+Now take $X$ a compact Hausdorff topological space.
+Let $\mca \subseteq \mcc(X, \R)$.
+
+\begin{definition}
+$\mca$
+\textbf{separates} points if $\forall x, y \in X, x \neq y$ there exists $f \in \mca$
+with $f(x) \neq f(y)$. 
+
+\begin{definition}
+$\mca$ is called an \textbf{algebra}
+if it is a real vector space
+such that $f, g \in \mca$ implies $fg \in \mca$.
+\end{definition}
+
+\begin{definition}
+    $\mca$ is a \textbf{lattice} if $f, g \in \mca$ means $\max\{f, g\}, \min\{f, g\} \in \mca$.
+\end{definition}
+If $\mca$ is an algebra or a lattice, then so is $\overline{\mca}$.
+Now we state the more general theorem, which reduces to the
+approximation theorem by setting $\mca$ as the closure of the set of polynomials
+(we need $X = [0, 1]$ for compactness).
+\begin{theorem}
+    Let $X$ be a compact Hausdorff space. If $\mca$ a closed algebra of $\mcc(X, \R)$
+    that separates points, then either
+    \begin{enumerate}
+        \item $\mca = \mcc(X, \R)$, characterized by the condition that $\mca$ contains a
+        non-zero constant function.
+        \item There exists $x_0 \in X$ such that $\mca = \{ f \in \mcc(X, \R) : f(x_0) = 0\}$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+    For all $\epsilon > 0$, there exists polynomial $P$ on $\R$ such that
+    $P(0) = 0$ and $||x| - P(x)| < \epsilon$ for all $x \in [-1, 1]$.
+    \begin{proof}
+        We claim it is sufficient to approximate
+        \begin{align*}
+            (1-t)^{1/2} &= 1 + \frac{1}{2}(-t) + \frac{\frac{1}{2} \cdot \frac{-1}{2} (-t)^2}{2!} + \frac{\frac{1}{2} \cdot \frac{-1}{2} \cdot \frac{-3}{2}}{(-t)^3}{3!} + \dots \\
+            &= 1 - \frac{t}{2} - \frac{t^2}{8} - \frac{t^3}{16} -\dots \\
+            &= 1 - \sum_{n = 1}^{\infty} \frac{\prod_{j = 1}^{n - 2} (1 + 2j)}{2^n n!} t^n
+        \end{align*}
+        We can rewrite the coefficients as 
+        \[ c_n := \frac{2^{-n} (2n - 3)!}{n! (n - 2)! 2^{n - 2}} = \binom{2n - 2}{n} \frac{2^{- (2n - 2)}}{2n - 2} \le \Theta(1) \cdot n^{-3/2}\]
+        Thus, we have $\sum_{n = 1}^{\infty} |c_n| < 1$, so the series converges uniformly on $t \in [0, 1]$.
+    \end{proof}
+\end{theorem}
