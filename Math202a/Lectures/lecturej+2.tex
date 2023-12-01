@@ -1,0 +1,85 @@
+% !TEX root = lectures.tex
+\section{Lecture J+2 (12/1)}
+
+We repeat the lemma we proved (mostly last time).
+
+\begin{theorem}
+    For all $\epsilon > 0$, there exists polynomial $P$ on $\R$ such that
+    $P(0) = 0$ and $||x| - P(x)| < \epsilon$ for all $x \in [-1, 1]$.
+    \begin{proof}
+        We claimed it was sufficient to approximate
+        \begin{align*}
+            (1-t)^{1/2} &= 1 - \sum_{n = 1} c_n t^n
+        \end{align*}
+        Where we have $\sum_{n = 1}^{\infty} |c_n| < 1$, so the series converges uniformly on $t \in [0, 1]$.
+
+        This means there exists a polynomial $Q$ with $|(1 - t)^{1/2} - Q(t)| < \epsilon/2$
+        for all $t \in (0, 1]$. Set $x^2 = 1 - t$
+        and $R(x) = Q(1 - x)$ which means $R$ polynomial with
+        $||x| - R(x)|< \epsilon/2$ for all $x \in [-1, 1]$.
+        Take $P(x) = R(x) - R(0)$ to obtain the desired polynomial.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}
+    Consider $\R^2$ as an algebra under pointwise addition and multiplication, e.g. $(u_1, u_2) \cdot (v_1, v_2) = (u_1 v_1, u_2 v_2)$.
+    Then the only subalgebras of $\R^2$ are $\R^2, \{(0,0)\}$ and
+    the three linear $1-d$ subspaces of $(0, 1)$, $(1, 0)$, and $(1, 1)$ (i.e. 
+    all the products and sums of them).
+    \begin{proof}
+        If $(a, b) \neq (0, 0)$ and $a\neq b$, then $(a, b)$ and $(a^2, b^2)$
+        are linearly independent. The other cases are $a \neq 0 = b$, $b \neq 0 = a$, $a = b \neq 0$.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}
+    Let $\mca \subseteq \mcc(X, \R)$ be a closed algebra. Then $\mca$ is a lattice.
+    \begin{proof}
+        Let $f \in \mca$. We claim $|f| \in\mca$. Without loss of generality, $f \neq 0$.
+        \[ || f ||_{\infty} = \max\{|f(x)| : x \in X\} > 0 \]
+        We write $\max$ instead of $\sup$
+        because $X$ is compact, so the image of $f$ is compact and thus closed and bounded in $\R$.
+        Then define $h = \frac{f}{||f||_{\infty}} : X \to [-1, 1]$. Clearly by the vector space structure, $h \in \mca$.
+        Let $\epsilon > 0$ and $P$ be as from the first theorem today. Then
+        \[ ||h| - P \circ h | < \epsilon \]
+        But $P \circ h = c_1 h + c_2 h^2 + \dots + c_k h^k$, so $P \circ h \in \mca$.
+        Since $\mca$ is closed, this implies that $|h| \in \mca$. Thus, $|f| = ||f||_{\infty} |h| \in \mca$.
+
+        Now, note we can write $\max\{f, g\} = \frac{1}{2}(f + g + |f-g|)$ and $\min\{f, g\} = \frac{1}{2}(f + g - |f - g|)$.
+    \end{proof}
+\end{theorem}
+
+\begin{theorem}
+    For compact $X$, let $\mca \subseteq \mcc(X, \R)$ be a closed lattice.
+    Let $f \in \mcc(X, \R)$. If for all $ x, y \in X, x \neq y$,
+    there exists $g_{xy} \in \mca, g_{xy}(x) = f(x), g_{xy}(y) = f(y)$.
+    Then $f \in \mca$.
+    \begin{proof}
+        Let $\epsilon > 0$. Then define
+        \[ U_{xy} = \{z \in X: f(z) < g_{xy}(z) + \epsilon\}, V_{xy} = \{z \in X: f(z) > g_{xy}(z) - \epsilon\} \]
+        Then for given $y$, $\{U_{xy} : x\in X\}$ is an open cover of $X$.
+        Since $X$ is compact, there exist $x_1, \dots, x_n$ such that $X = \bigcup_{i = 1}^n U_{x_i}$.
+        Define $V_y = \bigcap_{i = 1}^n V_{x_i, y}$ and $g_y = \max\{g_{x_1, y}, \dots, g_{x_n, y}\} \in \mca$.
+        On $X$, we have that $f < g_y + \epsilon$ and $f > g_y - \epsilon$ on $V_y$.
+        Now, $\{V_y: y\in X\}$ is an open cover of $X$. Compactness means $X = \bigcup_{i = 1}^{m } V_{y_i}$.
+        Then $g = \min\{g_{y_1}, \dots, g_{y_m}\}$. Thus, $f < g + \epsilon$ on $X$ and $f > g - \epsilon$ on $X$.
+        Therefore, $d(f, g) < \epsilon$ and $g \in \mca$. So by $\mca$ being closed, $f \in \mca$.
+    \end{proof}
+\end{theorem}
+
+These four lemmas will build up the proof of the Stone-Weierstrass theorem.
+\begin{proof}
+    Define for $x, y \in X, x \neq y$ and $f \in \mca$.
+    Call $\mca_{xy} = \{(f(x), f(y)): f \in \mca\}$. This is a subalgebra of $\R^2$.
+    There are a few different cases. 
+    
+    If this algebra is the span of $\{(0, 0)\}$ or $\{(1, 1)\}$, then $\mca$ wouldn't separate points.
+
+    If this algebra is the span of $\{(0, 1)\}$ or $\{(1, 0)\}$
+    then all the functions vanish on one of the points (which is necessarily unique).
+    
+    Otherwise for all $x, y, \in X, x \neq y$
+    and $\mca_{xy} = \R^2$. By lemmas $3$ and $4$,
+    there exists $g_{xy}(x) = f(x), g_{xy}(y) = f(y)$,
+    so $f \in \mca$ and thus $\mca = \mcc(X, \R)$.
+\end{proof}
