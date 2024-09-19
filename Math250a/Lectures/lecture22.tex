@@ -17,7 +17,7 @@ because TODO
 This implies $|\gal FF'/F'| = [FF' : F']$ divides $[F: (F\cap F')]$.
 
 \begin{theorem}
-    Let $F, F'$ be Galois over $k = F \cap F'$. Here, $\gal FF'/k = \gal F/k \times \gal F'/k$.
+    Let $F, F'$ be Galois over $k = F \cap F'$. Then, $\gal FF'/k = \gal F/k \times \gal F'/k$.
     \begin{proof}
         If we have a map $\sigma : F/k \to k^a$ fixing $k$, then
         we can create a map $\overline{\sigma}: FF'/F' \to k^a$. But $\overline{\sigma}$ restricted to $F$
@@ -42,15 +42,20 @@ We will call $k^{\text{ab}}$ the biggest abelian extension of $k$.
         By completing the square, one can rewrite this as $y^2 - c = 0$ wherein $k(\alpha) = k(\sqrt{c})$.
         \item Degree 3 extensions where the characteristic is not $2$ or $3$.
         \item Then let's say we take separable polynomial $x^3 + ax + b$.
+        The polynomial is only irreducible if and only if it has no root in $k$.        
+
+
         By the degree, there exist $\alpha_1, \alpha_2, \alpha_3$ roots
         such that $\sum_i \alpha_i = 0$. 
         Define $\delta = (\alpha_1 - \alpha_2)(\alpha_1 - \alpha_3)(\alpha_2 - \alpha_3)$.
         We have $k \subset k(\alpha_1) \subset k(\alpha_1, \alpha_2, \alpha_3)$.
         $\Delta = \delta^2$ = ``discriminant'' is in the base field
-        as a symmetric function of the roots (as it's expressible in terms of coefficients $a$ and $b$, $\Delta = - a^3 - b^2$).
+        as a symmetric function of the roots (as it's expressible in terms of coefficients $a$ and $b$, $\Delta = - 4a^3 - 27b^2$).
         If $\delta$ is not in $k$, then $k(\delta)$ is a degree $2$ extension of $k$.
         If $\Delta \notin k^2$ then the normal closure is $k(\alpha, \delta)$ of degree $6$,
-        with Galois group $\Sigma_3$. If $\delta \in k$, then the Galois group
+        with Galois group $\Sigma_3$. 
+        
+        Otherwise, if $\Delta \in k^2$ wherein $\delta \in k$, then the Galois group
         cannot change $\delta$, so the group can only contain the the 3-cycles $\Z_3$.
     \end{itemize}
 \end{example}

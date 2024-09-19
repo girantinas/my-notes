@@ -1,11 +1,11 @@
 % !TEX root = lectures.tex
 \section{Lecture 4}
 \subsection{Uniqueness of the Structure Theorem}
-Let's recap last time. Suppose $M$ is a torsion finitely-generated module over a PID $R$; we wish to show
+Let's recap last time. Suppose $M$ is a finitely-generated torsion module over a PID $R$; we wish to show
 $M \cong \bigoplus_a R/(a)$ for some $a$.
 We saw last time that
 \[ M \cong \bigoplus_{p \text{prime}} M(p) \]
-where $M(p) = \{ m \in M \mid p^n m = 0 \text{some } n \}$. Thus, without loss of generality, we can just take
+where $M(p) = \{ m \in M \mid p^n m = 0 \text{for some } n \}$. Thus, without loss of generality, we can just take
 $M = M(p)$ and decompose it. We will show that we can write
 \[ M = \bigoplus_{i = 1}^m R/(p^{a_i}) \]
 Suppose we have 2 generators and $\ann_R M = (p^a)$. That means there exists some element
@@ -112,3 +112,20 @@ Now what does the matrix look like?
 \]
 where the $\mathbf{0'}$ has a $1$ in the top right.
 Note that $\det(A - tI_d)$ is a polynomial in $t$ which annihilates this whole thing.
+
+Jordan normal form:
+blocks look like
+\[\begin{bmatrix}
+  \lambda_1 & 0 \\
+  1 &  \lambda_1 
+\end{bmatrix}\]
+Means $(x- \lambda_1)^2$. For complex eigenvalues $\lambda_k = a_k + ib_k$
+(say of multiplicity 2) you get
+\[\begin{bmatrix}
+    C_k & 0 \\
+    I & C_k
+\end{bmatrix}, C_k = \begin{bmatrix}
+    a_k & -b_k \\
+    b_k & a_k
+\end{bmatrix}\]
+

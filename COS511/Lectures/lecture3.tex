@@ -1,0 +1,106 @@
+% !TEX root = lectures.tex
+\section{Lecture 3}
+Consider the problem of Online TSP. Given $G = (V, E)$ over $N$ nodes
+where there are $N!$ possible routes. If we do not mutate the instance,
+then if $P \neq NP$, then we would solve $G$ in poly-time.
+In general, Hedge cannot be implemented faster than $\Omega(\text{\# experts})$.
+The question to ask is then, what types of problems can I learn \textbf{efficiently}?
+
+\subsection{Mathematical Optimization}
+In mathematical optimization/programming, we have a set $K \subseteq \R^d$ and an objective function
+$f: K \to \R$. Our goal is to find a $x \in K$ such that $\forall y \in K \, f(x) \le f(y)$, i.e.
+find the $x$ that minimizes $f$.
+
+\begin{example}
+    \begin{enumerate}
+        \item One example is linear regression. Given $N$ points
+        $ \{ (a_i, b_i) \; : i \in [N] \}$ we wish to find the line of
+        best fit, i.e. $x \in \R^d$ that minimizes $\sum_{i = 1}^{N} (a_i^{\top} x - b_i)^2$.
+        \item Another example is the shortest path problem. $K = \{0, 1\}^{|E|}$
+        and there's a function $W: E \to \R$ for a graph $G = (V, E)$.
+        We wish to find $x \in K$ such that $x$ is a path from $s$ to $t$ (two given nodes)
+        and minimize $\sum_{e \in K} x_e W_e$.
+    \end{enumerate}
+\end{example}
+
+When is MP solvable efficiently? When the MP is a convex program, there exist efficient algorithms
+to find solutions.
+
+\begin{definition}
+    We say that $K$ is convex if $\forall x, y \in K, \alpha \in [0, 1]$, $\alpha x + (1 - \alpha)y \in K$.
+\end{definition}
+In other words, the line segment between $x$ and $y$ lies completely in the set.
+
+\begin{definition}
+    $f$ is convex over $K$ if $\forall x, y \in K, \forall \alpha \in [0, 1]$,
+    \[ f(\alpha x + (1 - \alpha) y) \le \alpha f(x) + (1 - \alpha) f(y) \]
+\end{definition}
+
+\begin{theorem}
+    An almost everywhere (real)-differentiable function $f$ is convex if and only if
+    \[ f(y) \ge f(x) + \grad{f(x)}(y - x) \]
+\end{theorem}
+
+\begin{theorem}
+    Suppose a convex function has a local minimum at $x \in K$.
+    That is, a small neighborhood around $x$, $N$, then $\forall y \in N$, $f(x) \le f(y)$. Then $f(x)$ is also the global minimum.
+\end{theorem}
+In other words, any local minimum of a convex function is also a global minimum. Equivalently this means that $\grad{f(x)} = 0$.
+In a constrained optimization problem, a point is only optimal if is gradient points outside the set. 
+
+\subsection{Gradient Descent}
+To solve any 
+convex optimization problem, there's an easy algorithm.
+\begin{algothm}[Gradient Descent]
+    Let $x_1$ be arbitrarily chosen in $K$.
+    For $t = 1, 2, \dots$ we update
+    \[ x_{t + 1} = \Pi_k[x_t - \eta \grad{f(x_t)}] \]
+    where $\Pi_k[x] = \argmin_{y \in K} \{|x - y|\}$.
+    $\eta \ge 0$ is a real parameter called the learning rate or step size.
+
+    \begin{proof}
+        We will show that when $K$ is closed, convex, and bounded,
+        the above will find close to the optimum.
+        In particular, if $\lambda \sim \frac{1}{\sqrt{T}}$,
+        then 
+        \[ f\qty(\frac{1}{T} \sum_{t = 1}^T x_t) \le f(x^*) + O\qty(\frac{1}{\sqrt{T}})\]
+        Let $D$ be the diameter of $K$, $ \max_{x, y \in K} | x - y|$.
+        Let $G$ be an upper bound on $|\grad{f(x)}| \le G$ for $x \in K$.
+        This means that the Lipshitz constant of $f \le G$, since
+        \[ f(x) - f(y) \le \grad{f(x)}(y - x) \le |\grad{f(x)}| |y - x| \le G |x - y|.\]
+        Also due to projection, $|\pi_k[y] - x| \le |y - x|$ for all $x \in K$.
+
+        Thus,
+        \begin{align*}
+            |x_{t + 1} - x^*|^2 &\le |y_{t + 1} - x^*|^2 \\
+            &=|x_t - \eta \grad{f(x)} - x^*|^2 \\
+            &= |x_t - x^*|^2 - 2 \eta \grad{f(x)}(x_t - x^*) + \eta^2 |\grad{f(x)}|^2
+        \end{align*}
+        By convexity,
+        \begin{align*}
+            f(x_t) - f(x^*) &\le \grad{f(x_t)}(x_t - x^*) \\
+            &\le \frac{1}{2\eta} [|x_t - x^*|^2 - |x_{t + 1} - x^*|^2 ] + \frac{\eta}{2} |\grad{f(x_t)}|^2 \\
+            \frac{1}{T} \sum_{t = 1}^{T} (f(x_t) - f(x^*)) &\le \frac{1}{2\eta T} [|x_1 - x^*|^2 - |x_{T + 1} - x^*|^2] + \frac{\eta}{2T} \cdot G^2 T \\
+            \frac{1}{T} \sum_{t = 1}^T f(x_t) &\le f(x^*) + \frac{D^2}{2\eta T} + \frac{1}{2} \eta G^2 \le \frac{4GD}{\sqrt{T}} + f(x^*)
+        \end{align*}
+        where in the last step we use $\eta = \frac{D}{\sqrt{TG}}$.
+    \end{proof}
+\end{algothm}
+
+
+Let's return to our applications.
+\begin{example}
+    \begin{enumerate}
+        \item Linear regression. We wish to solve
+        \[ \min_{|x|_2 \le 1} \frac{1}{n} \sum_{i = 1}^{n} a_i^{\top }x - b_i)^2 \]
+        The update is
+        \[ x_{t + 1} \gets \Pi_K [x_t - \frac{1}{\sqrt{T}} \frac{2}{n} \sum_i (a_i^{\top} x - b_i) a_i] \]
+        Each iteration takes $O(nd)$ and we need to run $\Omega(1/\epsilon^2)$ iterations to guarantee error $O(\epsilon)$.
+        \item Suppose we want
+        to find $s$-$t$ shortest path.
+        Let $K = \mathrm{conv}(v \in \{0, 1\}^{E}, v\text{ is a path})$.
+        One can write capacity constraints.
+        \[ K = \{x \in [0, 1]^E, \sum_i x_{si} = 1 = \sum_{i} x_{it}, \forall j \, \sum_{i} x_{ij} = \sum_{k} x_{jk}, 0 \le x_{ij} \le 1\} \]
+        Then the objective function can be formulated as $\min_{x \in K} \sum_{i,j} x_{ij} W_{ij}$.
+    \end{enumerate}
+\end{example}

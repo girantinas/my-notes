@@ -1,0 +1,71 @@
+% !TEX root = lectures.tex
+\section{Lecture 2}
+To extend our results from before
+to the case where there are more than two possible predictions,
+we can think of ``following'' an expert instead of
+picking a specific option.
+We can model $\ell_t(i)$ as the ``loss'' (error measure) of expert $i$
+at time $t$. We can generalize the loss to model fractional errors, allowing $\ell_t(i) \in [0, \infty)$.
+
+\begin{algothm}[Hedge Algorithm]
+    We again have weights $\{W_t(i)\}$ for the experts.
+    We pick advice $i$ time $t$ with probability $\frac{W_t(i)}{\sum_j W_t(j)} =: p_t(i)$.
+    We suffer (expected) loss $\E{L} = \sum_i p_t(i) \ell_t(i)$. Then,
+    we update weights $W_{t + 1}(i) = W_t(i) e^{-\epsilon \ell_t(i)}$.
+\end{algothm}
+
+Our yardstick is pretty similar.
+
+\begin{theorem}
+    For all $i$,
+    \[ \sum_{t = 1}^T p_t^{\top} \ell_t \le \sum_{t=1}^T \ell_t(i) + \epsilon \sum_{t=1}^{T} p_t^{\top} \ell_t^2 + \frac{\log N}{\epsilon}  \] 
+    \begin{proof*}
+        We again define $\phi_t = \sum_i W_{t}(i)$.
+        \begin{align*}
+            \phi_{t + 1} &= \sum_{i = 1}^{N} W_t(i) e^{-\epsilon \ell_t(i)} \\
+            &= \phi_t \sum_{i = 1}^N p_t(i) e^{-\epsilon \ell_t(i)} \\
+            &\le \phi_t \sum_{i = 1}^N p_t(i) (1 - \epsilon \ell_t(i) + \epsilon^2 \ell^2_t(i)) \\
+            &\le \phi_t e^{-\epsilon p_t^{\top} \ell_t + \epsilon^2 p_t^{\top} \ell_t^2 }
+        \end{align*}
+        Furthermore, the potential function is at least $\Phi_T \ge e^{-\epsilon \sum_t \ell_t(i)}$.
+        Now $\Phi_T \le N e^{-\epsilon p_t^{\top} \ell_t + \epsilon^2 p_t^{\top} \ell_t^2 }$.
+        Taking a log and dividing by $\epsilon$ gives the result.
+    \end{proof*}
+\end{theorem}
+
+Observe that if $\ell_t(i) \in [0, 1]$, then the expected loss $\E{L} \le \sum_t \ell_t(i) + \epsilon T + \frac{\log N}{\epsilon}$.
+If we pick $\epsilon = \sqrt{\frac{\log N}{T}}$, then
+\[ \frac{1}{T} \sum_t \qty(p_t^{\top} \ell_t - \ell_t(i)) \le 2 \sqrt{\frac{\log N}{T}} \to 0\]
+We can define regret as $R = \sum_t p_t^{\top} \ell_t - \ell_t(i)$.
+
+\subsection{Relationship to Other ML Problems}
+Consider the \textbf{online routing} problem. There is some graph $G = (V, E)$
+with a source $s$ and destination $t$. We wish to find the fastest path from $s$ to $t$.
+The time taken to traverse each path constantly changes due to network traffic.
+We can reduce this back to the experts problems, where each path is an expert.
+There can be as many as $N!$ paths, so the regret will be $R \sim \sqrt{|E| \frac{\log N!}{T}} \sim \sqrt{\frac{N^3 \log N}{T}}$.
+
+Consider the \textbf{spam classification} problem.
+Represent an email with a bag-of-words representation $v \in \{0, 1\}^{d}$.
+where $d = |\text{dictionary}|$. Then, a classifier
+is a vector $x \in \R^d$ with $|x| \le 1$ and uses $\text{sign}(x^{\top} v)$
+to report spam or not spam. We can take ``all possible''
+classifiers up to resolution $\epsilon$ where
+there are $\qty(\frac{1}{\epsilon})^{d}$ such classifiers. These
+will form our expert set, and then we can just run hedge.
+
+However, both of these approaches miss out on the structure of the underlying problems.
+For instance, there are only $|E|$ numbers that determine the shortest path in the graph,
+but we seem to elide the fact that the paths largely share edges with each other.
+
+\subsection{Exploiting Structure}
+Structured decisions lead us to the world of mathematical optimization.
+\begin{enumerate}
+\item The set of all norm at most $1$ linear classifiers is
+just the unit ball.
+\item The set of all $s$-$t$ paths in $G = (V, E)$ form a simplex.
+In particular, for some path $P_{st}$, define $x_e = 1$ if $e \in P_{st}$ 
+and $0$ otherwise. Then define set $K \subseteq R^{|E|}$,
+\[ K = \left\{ x\in \R^{|E|}, \sum_{i \in V} x_{si} = 1, \sum_{i \in V} x_{it} = 1, \forall j \sum_i x_{ij} = \sum_{k} x_{jk}, x_{ij} \in [0, 1]\right\} \]
+One may recognize this as the flow polytope. The corners of this polytope form paths from $s$ to $t$.
+\end{enumerate}

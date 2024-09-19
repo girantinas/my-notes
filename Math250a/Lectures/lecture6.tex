@@ -35,8 +35,8 @@ Thus, we have that $\ker \tau = \bigcap_{g' \in G} G_{g'H} = \bigcap_{g' \in G} 
 \begin{theorem}
     Consider $H < G$. $g \in G$ normalizes $H$ if $gHg^{-1} = H$. The normalizer $N_G(H)$ is the set of all $g$ that normalize $H$.
 \end{theorem}
-Notice that the act of conjugation by some element $g \in G$ is an automorphism from $G$ to itself,
-which induces a map $G \to \text{Aut} G$.
+Notice that the action of conjugation by some element $g \in G$ is an automorphism from $G$ to itself,
+which induces a map $G \to \text{Aut}(G)$.
 \begin{theorem}
     Let $H, K < G$.
     $K \subseteq N_G(H) \implies KH = HK$
@@ -54,6 +54,28 @@ In this setting, $H$ is a normal subgroup of $HK$ and $K \cap H$ is normal in $K
     Now, $\ker \vp$ is precisely $\{H \cap K\}$, meaning we're done.
 \end{proof}
 \end{theorem}
+
+\subsection{Isomorphism Theorems}
+These theorems are all called isomorphism theorems.
+Note that there is a surjective canonical map $\phi: G \to G/H$ for normal $H$
+that sends each element $g \mapsto gH$.
+\begin{enumerate}
+    \item Let $f: G \to G'$ be a homomorphism. Then there exists a bijective homomorphism induced by $f$ as $G/\ker f \to \textrm{im} f$.
+    \item Let $H < G$ and let $N$ be the intersection of all normal subgroups of $H$. Then there is canonical $G \to G/N$
+    that we can factor homomorphisms through.
+    \item $(G/H)/(H/K) \cong G/H$.
+    \item $H/(H \cap K) \cong HK/K$.
+    \item Inverse images (under a group homomorphism) of normal subgroups are normal.
+\end{enumerate}
+
+\begin{definition}
+    A group is said to be \textbf{solvable} if it has an abelian tower (or cyclic WLOG), e.g.
+    \[ G = G_0 \supset G_1 \supset \dots \supset G_m = \{e\} \]
+    where $G_i/G_{i + 1}$ is abelian (or cyclic) group.
+\end{definition}
+
+
+\subsection{Centralizers}
 \begin{definition}
     The \textbf{centralizer} of $H < G$ is $Z_G(H) = \{g \in G \mid gh = hg \text{ } \forall h \in H\}$.
     The \textbf{center} of $Z(G)$ is the centralizer of $G$.
@@ -62,7 +84,7 @@ Let's learn about a new group.
 \begin{definition}
     $GL_n(F)$ over a field $F$ is the general linear group, composed of all invertible $n \times n$ matrices.
 \end{definition}
-How can we find $|GL_n(\F_p)|$? If I fix a basis $\F_p^n = \bigoplus_{i = 1}^n F_p e_i$,
+How can we find $|GL_n(\F_p)|$? If I fix a basis $\F_p^n = \bigoplus_{i = 1}^n \F_p e_i$,
 how can we send the basis vectors? $e_1$ has $p^n - 1$ choices (excluding $0$), $e_2$ has $p^n - p$ choices,
 $e_3$ has $p^n - p^2$ choices and so on. Thus
 \[ |GL_n(\F_p)| = \prod_{i = 1}^n p^n - p^{i - 1} \]
@@ -79,5 +101,7 @@ It turns out this is enough to show that every group has a subgroup of this kind
         is contained in a Sylow $p$-subgroup (i.e. a subgroup with order the largest power of $p$).
         \item Any 2 Sylow $p$-subgroups are conjugate, i.e. the conjugation action acts transitively on the set of Sylow $p$-subgroups.
         \item The number of Sylow $p$-subgroups is congruent to $1 \pmod{p}$.
+        \item The number of Sylow $p$-subgroups divides the index of the Sylow $p$-groups.
+        \item For any Sylow $p$-subgroup $P$, the number of Sylow $P$ subgroups is $[G : N_G(P)]$.
     \end{enumerate}
 \end{theorem}

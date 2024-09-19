@@ -1,0 +1,70 @@
+% !TEX root = lectures.tex
+\section{Lecture 2}
+\subsection{Probability Basics}
+We started class with a probability review. Most
+was generic stuff. But, the following definition is a bit rare.
+\begin{definition}
+    $X_1, \dots, X_n$ are parwise ($k$-wise, respectively)
+    independent of every pair ($k$-tuple, respectively) are independent (their probabilities multiply).
+\end{definition}
+We move the discussion to useful tail bounds to estimate tail probabilities.
+\begin{theorem}[Markov's Bound]
+    If $X$ is a nonnegative random variable,
+    \[ \Pr{X \ge k \E{X}} \le 1/k \]
+    If in addition, $X \le z$, then
+    \[ \Pr{X \le c \E{X}} \le \frac{z - \E{X}}{z - c\E{X}} \]
+\end{theorem}
+\begin{theorem}[Chebyshev's Inequality]
+    For any random variable,
+    \[ \Pr{|X - \E{X}| \ge k \sigma} \le 1/k^2 \]
+\end{theorem}
+Recall that a Gaussian distribution $N(\mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}$
+concentrates very well around its mean. In particular,
+if $X \sim N(\mu, \sigma^2)$, $\Pr{|X - \mu| \ge t\sigma} \le O(e^{-t^2/2})$.
+It turns out that there are other settings that mimic Gaussians (largely due to the central limit theorem),
+\begin{theorem}[Chernoff/Hoeffding's Bound]
+    (Bernstein's Inequality)  Let $X_1, \dots, X_n$ be independent and they are bounded (say, $X_i \in [-1, 1]$).
+    Call $\E{X_i} = \mu_i$, $\sigma_i^2 = \Var X_i$ and $X = \sum_i X_i$. Suppose $k \le \frac{\sigma}{2}$.
+    \[ \Pr{|X- \mu| \ge k \sigma} \le 2\exp\qty(-\frac{k^2}{4}) \]
+
+    (Chernoff Bound) Let $X_1, \dots, X_n \in \{0, 1\}$ be independent and $p_i = \E{X_i}$. Then,
+    \[ \Pr{\sum_i X_i \ge (1 + \epsilon) \mu} \le e^{-\frac{\epsilon^2 \mu}{3 + \epsilon}} \]
+    \begin{proof}
+        We will use the so-called moment method.
+        Define $Y = e^{tX}$ and 
+        \begin{align*}
+            \E{Y} &= \E{e^{t \sum_i X_i}} = \E{\prod_i e^{tX_i}} = \prod_i \E{e^{tX_i}} \\
+            &= \prod_i (p_i e^t + (1 - p_i)) = \prod_i (1 + p_i(e^t - 1)) \le \prod_i e^{p_i(e^t - 1)} = e^{\mu(e^t - 1)}
+        \end{align*}
+        Thus, by Markov's,
+        \begin{align*}
+            \Pr{X \ge (1 + \epsilon) \mu} = \Pr{Y \ge e^{t\mu(1 + \epsilon)}} \le \frac{e^{\mu (e^t - 1)}}{e^{\mu t(1 + \epsilon)}}
+        \end{align*}
+        Optimizing $t$, as $t = \log(1 + \epsilon)$ and using $\log (1+\epsilon) \approxeq \epsilon - \frac{\epsilon^2}{2}$,
+        we get the bound.
+    \end{proof}
+\end{theorem}
+
+\subsection{Hashing}
+We have a universe $U$ and we wish to map it to a small set of size $n \ll |U|$ using
+a function $h$. The data structures we want to support are insert($x$), delete($x$)
+and search($x$), which have self explanatory behavior. We can use randomness to make our
+data structure to be robust against adversarial behavior.
+
+A simple idea is
+to make $h$ a function a which maps each element as it arrives into
+an independent random slot. If there are $m = O(n)$ elements
+that come in, the load on any slot is $\le O(\log n)$ with high probability.
+\begin{theorem}
+    The load on any slot is at most constant with high probability for $m < n$.
+\end{theorem}
+We can start the proof as follows.
+Let $L_x$ be the number of elements in the same slot as $x$.
+Define $I_y$ be the indicator that $h(y) = h(x)$.
+It's clear that $ L_x = 1 + \sum_{y \neq x} I_y$. Thus, $\E{L_x} = 1 + \sum_{y \neq x} \E{I_y} = 1 + \frac{m-1}{n} \le 2$
+if $m - 1 \le n$. We will pause here to note that if we
+reduce the amount of randomness, then we can get the same result.
+Namely, let $\mathcal{H}$ be a family of hash functions
+and $h$ is a uniformly random element of $\mathcal{H}$. Namely,
+as long as the values of $h$ are pairwise independent, $\E{I_y} = \frac{1}{n}$
+(in fact, this is an even weaker notion of pairwise independence).

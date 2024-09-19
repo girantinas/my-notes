@@ -1,0 +1,80 @@
+% !TEX root = lectures.tex
+\section{Lecture 5}
+\subsection{Linear Programming and Applications, Continued}
+Last time, we relaxed a discrete problem (weighted vertex cover) into a continuous linear program,
+then rounded that linear program according to a deterministic rounding scheme.
+We can also use a ``randomized rounding scheme.'' 
+
+\subsection{MAX 2-SAT}
+Consider the problem of $\textbf{MAX 2-SAT}$.
+\begin{definition}
+    A \textbf{MAX 2-SAT} instance is given by $n$ variables $x_1, \dots, x_n$
+    and $m$ clauses with two literals (a variable or its negation) in the form $(\overline{x_i} \lor x_j)$,
+    we wish to figure out the maximum number of clauses that can be
+    satisfied by an assignment to the variables to $\{0, 1\}$ (Booleans).
+\end{definition}
+Note that the related satisfiability problem \textbf{2-SAT} is solvable in polynomial time,
+wherein we only wish to know whether ALL clauses are satisfiable or not. The above problem is NP-Hard
+to approximate to a ratio of better than $0.9546$. Notice that a random
+assignment achieves a $3/4$ approximation in expectation. Let's try to formulate this as a linear program.
+\[ \max \sum_c z_c : \begin{cases}
+    0 \le x_i \le 1 & \forall i \\
+    z_c \le y_{c_1} + y_{c_2} & \forall c \\
+\end{cases} \]
+where $y_{c_j} = x_{c_j}$ if $x$ is not negated and $y_{c_j} = 1 - x_{c_j}$ if $x$ is negated.
+Our LP solution will get a fractional solution and we will round $v_i = 1$ with probability $x_i$.
+If we have a $1$-clause, then we do better than LP-OPT in expectation,
+as the probability we satisfy it is at least $x_{c_j} \ge z_c$.
+For every clause $c$, $\E[\text{rounding}] \ge \frac{3}{4} z_c$.
+The probability that a clause $c$ is rounded to $1$ is $1 - Pr(\text{both are zero}) = 1 - (1 - y_{c_1})(1 - y_{c_2})$.
+Expanding, we get that 
+\[ y_{c_1} + y_{c_2} - y_{c_1} y_{c_2} = y_{c_1} + y_{c_2} - \frac{[(x_{c_1} + x_{c_2})^2 - (x_{c_1} - x_{c_2})^2]}{4} \ge (x_{c_1} + x_{c_2}) - \frac{(x_{c_1} + x_{c_2})^2}{4}\]
+If the sum is at most $1$, then its at most $ \frac{3}{4} (x_{c_1} + x_{c_2}) $. Otherwise, the minimum of the quadratic is still at most $3/4$.
+
+\subsection{Min Makespan Scheduling}
+We have $n$ jobs and $m$ machines and $p_{i,j}$ is the job completion time if $i$ is assigned
+to $j$. The goal is to minimize the total job completion time under a ``make span'' model,
+with infinitely many parallelism. We can state the objective as
+\[ \min \max_{j} \sum_{i} x_{i,j } p_{i,j} : \{ x_{i,j} \in \{0, 1\} \} \]
+To linearize the constraints, we can just write
+\[ \min T : \begin{cases}
+    x_{i,j} \in [0, 1], \sum_{j} x_{i, j} \ge 1 & \forall i \\
+    T \ge \sum_{i} p_{i,j} x_{i,j} & \forall j 
+\end{cases} \]
+However, this LP has a very bad integrality gap; for instance if there is just $1$ job and
+all $\{p_{1, j}\}$ are $1$, then the LP opt is only $1/m$.
+Consider parameterizing the LP by $t$
+\[ \min T : \begin{cases}
+    x_{i,j} \in [0, 1], \sum_{j} x_{i, j} \ge 1 & \forall i \\
+    T \ge \sum_{i} p_{i,j} x_{i,j} & \forall j \\
+    x_{i,j} = 0 & \forall i,j p_{i,j} \ge t
+\end{cases} 
+\]
+For an optimal $t = T^*$, clearly the integral solution is feasible.
+Since there are a polynomial number of $t$'s, we can brute force over $t$
+and run that many LPs.
+Our goal is then to find an integral schedule with makespan at most $T + t$.
+This yields a $2$-approximation to the makespan.
+\begin{algothm}
+    We will round the above LP as follows. 
+    \begin{enumerate}
+    \item For each $j$, $w_j = \ceil{\sum_i x_{i, j}}$. 
+    \item Create a bipartite graph $G = (L, R, E)$
+    with $L = [n]$ and $R$ as $w_j$ copies of each machine $j$, labeled as $j_{1}, \dots, j_{w_j}$. 
+    \item For each $j$, we will sort all jobs by descending $p_{i,j}$, so $p_{(1) j} \ge p_{(2)j} \ge \dots \ge p_{(n) j}$.
+    \item We will allocate $x_{(1)j}$ to $j_1$, $x_{(2)j}$ to $j_1$, and so on until
+    we ``fill'' up the capacity to $1$. By that we mean we add an edge $\{(i), j_1\}$
+    with weight $x_{(i)j}$.
+    \item Perform maximum bipartite matching on $G$ to find an integral assignment of the same cost. (This is a flow theorem.)
+    \end{enumerate}
+    \begin{proof*}
+    Now what is the total makespan? Well the jobs in the integral assignment
+    assigned to $j_{c - 1}$ is at least the cost of any job assigned to $j_c$.
+    Let $T_c$ be the processing time of the slowest job assigned to $j_c$.
+    Then the makespan at $j$ is at most $\sum_c T_c$.
+    Note that $\sum_{i,j} x_{i,j} p_{i,j} \ge \sum_{c = 2}^{w_{j}} T_c$, because if
+    job $i$ is assigned to copy $j_c$,
+    then $p_{i,j} \ge T_{c + 1}$. Furthermore $t \ge T_1$. Thus, $\sum_c T_c \le T + t$,
+    as required.
+    \end{proof*}
+\end{algothm}

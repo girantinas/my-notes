@@ -5,7 +5,7 @@
 Recall that an abelian group is set equipped with an operation that works like addition: you can add and subtract, it's commutative,
 associative and monoidal.
 \begin{definition}
-    A set $R$ is a ring if it is an abelian group equipped with an associative ``multiplication'' operation which has a unit $1$, where $1a = a$
+    A set $R$ is a commutative ring if it is an abelian group equipped with an associative ``multiplication'' operation which has a unit $1$, where $1a = a$
     and this multiplication distributes over addition.
 \end{definition}
 The smallest ring is the zero ring, where $1 = 0$ (and the only element is $0$). Other examples of rings are $\Z, \Q, \R, \C, \text{quaternions}$.
@@ -71,5 +71,4 @@ One can easily check this is a submodule.
 
 The following is an exact sequence, meaning that the image of each map is the kernel of the one after it.
 \[ 0 \to M_{\text{tors}} \to M \to M / M_{\text{tors}} \to 0 \]
-We claim that $M / M_{\text{tors}}$ is a free module. Consider $\overline{m} \in M/M_{\text{tors}}$. Then, $r\overline{m} = rm + M_{\text{tors}} \in M/M_{\text{tors}}$,
-which after addition shows the claim.
+We claim that $M / M_{\text{tors}}$ is a free module which we will show next time.

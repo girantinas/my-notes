@@ -31,8 +31,15 @@ So $M \cong F \oplus M'$.
 
 The nice thing about looking at things categorically is that we can turn around the arrows involved.
     
-If $R$ is an \textbf{injective} $R$-module when considering $0 \to E \to M \to M'' \to 0$,
-the property from before holds with all the arrows reversed.
+If $P$ is an \textbf{injective} $R$-module when considering $0 \to E \to M \to M'' \to 0$,
+the property from before holds with all the arrows reversed, i.e.
+if $0 \to M'' \xrightarrow{b} M$ is exact, and there exists a morphism $c: M'' \to P$, then there exists $d: M \to P$
+such that $db = c$.
+
+\begin{theorem}
+    An $R$-module is injective if and only if it has the following property:
+    if $0 \to M'' \xrightarrow{b} M$ is exact, then there is a map $d: M \to M''$ such that $db$ is the identity (i.e. $M''$ is a direct summand of $M$).
+\end{theorem}
 
 For example we showed that for a PID $R$,
 if $M$ is a torsion module and $p \in R$ is a prime

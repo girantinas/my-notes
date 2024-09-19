@@ -1,0 +1,112 @@
+% !TEX root = lectures.tex
+\section{Lecture 4}
+\subsection{Graph Sparsification, continued}
+Recall that last time we wanted to find an $\epsilon$-cut sparsifier for a graph
+and we proposed the following algorithm.
+\begin{algothm}
+    Keep every edge independently with $p = c \frac{\log n}{k \epsilon^2}$
+    where $k$ is the size of the min cut in $G$. If you keep an edge,
+    make its weight $1/p$. Then this is a $\epsilon$-cut sparsifier.
+    \begin{proof*}
+        First, let's try a heuristic calculation. Consider
+        a cut $(S, \overline{S})$. The weight of edges in the cut
+        that are left after the process is a $p \cdot$ a binomial random variable,
+        whose expectation is exactly $\frac{|\Cut(S)|}{p}$. Thus, in expectation
+        the cut stays roughly the same. The problem is, 
+        our concentration bounds don't quite guarantee that this happens for all cuts.
+        The probability that we deviate more than a $(1 \pm \epsilon)$ factor,
+        by the Chernoff bound, is $2e^{-O(p \Cut_G(S) \epsilon^2)}$. This expression is the largest when
+        the cut is the smallest, i.e. the min-cut, but would only give a probability of $1/n^{O(1)}$.
+        However, there are exponentially many cuts, so taking a naive union bound will not work.
+
+        We thus use the following fact which will be proved in homework:
+        \begin{fact}
+            The number of $\alpha$-approximate min cuts is at most $n^{2\alpha}$.
+        \end{fact}
+        That is, the number of cuts with size at most $\alpha k$ is at most $n^{2\alpha}$.
+        Now, we can bucket the cuts by their size and union bound over them individually,
+        a so-called \textbf{stratified union bound}.
+        Let's have each bucket $i$ contain the cuts of size $[2^{i - 1}k, 2^{i}k)$.
+        Now, in this bucket the number edges is outside of $(1 \pm \epsilon)$
+        with probability at most $e^{-c 2^{i - 1} \log n}$ and there are only at most $n^{2^{i + 1}}$
+        such cuts, so it holds for any of them with probability at most $e^{-c (2^{i - 1} + 2^{i + 1}) \log n} = e^{-O(2^{i - 1} \log n)} = n^{-O(2^{i - 1})}$.
+        Now, summing up this probability over the buckets will give a series,
+        which is about $\frac{1}{n^{c}} + \frac{1}{n^{2c}} + \frac{1}{n^{4c}} + \dots$, whose sum is bounded by a constant times the first term.
+        Thus, with high probability, all cuts are sparsified.
+    \end{proof*}
+\end{algothm}
+
+\subsection{Linear Programming}
+What's the runtime of Gaussian eliminiation?
+Some may say that it terminates in $O(n^3)$ steps,
+but notice that each step is really $O(1)$ ``field operations.''
+If you're over a small finite field, these are fast, but over the reals
+you could have to do a really precise operation that takes a long time.
+It turns out, Gaussian elimination DOES run in polynomial time
+(the number of bits in the input does not blow up too much)
+but this is a very nontrival fact to prove, first proved by Bareiss hundreds
+of years after the invention of the algorithm.
+
+A natural counterexample to our intuition is the following problem.
+Given two polygons, both given as sets of rational numbers that represent their vertices,
+find the one with bigger perimeter. The problem is inherently that the square root cannot
+be represented accurately without knowing a priori what error margin to round to.
+However, one cannot be sure what the error margin is unless you're given the difference in the perimeters to begin with!
+
+Another such miracle is that linear programming over the reals runs in polynomial time.
+\begin{definition}
+    Let $a_i \in \R^n$, $b_i \in \R$ for $1 \le i \le m$ and $c_j \in \R$ for $1 \le j \le n$.
+    Then a linear program is the following minimization problem
+    \[ \min_{x_j \in \R} \sum_{j = 1}^{n} c_j x_j : \{ a_i^{\top} x \le b_i \,\,\,\,\, \forall 1 \le i \le m \} \]
+    Let $a_i$ be the rows of some matrix $A$ and stack the $b_i$ into a vector $b$.
+    Then we can rewrite the constraints as $Ax \le b$.
+\end{definition}
+It turns out linear programming is a very applicable and extensible framework for solving problems.
+
+\subsection{Basic Applications of Linear Programming}
+One simple problem is an allocation setting where you have $n$ jobs and $n$ factories.
+Each job is assigned to precisely one factory and assigned job $i$ to factory $j$
+has a cost $p_{ij} \ge 0$. You wish to minimize the cost of all jobs in aggregate.
+Let $x_{ij}$ be $1$ if job $i$ is assigned to factory $j$ and $0$ if not.
+Then the following integer program exactly captures the problem.
+\[ \min \sum_{i, j} p_{ij} x_{ij} : \begin{cases} x_{ij} \in \{0, 1\}\\ \sum_{i} x_{ij} = 1 & \forall j \\ \sum_{j} x_{ij} = 1 & \forall i \end{cases} \]
+The second and third constraints that every job and every factory have exactly one match.
+However, since integer programming is NP-Hard, we instead
+\textbf{relax} the integrality constraint to instead just allow $0 \le x_{ij} \le 1$.
+This means the set of feasible solutions is larger, so the minimization value of the new LP could be smaller.
+
+For this LP, the problem is now the solution we get may be fractional, where the $x_{ij}$ are
+not integers, and so we would not immediately get an allocation. However, it is possible to prove
+that the optimal value achieved by this LP is actually EQUAL to the integer program's value.
+This is not usually true, we actually got lucky (something called \textbf{total unimodularity} was present here).
+
+Let's look at a different problem where LPs won't immediately get you the optimal solution.
+Consider the problem of maximum weighted vertex cover.
+\begin{definition}
+    The maximum weighted vertex cover (MWVC) problem
+    is a problem where given a graph $G = (V, E)$ and a function $w: V \to \R_+$,
+    we wish to find a set of vertices $S$ such that all edges are touched by at least one vertex in $S$
+    where $\sum_{v \in S} w(v)$ is minimized.
+\end{definition}
+Now, this problem is NP-Hard. Nevertheless, we can write an IP that represents the situation
+and relax it into an LP:
+\[ \min \sum_i w(i) x_i : \begin{cases}
+    0 \le x_i \le 1 & \forall i \\
+    1 \le x_i + x_j & \forall (i, j) \in E
+\end{cases} \]
+where $x_i$ is meant to be $1$ if we take vertex $i$ into the cover and $0$ if not,
+and the second constraint makes sure that we cover all the edges.
+Now, given a fractional solution, we will instead \textbf{round} the
+answer to get a set of vertices to pick. In this particular instance, we will take vertex $i$
+if $x_i \ge 0.5$, otherwise we will not. This will indeed cover every edge; for each edge
+$(i,j)$, $x_i + x_j \ge 1$ so one of them is at least $0.5$.
+However, we might take more vertices than we need to; indeed we claim that our vertex cover
+has weight $2 \cdot OPT$, making it a $2$-approximation.
+To see this, notice that for the LP solution $\sum_i w(i) x_i \le OPT$.
+However, each $x_i$ at most doubles (ones rounded to $1$ are at most doubled
+and ones rounded to $0$ are zeroed), so therefore the returned cover has weight at most $2(\sum_i w(i) x_i) \le 2 \cdot OPT$
+as claimed.
+
+Assuming the complexity theory conjecture that Unique Games is NP-Hard,
+then this LP is actually the best approximation we can do for the problem!
+So far nothing better is known.

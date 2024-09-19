@@ -1,0 +1,122 @@
+% !TEX root = lectures.tex
+\section{Lecture 1}
+When one develops the theory of machine learning, it's a good idea to follow the
+following order:
+
+\begin{center}
+\begin{tikzpicture}
+    \node (1) {Problem};
+    \node (2) [right=of 1] {Theoretical Model};
+    \node (3) [right=of 2] {Algorithmic Method};
+    \node (4) [right=of 3] {Theoretical Guarantee};
+    \draw[->] (1) edge (2);
+    \draw[->] (2) edge (3);
+    \draw[->] (3) edge (4);
+\end{tikzpicture}
+\end{center}
+\begin{example}
+    Here are some \textbf{problems} you may start with.
+    \begin{enumerate}
+        \item Prediction from expert advice
+        \item Email spam classification
+        \item Routing packets in a network
+        \item Portfolio selection
+        \item Robot control
+        \item Sequence prediction
+    \end{enumerate}
+\end{example}
+
+\subsection{Prediction From Expert Advice}
+In this setup, we perhaps have a decision between two options $A$ and $B$. I
+have $N$ experts giving advice on which option to pick. How do we choose the better option?
+This kind of setup doesn't make much sense with a one-shot position; we have no information
+on whether the experts give good advice.
+
+How about the multi-shot setting? How can we hope to obtain the smallest number of mistakes?
+In some sense we wish to identify those experts that are ``good.'' Well, if all the experts
+are bad, then we can't really hope to do better than them. Instead,
+a good model is to have the number of mistakes approach the best expert in hindsight.
+
+Let's try a simple strategy to find this best expert. One simple strategy is to pick the expert that
+has been the best so far. However, one can see quickly that this does not work. For instance, suppose
+the predictions are as follows (T for true, F for false)
+
+\begin{center}
+\begin{tabular}{c | c}
+    1 & 2 \\ \hline
+    F & T \\
+    T & F \\
+    F & T \\
+    T & F
+\end{tabular}
+\end{center}
+
+Then it's clear that we will alternate between the experts and never get it right!
+But the best expert in hindsight is right 50\% of the time. The following \textbf{weighted majority} 
+algorithm does better.
+
+\begin{algothm}[Littlestone/Warmuth '89]
+    We will assign a weight to each experts $i$ at each time step $t$, call it $W_t(i)$.
+    Initially, for all $i$, $W_1(i) = 1$. To make a decision at time $t$, we
+    pick the decision $D$ that maximizes 
+    \[ \sum_{\text{expert } i \text{ makes prediction } D \text{ at time } t} W_t(i) \]
+
+    Every time step, we update the weight as follows. Take some parameter $\epsilon \in (0, 1)$.
+    \[ W_{t + 1}(i) = \begin{cases}
+        W_t(i) & \text{if } i \text{ was right} \\
+        W_t(i) \cdot (1-\epsilon) & \text{ otherwise}
+    \end{cases} \]
+\end{algothm}
+
+\begin{theorem}
+    The number of mistakes made by the weighted majority,
+    \[ M \le 2 (1 + \epsilon) R + \frac{\log N}{\epsilon} \]
+    where $R$ is the number of mistakes made by the best expert.
+    \begin{proof*}
+        We will use a potential function argument to prove this.
+        The potential function will be $\phi_t = \sum_{i = 1}^{N} W_t(i)$,
+        the total sum of the weights. It's clear that $\phi_1 = N$ and $\phi_{t + 1} \le \phi_t$.
+        In fact, if the algorithm errored, then at least half of the weight was on the wrong choice, so therefore
+        we decrease at least half the weight. Thus
+        \[ \phi_{t + 1} \le \frac{1}{2} \phi_t + \frac{1}{2} \phi_t (1 - \epsilon) \]
+        Which means in fact a strict decrease of the weights, wherein $\phi_{t + 1} \le \phi_t\left(1 - \frac{\epsilon}{2}\right)$.
+        Thus, $\phi_T \le \phi_1 \qty(1 - \frac{\epsilon}{2})^{M}$. Therefore, the highest weight
+        is at most $N \qty(1 - \frac{\epsilon}{2})^{M}$.
+        The highest weight is also $(1-\epsilon)^R$. We thus have
+        \[(1-\epsilon)^R \le N \qty(1 - \frac{\epsilon}{2})^{M} \implies M \le  2 (1 + \epsilon) R + \frac{\log N}{\epsilon} \]
+        by using $-x + x^2 \le \log(1 - x) \le - x$ for $0 < x < 1/2$.
+    \end{proof*}
+\end{theorem}
+
+In fact, this algorithm is optimal for deterministic algorithms (as $\epsilon \to 0$).
+The adversarial case is that the two experts always pick opposite things (fixed), and the
+one your algorithm picks is always wrong. Then, one of the experts, by pigeonhole,
+was right on at least half the days, but you were wrong every day.
+It turns out we can get rid of this problem if we use a distribution.
+
+\begin{algothm}[Randomized Weighted Majority]
+    We make the decision $D$ with probability
+    \[ \frac{\sum_{\text{expert } i \text{ makes prediction } D \text{ at time } t} W_t(i)}{\sum_{i} W_t(i)}  \] 
+    The update and initial rules are the same.   
+\end{algothm}
+
+\begin{theorem}
+    In the randomized weighted majority algorithm, $M$, follows
+    \[ \E{M} \le (1 + \epsilon) R + \frac{\log N}{\epsilon} \]
+
+    \begin{proof*}
+    The proof is very similar. The only difference is now we can
+    reason about $\E{\phi_t}$. Let $m_t$ be the indicator
+    random variable on whether or not the algorithm made a mistake
+    at time $t$. Let $m_t(i)$ be the indicator on whether expert $i$
+    made a mistake (not random).
+    Now, the new claim is $\phi_{t + 1} \le \phi_t(1 - \epsilon)^{\E{m_t}} \le e^{-\epsilon \E{m_t}}$.
+    It's not hard to see that this will immediately yield the result we want.
+    \begin{align*}
+        \phi_{t + 1} &= \sum_i W_t(i) (1 - \epsilon m_t(i)) \\
+        &= \phi_t (1 - \epsilon \sum_i p_t(i) m_t(i)) \\
+        &= \phi_t (1 - \epsilon \E{m_t}) \le \phi_t e^{-\epsilon \E{m_t}}
+    \end{align*}
+\end{proof*}
+
+\end{theorem}

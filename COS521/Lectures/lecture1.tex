@@ -1,0 +1,95 @@
+% !TEX root = lectures.tex
+\newcommand{\Cut}{\textrm{Cut}}
+\section{Lecture 1}
+In this class, we will explore the following themes.
+\begin{enumerate}
+    \item Randomness - When the worst-case model means there are not good algorithms,
+    randomized error models can give you better guarantees, in line with reality. Randomized
+    algorithms also can be better (on average) than deterministic ones on worst-case inputs.
+    \item Optimization - Continuous optimization
+    can help design great algorithms. Examples include linear programming, semidefinite programming,
+    gradient descent, and stochastic gradient descent.
+    \item Algebraic Techniques - Singular Value Decomposition, low-rank approximation
+    and spectral methods use linear algebra to build useful algorithms. Furthermore, we
+    can try to solve systems of polynomial equations.
+\end{enumerate}
+Even more important is the interplay between these three themes.
+
+\subsection{Randomized Min Cuts}
+Karger's 1993 paper gave a simple algorithm for finding minimum cuts in graphs.
+Define a graph $G$ with vertices $V$ and edges $E$. Here $ n = |V|$ and $m = |E|$.
+\begin{definition}
+    Given a graph $G = (V, E)$ and $S \subseteq V$,
+    define the cut $\Cut(S) = E(S, \bar{S})$.
+    Our goal is to find $S \neq \emptyset, V$ that minimizes $|\Cut(S)|$.
+\end{definition}
+
+\begin{definition}[Contraction]
+    The contraction of an edge $e \in E$ produces a new graph $G' = (V', E)$
+    where $V' = (V \setminus \{u, v\}) \cup S_{u, v}$ (combine $u$ and $v$ into a ``super-vertex'') and
+    \[ E' = \{ \{S_{u, v}, w\} \mid \{u, w\} \text{ or } \{v, w\} \in E \} \cup \{ e \in E \mid u \notin e, v \notin e \} \]
+    where we take the edges that we add as a multigraph (multiple edges between the same pair of vertices).
+\end{definition}
+
+Notice that every time a contraction is performed,
+the number of vertices decreases by 1 and the number of edges decreases
+(by maybe more than one, due to multiedges). Here is the contraction algorithm.
+
+\begin{algothm}[Karger's Min Cut]
+    \begin{itemize}
+        \item $H = G$, $H = (V', E')$.
+        \item While $H$ has more than $2$ vertices:
+        \item \,\,\,\,\, Pick a random edge on $E'$, $\{u, v\}$.
+        \item \,\,\,\,\, Contract $H$ on $\{u, v\}$.
+        \item Consider the number of edges between the two vertices
+        left as a minimum cut candidate.
+    \end{itemize}
+\end{algothm}
+
+\begin{theorem}
+    Fix a min-cut $(X, \bar{X})$ in $G$. We claim the algorithm above returns $|\Cut(X)|$ with probability at least
+    $\frac{2}{n(n-1)}$.
+\end{theorem}
+
+Thus, it suffices to run the original algorithm independently $t$ times and take the smallest cut we see.
+The probability that we make a mistake all $t$ times is
+\[ \P{\text{failure chance}} \le \qty(1  - \frac{2}{n(n - 1)})^{t} \le e^{-2\frac{t}{n(n-1)}} \]
+if we take $t = O(n^2 \log n)$, then the failure chance is at most $\frac{1}{n^{O(1)}}$. Furthermore,
+the contractions each take $O(n)$ time and there are $O(n)$ iterations. Thus, the runtime of the whole
+algorithm is poly-time, taking at most $O(n^4 \log n)$ time.
+We will soon find a speedup, but first let us prove
+the theorem.
+
+\begin{proof}
+    Note that any cut in the contracted graph $\Cut(S)$ in $H$ can be mapped one-to-one to
+    some cut in $G$. Further, every cut in $G$ that doesn't split a contracted pair of vertices
+    has a corresponding cut in $H$. Furthermore, a cut survives a step of Karger's if you do not contract
+    one of its edges. The probability that you miss the cut $(X, \bar{X})$
+    is $1 - \frac{|\Cut(X)|}{|E'|}$. Furthermore, suppose the minimum cut has $c$ edges,
+    then $G$ has at least $\frac{cn}{2}$ edges in total. This is because the degree of each 
+    vertex must be at least
+    $c$. Thus, at every step, the survival probability is at least $1 - \frac{c}{\frac{c|V'|}{2}}$.
+    Thus, overall
+    \[\P{\text{survival of cut}}  \ge \prod_{i = 3}^{n} \qty(1 - \frac{2}{i}) =  \prod_{i = 3}^{n} \qty(\frac{i - 2}{i}) = \frac{(n - 2)!}{n!/2!} = \frac{2}{n(n-1)} \]
+\end{proof}
+
+\subsection{Improving Min Cut}
+We saw that when the number of vertices is large, it's unlikely that we contract the min cut.
+So, we should not repeat the beginning too many times.
+\begin{theorem}
+    The chance that the minimum cut survives $n - \frac{n}{\sqrt{2}}$ steps of contraction
+    is $\ge \frac{1}{2}$. 
+\end{theorem}
+Now, we can simply do two independent contractions until there are $\frac{n}{\sqrt{2}}$ vertices in each.
+Then we can recursively calculate minimum cuts in both and take the better one. Then
+we can use a recurrence to calculate the running time.
+\[ T(n) = O(n^2) + 2T\qty(\frac{n}{\sqrt{2}}) \implies T(n) = O(n^2 \log n) \]
+Finally, we should prove the following theorem
+\begin{theorem}
+    The algorithm finds a minimum cut with probability at least $\frac{\Delta}{\log_2 n}$.
+
+    \begin{proof}
+        Call $P(n)$ the chance the algorithm works on a graph of size $n$. Then $P(n) \ge 1 - (1 - \frac{1}{2} P(n/\sqrt{2}))^2$.
+        By induction, we can prove the claim.
+    \end{proof}
+\end{theorem}

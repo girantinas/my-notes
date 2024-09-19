@@ -3,9 +3,26 @@
 
 \subsection{Classification of Finitely-Generated Modules}
 Recall that for a PID $R$ and a finitely generated $R$-module $M$ we showed that $M/M_{\text{tors}} = F = R^n$ is
-a free module. Suppose we have the exact sequence:
+a free module.
+
+We establish the following theorem.
+\begin{theorem}
+    Let 
+    \[ 0 \to M' \xrightarrow{f} M \xrightarrow{g} M'' \to 0 \]
+    be an exact sequence of modules. The following are equivalent:
+    \begin{enumerate}
+        \item There exists a morphism $\varphi: M'' \to M$ such that $g \circ \varphi = \text{id}_{M''}$.
+        \item There exists a morphism $\psi: M \to M'$ such that $\psi \circ f = \text{id}_{M'}$
+    \end{enumerate}
+    If either is satisfied, then 
+    \[ M = \textrm{Im} (f) \oplus \textrm{Ker} (\psi) = \textrm{Im}(\varphi) \oplus \textrm{Im}(g) = M' \oplus M'' \]
+
+\end{theorem}
+
+
+Suppose we have the exact sequence:
 \[ \dots \to M \to_{\phi} N \to 0 \]
-this means $M \cong N \oplus \ker \phi$. We claim this is true if and only if
+where $M \cong N \oplus \ker \phi$. We claim this is true if and only if
 there exists $N' \subseteq M$ such that $\phi\Big|_{N'}: N' \to N$ is an isomorphism.
 
 Note that if $M \cong N \oplus \ker \phi$, it's clear that there exists an isomorphism that identifies a part of $M$ and $N$. To show that $M \equiv N' \oplus \ker \phi$ we need to show $N' \cap \ker \phi = \{0\}$ and $N' + \ker \phi = M$.

@@ -1,0 +1,93 @@
+% !TEX root = lectures.tex
+\section{Lecture 4}
+
+\subsection{Online Portfolio Selection}
+Consider $d$ scores at each time $t$
+such that $x_{t} \in \Delta_d \subseteq \R^d$
+where $\Delta_d$ is the probability simplex in $d$ remensions.
+Consider return vector $r_t(i) = \frac{\text{price of } i \text{ on day } t + 1}{\text{price of } i \text{ on day } t}$.
+Then, your
+total wealth is $W_{t + 1} = W_t (x_t^{\top} r_t)$.
+The yardstick here should be the best constantly rebalancing portfolio in hindsight.
+For example,
+if I have the following:
+\begin{center}
+\begin{tabular}{c | c  c  c}
+    Stock 1 & 2 & $\frac14$ & 2 \dots \\ \hline
+    Stock 2 & $\frac14$ & 2 & $\frac14$ \dots
+\end{tabular}
+\end{center}
+Then it's clear that our best strategy
+would be $\begin{bmatrix} \frac{1}{2} & \frac{1}{2}
+\end{bmatrix}$. Taking logs, we have $\log W_{t + 1} = \log W_t + \log(x_t^{\top} r_t)$.
+We want $\log W_T \to \sum_{t = 1}^T \log(x_*^{\top} r_t)$ as $T \to \infty$.
+Thus, we can define
+\[ \text{Regret} = \sum_{t = 1}^{T} \log(x_*^{\top} r_t) - \sum_{t = 1}^T \log(x_t^{\top} r_t) \]
+Applying Hedge and Gradient Descent kind of work, but they have some flaws.
+
+\subsection{Online Gradient Descent}
+Here is a more general framework to capture this problem.
+\begin{definition}[Online Convex Optimization]
+    Given $K \subseteq \R^d$ convex, $f_t: \R^d \to R$. We wish to choose
+    $x_t \in K$ on each day. Our goal is to minimize regret, i.e.
+    \[ \sum_t f_t(x_t) - \min_{x_* \in K} \sum_t f_t(x_*) \]
+\end{definition}
+
+\begin{algothm}[Online Gradient Descent]
+    We run an update step on each day as
+    \[ x_{t + 1} \gets \Pi_k [x_t - \eta \grad{f_t(x_t)}]\]
+\end{algothm}
+It turns out this algorithm is pretty good.
+\begin{theorem}
+    \[ \text{Regret(OGD)} \le 4 GD \sqrt{T} \]
+    \begin{proof*}
+        By projection,
+        \[|x_{t + 1} - x^*|_2^2 \le |x_t - \eta \grad{f_t(x_t)} - x^*|_2^2\]
+        Expanding the LHS:
+        \begin{align*}
+            |x_t - \eta \grad{f_t(x_t)} - x^*|_2^2 &= |x_t - x^*|^2 - 2 \eta \grad{f_t(x_t)} (x_t - x^*) + \eta^2 |\grad{f_t(x_t)}|^2 \\
+            f_t(x_t) - f_t(x^*) &\le \grad{f_t(x_t)} (x_t - x^*) \le \frac{1}{2\eta}[(|x_t - x^*|^2 - |x_{t + 1} - x^*|^2)] + \frac{\eta}{2} G^2 \\
+            \text{Regret} &\le \frac{1}{2\eta} |x_1 - x^*|^2 + \frac{\eta}{2} G^2 T \le GD\sqrt{T}
+        \end{align*}
+        where in the last inequality we use $\eta = \frac{D}{G\sqrt{T}}$.
+    \end{proof*}
+\end{theorem}
+One can also try to apply this algorithm to the online routing problem, with the loss function $f_t(x) = \E{P \sim x} \text{length of } P$.
+This is straightforward.
+One can also apply it to solving a regression problem, where the resulting algorithm is called Stochastic Gradient Descent.
+\begin{algothm}[SGD For Regression]
+    Run OGD on randomly selected data point $(a_t, b_t)$ and the loss is $(a_t^{\top} x - b_t)^2$
+    and return $\overline{x} = \frac{1}{T} \sum_t x_t$.
+\end{algothm}
+\begin{theorem}
+    SGD For Regression finds
+    \[ \E{\frac{1}{n} \sum_{i = 1}^n (a_i^{\top} \overline{x} - b_i)^2} \le \text{OPT} + O\qty(\frac{1}{\sqrt{T}}) \]
+    \begin{proof*}
+        \begin{align*}
+            \frac{1}{T} \sum_t (a_t^{\top} x_t - b_t)^2 &\le \text{OPT} + O\qty(\frac{1}{\sqrt{T}}) \\
+            \E{\frac{1}{n} \sum_t (a_t^{\top} \overline{x} - b_t)^2} &\le \frac{1}{T} \sum_t \frac{1}{n} \sum_{i} (a_i^{\top} x_t - b_t)^2
+        \end{align*}
+    \end{proof*}
+    Where the last claim is by convexity (Jensen's).
+\end{theorem}
+It turns out the theorem we had before was tight; we can prove a matching lower bound.
+\begin{theorem}
+    For general OGD, Regret $ = \Omega(\sqrt{T} GD)$.
+    \begin{proof*}[Sketch]
+
+        Let $K = [-1, 1]$ and $f_t(x) = x$ with probability $1/2$ otherwise $f_t(x) = -x$. Then we will
+        keep bouncing back and forth with high probability and so we will not be able to figure things out.
+    \end{proof*}
+\end{theorem}
+\subsection{Beating Gradient Descent}
+By the mean value theorem, any twice differentiable
+function satisfies for $\zeta \in [x, y]$:
+\[ f(x) = f(y) + \grad{f(y)}(x-y) + (x-y)^{\top} \nabla^2 f (\zeta) (x - y) \]
+A function is convex if and only if $\nabla^2 f(\zeta) \succeq 0$.
+\begin{definition}
+    $f$ is \textbf{strongly convex} if $\nabla^2 f(x) \succeq \alpha I$ for $\alpha > 0$ (i.e. $\nabla^2 f(x)  - \alpha I$ is PSD).
+\end{definition}
+
+\begin{definition}
+    $f$ is $\beta$-smooth if $\nabla^2 f(x) \preceq \beta I$.
+\end{definition}

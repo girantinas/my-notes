@@ -4,6 +4,7 @@
 \begin{definition}
     A finite extension $K/k$ is \textbf{Galois} if it is separable and normal.
 \end{definition}
+
 Every extension of $k$ embeds into $k^a$. Separable means the number of homomorphisms
 from $K \to k^a$ over $k$ (fixing elements on $k$) means that this is degree of the extension.
 
@@ -109,4 +110,22 @@ adjoining square roots of numbers already in $M$.
 
         Clearly $K$ is normal over $F$ and it is separable over $F$
     \end{proof}
+\end{theorem}
+
+\begin{theorem}
+    Let $K_1/k$ and $K_2/k$ be two Galois extensions, with $\gal(K_1/k) = G_1$ and $\gal(K_2/k) = G_2$.
+    Then $K_1 K_2/k$ is Galois. Let $G = \gal(K_1K_2/k)$.
+    The map $G \to G_1 \times G_2 : \sigma \mapsto (\sigma \Big|_{K_1}, \sigma \Big|_{K_2})$
+    is injective. If $K_1 \cap K_2 = k$, then the map is an isomorphism.
+\end{theorem}
+
+\begin{theorem}
+    Let $K/k$ be Galois and $F/k$ arbitrary extension. Then $KF/F$ is Galois,
+    and $K/(K\cap F)$ is Galois. There is an isomorphism between their Galois groups:
+    $\iota: KF/F \to K/(K \cap F) : \sigma \mapsto \sigma \Big|_{K}$.
+\end{theorem}
+
+\begin{theorem}
+    Given a polynomial $f(x) \in k[x]$, let $K/k$ be its splitting field extension.
+    Then $|\gal(K/k)| = [K: k]$.
 \end{theorem}

@@ -1,0 +1,41 @@
+% !TEX root = lectures.tex
+\section{Lecture 18}
+\begin{definition}[Flatness]
+    TFAE.
+    \begin{enumerate}
+        \item $E$ is flat.
+        \item For every exact sequence $E' \to E \to E''$, $F \otimes E' \to F \otimes E \to F \otimes E''$ is exact.
+        \item For every exact sequence $0 \to E' \to E \to E'' \to 0$, $0 \to F \otimes E' \to F \otimes E \to F \otimes E'' \to 0$ is exact.
+        \item For every exact sequence $0 \to E' \to E$, $0 \to F \otimes E' \to F \otimes E $ is exact.
+    \end{enumerate}
+\end{definition}
+
+\begin{theorem}
+    \begin{enumerate}
+        \item The ground ring is flat over itself.
+        \item Let $F = \bigoplus F_i$. $F$ is flat if and only if each $F_i$ is flat.
+        \item A projective module is flat.
+    \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+    \begin{enumerate}
+        \item Let $S$ be a multiplicative subset of $R$. Then $S^{-1}R$ is flat over $R$.
+        \item A module $M$ is flat over $R$ if and only if the localization $M_{p}$ is flat over $R_p$ for each prime ideal $p$ of $R$.
+        \item Let $R$ be a PID. $M$ is flat over $R$ if and only if it is torsion-free.
+    \end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+    Let $F$ be flat, and suppose that $0 \to N \to M \to F \to 0$ is exact.
+    Then $0 \to E \otimes N \to E \otimes M \to E \otimes F \to 0$ is exact for ANY module $E$.
+\end{theorem}
+
+\begin{theorem}[Nakayama]
+    If $R$ is a local ring (e.g. it has a unique maximal ideal $\mathfrak{m}$)
+    and $A$ is a finitely-generated $R$-module with $\mathfrak{m}A = A$, then $A = 0$.
+\end{theorem}
+
+\begin{theorem}
+    A finitely-presented flat module is projective.
+\end{theorem}
