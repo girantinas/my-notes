@@ -1,0 +1,204 @@
+% !TEX root = lectures.tex
+\newcommand{\Exp}{\mathbb{E}}
+\section{Lecture 2}
+I was out.
+
+\section{Lecture 3}
+\subsection{Concentration of Variance}
+We will show a subgaussian decay tail bound,
+by showing we can convert from the expectation versions of the bounds to
+high probability ones.
+
+Note the standard fact $\Var(\sum_i X_i) = \sum_i \Var{X_i}$
+for independent $X_i$'s. Also $\Var(x) = \frac{1}{2} \Exp_{x, y} (x - y)^2$
+for $(x, y)$ as two independent copies of $y$.
+
+\begin{theorem}[Efron-Stein]
+    Suppose $X_1, \dots, X_n$ are independent, real-valued random variables.
+    Then for all $f: \R^n \to \R$,
+    \[ \Var(f(X_1, \dots, X_n)) \le \sum_{i = 1}^{n} \mathbb{E}_{x \sim i} \Var_{x_i} f(x) \]
+    Where we mean
+    \begin{align*}
+        \mathbb{E}_{x \sim i} \Var_{x_i} f(x) &:= \mathbb{E}_{x_1, \dots, x_{i - 1}, x_{i + 1}, \dots, x_n} \Exp_{x_i} (f(x_1, \dots, x_n) - \Exp_{x_i} f(x_1, \dots, x_n))^2 \\
+        &= \frac{1}{2} \Exp_{x, y} (f(x_1, \dots, x_{i - 1}, x_i, x_{i + 1}, \dots, x_n) - f(x_1, \dots, x_{i - 1}, y_i, x_{i + 1}, \dots, x_n))^2
+    \end{align*}
+
+    \begin{proof}
+        Define $(\Exp_i f)(x_1, \dots, x_{i - 1}, \cdot, x_{i + 1}, \dots, x_n) := \Exp_{x_i} f(x_1, \dots, x_{i - 1}, x_i, x_{i + 1}, \dots, x_n)$.
+        Define $\Exp_{S} f = \Exp_{i_1} \Exp_{i_2} \dots \Exp_{i_{|S|}} f$.
+        Notice that $f = (f - \Exp_{[1]} f) + (\Exp_{[1]} f - \Exp_{[2]} f) + \dots + (\Exp_{[n - 1]} f - \Exp_{[n]} f) + \Exp_{[n]} f$.
+        Notice that $\Exp_{[n]} f = \Exp f$. Then, we claim that in the quantity $\Exp(f - \Exp f)^2$, the cross terms cancel.
+        For example, 
+        \[ \Exp [(f - \Exp_{[1]} f)(\Exp_{[1]} f - \Exp_{[2]} f)] = \Exp f \Exp_{[1]} f - \Exp f \Exp_{[2]} f - \Exp (\Exp_{[1]} f)^2 + \Exp(\Exp_{[1]} f)(\Exp_{[2]} f) = 0\]
+        where the first two terms cancel by the tower rule, and same with the second two. Now,
+        $\Exp(f - \Exp f)^2 = \sum_{i = 0}^{n - 1} \Exp(\Exp_{[i]} f - \Exp_{[i + 1]} f)^2$.
+        Now, we can apply Jensen's inequality term by term, to get an expecation over the correct variables.
+    \end{proof}
+\end{theorem}
+
+
+\begin{definition}
+    Consider $\Sigma \subseteq \Sigma$ and $f: \Sigma^n \to \R$.
+    \begin{align*}
+        D_i f(x) &= \sup_{y \in \Sigma} f(x_1, \dots, x_{i - 1}, y, x_{i + 1}, \dots, x_n) - \inf_{y \in \Sigma} f(x_1, \dots, x_{i - 1}, y, x_{i + 1}, \dots, x_n)\\
+        \Delta_i f &:= \sup_{x \in \Sigma^n} (D_i f(x))
+    \end{align*}
+\end{definition}
+Note that if $x \in [a, b]$ almost surely, then, $\Var(x) \le \frac{1}{4} (b - a)^2$.
+\begin{corollary}
+    \[ \Var(f(x_1, \dots, x_n)) \le \frac{1}{4} \sum_{i = 1}^n \Exp (D_i f(x))^2 \le \frac{1}{4} \sum_i (\Delta_i f)^2 \]
+\end{corollary}
+
+\begin{theorem}
+    Let $W \in \R^{n \times n}$ be symmetric, independent entries such that $|W_{ij}| \le K$.
+    Then, $\Var(\lambda_1(W)) \le 16 K^2$.
+\end{theorem}
+
+
+\begin{corollary}
+    Any Erdos-Renyi random graph's largest eigenvalue has variance at most $16$.
+\end{corollary}
+
+\begin{definition}
+    $D_i^+ f(x) = \sup_{y \in \Sigma} f(x_1, \dots, x_{i - 1}, y, x_{i + 1}, \dots, x_n) - f(x)$.
+\end{definition}
+
+Then the corollary before turns into.
+\[ \Var(f(x_1, \dots, x_n)) \le \frac{1}{4} \sum_{i = 1}^n \Exp (D_i^+ f(x))^2 \le \frac{1}{4} \sum_i (\Delta_i^+ f)^2 \]
+Now we can prove the variance theorem.
+\begin{proof}
+    We now will control $D_{ij}^+ \lambda_1(W)$.
+    Suppose that $W \neq W'$ differ in only the $(i, j)$th entry. Let $v$
+    be the top eigenvector of $W$. 
+    \[ \lambda_1(W) - \lambda_1(W') = v^T W v - \max_{\norm{u} = 1} u^T W' u = v^T W v - v^T W' v \le 2 |(W_{ij} - W_{ij}')| |v_i v_j| \le 4K |v_i v_j|\]
+    Then by the new corollary we have $\Var(f) \le 16K^2 \sum_{i, j} v_i^2 v_j^2 = 16K^2$.
+\end{proof}
+
+\begin{theorem}[Gaussian Poincare Inequality]
+    Let $f: \R^n \to \R$ be $\mathcal{C}^1$ and
+    \[ \Var_{x \sim \N(0, I)} f(x) \le \mathbb{E} \norm{(\nabla f)(x)}_2^2 \]
+    
+    \textbf{Proof.}
+        By Efron-Stein we have that
+        \begin{align*}
+            \Var_{x \sim \N(0, I)} (f(x)) &\le \sum_{i = 1}^n \Exp_{x \sim i} \Var_{x_i} f(x) \\
+            &\le \sum_{i = 1}^{n} \Exp_{x \sim i} \Exp_{x_i} \qty(\partial_i f(x))^2 \\
+            &= \Exp_{ x \sim \N(0, I)} \norm{\nabla f(x)}_2^2
+        \end{align*}
+        if we assume the thorem for $n = 1$.
+
+        Now, notice 
+        \begin{align*}
+            \Var_x f(x) &\approx_{CLT} \Var_{z} f\qty( \frac{1}{\sqrt{k}} \sum_{i = 1}^k z_i) \\
+            &\le \frac{1}{2} \sum_{i = 1}^{k} \Exp_{z, z'} f\qty(\frac{1}{\sqrt{k}} \sum_{j \neq i} z_j + \frac{z_i}{\sqrt{k} }) \\
+            &= \frac{1}{4} \sum_{i = 1}^{k} \Exp_{z} \qty(f\qty(\dots + \frac{1}{\sqrt{k}}) - f\qty(\dots - \frac{1}{\sqrt{k}}))^2 \\
+            &\approx_{taylor} \frac{1}{4} \sum_{i = 1}^k \Exp_z \qty(\frac{2}{\sqrt{k}} f'\qty(\frac{1}{\sqrt{k}} \sum_{j \neq i})) \\
+            &= \frac{1}{k} \sum_{i = 1}^{k} \frac{1}{4} \Exp_z \qty(\frac{2}{\sqrt{k}} f'\qty(\frac{1}{\sqrt{k}} \sum_{j \neq i} z_j)) \\
+            &\approx_{CLT} \Exp f'(x)^2
+        \end{align*}
+\end{theorem}
+
+\begin{corollary}
+    If $f: \R^n \to \R$ is $L$-Lipschitz,
+    $|f(x) -f(y)| \le L \norm{x - y}_2$
+    \[ \Var_x f(x) \le L^2 \]
+\end{corollary}
+
+\begin{theorem}
+    Let $W \in \R^{n \times n}$ be a symmetric random matrix with independent entries and assume $W_{ij} = W_{ji} \sim \N(\mu_{ij} ,\sigma_{ij}^2)$.
+    Then,
+    \[ \Var(\lambda_1(W)) \le 2 \max_{i,j} \sigma_{ij}^2 \]
+\end{theorem}
+
+\subsection{Subgaussian Tail Bounds}
+\begin{theorem}[Gaussian Concentration]
+    Let $x \sim \N(0, I)$, $F: \R^n \to \R$ be $\sigma$-Lipschitz (in 2-norm),
+    then for all $t \ge 0$, $\mathbb{P}_x[|F(x) - \E{f}| \ge t] \le 2e^{-\frac{t^2}{2\sigma^2}}$.
+
+    \begin{proof}
+        We will prove a slightly weaker bound of $2e^{-\frac{t^2}{\pi^2 \sigma^2}}$.
+        Assume $F$ is $\mathcal{C}^1$ (otherwise we can "smoothen" it out). Then, for all $x$,
+        $\norm{\nabla F (x)}_2 \le \sigma$. Without loss of generality, $\E{F} = 0$,
+        otherwise, we will use $F - \E{F}$.
+        We will prove the one-sided bound; the other side follows by using the function $-F$.
+
+        Now, we can use the exponential moment method to write
+        \[ \Pr [F(x) \ge t] = \Pr[\exp(\lambda F(x)) \ge \exp(\lambda t)] \le \frac{\Exp[\exp(\lambda F)]}{\exp(\lambda t)} \]
+        Let $y$ be an independent copy of $x$.
+        \[ \Exp[\exp(-\lambda F(y))] \ge \exp(-\Exp \lambda F(y)) = \exp(0) = 1 \]
+        Then,
+        \[ \Exp[\exp(\lambda(F(x) - F(y)))] = \Exp[\exp(\lambda F(x))] \Exp[\exp(-\lambda F(y))] \ge \Exp[\exp(\lambda F)] \]
+        The key trick is that
+        \[ F(x) - F(y) = \int_{0}^{\pi/2} \pdv{}{\theta} F(y \cos \theta + x \sin \theta) \dd{\theta} \]
+        Calling $x_{\theta} = y\cos \theta + x \sin \theta$, note that $x_{\theta} \sim \N(0, I)$.
+        Then, $x_{\theta}' = \pdv{x_{\theta}}{\theta} = -y \sin \theta + x \cos \theta \sim \N(0, I)$.
+        The two combinations are orthogonal hence $x_{\theta}$ and $x_{\theta}'$ are independent.
+        Thus,
+        \begin{align*}
+            \exp(\lambda(F(x) - F(y))) &= \exp(\lambda \frac{\pi}{2} \frac{1}{\pi/2} \int_0^{\pi/2} \pdv{}{\theta} F(x_{\theta}) \dd{\theta} ) \\
+            &= \exp(\lambda \frac{\pi}{2} \Exp_{\theta \in [0, \pi/2 ]}[\pdv{}{\theta} F(x_{\theta})] ) \\
+            &\le \Exp_{\theta \in [0, \pi/2]} \exp(\lambda \frac{\pi}{2} \pdv{}{\theta} F(x_{\theta})) \\
+            &= \Exp_{x,y} \frac{2}{\pi} \int_{0}^{\pi/2} \exp\qty(\lambda \frac{\pi}{2} \langle \nabla F(x_{\theta}), x_{\theta}' \rangle) \dd{\theta} \\
+        \end{align*}
+        Notice that $\langle \nabla F(x_0), x_{\theta}' \rangle$ is distributed as a Gaussian
+        with variance at most $\sigma^2$, since the gradient is at most $\sigma$ in magnitude and the two vectors are independent.
+        \begin{align*}
+            \exp(\lambda(F(x) - F(y))) &\le \frac{2}{\pi} \int_0^{\pi/2} \Exp_{x, y} \exp\qty(\frac{1}{2} \qty(\lambda \frac{\pi}{2} \sigma)^2) \dd{\theta} \\
+            &\le \exp(1/2(\lambda \pi/2 \sigma)^2)
+        \end{align*}
+        which implies our bound by choosing $\lambda = \qty(\frac{2}{\pi}) \frac{t}{\sigma^2}$.
+    \end{proof}
+\end{theorem}
+
+\begin{corollary}
+    Let $X = \sum_i g_i A_i$, $g_i \sim \N(0, 1)$ independently, $A_i \in \R^{n \times n}$, symmetric,
+    $\lambda_1(X)$ and $\norm{X}_2 = \sigma_1(X)$ are both $\sigma_*(x)^2$-subgaussian,
+    where
+    \[ \sigma_*(x)^2 = \max_{\norm{v}_2 = 1} \langle \sum_{i = 1}^m A_i^{\otimes 2}, v^{\otimes 4} \rangle = \max_{\norm{v}_2} \sum_{i = 1}^{m} (v^T A_i v)^2 \]
+    \begin{proof}
+        Let's say we want to prove this for $\lambda_1$. Then 
+        \[\lambda_1(X(g)) - \lambda_1(X(h)) \le \norm{X(g) - X(h)}_2 =  \norm{\sum_{i = 1}^m(g_i - h_i) A_i}_2.\]
+        Then, 
+        \[\sum_{i = 1}^{m} (g_i - h_i) v^T A_i v \le \qty(\max_{\norm{v}_2 = 1} \sum_{i = 1}^{m} (v^T A_i v)^{2})^{1/2} \norm{g - h}_2\]
+        and we can apply the previous theorem with this Lipschitz constant.
+        (The spectral norm version follows from triangle inequality.)
+    \end{proof}
+\end{corollary} 
+
+Recall that previously, the error term was
+\[ \Exp_g \norm{\sum_i g_i A_i}_2 \le C \sqrt{\log n} \norm{\sum_i A_i^2}_2^{1/2} \]
+Then, $\sigma(x)^2 = \max_{\norm{v}_2 = 1} \sum_i v^T (A_i^2) v$.
+Now, our 
+\[ \sigma_*(x)^2 = \sum_{i = 1}^{m} \langle A_i v, v \rangle^2 \le \sum_{i = 1}^{m} \norm{A_1 v}_2^2 \norm{v}_2^2 = \sum_{i = 1}^{m} v^T A_i^2 v = \sigma^2 (x) \]
+
+\begin{corollary}
+    Let $W \in \R^{n \times n}$, $W_{ij} = W_{ji} \sim \N(0, 1)$, $W_{ii} \sim \N(0, 2)$ (Wigner distribution).
+    Then,
+    \[ \Pr{\norm{W}_2 \ge \Exp \norm{W} + t} \le 2e^{-t^2/4} \]
+\end{corollary}
+
+\begin{theorem}[Talagrand Concentration]
+    Let $|X_i| \le k$ be arbitrary bounded independent random variables, let $F: \R \to \R$, $\sigma$-Lipschitz, convex.
+    then for all $t \ge 0$
+    \[ \Pr_x[|F(x) - \E{f}| \ge tK] \le 2e^{-t^2/2\sigma^2} \]
+\end{theorem}
+
+This will give tail bounds for $\norm{X}_2$ with Rademachers, but not eigenvalues. Convexity is required,
+even over the hypercube.
+
+\begin{example}
+    There is a $1$-Lipschitz (but not convex), such that the above doesn't hold.
+    On $\{0, 1\}^n$ take
+    \[ f(x) = \sqrt{\max(-n/2 + \sum_i x_i, 0)} \]
+    Alternatively,
+    Let $A = \left\{(x_1, \dots, x_n) \in \{0, 1\}^n, \sum_i x_i \le \frac{n}{2}\right\}$
+    and $f(x) = \inf_{y \in \{ (x_1, \dots, x_n) \in \{0, 1\}^n, \sum_i x_i \le \frac{n}{2} \}} \norm{x -y}_2$.
+    Obviously this Lipschitz, as this is distance function. Furthermore,
+    \begin{align*}
+        \Pr[|f-\Exp f| > n^{1/4}] = \Pr[|\sqrt{\max\{ \frac{(2 x_i - 1) + \dots + (2 x_n - 1)}{n}, 0\}} - \Exp[f]| > \sqrt{2}]
+    \end{align*}
+    If the concentration held, the LHS would be $e^{-\sqrt{n}}$. But actually the thing inside the max looks like a Gaussian.
+    This means we are after
+    \[ \Pr[| \sqrt{\max\{\zeta, 0\}} - \Exp f| > \sqrt{2}] \]
+    for some $\zeta \sim \N(0, I)$, but this is some constant.
+\end{example}

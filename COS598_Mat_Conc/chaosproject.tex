@@ -1,0 +1,245 @@
+% !TEX root = chaosproject.tex
+\include{preamble.tex}
+\def\title{Lecture Notes}
+\def\coursenumber{}
+\def\class{Matrix Concentration and Applications}
+\def\semester{}
+\def\name{Rohit Agarwal}
+\def\title{Notes}
+\lhead{}
+\chead{\title}
+\rhead{\name}
+\lfoot{}
+\rfoot{\thepage}
+
+\begin{document}
+
+
+\newpage
+\section{Matrix Chaos Inequalities}
+For the purposes of this note, $\norm{\cdot}$ when applied to a matrix will always denote spectral norm.
+We will present the main results of \cite{bandeira2025matrixchaosinequalitieschaos}.
+In this work, they were investigating generalizations of the Matrix Khintchine, where they study a different
+matrix model, called matrix chaos. In this model, the component
+matrices are multiplied by a polynomial of random variables. Here, we will study
+a restricted subset of these.
+\begin{definition}
+    Let $m$ and $q$ be integers.
+    Let $\{h_{i}^{(j)}\}_{i \in [m], j \in [q]}$ be iid copies of a random variable $h$ with zero mean,
+    and let $A_{i_1, \dots, i_q}$ be a set of $m^q$ deterministic $d_1 \times d_2$ matrix coefficients.
+    Then, a matrix of the form
+    \[ X = \sum_{i_1, \dots, i_q \in [m]} h_{i_1}^{(1)} \dots h_{i_q}^{(q)} A_{i_1, \dots, i_q}  \]
+    is called a \textbf{matrix chaos} of order $q$.
+\end{definition}
+It's known that $\E{\norm{X}}$ does not change much (changes by $q$-dependent factors) when we replace this ``decoupled'' version with
+1) the dependence that $h_{i}^{(1)} = h_{i}^{(2)} = \dots = h_{i}^{(q)}$ and 2) forbidding $i_k$ from repeating (enforcing ``square-freeness'').
+As we will see, this form is what pops up in the applications and the inequalities. 
+
+To give the bounds, we first need to define
+the notion of a flattening. Fix a model $X$ as above.
+Then, identify the matrix coefficients with a tensor $\mathcal{A}$ of order $q + 2$ by
+\[ \mathcal{A}_{i_1, \dots, i_q, i_{q + 1}, i_{q + 2}} = A_{i_1, \dots, i_q}[i_{q + 1}, i_{q + 2}] \]
+The first $q$ coordinates we will call chaos coordinates and the last two coordinates we will call matrix coordinates.
+\begin{definition}
+    Given a partition of $[q + 2]$ as $R \cup C$, we define the flattening of $\mathcal{A}$ as the matrix
+    \[ \mathcal{A}_{[R \mid C]} = \sum_{\substack{i_1, \dots, i_q \in [m]}\\
+    i_{q + 1} \in [d_1], i_{q + 2} \in [d_2]} \qty(\bigotimes_{ t\in R} e_{i_t}) \otimes \qty(\bigotimes_{t \in C} e_{i_t}^T) \mathcal{A}_{i_1, \dots, i_{q + 2}}\]
+\end{definition}
+Here, this is the matrix whose rows are indexed by the coordinates in the row set $R$, whose columns
+are indexed by the coordinates in the column set $C$, and whose entries are the corresponding entries of the tensor.
+\begin{definition}
+    A flattening is said to be a $\sigma$-flattening if $(q + 1) \in R$ and $(q + 2) \in C$,
+    i.e. the matrix coordinates are kept as row and column coordinates. Then,
+    \[ \sigma(\mathcal{A}) := \max_{[R\mid C], \, \sigma\text{-flattening}} \norm{\mathcal{A}_{[R \mid C]}} \]
+    A flattening is said to be a $v$-flattening if $(q + 1), (q + 2) \in C$ i.e. the matrix coordinates are both assigned to the columns and $R$ is nonempty.
+    Then,
+    \[ v(\mathcal{A}) := \max_{[R\mid C], \, v\text{-flattening}} \norm{\mathcal{A}_{[R \mid C]}}  \]
+\end{definition}
+We will show how to reformulate the usual NCK in terms of flattenings (i.e. $q = 1$ case),
+which is the innovation of the chaos inequalities. Then, the full chaos inequalities will follow by an induction
+on $q$, which we will skip.
+
+Let $Y = \sum_{i \in [m]} h_i A_i$. Recall that the NCK Inequality \cite{Pisier_2003} states that 
+\[  \mathbb{E} \norm{Y} \lesssim \norm{h}_{\psi_2} \log(d)^{1/2} \max\{\sigma_R(Y), \sigma_C(Y)\} \]
+where $\norm{h}_{\psi_2}$ is the subgaussian norm of $h$ and
+\[ \sigma_R(Y) := \norm{\sum_{i \in [m]} A_i^T A_i}^{1/2}, \;\;\;\;\; \sigma_C(Y) := \norm{\sum_{i \in [m]} A_i A_i^T}^{1/2} \]
+Then we can compute the following flattenings
+\[ \mathcal{A}_{[1, 2 \mid 3]} = \sum_{i \in [m]} e_i \otimes A_i = \begin{pmatrix}
+    A_1 \\ \vdots \\ A_m
+\end{pmatrix}, \;\;\;\;\; \mathcal{A}_{[2 \mid 1, 3]} = \sum_{i \in [m]} e_i^T \otimes A_i = \begin{pmatrix} A_1 & \dots & A_m \end{pmatrix} \]
+which means
+\[ \mathcal{A}_{[1, 2 \mid 3]}^T \mathcal{A}_{[1, 2 \mid 3]} = \sum_{i \in [m]} A_i^T A_i, \; \;\;\;\;\mathcal{A}_{[2 \mid 1, 3]} \mathcal{A}_{[2 \mid 1, 3]}^T = \sum_{i \in [m]} A_i A_i^T  \]
+so therefore $\sigma_R(Y) = \norm{\mathcal{A}_{[1, 2 \mid 3]}}$ and $\sigma_C(Y) = \norm{\mathcal{A}_{[2 \mid 1,3]}}$,
+which enumerates all the $\sigma$-flattenings of $\mathcal{A}$. Thus, we can reformulate as $\mathbb{E} \norm{Y} \lesssim \norm{h}_{\psi_2} \log(d)^{1/2} \sigma(\mathcal{A})$
+for the $q = 1$ case.
+
+We can now state what induction will recover:
+\begin{theorem}[Iterated NCK]
+    Let $Y$ be a matrix chaos. Then,
+    \[ \norm{h}_{L_1}^q \sigma(\mathcal{A}) \lesssim_q \mathbb{E} \norm{Y} \lesssim \norm{h}_{\psi_2}^q \log(d + m)^{q/2} \]
+\end{theorem}
+One can also write the $v(Y) = \norm{Cov(Y)}^{1/2}$ parameter in the strong NCK of \cite{Bandeira_2023}
+by noticing
+\[ \mathcal{A}_{[1, \mid 2, 3]} = \sum_{i \in [m]} e_i \otimes vec(A_i)^T = \begin{pmatrix}
+    vec(A_i)^T \\ \vdots \\ vec(A_m)^T
+\end{pmatrix} \]
+where vec denotes the operation that arranges the matrix into a long vector.
+Then, one can easily notice that $\mathcal{A}^T_{[1 \mid 2, 3]} \mathcal{A}_{[1 \mid 2,3]} = Cov(Y)$,
+so $v(Y) = \norm{\mathcal{A}_{[1 \mid 2, 3]}}$. This is gives rise to the following inequality.
+\begin{theorem}[Iterated Strong NCK]
+    Let $Y$ be a matrix chaos. Then,
+    \[ \mathbb{E} \norm{Y} \lesssim \norm{h}_{\psi_2}^q(\sigma(\mathcal{A}) + \log(d + m)^{\frac{q + 2}{2}} v(\mathcal{A})) \]
+\end{theorem}
+
+\subsection{Chaos of Combinatorial Type}
+Although we capture a large class of models, computing the flattening quantities can be a bit daunting.
+However, the authors note that for many natural models, there is additional structure that one
+can exploit to use the chaos inequalities. Here, we use them for Khatri-Rao matrices, which
+have been used for differential privacy \cite{krmatrices}, among other applications.
+
+\begin{definition}
+    Let $q, n, d$ be positive integers, let $h$ be a scalar random variable with zero mean and unit variance, and let $W^{(1)}, \dots, W^{(q)}$
+    be $d \times n$ random matrices whose entries are iid copies of $h$. The Khatri-Rao matrix $Y$ is the $d^q \times n$
+    random matrix obtained by taking the column-wise Kronecker product of $W^{(1)}, \dots, W^{(q)}$, that is where 
+    for $j_1, \dots, j_q \in [d]$ and $k \in [n]$ the entries are:
+    \[ Y[(j_1, \dots, j_q), k] = \prod_{t = 1}^{q} W^{(t)}[j_t, k] \]
+    Equivalently,
+    \[ Y = \sum_{j_1, \dots, j_q \in [d], k\in[n]} \qty(\prod_{t = 1}^{q} W^{(t)}[j_t, k]) e_{j_1} \otimes \dots \otimes e_{j_q} \otimes e_k^T \]
+\end{definition}
+Here, we see that Khatri-Rao matrices have the property 
+that every matrix coefficient $A_{(j_1, k), \dots, (j_q, k)}$ is a tensor product of coordinate basis vectors and their transposes\footnote{Note that to capture this under the original chaos model,
+we also need a bunch of $0$ matrices e.g. for the cases where $A_{(j_1, k_1), \dots, (j_q, k_q)}$ for some $k_i \neq k_j$.
+We will ignore this to keep the notation easier.}.
+This is called a \textbf{matrix chaos of combinatorial type}. 
+This structure enables us to compute the norms of the flattenings much more easily.
+
+Let $Y$ be a Khatri-Rao matrix with $q = 2$. 
+Thus, defining $h_{(j_t, k)}^{(t)} = W^{(t)}[j_t, k]$ we can write
+\[ Y = \sum_{j_1, j_2 \in [d], k \in [n]} h_{(j_1, k)}^{(1)} h_{(j_2, k)}^{(2)} e_{(j_1, j_2)} \otimes e_k^{T}\]
+Then
+\begin{enumerate}
+    \item The chaos coordinates are $(j_1, k), (j_2, k)$
+    \item The matrix coordinates are $(j_1, j_2)$ and $k$
+\end{enumerate}
+Let's say we wanted to compute the flattening
+\begin{align*}
+    \mathcal{A}_{[1, 2, 3 \mid 4]} &= \sum_{j_1, j_2 \in [d], k \in [n]} e_{(j_1, k)} \otimes e_{(j_2, k)} \otimes e_{(j_1, j_2)} \otimes e_k^T \\
+    &= \sum_{j_1, j_2 \in [d], k \in [n]} e_{j_1} \otimes e_k \otimes e_{j_2} \otimes e_k \otimes e_{j_1} \otimes e_{j_2} \otimes e_k^T
+\end{align*}
+where we expanded via tensor products. Permuting the order of the tensor products doesn't preserve the matrix itself,
+but only reorders rows and columns, so it doesn't change the singular values.
+Therefore,
+\begin{align*}
+    \mathcal{A}_{[1, 2, 3, \mid 4]} &\simeq \qty(\sum_{j_i \in [d]} e_{j_1} \otimes e_{j_1}) \otimes \qty(\sum_{j_2 \in [d]} e_{j_2} \otimes e_{j_2}) \otimes \qty(\sum_{k \in [n]} e_k \otimes e_k \otimes e_k^T) \\
+    \norm{\mathcal{A}_{[1, 2, 3, \mid 4]}} &= \norm{\sum_{j_i \in [d]} e_{j_1} \otimes e_{j_1}}_2 \cdot \norm{\sum_{j_2 \in [d]} e_{j_2} \otimes e_{j_2}}_2 \cdot \norm{\sum_{k \in [n]} e_k \otimes e_k \otimes e_k^T} \\
+    &= \sqrt{d} \cdot \sqrt{d} \cdot 1 = d
+\end{align*}
+where the first two are the sums of $d$ orthonormal terms, and the last is an identity matrix.
+If one were to compute all the possible ways of distributing the chaos coordinates $i_1, \dots, i_q$
+and matrix coordinates $i_{q + 1}, i_{q + 2}$
+
+In general,
+for any matrix chaos of combinatorial type where the summation index $u$ has support $S_u$
+(in our case we have $3$ summation indices, $j_1, j_2, k$, with supports $d, d, n$),
+\[ \mathcal{A}_{[R \mid C]} = \bigotimes_{u = 1}^{p} \sum_{s_u \in [S_u]} \qty(e_{S_u}^{\otimes \mu_u} \otimes (e_{S_u}^T)^{\otimes \nu_u}) \]
+Now, noting that by similar reasoning:
+\[ \norm{\sum_{s_u \in [S_u]}\qty(e_{S_u}^{\otimes \mu_u} \otimes (e_{S_u}^T)^{\otimes \nu_u})} = \begin{cases}
+    1 & \text{if } \mu_u > 0 \text{ and } \nu_u > 0 \\ 
+    \sqrt{S_u} & \text{if } \mu_u > 0 \text{ xor } \nu_u > 0 \\
+    S_u & \text{if } \mu_u = 0 \text{ and } \nu_u = 0
+\end{cases}  \]
+Thus, we can compute all the flattenings for Khatri-Rao matrices: 
+\begin{table}[hbt!]
+    \centering
+    \begin{tabular}{| c | c | c | c | c |}
+        \hline
+        \multicolumn{4}{|c|}{coordinates} &  \\
+        $j_1 k$ & $j_2 k$ & $j_1 j_2$ & $k$ & $\norm{\mathcal{A}_{[R|C]}}^2$ \\ \hline
+        $R$ & $R$ & $R$ & $C$ & $d^2$ \\ \hline 
+        $R$ & $C$ & $R$ & $C$ & $d$ \\ \hline
+        $C$ & $R$ & $R$ & $C$ & $d$ \\ \hline
+        $C$ & $C$ & $R$ & $C$ & $n$ \\ \hline
+    \end{tabular}
+\end{table}
+\\
+This shows that for $q = 2$ Khatri-Rao matrices, $\sigma(\mathcal{A}) = \max\{d, n^{1/2}\}$.
+Furthermore, one can repeat such a procedure on $v$ to get that $v(\mathcal{A}) = d^{1/2} \ll \sigma(\mathcal{A})$, so Iterated strong NCK gives
+\[ \mathbb{E} \norm{Y} \approx \norm{h}_{\psi_2}^2 \max\{d, n^{1/2}\} \]
+For every subgaussian random variable that doesn't depend on $d$ or $n$, we get a reasonable bound. Otherwise, there is another iterated inequality
+we could apply called the Iterated strong Rosenthal inequality that removes this prefactor, which we ignore for now.
+Applying this same strategy for general $q$ matches 
+the state-of-the-art bound of $\mathbb{E} \norm{Y} \approx_q \max\{d^{q/2}, n^{1/2}\}$.
+To give a sketch of this proof, assume that we can remove the prefactor in NCK. Then, we will
+sketch why $\sigma(\mathcal{A}) \le \max\{d^{q/2}, n^{1/2}\}$ and $v(\mathcal{A}) \le d^{\frac{q - 1}{2}}$.
+
+\textbf{Proof Sketch.}
+Note in this setting, 
+the $m \le q$th index is $(j_m, k)$,
+the $(q + 1)$th index is $(j_1, \dots, j_q)$ and the $(q + 2)$th index is $k$.
+One can compute
+\begin{enumerate}
+    \item For $\sigma$-flattening $R = \{q + 1\}, C = [q + 2] \setminus R$ we have  $\norm{\mathcal{A}_{[R \mid C]}}^2 = d^q$.
+    \item For $\sigma$-flattening $C = \{q + 2\}, R = [q + 2] \setminus C$,  $\norm{\mathcal{A}_{[R \mid C]}}^2 = n$.
+\end{enumerate}
+For any other $\sigma$-flattening $\mathcal{A}_{[R \mid C]}$, there are $t, t' \in [q]$ such that $t \in R$
+and $t' \in C$. Hence, both the indices $j_{t'}$ and $k$ appear at least once both transposed and non-transposed:
+for instance $e_{j_{t'}}$ comes from the $q + 1$ index in $R$ while $e_{j_{t'}}^T$ comes from the $t'$ index in $C$.
+Hence,
+the norm of the $t'$ and $k$ terms squared is exactly $1$ (this is the identity case), and the norm squared of any other type of terms is at most $d$.
+There are only at most $q - 1$ types besides these, hence can only have squared norm at most $d^{q - 1}$.
+
+Similarly, for any $v$-flattening, since $R$ is non-empty, there must be some $t \in R$
+with $t \le q$, which means $e_{j_t}\otimes e_k$ appears; since $q + 1, q+2$ appears in $C$,
+this means $e_{j_t}^T \otimes e_k^T$ appears, so again only $q - 1$ types of terms can contribute at most $d$ to the norm.
+
+
+\subsection{Nearly Combinatorial Type}
+It turns out, many natural settings also are ``close'' to combinatorial type, in the sense
+that they have weights on the different matrices (or distribution of the random variables multiplying the terms get scaled).
+An example comes from the analysis of sum-of-squares algorithms for tensor PCA \cite{hopkinssos}. In particular, the key step
+is getting a bound of the following form, which gives an upper bound on sum-of-squares algorithm performance.
+\begin{theorem} Let $W_1, \dots, W_n$ be iid $d \times d$ random matrices with iid $N(0, 1)$ entries. Then,
+\[ \mathbb{E} \norm{\sum_{i \in [n]} (W_i \otimes W_i - \mathbb{E}[W_i \otimes W_i])} \lesssim d\sqrt{n} \]
+provided that $n, d \gtrsim \log(d + n)^4$
+\end{theorem}
+Note that in the original paper, there is actually an extra $\sqrt{\log n}$ factor, which our calculation will elide.
+
+\textbf{Proof Sketch.} Define $g_{ijk} = W_i[j,k]$.
+Note that we can decompose $X$ as
+\[ \sum_{i \in [n], j, k \in [d]} (g_{ijk}^2 - 1) e_{(j, j)} \otimes e_{(k,k)}^T + \sum_{\substack{i \in [n]\\j_1,k_1,j_2,k_2 \in [d]}} 1_{(j_1, k_1) \neq (j_2, k_2)} g_{i, j_1, k_1} g_{i, j_2, k_2} e_{(j_1, j_2)} \otimes e_{(k_1, k_2)}^T \]
+The first term can be handled with the known matrix concentration inequalities after noticing that $e_{(j,j)} \simeq e_j$
+(though when taking $h_{i,j,k} = (g_{ijk}^2 - 1)$,
+iterated Rosenthal will work to show an upper bound of $\tilde{O}(\sqrt{dn})$), so we focus our attention to
+the second term. As alluded to before, we can pass to the decoupled version
+\[Y = \sum_{\substack{i \in [n]\\j_1, k_1, j_2, k_2 \in [d] }} 1_{(j_1, k_1) \neq (j_2, k_2)} g_{i, j_1, k_1}^{(1)} g_{i,j_2,k_2}^{(2)} e_{(j_1, j_2)} \otimes e_{(k_1, k_2)}^T\]
+while only gaining an error which is a constant (see that $q = 2$).
+
+Now, imagine a version of $Y$ where there was no indicator function in front. Then one can show (again by direct computation)
+that $\sigma(\mathcal{A}) = d\sqrt{n}$ and $v(\mathcal{A}) = \max\{d, \sqrt{n}\}$. Using iterated strong NCK provides
+$\mathbb{E} \norm{Y} \lesssim d\sqrt{n} + \log(d^2 + nd^2)^2 \max\{d, \sqrt{n}\}$,
+which would imply the proposition.
+
+To show that nothing is lost by taking this non-indicator version, first we start with a quick lemma.
+\begin{lemma}
+    If $M, M'$ are real matrices so that $|M_{i,j}| \le M_{i,j}'$ for all $i, j$,
+    then $\norm{M} \le \norm{M'}$.
+\end{lemma}
+
+\begin{proof*}
+    $\norm{M} = \sup_{\norm{x} = \norm{y} = 1} \sum_{i,j} x_i M_{i,j} y_j \le \sup_{\norm{x} = \norm{y} = 1} \sum_{i,j} |x_i| |M_{i,j}| |y_j| \le \sup_{\norm{x} = \norm{y} = 1} \sum_{i,j} |x_i| M_{i,j}' |y_j| \le  \norm{M'}$.
+\end{proof*}
+
+Let's take a look at the flattenings of this new matrix model. By again combining terms appropriately
+as we did in the Khatri-Rao case, we get that:
+\[ \mathcal{A}_{[R \mid C]} \simeq \sum_{\substack{s_1=i \in [n]\\s_2=j_1, s_3=k_1 \in [d] \\ s_4=j_2, s_5=k_2 \in [d] }} 1_{(j_1, k_1) \neq (j_2, k_2)}  \bigotimes_{u \in [5]} (e_{s_u}^{\otimes \mu_u} \otimes (e_{s_u}^T)^{\otimes \nu_u}) \]
+Now consider the matrix
+\[ \mathcal{A}_{[R \mid C]}^{\text{ideal}} \simeq \sum_{\substack{s_1=i \in [n]\\s_2=j_1, s_3=k_1 \in [d] \\ s_4=j_2, s_5=k_2 \in [d] }} \bigotimes_{u \in [5]} (e_{s_u}^{\otimes \mu_u} \otimes (e_{s_u}^T)^{\otimes \nu_u}) \]
+Then, now just note that the entries of the original matrix (which are all nonnegative) are at most the latter matrix,
+so $\norm{\mathcal{A}_{[R \mid C]}} \le \norm{\mathcal{A}_{[R \mid C]}^{\text{ideal}}}$, meaning our idealization was correct.
+
+In fact, this trick generalizes for arbitrary ``weight functions''; the penalty on the
+norm of the flattening is in the infinity norm of the function.
+
+\bibliographystyle{alpha}
+\bibliography{refs}
+\end{document}

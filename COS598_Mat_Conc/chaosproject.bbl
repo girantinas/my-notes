@@ -1,0 +1,31 @@
+\begin{thebibliography}{BLNNvH25}
+
+\bibitem[BBvH23]{Bandeira_2023}
+Afonso~S. Bandeira, March~T. Boedihardjo, and Ramon van Handel.
+\newblock Matrix concentration inequalities and free probability.
+\newblock {\em Inventiones mathematicae}, 234(1):419–487, June 2023.
+
+\bibitem[BLNNvH25]{bandeira2025matrixchaosinequalitieschaos}
+Afonso~S. Bandeira, Kevin Lucca, Petar Nizić-Nikolac, and Ramon van Handel.
+\newblock Matrix chaos inequalities and chaos of combinatorial type, 2025.
+
+\bibitem[HSS15]{hopkinssos}
+Samuel~B. Hopkins, Jonathan Shi, and David Steurer.
+\newblock Tensor principal component analysis via sum-of-squares proofs.
+\newblock {\em CoRR}, abs/1507.03269, 2015.
+
+\bibitem[KRSU10]{krmatrices}
+Shiva~Prasad Kasiviswanathan, Mark Rudelson, Adam Smith, and Jonathan Ullman.
+\newblock The price of privately releasing contingency tables and the spectra
+  of random matrices with correlated rows.
+\newblock In {\em Proceedings of the Forty-Second ACM Symposium on Theory of
+  Computing}, STOC '10, page 775–784, New York, NY, USA, 2010. Association
+  for Computing Machinery.
+
+\bibitem[Pis03]{Pisier_2003}
+Gilles Pisier.
+\newblock {\em Introduction to Operator Space Theory}.
+\newblock London Mathematical Society Lecture Note Series. Cambridge University
+  Press, 2003.
+
+\end{thebibliography}

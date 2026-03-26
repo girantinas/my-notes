@@ -1,0 +1,117 @@
+% !TEX root = lectures.tex
+
+
+\section{Lecture April 25}
+
+\subsection{Concentration of Wigner Matrices}
+
+\begin{definition}[Wigner Matrices]
+    The Wigner distribution is the distribution of symmetric matrices $A \in \R^{d\times d}$
+    where entries on and above the diagonal are independent $N(0, 1)$.
+    Formally, defining $A_{ij} = e_i e_j^T + e_j e_i^T$, $i \neq j$, $A_{ii} = e_i e_i^T$
+    and $g_{ij} \sim N(0, 1)$ iid,
+    \[ A = \sum_{1 \le i \le j \le d} g_{ij} A_{ij} \]
+\end{definition}
+
+By Matrix Khintchine, we have found that $\E{\norm{A}_2} \lesssim \sqrt{d \log d}$.
+However, we will prove the following theorem.
+\begin{theorem}
+    For $A$ distributed with the Wigner distribution on $d$ by $d$ matrices,
+    \[ \E{\norm{A}_2} \le 2\sqrt{d} + o(\sqrt{d}) \]
+\end{theorem}
+
+\begin{proof}
+    Call the eigenvalues of $A$ as $\lambda_1 \ge \dots \ge \lambda_d$.
+    Take $k$ even. Then,
+    \[ \lambda_{max}^k \le \tr(A^k) =\sum_i \lambda_i^k \le d \lambda_{max}^k \] 
+    Furthermore,
+    \[ \lambda_{max} \le \tr(A^k)^{1/k} \le d^{1/k} \lambda_{max} \]
+    This lets us approximate the top eigenvalue with the $k$-th trace moment, which is the quantity we sandwich in the above inequality.
+    \[ \E{\tr(A)} = 0, \E{\tr(A^2)} \sim d^2 \]
+    So already, we get that $\lambda_{max} \in [\sqrt{d}, d]$. To compute higher moments, we can use combinatorics
+    \[ \E{\tr(A^4)} = \sum_{i_1, i_2, i_3, i_4} \E{A(i_1, i_2) A(i_2, i_3) A(i_3, i_4) A(i_4, i_1)} \]
+    Thinking of $A$ as an undirected weighted graph, notice that thinking about $(i_1, i_2, i_3, i_4, i_1)$
+    as a circuit in the complete graph on $d$ vertices, if any "edge" appears an odd number of times, the expectation of this term is $0$.
+    For the case of $k = 4$, we could have: 
+    \begin{enumerate}
+        \item three distinct vertices, and two distinct edges. Then, we have $\Theta(d^3)$ ways to choose the three distinct vertices, and $\Theta(d^3)$ ways to choose up to cyclic permutation as well. Each term is contributing $\E{g_{ij}^2} \E{g_{ij}^2} = 1$
+        so this adds $\Theta(d^3)$ to the sum.
+        \item two distinct vertices and the same edge appearing four times. This is only $\Theta(d^2)$.
+    \end{enumerate}
+    Thus, $\E{\tr(A^4)}^{1/4} \sim d^{3/4}$, so we get $\lambda_{max} \in [d^{1/2}, d^{3/4}]$.
+
+    With a handle on how to compute such moments, let's try to find
+    \[ \E{\tr(A^k)} = \mathbb{E} \sum_{i_1, \dots, i_k} A(i_1, i_2) \dots A(i_k, i_1) \]
+    We define a ``non-crossing pair'' partition of the edges as a pairing of edges so that the walk $(i_1, i_2, \dots, i_k, i_1)$
+    has $k/2$ distinct edges and $k/2 + 1$ vertices. This is called ``non-crossing'' because if we were to represent
+    the edges on points $p_{12}, p_{23}, \dots$ one-dimensional number line, the pairing is a way of drawing arcs below the number line between pairs of $p_{i, i+1}$ 
+    such that none of the arcs cross each other. The way to see this relationship is the view that the first kind of walk
+    is exactly a tree; since we repeat everything twice, this is exactly a DFS walk. Furthermore,
+    the pre and post-order numbers can be the embedding on the number line, where we pair
+    pre and post-order numbers of the root of every edge. These will be the leading terms in our expansion.
+
+    The number of distinct vertex choices is $d^{k/2} + 1$. Furthermore, if we want to choose which edges are paired up, we have $\le k^{k/2}$
+    ways, just $k$ choices for edge $1$'s pair, $k-1$ choices for edge $2$'s pair.
+
+    \begin{lemma}
+        For all $k$, $\E{\tr(A^k)} \le d^{k/2 + 1} C_k$
+        where $C_k$ is the $k$th Catalan number.
+    \end{lemma}
+    This can be done by thinking about the number of DFS walks at Catalan numbers. Furthermore, $C_k \le 2^k$,
+    so we get $(2+o(1))\sqrt{d}$ as desired.
+\end{proof}
+
+In fact, the tighter estimate implies the so-called semicircle law.
+With a matrix $A$, we can associate the distribution
+\[ \frac{1}{\sqrt{d}} A \to \frac{1}{d} \sum_{i = 1}^{d} \delta_{\lambda_i} \]
+where $\delta_{\lambda_i}$ is just the indicator on $\lambda_i$.
+In fact, as $d \to \infty$, we get that the distribution goes to a semicircle, i.e. $\sqrt{1 - x^2}$ for $x\in[-2, 2]$.
+To see this, you will get estimates on $\E{\tr(A^k)}^{1/k} \sim C_k$. But, the moments of the semicircle
+are also the catalan numbers!
+
+\subsection{ Beyond Matrix Khintchine [BBvH'23] }
+
+\begin{theorem}
+    Suppose $A_i$ are $d \times d$, self-adjoint, real matrices and
+    $X = \sum_i g_i A_i$, $\sigma(X) = \norm{\sum_i A_i^2}^{1/2}$.
+    By Matrix Khintchine, we know that $\E{\norm{X}} \lesssim \sqrt{\log d} \sigma$. Further,
+    defining $\nu(X) = \norm{\Cov{X}}^{1/2}$,
+    \[ \E{\norm{X}} \lesssim \sigma(X) + c \nu(X)^{1/2} \sigma(X)^{1/2} \log^{3/4}(d) \lesssim \sigma(x) + c' \nu(x) \log^{3/2}(d) \]
+\end{theorem}
+
+There is a better bound that's always better than Khintchine,
+by using a so-called alignment parameter $W(X)$. However, it wasn't very useful as this parameter is hard to compute.
+The innovation of BBvH was introducing the $\nu$ parameter as an upper bound for $W$, which is much easier to compute.
+
+\[ \E{\tr(A^4)} = \sum_{i_1, i_2, i_3, i_4} \tr(A_{i_1} A_{i_2} A_{i_3} A_{i_4}) \]
+The only contributing terms are ones that look like $\tr(A_1 A_2 A_1 A_2)$ and $\tr(A_1^2 A_2^2)$.
+However, if we expect non-commutative, the difference between crossing the partitions 
+(the former) and non-crossing partitions (the latter) should be large. This motivates defining
+\[ W(X) = \sup_{U, V, W \text{ orthogonal}} \sum_{i,j} \tr(A_i U A_j V A_i W A_j) \]
+(the intuitive notion is the one without the orthogonal transformations.)
+Tropp proved $\E{\norm{X}} \lesssim \log^{1/4}(d) \sigma(X) + \log^{1/2}(d) W(X)$.
+Furthermore, $W \le \sigma$.
+
+Here is a proof sketch of the later result. We will relate $\sum_i g_i A_i$ to $\sum_i G_i^{N} \otimes A_i$,
+where $G_i^N$ is a $N \times N$ symmetric matrix with all entries on and above the diagonal have variance $1/N$.
+For intuition we can consider $\E{\tr(G_i G_j G_i G_j)}$ and $\E{\tr(G_i^2 G_j^2)}$ (as any other trace moment will vanish).
+It turns out that $\frac{1}{N} \E{\tr(G_i G_j G_i G_j)} \to 0$ as $N \to \infty$. However, $\frac{1}{N} \E{\tr(G_i^2 G_j^2)} \to c$.
+Now, we took a tensor product so that the ``non-commutativity'' of $G$ contributes largely to the model.
+\[ \E{\norm{\sum_i G_i^{N} \otimes A_i}} \le 2\sigma + o_N(1) \]
+
+Now, to relate the two quantities, look at $\sum_i D_i^{N} \otimes A_i$
+where $D_i^N$ is a $N$ by $N$ diagonal matrix of independent standard Gaussians. Notice that $\norm{D_i^N}_F = \norm{G_i^N}_F$.
+The normalized trace of this model will be the same as in the original model, as the blocks don't influence each other and we're averaging.
+We will interpolate between $D_i^N$ and $G_i^N$ and bound the derviative of the trace moments during this process.
+
+``Free Probability'' is where we can make abstract variables $S_1, \dots, S_k$ for each matrix. Another way
+to think about this is there is an algebra of these random variables, then a probability measure assigns expectations
+monomials. The trick to make this work with matrices is making a non-commutative polynomial of these abstract variable,
+and giving a trace functional where we assign for example, saying a crossing pair partition can be set to $0$. 
+So we can also use this view to compute $\E{\norm{\sum_i G_i^{N} \otimes A_i}}$.
+
+Then, the interpolation scheme is
+\[ X_q^N = \sum_{i = 1}^{n} (\sqrt{q} D_i^N + \sqrt{1 - q} G_i^N) \otimes A_i \]
+Now, we want to bound
+\[ \dv{}{q} \E{\tr((X_q^N)^k)} \]
+It turns out there is a formula for a function of this average thing.

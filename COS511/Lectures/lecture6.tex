@@ -1,0 +1,50 @@
+% !TEX root = lectures.tex
+\section{Lecture 6}
+It turns out non-convex optimization to find local minima is doable
+as long as the function is $\beta$ smooth, i.e. $\beta I \succeq \nabla^2 f(x) \succeq - \beta I$.
+Assume $|f(x)| \le M$
+on the objective function, but there are no constraints. We will use Gradient descent.
+\begin{theorem}
+    If $ \eta = \frac{1}{\beta}$, then $\frac{1}{T} \sum_{t = 1}^{T} | \grad{f(x_t)} |^2 \le \frac{4\beta M}{T}$
+\end{theorem}
+Thus, we converge to a place where the gradient is zero.
+
+In practice, the gradient is very expensive to compute. So instead suppose
+we have access to a stochastic gradient oracle,
+where
+\[ \E{\hat{\nabla} f(x)} = \nabla f(x) ; \; \; \E{|\hat{\nabla}f(x)|^2} = \sigma^2 \]
+and we perform update $x_{t + 1} \gets x_t - \eta \hat{\nabla}f(x_t)$.
+\begin{theorem}
+    Stochastic gradient descent achieves $\E{\frac{1}{T} \sum |\nabla f(x_t)|^2} \sim \frac{1}{\sqrt{T}}$
+    for $\eta_t \sim \frac{1}{\sqrt{t}}$.
+\end{theorem}
+
+\subsection{Statistical Learning Theory}
+Let's focus on the problems that statistical learning theory tries to capture.
+The input is a set of data $X$ and labels $Y$.
+Underlying nature is some ``concept'' $c: X \to Y$.
+We can only sample data points from a (usually unknown) distribution $\mathcal{D}$ over $X \times Y$.
+Our goal is as follows. We define some loss $\ell: Y \times Y \to \R$ and then we wish to minimize
+generalization error
+\[ \mathbb{E}_{(x, y) \sim \mathcal{D}} \,[\ell(\hat{y}, y)]\]
+where $\hat{y}$ is given by the algorithm. 
+With these things alone, we cannot define our theory; there is nothing stopping us from just sampling
+from the distribution a bunch of times and only classifying things we've seen, allowing ourselves to be wrong 
+on every other input; this is an issue called overfitting.
+We also need a hypothesis class $\mathcal{H} \subseteq |Y|^{|X|}$
+of what kinds of functions we are allowed to have to approximate our concept.
+So now, the question we can ask is: which $\mathcal{H}$ are learnable?
+\begin{definition}[PAC Learning]
+    A learning problem $(X, Y, \mathcal{D}, \ell, \mathcal{H})$ is
+    \textbf{statistically learnable} if there exists an algorithm
+    for every $\epsilon, \delta > 0$ where the algorithm
+    sees $m(1/\epsilon, \log 1/\delta)$ examples
+    and produces $h \in \mathcal{H}$
+    such that $\E[\ell(h(x), y)] < \epsilon$ with probability at least $1 - \delta$.
+
+    $m$ is called the \textbf{sample complexity} of the learning problem.
+\end{definition}
+We can distinguish between two different assumptions on the hypothesis class.
+One is \textbf{proper learning}, which means $c \in \mathcal{H}$
+and the other \textbf{agnostic learning}, which means $c \notin \mathcal{H}$,
+where we instead measure error with respect to closest member of the class (similar to regret).

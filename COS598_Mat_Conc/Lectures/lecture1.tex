@@ -1,0 +1,152 @@
+% !TEX root = lectures.tex
+\newcommand{\Cut}{\textrm{Cut}}
+\section{Lecture 1}
+\subsection{Course Overview}
+This course is titled ``Matrix Concentration and Applications.'' Matrix Concentration
+is the development of concentration inequalities involving spectral properties of a matrix of random variables.
+Here are the applications:
+\begin{itemize}
+    \item Algorithms: Randomized numerical linear algebra, analysis of algorithms on randomized inputs
+    \item Statistical Estimation: How many samples from a distribution do you need to figure out its parameters?
+    \item Coding theory/combinatorics: Solve extremal girth problems, local codes, Euclidean sections.
+    \item Complexity Theory: Expander graphs (random graphs are Ramanujan...)
+    \item Quantum Information: Quantum query algorithms can be seen through the lens of Matrix concentration.
+    \item Discrepancy theory: How can you take a set of points and split them such that the
+    two points are indistinguishable by some test.
+\end{itemize}
+
+\subsection{Scalar Concentration Inequalities}
+\begin{theorem}[Khintchine]
+Suppose $a_1, \dots, a_n \in \R$ and $g_1, \dots, g_n \sim N(0, 1)$, iid.
+Then
+\[\E{|\sum_i g_i a_i|} = \sqrt{\frac{2}{\pi}} \sqrt{\sum_i a_i^2} \]
+
+Suppose $b_1, \dots, b_n$ are independent uniform Rademacher random variables. Then
+\[ \frac{1}{\sqrt{2}} \sqrt{\sum_i a_i^2} \le \E{|sum_i b_i a_i|} \ge \sqrt{\sum_i a_i^2} \]
+\end{theorem}
+
+\begin{theorem}[Bernstein]
+    Let $X_1, \dots, X_n$ be independent, zero-mean and for all $i$, $X_i \le L$ almost surely.
+    Define $\sigma = \sqrt{\sum_{i = 1}^n \E{X_i^2}}$ to be the variance of the sum.
+    Then,
+    \[ \Pr{\sum_{i = 1} X_i \ge 2t\sigma} \le e^{-t^2} \]
+    for all $0 \le t \le \sigma/2L$.
+\end{theorem}
+
+\begin{theorem}[Chernoff]
+    Let $X_1, \dots, X_n$ be independent Bernoullis, where $\E{X_i} = p_i$. Define $\mu = \sum_i p_i$.
+    Then, $\forall \delta > 0$,
+    \[ \Pr{\sum_i X_i \ge (1 + \delta) \mu} \le e^{\frac{-\mu\delta^2}{2 + \delta}} \]
+    and for $0 < \delta < 1$
+    \[ \Pr{\sum_i X_i \le (1 - \delta) \mu} \le e^{\frac{-\mu\delta^2}{2}} \]
+\end{theorem}
+
+It turns out all of them reduce to Khintchine...
+
+\subsection{Matrix Concentration Inequalities}
+
+\begin{theorem}[Non-Commutative Khintchine]
+    Let $A_1, \dots, A_n$ be $m \times m$ symmetric matrices.
+    and $b_1, \dots, b_n$ be independent uniform Rademachers or iid $N(0, 1)$.
+    Then
+    \[ \Pr{\norm{\sum_i b_i A_i}_2 \ge t\sigma} \le 2me^{-t^2/2} \]
+    where $\sigma^2 = \norm{\sum_i A_i^2}_2$.
+\end{theorem}
+Note the similarity to the scalar Bernstein inequality, except we get an extra dependence $m$
+on the dimension of the matrix.
+I.e., with high probability we have that $\norm{\sum_i b_i A_i}_2 \sim  \sqrt{\log m} \sigma$.
+One may ask whether this inequality is really tight. Define $A_i = e_i e_i^T$. Then,
+$\sigma^2 = \norm{\sum_i A_i^2}_2 = \norm{I}_2 = 1$. However, $\norm{\sum_i g_i A_i}_2 = \max\{g_1, \dots, g_n\}$.
+Its expectation is $\sim \sqrt{\log m}$.
+
+Consider instead $A_i = diag(-1, +1, \dots)$, where we assign arbitrary signs 
+to each $i$. Then, $\sum_i b_i A_i = diag(\langle b, v_1\rangle, \dots, \langle b, v_m \rangle)$.
+Then, each diagonal entry is the sum of random signs. Then, the max of this concentrates
+to $\sqrt{\log m}$.
+
+If the $A_i$'s commute with each other, then we claim that the spectral norm is fixed to this.
+
+\subsection{Graph Sparsification}
+Let $G = (V, E)$ be a graph. The goal of graph sparsification is to get a new (weighted) graph $G' = (V, E')$, $w: E' \to \R_+$
+where $|E'| \ll |E|$ while $G'$ approximates $G$. 
+Define a cut value as $\Cut_{H}(S) = \sum_{e \in E(S, \overline{S}) w_H(e)}$.
+\begin{definition}($\epsilon$-sparsifier)
+    $G' \approx_{\epsilon} G $ if for all sets $S$, $\Cut_{G'}(S) \in (1 + \epsilon) \Cut_{G}(S)$
+\end{definition}
+Define $L_G = D - A = \sum_{e \in E} w_e L_e$ where $L_{(i, j)} = e_i e_i^T + e_j e_j^T - e_i e_j^T - e_j e_i^T$.
+Recall $x^T L_G x = \sum_{(i, j) \in E} (x_i - x_j)^2 w_{(i, j)}$, so it is exactly $1/4$ the cut value
+for $x \in \{+1, -1\}^n$.
+\begin{theorem}
+    There is such a $G'$ with $|E'| = O\qty(\frac{n \log n}{\epsilon^2})$.
+\end{theorem}
+
+The main idea is using
+randomly sampling each edge $p_e$ and weight it $1/p_e$ if you keep it.
+The first thing you can try is $p_e = p$ for all edges independently.
+If the min-cut in $G$ is of size $k$, then it turns out that $p \sim \frac{\log(n)}{\epsilon^2 k}$.
+will work. Otherwise, $K_{n/2} --- K_{n/2}$ requires the edge in between to be present.
+So uniform sampling is not good enough. We will construct spectral sparsifiers, a more
+strict version of edge sparisification, where we want quadratic forms to be prserved for all $x$,
+instead of just boolean.
+
+
+The idea is to reframe this as a partitioning problem.
+Start from $E_0 = E$ and pick 
+$E_i \subseteq E_{i - 1}$ and $|E_i| \le \frac{1}{2} |E_{i - 1}|$ for all $i \ge 1$.
+\begin{definition}
+    We define normalized edge Laplacian
+    \[ \tilde{L}_e = L_G^{\dagger/2}  L_e L_G^{\dagger/2}\]
+    where $L_G^{\dagger/2}$ is the PSD square root of the pseudo-inverse.
+\end{definition}
+Note that $\sum_e \tilde{L}_e = L_G^{\dagger/2} L_G L_G^{\dagger/2} = I_{\top}$.
+We want that $\left|x^T \sum_{e \in E_1} \frac{1}{p_e} L_e x - x^T L_G x \right| \le \epsilon x^T L_G x$ for all $x$.
+This happens if and only if $\left|x^T \sum_{e \in E_1} \frac{1}{p_e} \tilde{L}_e x - x^T I_{\top} x \right| \le \epsilon x^T I_{\top} x$
+for all $x$.
+
+The idealized algorithm is as follows.
+\begin{algothm}
+$E_0= E$, $w^0 = 1$, for $t = 1, \dots, t_0$.
+\begin{enumerate}
+    \item Find $s \in \{\pm 1\}^{E_{t - 1}}$ minimizing
+    \[ \norm{\sum_{e \in E_{t - 1}} s_e w_e^{t - 1} \tilde{L}_e}_2 \]
+    \item Set $E_t \subseteq E_{t - 1}$
+    to be all $e \in E_{t - 1}$ such that $s_e = +1$.
+    \item Set $w^t = 2w_e^{t - 1}$ if the edge was chosen.
+\end{enumerate}
+\end{algothm}
+
+To start analysis, note that
+\begin{align*}
+    \norm{\sum_{e \in E_{t_0}} w_e^{t_0} \tilde{L}_e - I_{\top}}_2 &\le \sum_{i = 0}^{t_0 - 1} \norm{\sum_{E_i} w_e^{i} \tilde{L}_e - 2\sum_{e \in E_{i + 1}} w_e^i \tilde{L}_e }_2 \\
+    &= \sum_{i = 0}^{t_0 - 1} \norm{\sum_{e \in E_i} s_e^i w_e^i \tilde{L}_e}_2 \\
+\end{align*}
+
+\begin{lemma}
+    Suppose that for all $e$, $\norm{\tilde{L}_e}_2 \le \rho$.
+    Then, $\E{\norm{\sum_e s_e \tilde{L}_e}_2} \lesssim \rho^{1/2} \sqrt{\log n}$.
+
+    \begin{proof}
+        We use the expectation version of Khintchine.
+        \[ \E{\norm{\sum_e s_e \tilde{L}_e}_2 } \lesssim \norm{\sum_e \tilde{L}_2^2}_2^{1/2} \sqrt{\log n} \]
+        Furthermore, 
+        \[ \norm{\sum_e \tilde{L}_e^2 }_2 \le \norm{\sum_e \rho I \tilde{L}_e} \le \rho \norm{\sum_e \tilde{L}_e} = \rho \]
+    \end{proof}
+\end{lemma}
+
+What's the best bound we can get on the $\tilde{L}_e$? $\Tr(\sum_e \tilde{e} L_e) = \Tr(I_{\top}) = n - 1$.
+Since each $\tilde{L}_e$ is rank one, $\norm{\tilde{L}_e}_2 = \Tr(\tilde{L}_e)$.
+Thus the sum of their spectral norms is $n - 1$. The best bound we can
+hope for is $\norm{\tilde{L}_2}_2 = \frac{n - 1}{m}$. Thus, $\rho \ge \frac{ n - 1}{m}$.
+Let's say for the time-being that we had this best case, i.e.
+$\Tr(\sum_e w_e^{i} \tilde{L}_e) \sim n - 1$. Then,
+\[ \norm{w_e^i \tilde{L}_e}_2 \lesssim \sqrt{\frac{n - 1}{m_i}} \]
+So the total error is roughly $\sqrt{\log n}\qty(\sqrt{\frac{n}{m}} + \sqrt{\frac{n}{m_2}} + \dots)$.
+These are geometrically following,
+so if $m_{t_0} \sim n \log(n)/\epsilon^2$, then it's roughly $\sqrt{n \log n/m_0}$.
+
+We can fix these idealizations as follows. We know that $\sum_e w_e^i \tilde{L}_e \preceq (1 + \text{ error}) I_{\top}$,
+so then the trace is at most $n + \text{ error}$, which will be $o(1)$.
+Call $\rho_{e}^i = \norm{w_e^i \tilde{L}_e}_2$. Then $\sum_e \rho_e^i \approx n$.
+By Markov, at least $|E_i|/2$ edges satisfy $\sqrt{\rho_e^i} \le 2 \frac{n}{m_i}$.
+Now we will only sign quantities such that the above holds.
+

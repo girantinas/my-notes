@@ -1,0 +1,163 @@
+% !TEX root = lectures.tex
+
+
+\section{Lecture April 18}
+
+\subsection{Beyond Matrix Khintchine [Bandeira-Boedchardjo-von Handel '21]}
+
+Recall the Matrix Khintchine inequality we started the class with.
+
+Denote $X = \sum_i g_i A_i$ where $A_1, \dots, A_n \in \R^{d\times d}$ symmetric
+and $g_i$ are iid standard Gaussians. Then,
+\[ \E{\norm{X}_2} \lesssim \sigma_0 \sqrt{\log d} \]
+and $\sigma_0 = \norm{\sum_i A_i^2}^{1/2}$. We also showed this is tight
+with some simple diagonal examples. But, in some cases
+we can remove the log factor (the expectation is always at least $\sigma_0^2$).
+If we force them to be very non-commutative, we can perhaps hope for a better bound.
+
+Note that the distribution of the vector $\sum_i g_i A_i$
+is jointly Gaussian. So, it has a well-defined covariance $d^2 \times d^2$ matrix. Let's give this a name.
+\begin{definition}
+    \[ \sigma_1^2 = \norm{\Cov{X}}_2 \]
+\end{definition}
+Then, 
+\begin{theorem}[BBvH'21]
+    Under the same hypotheses,
+    \[ \E{\norm{X}_2} \lesssim O(\sigma_0 + \log^{3/4}(d) \sigma_0^{1/2} \sigma_1^{1/2}) \le O(\sigma_0 + \log^{3/2}(d) \sigma_1) \]
+\end{theorem}
+In fact, you can get the tight constant on $\sigma_0$ from the previous claim.
+
+However, this bound is not always better. Let's try applying this new inequality
+to Kikuchi matrices. Take level $\ell$ Kikuchi matrices, $L_{C_1}, \dots, L_{C_m}$
+where $C_i$'s are $4$-uniform hyperedges. Here, the size of the matrices is $\binom{n}{\ell} \times \binom{n}{\ell}$
+where $\ell$ is polynomial in $n$, so $m = poly(n)$ is exponentially smaller than the size of the matrices.
+However, for a given row $S$ in $\sum_i a_i L_{C_i}$, it has correlation $1$ with any $T$ that it has an edge to.
+So, the covariance matrix will have really high spectral norm ($\binom{n - a}{\ell - b}$ neighbors for each vertex).
+
+It's meaningful when for a given entry, there are very few entries we're correlated with (to make $\sigma_1$ small)
+and the size of the matrix is reasonable (smaller than or around the same as) number of the summands. The large matchings
+also correlate the entries together way too much.
+
+For Wigner matrices, that is, a random symmetric matrix, then the histogram of the spectrum
+look like a semicircle, centered at $0$ with radius $2\sqrt{n}$.
+
+\subsubsection{Discrepancy Minimization}
+We describe the simplest discrepancy minimization problem.
+Let $a_1, \dots, a_n \in \R^d$ and all $\norm{a_i}_{\infty} \le 1$.
+The goal is to find $b_1, \dots, b_n \in \{\pm 1\}$ such 
+that $\norm{\sum_i b_i a_i}_{\infty} \le O(\sqrt{n}) \max\{1, \sqrt{\log \frac{d}{n}}\}$.
+Note: When you randomly choose the $b_i$, then $\norm{\sum_i b_i a_i}_{\infty} \le \sqrt{n} \sqrt{\log d}$
+with probability $\Omega(1)$.
+
+\begin{theorem}[Spencer, 80s]
+    Goal is achievable. This is proved non-constructively via the entropy method.
+\end{theorem}
+
+We can try to generalize this to the matrix setting.
+$A_1, \dots, A_n \in \mathbb{R}^{n\times n}$, $\norm{A_i}_2 \le 1$ for all $i$.
+The goal is to find $b_1, \dots, b_n \in \{\pm 1\}$
+such that $\norm{\sum_i b_i A_i}_2 \le O(\sqrt{n} \max\{\sqrt{\log d/n}, 1\})$.
+By matrix Khintchine, if we choose $b_1, \dots, b_n$ uniformly at random, then with probability $\Omega(1)$,
+it's at most $O(\sqrt{n \log d})$. The conjecture is that this goal is acheivable, but we do not know how to prove it.
+
+Today: we will show a paper by [Bansal-Jiang-Meka], the goal is achievable, if, in addition, $\norm{A_i}_F^2 \le \frac{n}{\log^3 n}$ for all $i$.
+For today, we will take $d = n$ and the maximum that the squared Frobenius norm becomes is $n$.
+
+Concrete question: Suppose $A_i$'s are adjacency matrices of perfect matchings. The operator norm is clearly $1$,
+but the Frobenius norm is large. Is the Matrix Spencer conjecture true for this setting?
+
+\begin{lemma}[Partial Coloring, Rothvoss '14]
+    Let $\epsilon < 1/60000$, $\delta = \frac{3}{2}\epsilon \log_2 \frac{1}{\epsilon}$.
+    Let $H\subseteq \R^n$ be a subspace of dimension at least $\ge (1 - \delta) n$.
+    Let $K\subseteq H$ be a symmetric convex set such that $\gamma_H(K) \ge e^{-\delta n}$. Let
+    $x_0 \in (-1, 1)^n$. Then, there is a point
+    $x \in (x_0 +K) \subseteq [-1, 1]^n$ and $|\{i \mid |x_i| = 1\}| \ge \frac{\epsilon n}{2}$.
+\end{lemma}
+
+\begin{lemma}
+    There are $c, c' > 0$ such that given $A_1, \dots, A_n \in \R^{d \times d}$,
+    symmetric such that $\norm{\sum_i A_i^2}_{op} \le \sigma^2$ and $\sum_i \norm{A_i}_F^2 \le nf^2$, given
+    $x_0 \in (-1 , 1)^n$, there is an $x \in [-1, 1]^n$ such that
+    \[ \norm{\sum_{i= 1}^{n} (x_i - x_0,i) A_i}_{op} \le c(\sigma + \log^{3/4}(d) \sqrt{\sigma f}) \]
+    and $|\{i \mid |x_i| = 1\}| \ge c'n$.
+\end{lemma}
+
+Consider the convex body
+$K = \{x \in \R^n : \norm{\sum_i x_i A_i}_{op} \le c_0 \sigma + \log^{3/4}(d) \sigma^{1/2} f^{1/2}\} \subseteq \R^n$
+for some constant $c_0$ we'll set later.
+To prove its measure is large, we can use BBvH concentration inequality.
+But first, we need to bound the covariance matrix
+\[ \Cov X = \sum_i \vec{A_i} \vec{A_i}^T \implies \tr(Cov(X)) \le nf^2\]
+But we have no idea what the largest eigenvalues are. But, we do know the number of eigenvalues
+of value at least $f^2/\delta =: \Delta^2$ is at most $\delta n$. This gives us a subspace
+$H = \{y \in \mathbb{R}^n : \sum_i y_i \Tr(A_i V_j) = 0, \forall j \in [k] \}$
+where $V_1, \dots, V_k \in \R^{d\times d}$ are the eigenvectors of $\Cov(X)$ with eigenvalues at least $\Delta^2$.
+
+Now, let's prove the claim. Sample $g \sim \R^n$ by first sampling $y \in H$,
+$r \in H^{\perp}$, $g = y + r$.
+Now, let $Y = \sum_i y_i A_i$ and $R = \sum_i r_i A_i$,
+we have that $X = Y + R$ and $\E{X^2} = \E{Y^2} + \E{R^2}$. Then,
+$\sigma_0(Y) \le \sigma_0(X) \le \sigma_0$. Then, we know that
+for all $\vec{V_j}^{T} \Cov{Y} \vec{V_j} = 0$, then for all $v \perp \{V_1, \dots, V_k\}$
+then $v^T \Cov{Y} v \le \Delta^2$. So,
+\[ \E{\norm{Y}_{op}} \le c(\sigma_0(Y) +\log^{3/4}(d) \sigma_0(Y)^{1/2} \sigma_1(Y)^{1/2}) \le c'(\sigma_0 + \log^{3/4}(d) \sqrt{\sigma_0 f}) \]
+Define $K' = K \cap H$. Then, taking $c_0 = 2c'$, the probability we land in $K'$ is thus at least $1/2$ by Markov,
+i.e. $\gamma_H(K') \ge 1/2$. Furthermore, by construction and our previous bound on the
+number of bad eigenvalues, the dimension of $H$ is at least $(1 - \delta)n$.
+Thus, by our lemma , there is $x \in (x_0 + K') \cap [-1, 1]^n$ such that $|\{i \mid x_i \in \{\pm 1\}\}| \ge \epsilon/2$,
+proving the claim.
+
+Recall in our original theorem, we had control over the Frobenius squared norm creating $f \le \sqrt{\frac{n}{\log^3 n}}$,
+giving us the right answer by using the claim. Now, we can simply recurse the lemma over and over (by
+restricting the coordinates to those which are not set), getting a partial coloring each time.
+Furthermore, since we are setting $\Omega(n)$ coordinates each time, the error bound we get is $\sqrt{\text{number of coordinates left}}$,
+thus the total sum of operator residuals is something like $\sqrt{n} + \sqrt{cn} + \sqrt{c^2 n} + \dots = O(\sqrt{n})$.
+
+\subsubsection{A Proof of the Partial Coloring Lemma}
+Finally, let's prove Rothvoss' result.
+\begin{theorem}
+    Let $\epsilon, \delta$ be the same as in the Partial coloring lemma. Let $K\subseteq \R^n$
+    by a symmetric convex body, $\gamma_n(K) \ge e^{-\delta n}$.
+    Let $x* \sim N(0, 1)^n$ and $y^* \in K\cap [-1, 1]^n$ minimizing $\norm{x* - y*}_2$.
+    Then, with probability $ 1- e^{-\Omega(n)}$, $y*$ has $\ge \frac{\epsilon n}{2}$ coordinates set to $\pm 1$.
+    (Notice this gives an algorithm to find the point, as long as $K$ has a polynomial time projection
+    oracle).
+\end{theorem}
+
+\begin{fact}[Sidak, Khatri '67, Special case of Gaussian Correlation Inequality]
+    If $K \subseteq \R^n$ symmetric, convex in $\R^n$ and let $S\subseteq \R^n := \{x \in \R^n \mid |\langle v, x \rangle| \le \lambda\}$
+    be a strip. Then, $\gamma_n(K\cap S) \ge \gamma_n(K) \gamma_n(S)$.
+\end{fact}
+
+\begin{fact}
+    Let $h(\epsilon) = \epsilon \log_2 \frac{1}{\epsilon} + (1 - \epsilon) \log_2 \frac{1}{1 - \epsilon}$.
+    Then for all $0 < \epsilon <1/2$,
+    then the number of sets $|I| \le \epsilon n$ is at most $2^{nh(\epsilon)} \le 2^{3\epsilon/2 \log_2 1\epsilon}$.
+\end{fact}
+
+\begin{fact}[Gaussian Isoperimetric Inequality]
+    $K \subseteq \R^n$, $H$ halfspace with $\gamma_n(K) = \gamma_n(H)$.
+    Then, for all $\delta > 0$, $\gamma_n(K_{\delta}) \ge \gamma_n(H_{\delta})$
+    where $S_{\delta}$ is the $\delta$-net of $K$, i.e. the set of all points that are distance at most $\delta$ from $S$.
+\end{fact}
+
+\begin{corollary}
+    Let $\epsilon > 0$. Then for all $K$, $\gamma_n(K) \ge e^{-\epsilon n}$,
+    then $\gamma_n(K_{3\sqrt{\epsilon n}}) \ge 1 - e^{-\epsilon n}$.
+\end{corollary}
+
+To prove this corollary, just prove it for halfspaces! To get this volume, my halfspace must be distance $3/2 \sqrt{\epsilon n}$
+from the center, so if we expand to $3\sqrt{\epsilon n}$, we get most of the volume. Now we can prove the theorem.
+The intuition is that we can drop non-tight constraints from the solution $y$, and so the volume of the body will be much larger than
+the volume of $[-1, 1]^n$.
+
+\begin{proof}
+    Claim 1: $d(x*, [-1, 1]^n) \ge c\sqrt{n}$ with probability $1 - e^{-\Omega(n)}$.
+    Let $I^*$ be the coordinate constraints which are tight (where $y^* = \pm 1$).
+    Projecting to our set is the same as projecting to the set $K(I*) = K \cap \{ x \in \R^n: |x_i| \le 1, \forall i \in I*\}$.
+    Suppose $|I*| <\epsilon n$. By Sidak/Khatri, 
+    \[ \gamma_n(K(I*)) \ge \gamma_n(K) \prod_{i \in I*} \gamma_n(\text{strip}) \ge e^{-\delta n}
+     e^{-\epsilon n/2} \ge e^{-2\delta n} \]
+    Union-bounding over all $I*$ we get $\gamma_n(\cup_{I*} K(I*)) \le e^{-\delta n}$.
+    Thus, $\gamma_n(K(I*)_{3\sqrt{2\delta n}}) \ge 1 -e^{-\delta n}$ and we can set $\delta$ small enough.
+\end{proof}

@@ -1,0 +1,223 @@
+% !TEX root = lectures.tex
+
+
+\section{Lecture April 11}
+
+\subsection{Spectral Sparsification}
+Recall last time we were trying to prove a sparsification result.
+
+\begin{theorem}
+    Let $v_1, \dots, v_m \in \mathbb{R}^n$ such that $\sum_i v_i v_i^T  = I$.
+    Then, $\forall \epsilon > 0$, there are $s_1, \dots, s_m \in \R_+$,
+    with at most $\ceil{n/\epsilon^2}$ $s_i$'s non-zero satisfying
+    \[ (1 - \epsilon)^2 I \preceq \sum_i s_i v_i v_i^T \preceq (1 + \epsilon)^2 I \]
+\end{theorem}
+
+Note that this implies a graph sparsification result because we can take each $v_i$ to be an edge Laplacian.
+The intuition is we start with $A = 0$ and add rank-1 updates to $A$, each of which is a $v_i v_i^T$.
+If we look at e.g. $x^T A x = 1$, it starts as the empty set, then is the line, then a 2-d ellipse, etc.
+We hope to get a sphere at the end. We can actually track the evolution of polynomials very concretely.
+Let $\chr(A)$ be the characteristic polynomial of a matrix $A$.
+\[ \chr(A) = \det(xI - A) = \prod_i (x - \lambda_i)  \]
+Then for a rank-1 update:
+\begin{align*}
+    \chr(A + vv^T) &= \det(xI - A - vv^T) \\
+    &= \det(xI - A) \det(I - (xI - A)^{-1} vv^T) \\
+    &= \det(xI - A)( 1 -\frac{\sum_i \langle u_i, v \rangle^2}{x - \lambda_i})
+\end{align*}
+Then the eigenvalues interlace with the existing eigenvalues; i.e. notice that if any new eigenvalues are created,
+then this happens exactly when $\frac{\sum_i \langle u_i, v \rangle^2}{x - \lambda_i} = 1$, which happens between two $\lambda_i$.
+
+Furthermore,
+\[ \E{\chr\qty(A_0 + \sum_{i = 1}^{k} v_i v_i^T)} = \qty(1 - \frac{1}{m} \pdv{}{x})^k x^n \]
+where the expectation is over the $v_i$. These are associated Laguerre polynomials, so we can confirm that the ratio of largest
+to smallest root is $(1 + \epsilon)^2/(1 - \epsilon)^2$ is $k \sim n/\epsilon^2$.
+
+Today, we'll now control instead prove that using $6n$ terms,
+\[ I \preceq \sum_i s_i v_i v_i^T \preceq 13 I. \]
+At the beginning, all the eigenvalues are $0$, so a lower barrier $\ell_0 = -n$
+and an upper barrier $u_0 = n$ bound all eigenvalues.
+We will take $\sim n/\epsilon^2$ updates
+of $s_i v_i v_i^T$ in step $i$. If we take
+the lower barrier can be increased by $\delta_L = 1/3$ and the upper barrier can be increased by $\delta_U = 2$
+to keep all the eigenvalues inside the barriers. Then this means
+at step $6n$, $-n + 6/3 n = n \le \lambda(A) \le 13n = n + 12n$,
+so we get what we want by scaling. However, such a thing cannot work, 
+because if the eigenvalues
+cluster near the barriers (i.e. large $\Omega(n)$-dimensional approximate eigenspaces), 
+the eigenvalues cannot ALL move near the bottom (due to this interlacing observation), or might overshoot the top
+(a random vector has a large projection on a large approximate eigenspace).
+So we actually need to strengthen the inductive hypothesis to avoid clustering near
+the barriers. To do this, we introduce potential functions
+\[ \Phi^{u}(A) = \Tr(UI - A)^{-1} = \sum_i \frac{1}{u - \lambda_i}; \; \Phi_{\ell}(A) = \Tr(A - \ell I)^{-1} = \sum_i \frac{1}{\lambda_i - \ell} \]
+Notice that $\Phi^u(0) = 1$, so we will show that this stays smaller.
+\begin{lemma}
+    We can always choose $+ s vv^T$ such that if $\Phi^u(A) \le 1$, $\Phi_{\ell}(A) \le 1$,
+    then calling $u' = u +\delta_U$ and $\ell' = \ell + \delta_{L}$,
+    then $\Phi^{u'}(A + svv^T) \le 1$ and $\Phi_{\ell'}(A + svv^T) \le 1$.
+\end{lemma}
+
+
+\begin{proof}
+    Recall the Sherman Morrison formula: $(A + vv^T)^{-1} = A^{-1} - \frac{A^{-1} vv^T A^{-1}}{1 + v^T A^{-1} v}$.
+    Then, $\Tr((A+vv^T)^{-1}) = \Tr(A^{-1}) - \frac{v^T A^{-2} v}{1 + v^T A^{-1} v}$. Here, we will write $A^{-1}$ even though
+    we have pseudo-inverses (Alternatively, we could have just started with $A_0 = \epsilon I$).
+    Then
+    \begin{align*}
+        \Phi^{u'}(A + svv^T) &= \Tr(u'I - A - svv^T)^{-1} \\
+        \Phi^{u'}(A + svv^T) &= \Phi^{u'}(A) + \frac{sv^T (u' I - A)^{-2} v }{1 - sv^T (u'I- A)^{-1} v} \\
+        \Phi^{u'}(A + svv^T) - \Phi^u(A) &=  (\Phi^{u'}(A) - \Phi^u(A)) + \frac{v^T (u'I-A)^{-2} v}{1/s - v^T(u'I -A)^{-1} v}
+    \end{align*}
+    Rearranging, notice that the left-hand side is at most $0$ if and only if
+    for PSD matrix, $U_A = \qty((u'I-A)^{-1}+ \frac{(u'I - A)^{-2}}{\Phi^{u} (A) - \Phi^{u'}(A)})$,
+    we have
+    \[ \frac{1}{s} \ge v^T U_A v \]
+
+    Similarly, there is a matrix $L_A$ such that if $1/s \le v^T L_A v$
+    and $\Phi_{\ell}(A)$
+    then $\Phi_{\ell'}(A + svv^T) \le 1$. To see this,
+    we compute
+    \begin{align*}
+        \Phi_{\ell'}(A + svv^T) &= \Phi_{\ell'}(A) - \frac{v^T (A - \ell' I)^{-2} v}{1/s + v^T(A - \ell' I)^{-1}v} \\
+        \Phi_{\ell'}(A +svv^T) - \Phi_{\ell}(A) &= (\Phi_{\ell'}(A) - \Phi_{\ell}(A)) - \frac{v^T (A - \ell' I)^{-2} v}{1/s + v^T (A - \ell' I)^{-1} v} \le 0 \\
+    \end{align*}
+    Again, rearranging, $L_A = \frac{(A - \ell' I)^{-2}}{\Phi_{\ell'}(A) - \Phi_{\ell}(A)} - (A - \ell' I)^{-1}$
+    works.
+
+    The next claim is enough to prove the lemma, as 
+    \begin{lemma}
+        There exists $v$ such that $v^T U_A v \le v^T L_A v$.
+    \end{lemma}
+    It's enough to prove that this is true for a $v_i$ sampled at random,
+    and they all add up to identity,
+    so proving the inequality in expectation is the same as $\Tr(U_A) \le \Tr(L_A)$.
+
+    Now, we have two subclaims:
+    \begin{itemize}
+        \item $\Tr(U_A) \le \frac{1}{\delta_U} + 1$. To see this notice that
+        \[ \Tr(U_A) = \frac{\Tr(u'I -A)^{-2}}{\Phi^u(A) - \Phi^{u'}(A)} + \Phi^{u'}(A)\]
+        The first term is at most $1$ by induction. Now, notice that the left term is exactly
+        \[ \frac{\Tr(u'I -A)^{-2}}{\Phi^u(A) - \Phi^{u'}(A)} = \frac{-\pdv{}{y} \Phi^{y}(A) \Big|_{y = u'}}{\Phi^{u}(A) - \Phi^{u'}(A)} \]
+        Since $\Phi^{y}(A)$ is a convex function in $y$, then $\Phi^{u}(A) - \Phi^{u'}(A) \ge \delta_U(-\pdv{}{u} \Phi^{u'}(A))$.
+        This yields the inequality.
+        \item $\Tr(L_A) \ge \frac{1}{\delta_L} - 1$. Now again,
+        \[ \Tr(L_A) = \frac{\Tr((A - \ell' I)^{-2})}{\Phi_{\ell'}(A) - \Phi_{\ell}(A)} - \Phi_{\ell'}(A) \]
+        The second term is at least $-1$ by induction.
+        Similarly, $\Phi_{\ell}(A)$ is a concave function, so we get the top as the derivative,
+        so $\Phi^{\ell'}(A) - \Phi^{\ell}(A) \le \delta_L( \pdv{}{\ell} \Phi_{\ell'}(A))$
+    \end{itemize} 
+    Finally, notice that for our choice of $\delta_L = 1/3$ and $\delta_U = 2$, we have $1/\delta_U + 1 = 3/2$
+    and $1/\delta_L - 1 = 2$, so we have our claim.
+
+\end{proof}
+
+A work due to Zhu, Liao, and Orechhia use an algorithm called mirror descent.
+
+\subsection{Restricted Invertibility}
+Let $L$ be a $n\times n$ real matrix $L$. It is invertible if
+and only if $x \neq 0 \implies Lx \neq 0$. For any matrix $L$,
+there exists a set $S \subseteq [n], |S| =\rank(L)$,
+then $L_S$ is invertible. It turns out such a property is incredibly brittle.
+
+For example, take a matrix of all $1$'s. If we add some noise to it, we can make its rank
+large; but it's wrong to say that this new matrix is strongly invertible.
+
+\begin{definition}
+    $\sigma_{min}(L) = \min_{x \neq 0} \frac{\norm{Lx}}{\norm{x}}$.
+\end{definition}
+
+\begin{definition}
+    $L$ is well-invertible if $\sigma_{min}(L) \gg 0$.
+\end{definition}
+
+\begin{definition}[Stable Rank]
+    \[ \strank(L) = \frac{\norm{L}_F^2}{\norm{L}_2^2} =\frac{ \sum_i \sigma_i^2 }{\sigma_{max}^2} \le \rank(L) \]
+\end{definition}
+
+\begin{theorem}[Bourgain-Tzafriri 1987]
+    Given $n \times n$, $L$
+    such that $\norm{L e_i }_2 = 1$, for all $i$,
+    then there exists $S \subseteq [n]$, $|S| \ge c \frac{n}{\norm{L}_2^2}$
+    such that $\sigma_{min}(L_S) \ge d$ for some universal constants $c, d$.
+\end{theorem}
+
+We will prove essentially what is the tightest upgrade to this.
+
+\begin{theorem}[Vershynin '01, ..., Spielman-Srivastava '09]
+   Consider matrix $L$ that's $n \times m$ with $m \ge n$ and $\epsilon > 0$.
+   Then there exists $S$ such that $|S| \ge c(\epsilon) \frac{\norm{L}_F^2}{\norm{L}_2^2}$
+   such that $\sigma_{min}^2(L_S) \ge d(\epsilon) \norm{L}_F^2/m$.
+   
+   In fact, $d(\epsilon) = 1 - \epsilon$ and $c(\epsilon) = \Theta(\epsilon^2)$.
+\end{theorem}
+
+Our proof outline is as follows. Define $L_{n \times m} = [W_1 ,\dots, W_m]$.
+We build a matrix $A = L_S L_S^T$ one column at a time and a barrier $b$ on $\sigma_{min}$ which we will decrease in each step.
+At each step $A \gets A + w_{i_1} w_{i_1}^T$. By interlacing, we can only introduce one new eigenvalue smaller than the existing ones;
+so we need to make sure our barrier $b$ is under the new one we introduce.
+Now we will run for $k$ steps and $\lambda_k(A) \sim (1 - \epsilon)^2 \frac{\norm{L}_F^2}{m}$.
+Then, this will yield a $k \times k$ matrix with this well-invertibility property we'd like.
+
+Suppose for the following that $A$ has $k$ nonzero eigenvalues, all $> b$.
+\begin{definition}
+    $w$ is $b$-good if $A + ww^T$ has $k +1$
+    eigenvalues has $> b$.
+\end{definition}
+
+\begin{lemma}
+    If $w(A - bI)^{-1} w < -1$, then $w$ is $b$-good.
+\end{lemma}
+
+Note that if add some $w$ in the subspace spanned by the vectors
+we already added, then $(A - bI)^{-1}$ is PSD on this subspace, so this $w$
+cannot be $b$-good.
+
+\begin{proof}
+    $\Tr(A -bI)^{-1} = \sum_{i \le k} \frac{1}{\lambda_i - b} - \frac{(n - k)}{b}$.
+    Now, applying the rank-1 update,
+    \[ \Tr(A + ww^T - bI)^{-1} = \sum_{i \le k} \frac{1}{\lambda_i' - b} + \frac{1}{\lambda'_{k + 1} - b} - \frac{(n - k - 1)}{b} \]
+    Subtracting these two terms yield:
+    \[  \Tr(A + ww^T - bI)^{-1}  - \Tr(A -bI)^{-1} = \sum_{i \le k} \qty(\frac{1}{\lambda_i' - b} - \frac{1}{\lambda_i - b}) + \frac{1}{\lambda_{k + 1}' - b} + \frac{1}{b} \]
+    Notice that the summation is at most $0$ by interlacing. Thus, the LHS is at most $\frac{1}{\lambda_{k+ 1}' - b} + \frac{1}{b} = \frac{\lambda_{k+1}'}{b(\lambda_{k+1}' - b)}$.
+    If we prove LHS is nonnegative, then we must also have $\lambda_{k+1}' - b$.
+    To prove this, we write
+    \[ \Tr(A + ww^T - bI)^{-1} = \Tr(A -bI)^{-1} - \frac{w^T (A - bI)^{-2} w}{1 + w^T(A - bI)^{-1}w}  \]
+    Notice that the residual term is $- \frac{\text{PSD matrix}}{\text{negative number}}$,
+    where the denominator follows by the assumption.
+\end{proof}
+
+Observe that if $\sum_i w_i^T (A - bI)^{-1} w_i < -n$,
+then we're done (because a $b$-good vector always exists).
+
+\begin{definition}
+    Define the potential as $\Phi_b(A) = \Tr(L^T(A - bI)^{-1} L)$.
+\end{definition}
+
+\begin{definition}
+    $w$ is a $b' = (b-\delta)$-great if it is $b'$-good
+    and $\Phi_{b - \delta}(A + ww^T) \le \Phi(b)(A)$.
+\end{definition}
+
+\begin{lemma}
+    If 
+    \[ w^T (A - (b - \delta)I)^{-1} LL^T (A - (b - \delta)I)^{-1} w \le (\Phi_b(A) -\Phi_{b'}(A))(-1 -w^T (A-b'I)^{-1}w)\]
+    then $w$ is $(b-\delta)$-great.
+\end{lemma}
+
+\begin{proof}
+    Notice that the goodness is already ensured because $\Phi_b(A) \le \Phi_{b'}(A)$ and the quantity
+    on the left is the quadratic form of a PSD matrix, so $w^T (A - bI)^{-1} w < - 1$.
+    So, all we need to show is potential shift property.
+    \begin{align*}
+        \Phi_{b'}(A + ww^T) &= \Tr(L^T (A + ww^T - b'I)^{-1}L) \\
+        &= \Tr(L^T(A - b'I)^{-1} L) - \frac{\Tr(L^T(A - b'I)^{-1} ww^T (A - b'I)^{-1} L)}{1 + w^T(A - b'I)^{-1}w} \\
+        &= \Phi_{b'}(A) - \frac{LHS}{1 + w^T(A - b'I)^{-1}w} \\
+        &= \Phi_{b}(A) - (\Phi_b(A) - \Phi_{b'}) - \frac{LHS}{1 + w^T(A - b'I)^{-1}w}
+    \end{align*}
+    Rearranging, we find,
+    \[ LHS= (\Phi_b(A) - \Phi_{b'}(A + ww^T) - (\Phi_b(A) - \Phi_{b'}(A)))(1 + w^T (A - b'I)^{-1}w) \]
+    By our assumption, this implies $(\Phi_b(A) - \Phi_{b'}(A + ww^T))(1 + w^T (A - b'I)^{-1} w) \le 0$.
+    This means that $\Phi_b(A) - \Phi_{b'}(A + ww^T) \ge 0$ as needed.
+\end{proof}
+
+
